@@ -1,22 +1,19 @@
+import json
 from fastapi import APIRouter, HTTPException, status
 from sqlmodel import Session, select
-from passlib.hash import bcrypt
 
-from ..model.user.users import Usuario
+from ..model.user.users import Usuario, CNPJCache
 from ..conf.database import engine
 from ..schemas.schema_user import CompanyRegisterSchema
-
-# Autenticação
 from ..auth.auth_jwt import get_hashed_password
-
-# Matenha a organização do codigo
+from ..services.consulting_cnpj import consulting_CNPJ
 
 
 class RegisterRoute:
     def __init__(self):
         self.registerRT = APIRouter(
-            prefix='/auth',  # Prefixo para todas as rotas deste router
-            tags=['Autenticação'],  # Nome do grupo no /docs
+            prefix='/auth',
+            tags=['Autenticação'],
         )
         self.startup_route()
 
@@ -25,9 +22,6 @@ class RegisterRoute:
 
         @self.registerRT.post('/cadastro', status_code=status.HTTP_201_CREATED)
         async def register(user: CompanyRegisterSchema):
-            """
-            Rota para registrar um novo usuário no sistema.
-            """
             with Session(engine) as session:
                 # Verifica se o email já existe
                 if session.exec(
@@ -40,7 +34,7 @@ class RegisterRoute:
                 # Criptografa a senha
                 hashed_password = get_hashed_password(user.pwd)
 
-                # Cria o usuário com todos os campos adicionais
+                # Cria o usuário
                 new_user = Usuario(
                     username=user.full_name,
                     email=user.email,
@@ -67,12 +61,26 @@ class RegisterRoute:
                     state=getattr(user, 'state', None),
                 )
 
-                # Aplica mais uma verificação de entrada de dados
                 session.add(new_user)
                 session.commit()
                 session.refresh(new_user)
 
-                # Retorna dados sem expor senha | Remove em produção
+                assert new_user.id is not None
+                # Busca dados do CNPJ e salva no cache
+                if user.cnpj:
+                    searching_for_data = await consulting_CNPJ(str(user.cnpj))
+
+                    full_data = CNPJCache(
+                        cnpj=user.cnpj,
+                        data_json=json.dumps(
+                            searching_for_data, ensure_ascii=False
+                        ),
+                        usuario_id=new_user.id,
+                    )
+                    session.add(full_data)
+                    session.commit()
+
+                # Retorno seguro (sem senha)
                 return {
                     'id': new_user.id,
                     'username': new_user.username,

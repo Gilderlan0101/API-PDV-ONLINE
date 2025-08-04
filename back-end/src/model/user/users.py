@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 from sqlmodel import Field, Relationship, SQLModel
 from sqlmodel import SQLModel, Field
@@ -73,8 +73,9 @@ class Usuario(SQLModel, table=True):
         default_factory=lambda: datetime.now(ZoneInfo('America/Sao_Paulo'))
     )
 
-    # Relacionamento reverso: lista de membros/filiais
+    # Relacionamento reverso: lista de membros/filiais/cnpj
     membro: List['Membro'] = Relationship(back_populates='usuario')
+    cnpj_cache: List['CNPJCache'] = Relationship(back_populates='usuario')
 
 
 class Membro(SQLModel, table=True):
@@ -103,3 +104,25 @@ class Membro(SQLModel, table=True):
         default_factory=lambda: datetime.now(ZoneInfo('America/Sao_Paulo'))
     )
     usuario: Optional['Usuario'] = Relationship(back_populates='membro')
+
+
+class CNPJCache(SQLModel, table=True):
+    """
+    Cache de consultas de CNPJ para evitar excesso de chamadas na API.
+    """
+
+    id: int | None = Field(default=None, primary_key=True)
+    cnpj: str = Field(index=True, unique=True)
+    data_json: str  # Armazena o JSON da API em formato string
+    updated_at: datetime = Field(
+        default_factory=lambda: datetime.now(ZoneInfo('America/Sao_Paulo'))
+    )
+    # FK para o usuário que fez a consulta
+    usuario_id: int | None = Field(foreign_key='usuario.id')
+    usuario: Optional['Usuario'] = Relationship(back_populates='cnpj_cache')
+
+    def is_valid(self, ttl_minutes: int = 8) -> bool:
+        """Verifica se o cache ainda é válido"""
+        return datetime.now(
+            ZoneInfo('America/Sao_Paulo')
+        ) - self.updated_at < timedelta(minutes=ttl_minutes)

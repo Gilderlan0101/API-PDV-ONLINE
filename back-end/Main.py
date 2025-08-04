@@ -9,6 +9,7 @@ from .src.conf.database import create_db_and_tables
 # Rotas
 from .src.routes.login import Login
 from .src.routes.registre import RegisterRoute
+from .src.routes.cliente_cnpj import ConsultaRoute
 
 
 @asynccontextmanager
@@ -44,6 +45,10 @@ class Server:
         # Rota de cadastro
         register_route = RegisterRoute()
         self.api.include_router(register_route.registerRT)
+
+        # Rota de consulta
+        consultaroute = ConsultaRoute()
+        self.api.include_router(consultaroute.router)
 
     def run(self, host: str = '127.0.0.1', port: int = 8000):
         """Inicia o servidor Uvicorn."""
