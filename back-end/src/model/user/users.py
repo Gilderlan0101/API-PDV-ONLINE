@@ -24,22 +24,46 @@ class Usuario(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
 
     # Dados do usuário
-    username: UsernameType = Field(index=True, unique=True)
+    username: str = Field(index=True, unique=True, max_length=50)
     email: EmailStr = Field(index=True, unique=True)
-    password: PasswordType
-    foto_perfil: str | None = Field(
+    password: str
+    foto_perfil: Optional[str] = Field(
         default=None, description='URL ou caminho da foto de perfil'
     )
 
     # Dados da empresa
-    company_name: CompanyNameType = Field(index=True)
+    company_name: str = Field(index=True, description='Razão Social')
+    trade_name: Optional[str] = Field(
+        default=None, description='Nome Fantasia'
+    )
     membros: int = Field(
         default=1, description='Quantidade de lojas ou filiais do usuário'
     )
 
-    # CPF ou CNPJ (apenas um deve ser usado)
-    cpf: str | None = Field(default=None, index=True, unique=True)
-    cnpj: str | None = Field(default=None, index=True, unique=True)
+    # Inscrições fiscais
+    cpf: Optional[str] = Field(default=None, index=True, unique=True)
+    cnpj: Optional[str] = Field(default=None, index=True, unique=True)
+    state_registration: Optional[str] = Field(
+        default=None, description='Inscrição Estadual'
+    )
+    municipal_registration: Optional[str] = Field(
+        default=None, description='Inscrição Municipal'
+    )
+    cnae_principal: Optional[str] = Field(
+        default=None, description='CNAE principal'
+    )
+    crt: Optional[int] = Field(
+        default=None, description='Código de regime tributário (1,2,3)'
+    )
+
+    # Endereço da empresa
+    cep: Optional[str] = Field(default=None, description='CEP')
+    street: Optional[str] = Field(default=None, description='Logradouro')
+    number: Optional[str] = Field(default=None, description='Número')
+    complement: Optional[str] = Field(default=None, description='Complemento')
+    district: Optional[str] = Field(default=None, description='Bairro')
+    city: Optional[str] = Field(default=None, description='Cidade')
+    state: Optional[str] = Field(default=None, description='UF')
 
     # Auditoria
     criado_em: datetime = Field(

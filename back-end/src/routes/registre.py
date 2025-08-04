@@ -4,8 +4,10 @@ from passlib.hash import bcrypt
 
 from ..model.user.users import Usuario
 from ..conf.database import engine
-from ..schemas.schema_user import RegistreSchema
+from ..schemas.schema_user import CompanyRegisterSchema
 
+# Autenticação
+from ..auth.auth_jwt import get_hashed_password
 
 # Matenha a organização do codigo
 
@@ -13,8 +15,8 @@ from ..schemas.schema_user import RegistreSchema
 class RegisterRoute:
     def __init__(self):
         self.registerRT = APIRouter(
-            prefix="/auth",  # Prefixo para todas as rotas deste router
-            tags=["Autenticação"]  # Nome do grupo no /docs
+            prefix='/auth',  # Prefixo para todas as rotas deste router
+            tags=['Autenticação'],  # Nome do grupo no /docs
         )
         self.startup_route()
 
@@ -22,7 +24,7 @@ class RegisterRoute:
         """Define e registra as rotas relacionadas ao registro."""
 
         @self.registerRT.post('/cadastro', status_code=status.HTTP_201_CREATED)
-        async def register(user: RegistreSchema):
+        async def register(user: CompanyRegisterSchema):
             """
             Rota para registrar um novo usuário no sistema.
             """
@@ -36,21 +38,36 @@ class RegisterRoute:
                     )
 
                 # Criptografa a senha
-                hashed_password = bcrypt.hash(user.pwd)
+                hashed_password = get_hashed_password(user.pwd)
 
-                # Cria o usuário
+                # Cria o usuário com todos os campos adicionais
                 new_user = Usuario(
                     username=user.full_name,
                     email=user.email,
                     password=hashed_password,
                     company_name=user.company_name,
+                    trade_name=getattr(user, 'trade_name', None),
+                    membros=getattr(user, 'membros', 0),
                     cpf=user.cpf,
                     cnpj=user.cnpj,
-                    membros=0,
+                    state_registration=getattr(
+                        user, 'state_registration', None
+                    ),
+                    municipal_registration=getattr(
+                        user, 'municipal_registration', None
+                    ),
+                    cnae_principal=getattr(user, 'cnae_principal', None),
+                    crt=getattr(user, 'crt', None),
+                    cep=getattr(user, 'cep', None),
+                    street=getattr(user, 'street', None),
+                    number=getattr(user, 'number', None),
+                    complement=getattr(user, 'complement', None),
+                    district=getattr(user, 'district', None),
+                    city=getattr(user, 'city', None),
+                    state=getattr(user, 'state', None),
                 )
 
                 # Aplica mais uma verificação de entrada de dados
-
                 session.add(new_user)
                 session.commit()
                 session.refresh(new_user)
