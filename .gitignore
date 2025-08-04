@@ -1,0 +1,56 @@
+# -------------------
+# Python / Virtualenv
+# -------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+*.egg
+*.egg-info/
+*.manifest
+*.spec
+
+# Virtualenv / Poetry
+.venv/
+.env/
+.env.*           # ex: .env.production, .env.local
+*.venv
+poetry.lock      # opcional, se não quiser versionar lock
+.mypy_cache/
+.dmypy.json
+.pyre/
+.pytype/
+
+# -------------------
+# FastAPI / Dados Sensíveis
+# -------------------
+instance/        # caso use Flask-like instance folders
+*.db             # SQLite ou outros bancos locais
+*.sqlite3
+*.sqlite
+*.log
+*.pid
+*.seed
+*.bak
+*.backup
+
+# -------------------
+# Editor / Sistema
+# -------------------
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# -------------------
+# Testes / Coverage
+# -------------------
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
