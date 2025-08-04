@@ -9,9 +9,13 @@ from ..schemas.schema_user import RegistreSchema
 
 # Matenha a organização do codigo
 
+
 class RegisterRoute:
     def __init__(self):
-        self.registerRT = APIRouter()
+        self.registerRT = APIRouter(
+            prefix="/auth",  # Prefixo para todas as rotas deste router
+            tags=["Autenticação"]  # Nome do grupo no /docs
+        )
         self.startup_route()
 
     def startup_route(self):
@@ -23,7 +27,7 @@ class RegisterRoute:
             Rota para registrar um novo usuário no sistema.
             """
             with Session(engine) as session:
-                # 1️⃣ Verifica se o email já existe
+                # Verifica se o email já existe
                 if session.exec(
                     select(Usuario).where(Usuario.email == user.email)
                 ).first():
@@ -44,7 +48,7 @@ class RegisterRoute:
                     cnpj=user.cnpj,
                     membros=0,
                 )
-                
+
                 # Aplica mais uma verificação de entrada de dados
 
                 session.add(new_user)
