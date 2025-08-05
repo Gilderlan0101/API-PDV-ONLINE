@@ -1,27 +1,28 @@
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
-from sqlmodel import Field, Relationship, SQLModel
-from sqlmodel import SQLModel, Field
-from pydantic import EmailStr, constr
 from typing import Annotated, List, Optional
 
+from pydantic import EmailStr, constr
+from sqlmodel import Field, Relationship, SQLModel
 
-# Validando os campos antes de entroduzir a class
-# Tipos validados | usuario
+# ========================
+# 🔹 Tipos Pydantic para validação
+# ========================
 UsernameType = Annotated[str, constr(min_length=3, max_length=50)]
 CompanyNameType = Annotated[str, constr(min_length=3, max_length=100)]
 PasswordType = Annotated[str, constr(min_length=8)]
 CpfCnpjType = Annotated[
     str, constr(min_length=11, max_length=14)
-]  # 11 para CPF, 14 para CNPJ
+]  # 11=CPF, 14=CNPJ
 
 
+# ========================
+# 🔹 Usuário
+# ========================
 class Usuario(SQLModel, table=True):
-    """
-    Representa um usuário do sistema PDV vinculado a uma empresa.
-    """
+    """Representa um usuário do sistema PDV vinculado a uma empresa."""
 
-    id: int | None = Field(default=None, primary_key=True)
+    id: Optional[int] = Field(default=None, primary_key=True)
 
     # Dados do usuário
     username: str = Field(index=True, unique=True, max_length=50)
@@ -37,7 +38,7 @@ class Usuario(SQLModel, table=True):
         default=None, description='Nome Fantasia'
     )
     membros: int = Field(
-        default=1, description='Quantidade de lojas ou filiais do usuário'
+        default=1, description='Quantidade de filiais do usuário'
     )
 
     # Inscrições fiscais
@@ -73,29 +74,33 @@ class Usuario(SQLModel, table=True):
         default_factory=lambda: datetime.now(ZoneInfo('America/Sao_Paulo'))
     )
 
-    # Relacionamento reverso: lista de membros/filiais/cnpj
-    membro: List['Membro'] = Relationship(back_populates='usuario')
+    # Relacionamentos principais
+    membros_filiais: List['Membro'] = Relationship(back_populates='usuario')
     cnpj_cache: List['CNPJCache'] = Relationship(back_populates='usuario')
-    produtos: list['Produto'] = Relationship(back_populates='usuario')
+    produtos: List['Produto'] = Relationship(back_populates='usuario')
+    produtos_arquivados: List['ProdutoArquivado'] = Relationship(
+        back_populates='usuario'
+    )
 
 
+# ========================
+# 🔹 Membro / Filial
+# ========================
 class Membro(SQLModel, table=True):
-    """
-    Representa uma loja ou filial vinculada a um usuário principal.
-    """
+    """Representa uma filial vinculada a um usuário principal."""
 
-    id: int | None = Field(default=None, primary_key=True)
+    id: Optional[int] = Field(default=None, primary_key=True)
 
-    # Dados da filial/membro
-    nome: str = Field(index=True, description='Nome da filial ou membro')
+    nome: str = Field(index=True, description='Nome da filial')
     cpf: Optional[str] = Field(default=None, index=True, unique=True)
     cnpj: Optional[str] = Field(default=None, index=True, unique=True)
     gerente: str = Field(description='Nome do gerente responsável')
 
-    # Relacionamento com Usuario
-    usuario_id: int = Field(
-        foreign_key='usuario.id'
-    )  # FK para a tabela Usuario
+    # Relacionamento com usuário
+    usuario_id: int = Field(foreign_key='usuario.id')
+    usuario: Optional['Usuario'] = Relationship(
+        back_populates='membros_filiais'
+    )
 
     # Auditoria
     criado_em: datetime = Field(
@@ -104,62 +109,95 @@ class Membro(SQLModel, table=True):
     atualizado_em: datetime = Field(
         default_factory=lambda: datetime.now(ZoneInfo('America/Sao_Paulo'))
     )
-    usuario: Optional['Usuario'] = Relationship(back_populates='membro')
 
 
+# ========================
+# 🔹 Cache de CNPJ
+# ========================
 class CNPJCache(SQLModel, table=True):
-    """
-    Cache de consultas de CNPJ para evitar excesso de chamadas na API.
-    """
+    """Cache de consultas de CNPJ para evitar excesso de chamadas na API."""
 
-    id: int | None = Field(default=None, primary_key=True)
+    id: Optional[int] = Field(default=None, primary_key=True)
     cnpj: str = Field(index=True, unique=True)
-    data_json: str  # Armazena o JSON da API em formato string
+    data_json: str
     updated_at: datetime = Field(
         default_factory=lambda: datetime.now(ZoneInfo('America/Sao_Paulo'))
     )
-    # FK para o usuário que fez a consulta
-    usuario_id: int | None = Field(foreign_key='usuario.id')
+
+    usuario_id: Optional[int] = Field(foreign_key='usuario.id')
     usuario: Optional['Usuario'] = Relationship(back_populates='cnpj_cache')
 
     def is_valid(self, ttl_minutes: int = 8) -> bool:
-        """Verifica se o cache ainda é válido"""
+        """Valida se o cache ainda é válido baseado no TTL."""
         return datetime.now(
             ZoneInfo('America/Sao_Paulo')
         ) - self.updated_at < timedelta(minutes=ttl_minutes)
 
 
+# ========================
+# 🔹 Produto
+# ========================
 class Produto(SQLModel, table=True):
-    """
-    Representa um produto do estoque vinculado a um usuário/empresa.
-    """
-
     id: int | None = Field(default=None, primary_key=True)
-    product_code: str = Field(
-        index=True, max_length=50, description='Código interno do produto'
+    product_code: str = Field(index=True, max_length=50)
+    name: str = Field(index=True, max_length=150)
+    stock: int = Field(default=0)
+    stoke_min: int = Field(default=0)
+    stoke_max: int = Field(default=0)
+    date_expired: Optional[datetime] = None
+    fabricator: Optional[str] = None
+    cost_price: float
+    price_uni: float
+    sale_price: float
+    supplier: Optional[str] = None
+    lot_bar_code: Optional[str] = None
+    image_url: Optional[str] = None
+
+    # 🔹 Campos extras do schema
+    product_type: Optional[str] = None
+    active: Optional[str] = None
+    group: Optional[str] = None
+    sector: Optional[str] = None
+    unit: Optional[str] = None
+    controllstoke: Optional[str] = None
+    sales_config: Optional[str] = None  # Pode salvar JSON
+
+    criado_em: datetime = Field(
+        default_factory=lambda: datetime.now(ZoneInfo('America/Sao_Paulo'))
     )
-    name: str = Field(
-        index=True, max_length=150, description='Nome do produto'
+    atualizado_em: datetime = Field(
+        default_factory=lambda: datetime.now(ZoneInfo('America/Sao_Paulo'))
     )
-    stock: int = Field(default=0, description='Quantidade em estoque')
-    date_expired: Optional[datetime] = Field(
-        default=None,
-        description='Data de validade (opcional para produtos não perecíveis)',
-    )
-    fabricator: Optional[str] = Field(
-        default=None, description='Nome do fabricante'
-    )
-    cost_price: float = Field(description='Preço de custo do produto')
-    price_uni: float = Field(description='Preço unitário para venda')
-    sale_price: float = Field(description='Preço final de venda')
-    supplier: Optional[str] = Field(
-        default=None, description='Fornecedor do produto'
-    )
-    lot_bar_code: Optional[str] = Field(
-        default=None, description='Código de barras ou lote'
-    )
-    image_url: Optional[str] = Field(
-        default=None, description='URL da imagem do produto'
+
+    usuario_id: int = Field(foreign_key='usuario.id')
+    usuario: Optional['Usuario'] = Relationship(back_populates='produtos')
+
+
+# ========================
+# 🔹 Produto Arquivado
+# ========================
+class ProdutoArquivado(SQLModel, table=True):
+    """Produto arquivado para histórico e relatórios."""
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+
+    # Copia os dados do produto
+    product_code: str = Field(index=True, max_length=50)
+    name: str = Field(index=True, max_length=150)
+    stock: int = Field(default=0)
+    date_expired: Optional[datetime] = None
+    fabricator: Optional[str] = None
+    cost_price: float
+    price_uni: float
+    sale_price: float
+    supplier: Optional[str] = None
+    lot_bar_code: Optional[str] = None
+    image_url: Optional[str] = None
+
+    # Motivo do arquivamento
+    description: str = Field(
+        ...,
+        description='Motivo do arquivamento (ex: vendido, danificado, removido)',
     )
 
     # Auditoria
@@ -170,6 +208,11 @@ class Produto(SQLModel, table=True):
         default_factory=lambda: datetime.now(ZoneInfo('America/Sao_Paulo'))
     )
 
-    # Relacionamento com Usuario
+    # Relacionamentos
     usuario_id: int = Field(foreign_key='usuario.id')
-    usuario: Optional['Usuario'] = Relationship(back_populates='produtos')
+    usuario: Optional['Usuario'] = Relationship(
+        back_populates='produtos_arquivados'
+    )
+
+    # FK opcional para histórico do produto original
+    produto_id: Optional[int] = Field(default=None, foreign_key='produto.id')

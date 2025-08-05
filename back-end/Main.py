@@ -11,6 +11,10 @@ from .src.routes.login import Login
 from .src.routes.registre import RegisterRoute
 from .src.routes.cliente_cnpj import ConsultaRoute
 from .src.routes.products import Product
+from .src.conf.database import engine
+
+# Dados de teste mocados
+from .src.utils.dados_teste import create_mock_data
 
 
 @asynccontextmanager
@@ -20,10 +24,14 @@ async def lifespan(app: FastAPI):
     create_db_and_tables()
     print('Banco de dados iniciado e tabelas criadas!')
 
+    # Iniciando dodos mocados para desenvolvimento
+    create_mock_data()
+
     yield
 
     # Coisas ao finalizar a aplicação
     print('Fim da aplicação')
+    engine.dispose()
 
 
 class Server:

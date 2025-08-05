@@ -1,18 +1,42 @@
-from datetime import datetime
-from typing import Optional, List
+from datetime import datetime, date
+from typing import List, Optional
 from fastapi import Body, Depends, HTTPException, status, APIRouter, Query
-from sqlmodel import Session, select
+from sqlmodel import SQLModel, Session, select
 from ..conf.database import engine
 from ..auth.deps import get_current_user
 from ..schemas.schema_product import ProductRegisterSchema, ProductUpdateSchema
-from ..model.user.users import Produto, Usuario
+from ..model.user.users import Produto, Usuario, ProdutoArquivado
 
 
 class Product:
     def __init__(self) -> None:
-        # Rota unificada para produtos
         self.router = APIRouter(prefix='/produtos', tags=['Produtos'])
         self.startup_route()
+
+    # ========================
+    # 🔹 Helpers internos
+    # ========================
+    @staticmethod
+    def to_dict(model: SQLModel) -> dict:
+        """Converte um modelo SQLModel para dict limpo."""
+        return {
+            k: v for k, v in model.__dict__.items() if not k.startswith('_')
+        }
+
+    @staticmethod
+    def get_product_by_user(
+        session: Session,
+        user_id: int,
+        code: Optional[str] = None,
+        name: Optional[str] = None,
+    ) -> Optional[Produto]:
+        """Busca produto por código ou nome, garantindo que seja do usuário."""
+        query = select(Produto).where(Produto.usuario_id == user_id)
+        if code:
+            query = query.where(Produto.product_code == code)
+        if name:
+            query = query.where(Produto.name == name)
+        return session.exec(query).first()
 
     def startup_route(self):
         # ========================
@@ -23,13 +47,11 @@ class Product:
             prod: ProductRegisterSchema,
             current_user: Usuario = Depends(get_current_user),
         ):
-            """Cadastra produto vinculado ao usuário logado"""
             if not current_user.id:
                 raise HTTPException(status_code=400, detail='Usuário inválido')
 
             with Session(engine) as session:
                 try:
-                    # Conversões
                     date_expired = (
                         datetime.combine(
                             prod.date_expired, datetime.min.time()
@@ -72,99 +94,107 @@ class Product:
         # ========================
         @self.router.put('/', status_code=status.HTTP_200_OK)
         async def update_product(
-            code: Optional[str] = Query(None, description='Código do produto'),
-            name: Optional[str] = Query(None, description='Nome do produto'),
+            code: str | None = Query(None, description='Código do produto'),
+            name: str | None = Query(None, description='Nome do produto'),
             update_data: ProductUpdateSchema = Body(...),
             current_user: Usuario = Depends(get_current_user),
         ):
-            """Atualiza dados de produto do usuário logado"""
             if not current_user.id:
                 raise HTTPException(status_code=400, detail='Usuário inválido')
 
             with Session(engine) as session:
-                query = select(Produto).where(
-                    Produto.usuario_id == current_user.id
+                product = self.get_product_by_user(
+                    session, current_user.id, code, name
                 )
-
-                if code:
-                    query = query.where(Produto.product_code == code)
-                elif name:
-                    query = query.where(Produto.name == name)
-                else:
-                    raise HTTPException(
-                        status_code=400,
-                        detail='Informe código ou nome do produto',
-                    )
-
-                product = session.exec(query).first()
                 if not product:
                     raise HTTPException(
                         status_code=404, detail='Produto não encontrado'
                     )
 
-                # Atualiza apenas campos informados
-                for field, value in update_data.dict(
-                    exclude_unset=True
-                ).items():
-                    if field == 'date_expired' and value:
+                # Obtém campos enviados
+                data_to_update = update_data.model_dump(exclude_unset=True)
+                updated_fields = {}
+
+                for field, value in data_to_update.items():
+                    if value in [None, '', 'string']:
+                        continue
+                    if isinstance(value, (int, float)) and value == 0:
+                        continue
+
+                    if field == 'date_expired' and isinstance(value, date):
                         value = datetime.combine(value, datetime.min.time())
-                    if field == 'image_url' and value:
+
+                    elif field == 'image_url' and value:
                         value = str(value)
-                    setattr(product, field, value)
+
+                    if getattr(product, field) != value:
+                        setattr(product, field, value)
+                        updated_fields[field] = value
+
+                if not updated_fields:
+                    return {
+                        'message': 'Nenhum campo relevante para atualizar.',
+                        'product_id': product.id,
+                    }
 
                 product.atualizado_em = datetime.now()
                 session.add(product)
                 session.commit()
                 session.refresh(product)
 
-                return {
-                    'message': 'Produto atualizado com sucesso!',
-                    'product_id': product.id,
-                    'dados_atualizados': update_data.dict(exclude_unset=True),
-                }
+            return {
+                'message': 'Produto atualizado com sucesso!',
+                'product_id': product.id,
+                'dados_atualizados': updated_fields,
+            }
 
         # ========================
-        # 3️ Deletar Produto
+        # 3️ Deletar Produto (com arquivamento)
         # ========================
-        @self.router.delete('/delete', status_code=status.HTTP_200_OK)
+        @self.router.delete('/', status_code=status.HTTP_200_OK)
         async def delete_product(
             code: str = Query(..., description='Código do produto'),
+            description: str = Query(
+                ..., description='Motivo do arquivamento'
+            ),
             current_user: Usuario = Depends(get_current_user),
         ):
-            """Deleta produto do usuário logado"""
             if not current_user.id:
                 raise HTTPException(status_code=400, detail='Usuário inválido')
 
             with Session(engine) as session:
-                product = session.exec(
-                    select(Produto)
-                    .where(Produto.product_code == code)
-                    .where(Produto.usuario_id == current_user.id)
-                ).first()
-
+                product = self.get_product_by_user(
+                    session, current_user.id, code
+                )
                 if not product:
                     raise HTTPException(
                         status_code=404,
                         detail='Produto não encontrado ou não pertence ao usuário',
                     )
 
+                product_data = self.to_dict(product)
+                product_data['description'] = description
+                product_data.pop('id', None)
+                product_data.pop('criado_em', None)
+                product_data.pop('atualizado_em', None)
+
+                archived_product = ProdutoArquivado(**product_data)
+                session.add(archived_product)
                 session.delete(product)
                 session.commit()
 
                 return {
-                    'message': f"Produto '{product.name}' removido com sucesso!",
-                    'product_id': product.id,
+                    'message': f"Produto '{product.name}' removido e arquivado com sucesso!",
                     'usuario_id': current_user.id,
                 }
 
         # ========================
         # 4️ Listar Produtos
         # ========================
-        @self.router.get('/products', status_code=status.HTTP_200_OK)
+        @self.router.get('/', status_code=status.HTTP_200_OK)
         async def list_products(
             current_user: Usuario = Depends(get_current_user),
         ) -> List[Produto]:
-            """Lista todos os produtos do usuário logado"""
             if not current_user.id:
                 raise HTTPException(status_code=400, detail='Usuário inválido')
 
@@ -175,4 +205,42 @@ class Product:
                     )
                 ).all()
 
-            return products   # type: ignore
+            return products[::-1]  # type: ignore # Lista do mais recente para o mais antigo
+
+        # ========================
+        # 5️ Registrar Venda
+        # ========================
+        @self.router.post('/venda', status_code=status.HTTP_200_OK)
+        async def register_sale(
+            code: str = Query(..., description='Código do produto'),
+            quantity: int = Query(..., gt=0, description='Quantidade vendida'),
+            current_user: Usuario = Depends(get_current_user),
+        ):
+            """Registra uma venda simples e reduz o estoque do produto"""
+            if not current_user.id:
+                raise HTTPException(status_code=400, detail='Usuário inválido')
+
+            with Session(engine) as session:
+                product = self.get_product_by_user(
+                    session, current_user.id, code
+                )
+                if not product:
+                    raise HTTPException(
+                        status_code=404, detail='Produto não encontrado'
+                    )
+
+                if product.stock < quantity:
+                    raise HTTPException(
+                        status_code=400, detail='Estoque insuficiente'
+                    )
+
+                product.stock -= quantity
+                product.atualizado_em = datetime.now()
+                session.add(product)
+                session.commit()
+                session.refresh(product)
+
+            return {
+                'message': f'Venda registrada: {quantity}x {product.name}',
+                'estoque_atual': product.stock,
+            }
