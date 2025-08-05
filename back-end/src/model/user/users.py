@@ -76,6 +76,7 @@ class Usuario(SQLModel, table=True):
     # Relacionamento reverso: lista de membros/filiais/cnpj
     membro: List['Membro'] = Relationship(back_populates='usuario')
     cnpj_cache: List['CNPJCache'] = Relationship(back_populates='usuario')
+    produtos: list['Produto'] = Relationship(back_populates='usuario')
 
 
 class Membro(SQLModel, table=True):
@@ -126,3 +127,49 @@ class CNPJCache(SQLModel, table=True):
         return datetime.now(
             ZoneInfo('America/Sao_Paulo')
         ) - self.updated_at < timedelta(minutes=ttl_minutes)
+
+
+class Produto(SQLModel, table=True):
+    """
+    Representa um produto do estoque vinculado a um usuário/empresa.
+    """
+
+    id: int | None = Field(default=None, primary_key=True)
+    product_code: str = Field(
+        index=True, max_length=50, description='Código interno do produto'
+    )
+    name: str = Field(
+        index=True, max_length=150, description='Nome do produto'
+    )
+    stock: int = Field(default=0, description='Quantidade em estoque')
+    date_expired: Optional[datetime] = Field(
+        default=None,
+        description='Data de validade (opcional para produtos não perecíveis)',
+    )
+    fabricator: Optional[str] = Field(
+        default=None, description='Nome do fabricante'
+    )
+    cost_price: float = Field(description='Preço de custo do produto')
+    price_uni: float = Field(description='Preço unitário para venda')
+    sale_price: float = Field(description='Preço final de venda')
+    supplier: Optional[str] = Field(
+        default=None, description='Fornecedor do produto'
+    )
+    lot_bar_code: Optional[str] = Field(
+        default=None, description='Código de barras ou lote'
+    )
+    image_url: Optional[str] = Field(
+        default=None, description='URL da imagem do produto'
+    )
+
+    # Auditoria
+    criado_em: datetime = Field(
+        default_factory=lambda: datetime.now(ZoneInfo('America/Sao_Paulo'))
+    )
+    atualizado_em: datetime = Field(
+        default_factory=lambda: datetime.now(ZoneInfo('America/Sao_Paulo'))
+    )
+
+    # Relacionamento com Usuario
+    usuario_id: int = Field(foreign_key='usuario.id')
+    usuario: Optional['Usuario'] = Relationship(back_populates='produtos')

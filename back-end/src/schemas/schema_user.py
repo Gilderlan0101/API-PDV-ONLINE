@@ -52,6 +52,28 @@ class CompanyRegisterSchema(BaseModel):
 
 
 class TokenSchema(BaseModel):
+    id: int
+    username: str
+    email: str
+    empresa: str
+    message: str
     access_token: str
     refresh_token: str
-    token_type: str = 'bearer'  # padrão para OAuth2
+    token_type: str = 'bearer'
+
+
+class TokenPayload(BaseModel):
+    sub: Optional[str] = None  # Identificação do usuário (id ou email)
+    exp: Optional[int] = None  # Timestamp de expiração do token
+
+
+class SystemUser(BaseModel):
+    id: int
+    username: str
+    email: EmailStr
+    company_name: str
+    cnpj: Optional[str] = None
+    cpf: Optional[str] = None
+    is_active: bool = True  # opcional para controle de acesso
+
+    model_config = {'from_attributes': True}

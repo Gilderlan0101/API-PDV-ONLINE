@@ -1,11 +1,10 @@
 from fastapi import APIRouter, HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import Session, select
-from passlib.hash import bcrypt
 
 from ..conf.database import engine
 from ..model.user.users import Usuario
-from ..schemas.schema_user import LoginSchema, TokenSchema
+from ..schemas.schema_user import TokenSchema
 
 # Autenticação
 from ..auth.auth_jwt import (
@@ -63,6 +62,7 @@ class Login:
                     'email': db_user.email,
                     'empresa': db_user.company_name,
                     'message': 'Login realizado com sucesso',
-                    'access_token': create_access_token(db_user.email),
-                    'refresh_token': create_refresh_token(db_user.email),
+                    'access_token': create_access_token(str(db_user.id)),
+                    'refresh_token': create_refresh_token(str(db_user.id)),
+                    'token_type': 'bearer',  # ← IMPORTANTE
                 }
