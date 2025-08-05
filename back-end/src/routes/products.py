@@ -126,7 +126,7 @@ class Product:
         # ========================
         # 3️ Deletar Produto
         # ========================
-        @self.router.delete('/', status_code=status.HTTP_200_OK)
+        @self.router.delete('/delete', status_code=status.HTTP_200_OK)
         async def delete_product(
             code: str = Query(..., description='Código do produto'),
             current_user: Usuario = Depends(get_current_user),
@@ -160,7 +160,7 @@ class Product:
         # ========================
         # 4️ Listar Produtos
         # ========================
-        @self.router.get('/', status_code=status.HTTP_200_OK)
+        @self.router.get('/products', status_code=status.HTTP_200_OK)
         async def list_products(
             current_user: Usuario = Depends(get_current_user),
         ) -> List[Produto]:

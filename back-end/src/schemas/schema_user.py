@@ -1,7 +1,5 @@
 from typing import Optional
-from unittest.mock import Base
 from pydantic import BaseModel, EmailStr, model_validator
-from sqlmodel import Field
 
 """
 Shema_user.py: Onde criamos validações de login e cadastro
