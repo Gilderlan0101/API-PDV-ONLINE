@@ -25,4 +25,5 @@ passlib = "^1.7.4"
 jwt = "^1.4.0"
 pandas = "^2.3.1"
 requests = "^2.32.4"
+bcrypt = "^4.3.0"
 
