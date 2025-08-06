@@ -72,7 +72,9 @@ def create_mock_data():
                 Produto(
                     product_code='PROD001',
                     name='Coca-Cola Lata 350ml',
-                    stock=50,
+                    stock=10,
+                    stoke_max=300,
+                    stoke_min=50,
                     cost_price=2.50,
                     price_uni=3.50,
                     sale_price=4.00,
@@ -98,6 +100,18 @@ def create_mock_data():
                     sale_price=2.00,
                     supplier='Limpeza BR',
                     usuario_id=user2.id,  # type: ignore
+                ),
+                Produto(
+                    product_code='PROD004',
+                    name='Lata 350ml',
+                    stock=10,
+                    stoke_max=300,
+                    stoke_min=50,
+                    cost_price=2.50,
+                    price_uni=3.50,
+                    sale_price=4.00,
+                    supplier='Distribuidora Bebidas',
+                    usuario_id=user1.id,  # type: ignore
                 ),
             ]
 

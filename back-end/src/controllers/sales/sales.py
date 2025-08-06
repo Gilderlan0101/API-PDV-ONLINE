@@ -4,7 +4,6 @@ import os
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 )
-from controllers.stoke import products_in_stoke
 
 
 class GenerateSales:

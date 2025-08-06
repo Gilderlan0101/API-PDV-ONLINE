@@ -1,4 +1,5 @@
 from datetime import datetime, date
+import json
 from typing import List, Optional
 from fastapi import Body, Depends, HTTPException, status, APIRouter, Query
 from sqlmodel import SQLModel, Session, select
@@ -65,6 +66,8 @@ class Product:
                         product_code=prod.product_code,
                         name=prod.name,
                         stock=prod.stock,
+                        stoke_min=prod.stoke_min,  # ✅ adicionar
+                        stoke_max=prod.stoke_max,  # ✅ adicionar
                         date_expired=date_expired,
                         fabricator=prod.fabricator,
                         cost_price=prod.cost_price,
@@ -116,6 +119,11 @@ class Product:
                 updated_fields = {}
 
                 for field, value in data_to_update.items():
+                    if isinstance(value, dict):
+                        value = json.dumps(
+                            value, ensure_ascii=False
+                        )  # Converte dict -> str JSON
+
                     if value in [None, '', 'string']:
                         continue
                     if isinstance(value, (int, float)) and value == 0:

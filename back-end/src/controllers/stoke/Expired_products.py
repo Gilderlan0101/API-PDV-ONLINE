@@ -1,3 +1,11 @@
+import sys
+import os
+
+
+sys.path.append(
+    os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+)
+
 # Devemos busca a validade do produto diretamente do banco
 DATA_EXPIRED = '10/05/2025'
 

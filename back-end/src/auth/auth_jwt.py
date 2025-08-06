@@ -1,18 +1,17 @@
 from passlib.context import CryptContext
-import os
 from datetime import datetime, timedelta
 from typing import Optional, Union, Any
 from jose import jwt
 from zoneinfo import ZoneInfo
-
 from dotenv import load_dotenv
+import os
 
 load_dotenv()
 
 # Chamando as variaves de ambiete que vmos usar neste arquivo
-ALGORITHM = os.getenv('ALGORITHM', 'HS256')
-JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'secret')
-JWT_REFRESH_SECRET_KEY = os.getenv('JWT_REFRESH_SECRET_KEY', 'refresh_secret')
+ALGORITHM = os.getenv('ALGORITHM')
+JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
+JWT_REFRESH_SECRET_KEY = os.getenv('JWT_REFRESH_SECRET_KEY')
 ACCESS_TOKEN_EXPIRE_MINUTES = 60  # 30 minutes
 REFRESH_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7   # 7 days
 
@@ -40,7 +39,7 @@ def create_access_token(
     )
 
     to_encode = {'exp': expire, 'sub': str(subject)}
-    return jwt.encode(to_encode, JWT_SECRET_KEY, ALGORITHM)
+    return jwt.encode(to_encode, JWT_SECRET_KEY, ALGORITHM)   # type: ignore
 
 
 def create_refresh_token(
@@ -55,4 +54,6 @@ def create_refresh_token(
     )
 
     to_encode = {'exp': expire, 'sub': str(subject)}
-    return jwt.encode(to_encode, JWT_REFRESH_SECRET_KEY, ALGORITHM)
+    return jwt.encode(
+        to_encode, JWT_REFRESH_SECRET_KEY, ALGORITHM  # type: ignore
+    )
