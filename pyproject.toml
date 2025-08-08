@@ -10,7 +10,9 @@ requires-python = ">=3.12"
 dependencies = [
     "python-jose[cryptography] (>=3.5.0,<4.0.0)"
 ]
-
+packages = [
+    { include = "back_end" }
+]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
