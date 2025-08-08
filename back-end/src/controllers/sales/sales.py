@@ -1,3 +1,19 @@
+# import datetime
+# from datetime import datetime
+# from typing import Optional
+
+# from fastapi import HTTPException
+# from fastapi.responses import RedirectResponse
+# from sqlmodel import Session, select
+# from src.conf.database import engine
+# from src.model.user.users import Produto, Sales, Usuario
+
+
+# Desenvolvimento interno
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+
 import datetime
 from datetime import datetime
 from typing import Optional
@@ -5,10 +21,12 @@ from typing import Optional
 from fastapi import HTTPException
 from fastapi.responses import RedirectResponse
 from sqlmodel import Session, select
-from src.conf.database import engine
-from src.model.user.users import Produto, Sales, Usuario
+from conf.database import engine
+from model.user.users import Produto, Sales, Usuario
+from dataclasses import dataclass
 
 
+@dataclass
 class Checkout:
     def __init__(
         self,
@@ -28,6 +46,9 @@ class Checkout:
         self.total = 0
         self.venda = None  # Será preenchido após a venda
         self.usuario = None  # Também será usado no recibo
+        
+        if self.payment_method not in ['pix', 'cartão', 'dinheiro', 'nota']:
+            raise ValueError("Forma de pagamento inválida")
 
     def build_receipt(self) -> dict:
         """
