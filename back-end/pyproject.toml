@@ -1,23 +1,14 @@
-[project]
+[tool.poetry]
 name = "pdv"
 version = "0.0.1"
 description = ""
-authors = [
-    {name = "Gilderlan silva da cruz and Gilvan candido"}
-]
-readme = "README.md"
-requires-python = ">=3.12"
-dependencies = [
-    "python-jose[cryptography] (>=3.5.0,<4.0.0)"
-]
+authors = ["Gilderlan Silva da Cruz and Gilvan Candido"]
 packages = [
     { include = "src" }
 ]
-
-[build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
-
+dependencies = {
+    "python-jose" = {extras = ["cryptography"], version = ">=3.5.0,<4.0.0"}
+}
 [tool.poetry.group.dev.dependencies]
 fastapi = {extras = ["all"], version = "^0.116.1"}
 sqlmodel = "^0.0.24"
@@ -30,6 +21,10 @@ bcrypt = "^4.3.0"
 black = "^25.1.0"
 isort = "^6.0.1"
 validate-docbr = "^1.11.1"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
 
 [tool.black]
 line-length = 88
