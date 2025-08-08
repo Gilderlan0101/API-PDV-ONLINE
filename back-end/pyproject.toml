@@ -11,7 +11,7 @@ dependencies = [
     "python-jose[cryptography] (>=3.5.0,<4.0.0)"
 ]
 packages = [
-    { include = "back_end" }
+    { include = "src" }
 ]
 
 [build-system]
