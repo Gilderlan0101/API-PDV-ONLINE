@@ -1,11 +1,12 @@
 import json
+
 from fastapi import APIRouter, HTTPException, status
 from sqlmodel import Session, select
 
-from ..model.user.users import Usuario, CNPJCache
-from ..conf.database import engine
-from ..schemas.schema_user import CompanyRegisterSchema
 from ..auth.auth_jwt import get_hashed_password
+from ..conf.database import engine
+from ..model.user.users import CNPJCache, Usuario
+from ..schemas.schema_user import CompanyRegisterSchema
 from ..services.consulting_cnpj import consulting_CNPJ
 
 
@@ -27,9 +28,7 @@ class RegisterRoute:
                 if session.exec(
                     select(Usuario).where(Usuario.email == user.email)
                 ).first():
-                    raise HTTPException(
-                        status_code=400, detail='Email já cadastrado.'
-                    )
+                    raise HTTPException(status_code=400, detail='Email já cadastrado.')
 
                 # Criptografa a senha
                 hashed_password = get_hashed_password(user.pwd)
@@ -44,9 +43,7 @@ class RegisterRoute:
                     membros=getattr(user, 'membros', 0),
                     cpf=user.cpf,
                     cnpj=user.cnpj,
-                    state_registration=getattr(
-                        user, 'state_registration', None
-                    ),
+                    state_registration=getattr(user, 'state_registration', None),
                     municipal_registration=getattr(
                         user, 'municipal_registration', None
                     ),
@@ -72,9 +69,7 @@ class RegisterRoute:
 
                     full_data = CNPJCache(
                         cnpj=user.cnpj,
-                        data_json=json.dumps(
-                            searching_for_data, ensure_ascii=False
-                        ),
+                        data_json=json.dumps(searching_for_data, ensure_ascii=False),
                         usuario_id=new_user.id,
                     )
                     session.add(full_data)
@@ -86,7 +81,5 @@ class RegisterRoute:
                     'username': new_user.username,
                     'email': new_user.email,
                     'empresa': new_user.company_name,
-                    'criado_em': new_user.criado_em.strftime(
-                        '%d/%m/%Y %H:%M:%S'
-                    ),
+                    'criado_em': new_user.criado_em.strftime('%d/%m/%Y %H:%M:%S'),
                 }

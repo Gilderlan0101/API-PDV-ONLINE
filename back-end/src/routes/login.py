@@ -1,17 +1,16 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import Session, select
 
+# Autenticação
+from ..auth.auth_jwt import (
+    create_access_token,
+    create_refresh_token,
+    verify_password,
+)
 from ..conf.database import engine
 from ..model.user.users import Usuario
 from ..schemas.schema_user import TokenSchema
-
-# Autenticação
-from ..auth.auth_jwt import (
-    verify_password,
-    create_access_token,
-    create_refresh_token,
-)
 
 
 class Login:

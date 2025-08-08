@@ -1,6 +1,6 @@
 from datetime import date, datetime
 from enum import Enum
-from typing import Optional, Annotated
+from typing import Annotated, Optional
 
 from pydantic import BaseModel, Field, HttpUrl
 
@@ -11,6 +11,7 @@ Str50 = Annotated[str, Field(min_length=1, max_length=50)]
 Str150 = Annotated[str, Field(min_length=2, max_length=150)]
 NonNegativeInt = Annotated[int, Field(ge=0)]
 NonNegativeFloat = Annotated[float, Field(ge=0)]
+
 
 # ======================================
 # 🔹 Product Enums
@@ -116,12 +117,12 @@ class ProductRegisterSchema(BaseModel):
     image_url: Optional[str] = None
 
     # 🔹 Connected enums and options
-    product_type: ProductType          # Product type
-    active: ProductStatus              # Product active status
-    group: ProductGroup                # Product category
-    sector: ProductSector              # Product sector
-    unit: UnitOfMeasurement            # Unit of measurement
-    controllstoke: ProductStatus       # Stock control
+    product_type: ProductType  # Product type
+    active: ProductStatus  # Product active status
+    group: ProductGroup  # Product category
+    sector: ProductSector  # Product sector
+    unit: UnitOfMeasurement  # Unit of measurement
+    controllstoke: ProductStatus  # Stock control
     sales_config: Optional[ApplyingSalesType] = None  # Sales behavior
 
 

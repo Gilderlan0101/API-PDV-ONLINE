@@ -1,21 +1,24 @@
-from sqlmodel import Session, select
 from datetime import datetime
 from zoneinfo import ZoneInfo
-from passlib.hash import bcrypt  # Se você usar bcrypt para senhas
-from ..model.user.users import Usuario, Membro, Produto
+
+from passlib.hash import bcrypt
+from sqlmodel import Session, select
+
 from ..conf.database import engine
+from ..model.user.users import Membro, Produto, Usuario
 
 
 def create_mock_data():
-    """Cria usuários, filiais e produtos de teste se não existirem."""
+    """Cria usuário admin e 5 produtos de teste para ele se não existirem."""
     with Session(engine) as session:
         # ========================
-        # Criar usuários de teste
+        # Criar usuário admin
         # ========================
-        if not session.exec(select(Usuario)).first():
-            print('🔹 Criando usuários de teste...')
+        admin = session.exec(select(Usuario).where(Usuario.email == "admin@test.com")).first()
+        if not admin:
+            print('🔹 Criando usuário admin...')
 
-            user1 = Usuario(
+            admin = Usuario(
                 username='admin',
                 email='admin@test.com',
                 password=bcrypt.hash('123456'),
@@ -27,47 +30,31 @@ def create_mock_data():
                 state='SP',
             )
 
-            user2 = Usuario(
-                username='user2',
-                email='user2@test.com',
-                password=bcrypt.hash('123456'),
-                company_name='Empresa Teste 2',
-                trade_name='Filial Norte',
-                membros=1,
-                cnpj='98765432000188',
-                city='Rio de Janeiro',
-                state='RJ',
-            )
-
-            session.add(user1)
-            session.add(user2)
+            session.add(admin)
             session.commit()
-            session.refresh(user1)
-            session.refresh(user2)
+            session.refresh(admin)
 
-            print('✅ Usuários criados:', user1.email, user2.email)
-
-            # ========================
-            # Criar filiais
-            # ========================
-            branch1 = Membro(
+            # Criar filial padrão
+            branch = Membro(
                 nome='Filial Centro',
                 gerente='João',
-                usuario_id=user1.id,  # type: ignore
+                usuario_id=admin.id,  # type: ignore
             )
-            branch2 = Membro(
-                nome='Filial Zona Sul',
-                gerente='Maria',
-                usuario_id=user2.id,  # type: ignore
-            )
-
-            session.add(branch1)
-            session.add(branch2)
+            session.add(branch)
             session.commit()
 
-            # ========================
-            # Criar produtos de teste
-            # ========================
+            print(f'✅ Usuário admin criado: {admin.email}')
+
+        # ========================
+        # Criar produtos para o admin
+        # ========================
+        produtos_existentes = session.exec(
+            select(Produto).where(Produto.usuario_id == admin.id)  # type: ignore
+        ).all()
+
+        if not produtos_existentes:
+            print('🔹 Criando produtos de teste para admin...')
+
             products = [
                 Produto(
                     product_code='PROD001',
@@ -79,7 +66,7 @@ def create_mock_data():
                     price_uni=3.50,
                     sale_price=4.00,
                     supplier='Distribuidora Bebidas',
-                    usuario_id=user1.id,  # type: ignore
+                    usuario_id=admin.id,  # type: ignore
                 ),
                 Produto(
                     product_code='PROD002',
@@ -89,7 +76,7 @@ def create_mock_data():
                     price_uni=18.00,
                     sale_price=20.00,
                     supplier='Camil',
-                    usuario_id=user1.id,  # type: ignore
+                    usuario_id=admin.id,  # type: ignore
                 ),
                 Produto(
                     product_code='PROD003',
@@ -99,24 +86,32 @@ def create_mock_data():
                     price_uni=1.50,
                     sale_price=2.00,
                     supplier='Limpeza BR',
-                    usuario_id=user2.id,  # type: ignore
+                    usuario_id=admin.id,  # type: ignore
                 ),
                 Produto(
                     product_code='PROD004',
-                    name='Lata 350ml',
-                    stock=10,
-                    stoke_max=300,
-                    stoke_min=50,
-                    cost_price=2.50,
-                    price_uni=3.50,
-                    sale_price=4.00,
-                    supplier='Distribuidora Bebidas',
-                    usuario_id=user1.id,  # type: ignore
+                    name='Biscoito Cream Cracker 400g',
+                    stock=50,
+                    cost_price=3.00,
+                    price_uni=4.00,
+                    sale_price=5.00,
+                    supplier='Mabel',
+                    usuario_id=admin.id,  # type: ignore
+                ),
+                Produto(
+                    product_code='PROD005',
+                    name='Leite Integral 1L',
+                    stock=80,
+                    cost_price=4.20,
+                    price_uni=5.00,
+                    sale_price=6.00,
+                    supplier='Italac',
+                    usuario_id=admin.id,  # type: ignore
                 ),
             ]
 
             session.add_all(products)
             session.commit()
-            print('✅ Produtos de teste criados!')
+            print('✅ Produtos de teste criados para admin!')
         else:
-            print('⚡ Dados de teste já existem. Nenhuma ação feita.')
+            print('⚡ Produtos para admin já existem. Nenhuma ação feita.')

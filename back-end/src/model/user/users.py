@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
-from zoneinfo import ZoneInfo
 from typing import Annotated, List, Optional
+from zoneinfo import ZoneInfo
 
 from pydantic import EmailStr, constr
 from sqlmodel import Field, Relationship, SQLModel
@@ -11,9 +11,7 @@ from sqlmodel import Field, Relationship, SQLModel
 UsernameType = Annotated[str, constr(min_length=3, max_length=50)]
 CompanyNameType = Annotated[str, constr(min_length=3, max_length=100)]
 PasswordType = Annotated[str, constr(min_length=8)]
-CpfCnpjType = Annotated[
-    str, constr(min_length=11, max_length=14)
-]  # 11=CPF, 14=CNPJ
+CpfCnpjType = Annotated[str, constr(min_length=11, max_length=14)]  # 11=CPF, 14=CNPJ
 
 
 # ========================
@@ -34,12 +32,8 @@ class Usuario(SQLModel, table=True):
 
     # Dados da empresa
     company_name: str = Field(index=True, description='Razão Social')
-    trade_name: Optional[str] = Field(
-        default=None, description='Nome Fantasia'
-    )
-    membros: int = Field(
-        default=1, description='Quantidade de filiais do usuário'
-    )
+    trade_name: Optional[str] = Field(default=None, description='Nome Fantasia')
+    membros: int = Field(default=1, description='Quantidade de filiais do usuário')
 
     # Inscrições fiscais
     cpf: Optional[str] = Field(default=None, index=True, unique=True)
@@ -50,9 +44,7 @@ class Usuario(SQLModel, table=True):
     municipal_registration: Optional[str] = Field(
         default=None, description='Inscrição Municipal'
     )
-    cnae_principal: Optional[str] = Field(
-        default=None, description='CNAE principal'
-    )
+    cnae_principal: Optional[str] = Field(default=None, description='CNAE principal')
     crt: Optional[int] = Field(
         default=None, description='Código de regime tributário (1,2,3)'
     )
@@ -81,6 +73,7 @@ class Usuario(SQLModel, table=True):
     produtos_arquivados: List['ProdutoArquivado'] = Relationship(
         back_populates='usuario'
     )
+    vendas: List['Sales'] = Relationship(back_populates='usuario')
 
 
 # ========================
@@ -98,9 +91,7 @@ class Membro(SQLModel, table=True):
 
     # Relacionamento com usuário
     usuario_id: int = Field(foreign_key='usuario.id')
-    usuario: Optional['Usuario'] = Relationship(
-        back_populates='membros_filiais'
-    )
+    usuario: Optional['Usuario'] = Relationship(back_populates='membros_filiais')
 
     # Auditoria
     criado_em: datetime = Field(
@@ -210,9 +201,26 @@ class ProdutoArquivado(SQLModel, table=True):
 
     # Relacionamentos
     usuario_id: int = Field(foreign_key='usuario.id')
-    usuario: Optional['Usuario'] = Relationship(
-        back_populates='produtos_arquivados'
-    )
+    usuario: Optional['Usuario'] = Relationship(back_populates='produtos_arquivados')
 
     # FK opcional para histórico do produto original
     produto_id: Optional[int] = Field(default=None, foreign_key='produto.id')
+
+
+# Tabela que registra no banco os produtos vendidos e lucro total
+class Sales(SQLModel, table=True):
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    product_name: str = Field(index=True, max_length=150)
+    quantity: int = Field(default=1)
+    total_price: float = Field()
+    lucro_total: float = Field(default=0.0)
+    cost_price: float
+
+    criado_em: datetime = Field(
+        default_factory=lambda: datetime.now(ZoneInfo('America/Sao_Paulo'))
+    )
+
+    # Relacionamento com o usuário
+    usuario_id: int = Field(foreign_key='usuario.id')
+    usuario: Optional['Usuario'] = Relationship(back_populates='vendas')

@@ -1,18 +1,18 @@
-from fastapi import APIRouter, HTTPException, status, Query
-from sqlmodel import select, Session
-from ..conf.database import engine
-from ..model.user.users import Usuario, CNPJCache
-from ..services.consulting_cnpj import consulting_CNPJ
 import json
-from typing import Optional
 from datetime import datetime
+from typing import Optional
+
+from fastapi import APIRouter, HTTPException, Query, status
+from sqlmodel import Session, select
+
+from ..conf.database import engine
+from ..model.user.users import CNPJCache, Usuario
+from ..services.consulting_cnpj import consulting_CNPJ
 
 
 class ConsultaRoute:
     def __init__(self):
-        self.router = APIRouter(
-            prefix='/consulta', tags=['Consulta CNPJ / Usuário']
-        )
+        self.router = APIRouter(prefix='/consulta', tags=['Consulta CNPJ / Usuário'])
         self.startup_route()
 
     def startup_route(self):
@@ -73,9 +73,7 @@ class ConsultaRoute:
                         data = await consulting_CNPJ(cnpj)
                         # Salva ou atualiza cache
                         if cache:
-                            cache.data_json = json.dumps(
-                                data, ensure_ascii=False
-                            )
+                            cache.data_json = json.dumps(data, ensure_ascii=False)
                             cache.updated_at = datetime.now()
                         else:
                             # Aqui, se não tem usuário, não tem usuario_id para vincular.

@@ -1,15 +1,16 @@
-from typing import Union, Any
 from datetime import datetime
+from typing import Any, Union
+
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from jose import jwt, JWTError
+from jose import JWTError, jwt
 from pydantic import ValidationError
 from sqlmodel import Session, select
 
 from ..auth.auth_jwt import ALGORITHM, JWT_SECRET_KEY
 from ..conf.database import engine
-from ..schemas.schema_user import TokenPayload, SystemUser
 from ..model.user.users import Usuario
+from ..schemas.schema_user import SystemUser, TokenPayload
 
 reuseable_oauth = OAuth2PasswordBearer(
     tokenUrl='/auth/login', scheme_name='JWT'  # URL do endpoint de login
@@ -57,9 +58,7 @@ async def get_current_user(
 
         user_id = int(sub)
 
-        user_db = session.exec(
-            select(Usuario).where(Usuario.id == user_id)
-        ).first()
+        user_db = session.exec(select(Usuario).where(Usuario.id == user_id)).first()
 
     if user_db is None:
         raise HTTPException(

@@ -1,23 +1,16 @@
 import sys
-from pathlib import Path
-from zoneinfo import ZoneInfo
-from sqlmodel import Session, select
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
-# 🔹 Adicionar raiz do projeto ao sys.path para desenvolvimento
-ROOT_DIR = Path(__file__).resolve().parents[2]
-sys.path.append(str(ROOT_DIR))
-
-from conf.database import engine
-from model.user.users import Produto, Usuario
+from src.conf.database import engine
+from src.model.user.users import Produto, Usuario
+from sqlmodel import Session, select
 
 
 def get_user(user_id: int) -> Usuario | None:
     """Retorna o objeto Usuario ou None."""
     with Session(engine) as session:
-        return session.exec(
-            select(Usuario).where(Usuario.id == user_id)
-        ).first()
+        return session.exec(select(Usuario).where(Usuario.id == user_id)).first()
 
 
 def get_user_products(user: Usuario) -> list[dict]:
@@ -38,7 +31,9 @@ def get_user_products(user: Usuario) -> list[dict]:
                 Produto.stoke_max,
                 Produto.date_expired,
                 Produto.price_uni,
-            ).where(Produto.usuario_id == user.id) # type: ignore
+            ).where( # type: ignore
+                Produto.usuario_id == user.id
+            )  # type: ignore
         ).all()
 
     return [
@@ -69,13 +64,13 @@ def check_replacement(produtos: list[dict]) -> list[dict]:
                 'product_name': product['name'].capitalize(),
                 'current_stock': stock_atual,
                 'status': 'Reposição necessária',
-                'alert': f"⚠️ Produto '{product['name']}' abaixo do mínimo!"
+                'alert': f"⚠️ Produto '{product['name']}' abaixo do mínimo!",
             }
         else:
             status = {
                 'product_name': product['name'].capitalize(),
                 'current_stock': stock_atual,
-                'status': 'Estoque OK'
+                'status': 'Estoque OK',
             }
 
         status_estoque.append(status)
@@ -107,35 +102,39 @@ def expired_products(produtos: list[dict]) -> dict:
 
             if dias_restantes < 0:
                 # Produto já venceu
-                produtos_vencidos.append({
-                    'name': product['name'],
-                    'expired_date': data_validade.strftime('%Y-%m-%d'),
-                    'stock': product['stock_atual'],
-                    'price': product['price_uni'],
-                    'valor_lote': valor_lote,
-                    'dias_restantes': dias_restantes,
-                    'alert': f"❌ Produto '{product['name']}' já venceu há {abs(dias_restantes)} dias!"
-                })
+                produtos_vencidos.append(
+                    {
+                        'name': product['name'],
+                        'expired_date': data_validade.strftime('%Y-%m-%d'),
+                        'stock': product['stock_atual'],
+                        'price': product['price_uni'],
+                        'valor_lote': valor_lote,
+                        'dias_restantes': dias_restantes,
+                        'alert': f"❌ Produto '{product['name']}' já venceu há {abs(dias_restantes)} dias!",
+                    }
+                )
                 valor_total_vencido += valor_lote
 
             elif dias_restantes <= 10:
                 # Produto vencendo em até 10 dias
-                produtos_vencendo.append({
-                    'name': product['name'],
-                    'expired_date': data_validade.strftime('%Y-%m-%d'),
-                    'stock': product['stock_atual'],
-                    'price': product['price_uni'],
-                    'valor_lote': valor_lote,
-                    'dias_restantes': dias_restantes,
-                    'alert': f"⚠️ Produto '{product['name']}' vence em {dias_restantes} dias!"
-                })
+                produtos_vencendo.append(
+                    {
+                        'name': product['name'],
+                        'expired_date': data_validade.strftime('%Y-%m-%d'),
+                        'stock': product['stock_atual'],
+                        'price': product['price_uni'],
+                        'valor_lote': valor_lote,
+                        'dias_restantes': dias_restantes,
+                        'alert': f"⚠️ Produto '{product['name']}' vence em {dias_restantes} dias!",
+                    }
+                )
                 valor_total_potencial += valor_lote
 
         return {
             'produtos_vencendo': produtos_vencendo,
             'produtos_vencidos': produtos_vencidos,
             'valor_total_vencido': valor_total_vencido,
-            'valor_total_potencial': valor_total_potencial
+            'valor_total_potencial': valor_total_potencial,
         }
 
     except Exception as erro:
@@ -147,14 +146,9 @@ def gerar_relatorio_completo(user_id: int) -> dict:
     Gera um relatório completo unindo reposição e validade.
     """
     user = get_user(user_id)
-    produtos_usuario = get_user_products(user) # type: ignore
+    produtos_usuario = get_user_products(user)  # type: ignore
 
     return {
         'estoque': check_replacement(produtos_usuario),
-        'validade': expired_products(produtos_usuario)
+        'validade': expired_products(produtos_usuario),
     }
-
-
-if __name__ == '__main__':
-    relatorio = gerar_relatorio_completo(1)
-    print(relatorio)
