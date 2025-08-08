@@ -8,7 +8,6 @@ on:
 
 jobs:
   test:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -19,10 +18,15 @@ jobs:
       with:
         python-version: '3.12'
 
+    - name: Install Poetry
+      run: |
+        curl -sSL https://install.python-poetry.org | python3 -
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
+
     - name: Install dependencies
       working-directory: back-end
       run: poetry install
 
     - name: Run tests
-      run: |
-        python -m unittest discover -s back-end/src/tests -p "test_*.py"
+      working-directory: back-end
+      run: python -m unittest discover -s src/tests -p "test_*.py"
