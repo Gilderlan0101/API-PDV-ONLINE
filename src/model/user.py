@@ -5,9 +5,7 @@ from pydantic import EmailStr, constr
 from sqlmodel import Field, Relationship, SQLModel
 
 # Relações
-from src.model.product import Produto, ProdutoArquivado
-from src.model.sale import Sales
-from src.model.employee import Employees
+
 
 
 UsernameType = Annotated[str, constr(min_length=3, max_length=50)]
@@ -21,6 +19,7 @@ CpfCnpjType = Annotated[str, constr(min_length=11, max_length=14)]  # 11=CPF, 14
 # ========================
 class Usuario(SQLModel, table=True):
     """Representa um usuário do sistema PDV vinculado a uma empresa."""
+    __tablename__ = 'usuarios' # type: ignore
 
     id: Optional[int] = Field(default=None, primary_key=True)
 
@@ -71,12 +70,13 @@ class Usuario(SQLModel, table=True):
     # Relacionamentos principais
     membros_filiais: List['Membro'] = Relationship(back_populates='usuario')
     cnpj_cache: List['CNPJCache'] = Relationship(back_populates='usuario')
-    produtos: List['Produto'] = Relationship(back_populates='usuario')
-    produtos_arquivados: List['ProdutoArquivado'] = Relationship(
+    produtos: List['Produto'] = Relationship(back_populates='usuario') # type: ignore
+    produtos_arquivados: List['ProdutoArquivado'] = Relationship( # type: ignore
         back_populates='usuario'
-    )
-    vendas: List['Sales'] = Relationship(back_populates='usuario')
-    funcionarios: List["Employees"] = Relationship(back_populates="usuario")
+    ) # type: ignore
+    vendas: List['Sales'] = Relationship(back_populates='usuario') # type: ignore
+    funcionarios: List["Employees"] = Relationship(back_populates="usuario") # type: ignore
+
 
 
 # ========================
@@ -93,7 +93,7 @@ class Membro(SQLModel, table=True):
     gerente: str = Field(description='Nome do gerente responsável')
 
     # Relacionamento com usuário
-    usuario_id: int = Field(foreign_key='usuario.id')
+    usuario_id: int = Field(foreign_key='usuarios.id')
     usuario: Optional['Usuario'] = Relationship(back_populates='membros_filiais')
 
     # Auditoria
@@ -118,7 +118,7 @@ class CNPJCache(SQLModel, table=True):
         default_factory=lambda: datetime.now(ZoneInfo('America/Sao_Paulo'))
     )
 
-    usuario_id: Optional[int] = Field(foreign_key='usuario.id')
+    usuario_id: Optional[int] = Field(foreign_key='usuarios.id')
     usuario: Optional['Usuario'] = Relationship(back_populates='cnpj_cache')
 
     def is_valid(self, ttl_minutes: int = 8) -> bool:

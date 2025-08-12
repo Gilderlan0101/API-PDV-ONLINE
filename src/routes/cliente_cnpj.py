@@ -6,7 +6,7 @@ from fastapi import APIRouter, HTTPException, Query, status
 from sqlmodel import Session, select
 
 from ..conf.database import engine
-from ..model.user.users import CNPJCache, Usuario
+from ..model.user import CNPJCache, Usuario
 from ..services.consulting_cnpj import consulting_CNPJ
 
 

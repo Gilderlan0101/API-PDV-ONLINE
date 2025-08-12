@@ -3,6 +3,11 @@ import os
 
 from dotenv import load_dotenv
 from sqlmodel import SQLModel, create_engine
+from src.model.user import Usuario
+from src.model.employee import Employees
+from src.model.product import Produto
+from src.model.sale import Sales
+
 
 # Carrega variáveis de ambiente
 load_dotenv()

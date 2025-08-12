@@ -10,9 +10,10 @@ from src.routes.cliente_cnpj import ConsultaRoute
 
 # Rotas
 from src.routes.login import Login
-from src.routes.products import Product
+from src.routes.products import products_router
 from src.routes.registre import RegisterRoute
 from src.routes.updates import AllDatas
+from src.routes.account.account import RegisteEmpreg
 
 # Dados de teste mocados
 from src.utils.dados_teste import create_mock_data
@@ -55,15 +56,20 @@ class Server:
         # Rota de cadastro
         register_route = RegisterRoute()
         self.api.include_router(register_route.registerRT)
+        
+        # Rota para cadastra fucionarios
+        funcs_router = RegisteEmpreg()
+        self.api.include_router(funcs_router.router)
 
         # Rota de consulta
         consultaroute = ConsultaRoute()
         self.api.include_router(consultaroute.router)
 
         # Rota de cadastro de produtos
-        route_product = Product()
-        self.api.include_router(route_product.router)
+        self.api.include_router(products_router)
         
+
+
         # Rota de visualização dos dados em tempo real.
         route_update_dash = AllDatas()
         self.api.include_router(route_update_dash.allDatas)

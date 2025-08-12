@@ -3,10 +3,7 @@ from typing import Optional
 from zoneinfo import ZoneInfo
 from sqlmodel import Field, Relationship, SQLModel
 
-# Relações
-from src.model.user import Usuario
-from src.model.employee import Employees
-from src.model.product import Produto
+
 
 
 # Tabela que registra no banco os produtos vendidos e lucro total
@@ -24,13 +21,18 @@ class Sales(SQLModel, table=True):
     )
 
     # 🔹 Relacionamento com o usuário (empresa)
-    usuario_id: int = Field(foreign_key="usuario.id")
+    usuario_id: int = Field(foreign_key="usuarios.id")
     usuario: Optional["Usuario"] = Relationship(back_populates="vendas")
 
     # 🔹 Relacionamento com o funcionário que fez a venda
-    funcionario_id: Optional[int] = Field(foreign_key="employees.id")
+    funcionario_id: Optional[int] = Field(
+    default=None,
+    foreign_key="employees.id"  # tem que bater com o nome da tabela no Employees
+    )
+    
     funcionario: Optional["Employees"] = Relationship(back_populates="vendas")
 
     # 🔹 Relacionamento com o produto vendido
-    produto_id: Optional[int] = Field(foreign_key="produto.id")
+    produto_id: Optional[int] = Field(foreign_key="produto.id") 
+
     produto: Optional["Produto"] = Relationship()

@@ -1,4 +1,4 @@
-from src.services.consulting_docs import  checking_documents_CNPJ
+from src.services.consulting_docs import checking_documents_CNPJ
 import requests
 
 
@@ -6,22 +6,23 @@ async def consulting_CNPJ(cnpj: str) -> dict:
     try:
         if not cnpj or len(cnpj) < 14:
             return {'status': 'Erro: CNPJ inválido ou ausente'}
-        
+
         # Validando o número do CNPJ antes da consulta para evitar pesquisas desnecessárias no banco de dados e API
         doc = checking_documents_CNPJ(cnpj)
-        
+
         if doc:
-            
 
             url = f'https://receitaws.com.br/v1/cnpj/{cnpj}'
             response = requests.get(url, timeout=10)
-    
+
             if response.status_code == 200:
                 data = response.json()
-    
+
                 if data.get('status') == 'ERROR':
-                    return {'status': f"Erro da API: {data.get('message', 'Sem detalhes')}"}
-    
+                    return {
+                        'status': f"Erro da API: {data.get('message', 'Sem detalhes')}"
+                    }
+
                 return {
                     'company_name': data.get('nome') or None,
                     'fantasy': data.get('fantasia') or None,
@@ -48,7 +49,7 @@ async def consulting_CNPJ(cnpj: str) -> dict:
                         'data_opcao': data.get('data_opcao_pelo_simples') or None,
                     },
                 }
-    
+
             else:
                 return {
                     'status': f'Erro {response.status_code}: Falha ao consultar a API CNPJ'

@@ -9,7 +9,7 @@ from ..auth.auth_jwt import (
     verify_password,
 )
 from ..conf.database import engine
-from ..model.user.users import Usuario
+from ..model.user import Usuario
 from ..schemas.schema_user import TokenSchema
 
 

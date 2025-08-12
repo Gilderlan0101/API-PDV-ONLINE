@@ -5,7 +5,7 @@ from sqlmodel import Field, Relationship, SQLModel
 
 
 # Relações
-from src.model.user import Usuario
+
 
 
 # ========================
@@ -43,8 +43,8 @@ class Produto(SQLModel, table=True):
         default_factory=lambda: datetime.now(ZoneInfo('America/Sao_Paulo'))
     )
 
-    usuario_id: int = Field(foreign_key='usuario.id')
-    usuario: Optional['Usuario'] = Relationship(back_populates='produtos')
+    usuario_id: int = Field(foreign_key='usuarios.id')
+    usuario: Optional['Usuario'] = Relationship(back_populates='produtos') # type: ignore
 
 
 # ========================
@@ -83,8 +83,8 @@ class ProdutoArquivado(SQLModel, table=True):
     )
 
     # Relacionamentos
-    usuario_id: int = Field(foreign_key='usuario.id')
-    usuario: Optional['Usuario'] = Relationship(back_populates='produtos_arquivados')
+    usuario_id: int = Field(foreign_key='usuarios.id')
+    usuario: Optional['Usuario'] = Relationship(back_populates='produtos_arquivados') # type: ignore
 
     # FK opcional para histórico do produto original
     produto_id: Optional[int] = Field(default=None, foreign_key='produto.id')

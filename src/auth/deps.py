@@ -9,7 +9,7 @@ from sqlmodel import Session, select
 
 from ..auth.auth_jwt import ALGORITHM, JWT_SECRET_KEY
 from ..conf.database import engine
-from ..model.user.users import Usuario
+from ..model.user import Usuario
 from ..schemas.schema_user import SystemUser, TokenPayload
 
 reuseable_oauth = OAuth2PasswordBearer(

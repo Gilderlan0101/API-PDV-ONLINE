@@ -3,7 +3,8 @@ from pydantic import BaseModel
 
 # Modelos para o retorno, ajustados conforme seu gerador de relatórios
 
-class ProdutoOut(BaseModel): 
+
+class ProdutoOut(BaseModel):
     product_code: str
     id: int
     name: str
@@ -17,11 +18,13 @@ class ProdutoOut(BaseModel):
     class Config:
         orm_mode = True  # Para converter direto do ORM
 
+
 class EstoqueStatus(BaseModel):
     product_name: str
     current_stock: int
     status: str
     alert: Optional[str] = None
+
 
 class ProdutoVencido(BaseModel):
     name: str
@@ -32,17 +35,19 @@ class ProdutoVencido(BaseModel):
     dias_restantes: int
     alert: str
 
+
 class ValidadeInfo(BaseModel):
     produtos_vencendo: List[ProdutoVencido]
     produtos_vencidos: List[ProdutoVencido]
     valor_total_vencido: float
     valor_total_potencial: float
 
+
 class RelatorioOut(BaseModel):
     estoque: List[EstoqueStatus]
     validade: ValidadeInfo
 
+
 class ResponseOut(BaseModel):
     products: List[ProdutoOut]
     aviso: RelatorioOut
-

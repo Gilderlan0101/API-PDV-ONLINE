@@ -3,7 +3,8 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 from src.conf.database import engine
-from src.model.user.users import Produto, Usuario
+from src.model.product import Produto
+from src.model.user import  Usuario
 from sqlmodel import Session, select
 
 
@@ -31,7 +32,7 @@ def get_user_products(user: Usuario) -> list[dict]:
                 Produto.stoke_max,
                 Produto.date_expired,
                 Produto.price_uni,
-            ).where( # type: ignore
+            ).where(  # type: ignore
                 Produto.usuario_id == user.id
             )  # type: ignore
         ).all()

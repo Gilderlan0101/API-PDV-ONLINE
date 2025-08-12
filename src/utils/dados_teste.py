@@ -1,11 +1,11 @@
-from datetime import datetime
-from zoneinfo import ZoneInfo
 
 from passlib.hash import bcrypt
 from sqlmodel import Session, select
 
+from src.model.product import Produto
+
 from ..conf.database import engine
-from ..model.user.users import Membro, Produto, Usuario
+from ..model.user import Membro, Usuario
 
 
 def create_mock_data():
@@ -14,7 +14,9 @@ def create_mock_data():
         # ========================
         # Criar usuário admin
         # ========================
-        admin = session.exec(select(Usuario).where(Usuario.email == "admin@test.com")).first()
+        admin = session.exec(
+            select(Usuario).where(Usuario.email == "admin@test.com")
+        ).first()
         if not admin:
             print('🔹 Criando usuário admin...')
 

@@ -5,7 +5,7 @@ from sqlmodel import Session, select
 
 from ..auth.auth_jwt import get_hashed_password
 from ..conf.database import engine
-from ..model.user.users import CNPJCache, Usuario
+from ..model.user import CNPJCache, Usuario
 from ..schemas.schema_user import CompanyRegisterSchema
 from ..services.consulting_cnpj import consulting_CNPJ
 

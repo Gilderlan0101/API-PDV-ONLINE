@@ -16,7 +16,9 @@ class TestAuth(unittest.TestCase):
 
     def test_create_hash(self):
         self.assertIsNotNone(self.hashed)
-        self.assertNotEqual(self.password, self.hashed)  # Hash não pode ser igual à senha original
+        self.assertNotEqual(
+            self.password, self.hashed
+        )  # Hash não pode ser igual à senha original
 
     def test_verify_hash(self):
         self.assertTrue(verify_password(self.password, self.hashed))
@@ -29,7 +31,9 @@ if __name__ == '__main__':
     print('Realizando teste de hash em senhas...\n')
 
     # Executa os testes
-    result = unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(TestAuth))
+    result = unittest.TextTestRunner(verbosity=2).run(
+        unittest.defaultTestLoader.loadTestsFromTestCase(TestAuth)
+    )
 
     # Se todos passaram
     if result.wasSuccessful():
