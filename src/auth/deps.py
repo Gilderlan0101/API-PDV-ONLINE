@@ -10,6 +10,7 @@ from sqlmodel import Session, select
 from ..auth.auth_jwt import ALGORITHM, JWT_SECRET_KEY
 from ..conf.database import engine
 from ..model.user import Usuario
+from ..model.employee import Employees
 from ..schemas.schema_user import SystemUser, TokenPayload
 
 reuseable_oauth = OAuth2PasswordBearer(
@@ -17,18 +18,11 @@ reuseable_oauth = OAuth2PasswordBearer(
 )
 
 
-async def get_current_user(
-    token: str = Depends(reuseable_oauth),
-) -> SystemUser:
-    """
-    Valida o token JWT, verifica o usuário no banco e retorna o usuário do sistema.
-    """
+async def get_current_user(token: str = Depends(reuseable_oauth)) -> SystemUser:
     try:
-        # Decodifica o token
-        payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[ALGORITHM]) # type: ignore
         token_data = TokenPayload(**payload)
 
-        # Verifica se o token expirou
         if (
             token_data.exp is None
             or datetime.fromtimestamp(token_data.exp) < datetime.now()
@@ -46,24 +40,34 @@ async def get_current_user(
             headers={'WWW-Authenticate': 'Bearer'},
         )
 
-    # Busca usuário no banco de dados
     with Session(engine) as session:
         sub = token_data.sub
 
         if not sub:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail='Token inválido: identificador de usuário ausente.',
+                detail='Token inválido: identificador ausente.',
             )
 
         user_id = int(sub)
 
+        # 🔹 1️⃣ Tenta buscar como Usuario
         user_db = session.exec(select(Usuario).where(Usuario.id == user_id)).first()
+        if user_db:
+            return SystemUser.model_validate(user_db)
 
-    if user_db is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='Usuário não encontrado no sistema.',
-        )
+        # 🔹 2️⃣ Se não for Usuario, tenta buscar como Funcionário
+        employee_db = session.exec(select(Employees).where(Employees.id == user_id)).first()
+        if employee_db:
+            if not employee_db.ativo:
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail='Funcionário inativo.',
+                )
+            # Você pode criar outro schema para funcionário ou adaptar SystemUser
+            return SystemUser.model_validate(employee_db)
 
-    return SystemUser.model_validate(user_db)
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail='Usuário ou funcionário não encontrado.',
+    )

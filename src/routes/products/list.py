@@ -15,7 +15,7 @@ from src.controllers.stoke.stoke_control import gerar_relatorio_completo
 
 router = APIRouter()
 
-@router.get('', response_model=ResponseOut)
+@router.get('/produtos', response_model=ResponseOut)
 async def list_products(current_user: Usuario = Depends(get_current_user)):
     try:
         if not current_user.id:

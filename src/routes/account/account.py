@@ -56,7 +56,7 @@ class RegisteEmpreg:
                 senha=hashed_password,
                 telefone=func_data.telefone,
                 ativo=True,
-                usuario_id=current_user.id  # liga ao usuário logado
+                usuario_id=current_user.id  # type: ignore # liga ao usuário logado
         )
 
             # Adiciona e salva no banco

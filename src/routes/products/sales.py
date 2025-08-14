@@ -1,3 +1,5 @@
+import random
+import string
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -5,10 +7,11 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from src.auth.deps import get_current_user
 from src.model.user import Usuario
 from src.controllers.sales.sales import Checkout
+from src.controllers.stoke.stoke_control import gerar_relatorio_completo
 
 router = APIRouter()
 
-@router.post('', status_code=status.HTTP_200_OK)
+@router.post('/vendas', status_code=status.HTTP_200_OK)
 async def register_sale(
     code: str = Query(..., description='Código do produto'),
     quantity: int = Query(..., gt=0, description='Quantidade vendida'),
@@ -18,6 +21,9 @@ async def register_sale(
 ):
     if not current_user or not current_user.id:
         raise HTTPException(status_code=401, detail='Usuário não autenticado')
+    
+    # Gerando um codigo de vendas aleatorio
+    sale_code = lambda size=6: ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(size))
 
     checkout = Checkout(
         user_id=current_user.id,
@@ -27,7 +33,8 @@ async def register_sale(
         total_price=0.0,
         lucro_total=0.0,
         payment_method=payment_method,
-        funcionario_id=funcionario_id
+        funcionario_id=funcionario_id,
+        sale_code=sale_code()
     )
 
     nota_fiscal = checkout.process_sale(
@@ -37,5 +44,11 @@ async def register_sale(
         payment_method=payment_method,
         funcionario_id=funcionario_id,
     )
+    
+    # Gerar relatório de estoque e validade
+    relatorio = gerar_relatorio_completo(current_user.id)
 
-    return nota_fiscal
+    return {
+        "nota_fiscal": nota_fiscal,
+        "relatorio": relatorio
+    }

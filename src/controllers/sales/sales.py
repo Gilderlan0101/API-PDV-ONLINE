@@ -1,9 +1,12 @@
 from datetime import datetime
+from optparse import Option
+import random
 from typing import Optional
 from fastapi import HTTPException
 from fastapi.responses import RedirectResponse
 from sqlmodel import Session, select
 from dataclasses import dataclass
+
 
 from src.conf.database import engine
 from src.model.sale import Sales
@@ -24,11 +27,14 @@ class Checkout:
         payment_method: Optional[str] = None,
         funcionario_id: Optional[int] = None,
         funcionario_nome: Optional[str] = None,
+        sale_code: Optional[str] =  None
+        
     ) -> None:
         self.user_id = user_id
         self.product_name = product_name
         self.produto_id = produto_id
         self.quantity = quantity
+        
         self.total_price = total_price
         self.lucro_total = lucro_total
         self.payment_method = payment_method
@@ -36,6 +42,7 @@ class Checkout:
         self.funcionario_nome = funcionario_nome
         self.venda = None
         self.usuario = None
+        self.sale_code = sale_code
 
         if self.payment_method and self.payment_method not in ['pix', 'cartão', 'dinheiro', 'nota']:
             raise ValueError("Forma de pagamento inválida")
@@ -101,6 +108,8 @@ class Checkout:
             product.stock -= quantity
             product.atualizado_em = datetime.now()
             session.add(product)
+            
+            
 
             # Registra a venda
             self.venda = Sales(
@@ -111,7 +120,8 @@ class Checkout:
                 lucro_total=self.lucro_total,
                 cost_price=product.cost_price,
                 usuario_id=current_user.id,
-                funcionario_id=funcionario_id
+                funcionario_id=funcionario_id,
+                codigo_da_venda=self.sale_code
             )
             session.add(self.venda)
             session.commit()
@@ -122,6 +132,10 @@ class Checkout:
             self.funcionario_nome = funcionario_nome
 
             return self.build_receipt()
+    
+
+            
+        
 
     def build_receipt(self) -> dict:
         if not self.venda or not self.usuario:
@@ -136,7 +150,8 @@ class Checkout:
                     'Endereço': f'{self.usuario.street}, {self.usuario.number} - {self.usuario.city}/{self.usuario.state}',
                     'Inscrição Estadual': self.usuario.state_registration,
                     'Inscrição Municipal': self.usuario.municipal_registration,
-                    "Operado por": self.funcionario_nome or self.usuario.username
+                    "Operado por": self.funcionario_nome or self.usuario.username,
+                    'codigo_da_venda': self.sale_code
                 },
                 'Venda': {
                     'Produto': self.product_name,
@@ -146,7 +161,8 @@ class Checkout:
                     'Lucro Total': f'R$ {self.lucro_total:.2f}',
                     'Data': datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
                     'Forma de Pagamento': self.payment_method or 'Não especificada',
-                    "Operado por": self.funcionario_nome or self.usuario.username
+                    "Operado por": self.funcionario_nome or self.usuario.username,
+                    'codigo_da_venda': self.sale_code
                 },
                 'Cliente': {'Código Interno do Usuário': self.user_id},
                 'Observações': 'Venda registrada com sucesso no sistema PDV.',
@@ -166,6 +182,7 @@ class Note(Checkout):
         payment_method: Optional[str] = None,
         funcionario_nome: Optional[str] = None,
         funcionario_id: Optional[int] = None,
+        sale_code: Optional[str] = None
     ) -> None:
         super().__init__(
             user_id=user_id,
@@ -177,6 +194,8 @@ class Note(Checkout):
             payment_method=payment_method,
             funcionario_nome=funcionario_nome,
             funcionario_id=funcionario_id,
+            sale_code=sale_code
+            
         )
 
     def verify_datas(self):
