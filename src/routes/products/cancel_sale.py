@@ -11,6 +11,7 @@ from src.model.product import Produto
 
 router = APIRouter()
 
+
 @router.post('/cancel', status_code=status.HTTP_200_OK)
 async def cancel_sale(
     code: str = Body(..., description="Código da venda a ser cancelada"),
@@ -23,7 +24,10 @@ async def cancel_sale(
         try:
             # Busca a venda pelo código
             sale = session.exec(
-                select(Sales).where(Sales.codigo_da_venda == code, Sales.funcionario_id == current_user.id)
+                select(Sales).where(
+                    Sales.codigo_da_venda == code,
+                    Sales.funcionario_id == current_user.id,
+                )
             ).first()
 
             if not sale:
@@ -46,7 +50,7 @@ async def cancel_sale(
             return {
                 "message": "Sale canceled successfully",
                 "restored_stock": product.stock,
-                "product_id": product.id
+                "product_id": product.id,
             }
 
         except Exception as e:

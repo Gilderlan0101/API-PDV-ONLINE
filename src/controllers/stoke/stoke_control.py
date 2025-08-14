@@ -4,7 +4,7 @@ from zoneinfo import ZoneInfo
 
 from src.conf.database import engine
 from src.model.product import Produto
-from src.model.user import  Usuario
+from src.model.user import Usuario
 from sqlmodel import Session, select
 
 

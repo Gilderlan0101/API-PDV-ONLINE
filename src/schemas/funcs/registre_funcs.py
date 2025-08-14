@@ -1,5 +1,5 @@
-
 from pydantic import BaseModel
+
 
 class FuncionarioCreate(BaseModel):
     nome: str
@@ -8,4 +8,3 @@ class FuncionarioCreate(BaseModel):
     senha: str
     telefone: str
     ativo: bool
-    

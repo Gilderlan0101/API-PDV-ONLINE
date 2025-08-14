@@ -7,7 +7,6 @@ from sqlmodel import Field, Relationship, SQLModel
 # Relações
 
 
-
 UsernameType = Annotated[str, constr(min_length=3, max_length=50)]
 CompanyNameType = Annotated[str, constr(min_length=3, max_length=100)]
 PasswordType = Annotated[str, constr(min_length=8)]
@@ -19,7 +18,8 @@ CpfCnpjType = Annotated[str, constr(min_length=11, max_length=14)]  # 11=CPF, 14
 # ========================
 class Usuario(SQLModel, table=True):
     """Representa um usuário do sistema PDV vinculado a uma empresa."""
-    __tablename__ = 'usuarios' # type: ignore
+
+    __tablename__ = 'usuarios'  # type: ignore
 
     id: Optional[int] = Field(default=None, primary_key=True)
 
@@ -70,13 +70,12 @@ class Usuario(SQLModel, table=True):
     # Relacionamentos principais
     membros_filiais: List['Membro'] = Relationship(back_populates='usuario')
     cnpj_cache: List['CNPJCache'] = Relationship(back_populates='usuario')
-    produtos: List['Produto'] = Relationship(back_populates='usuario') # type: ignore
-    produtos_arquivados: List['ProdutoArquivado'] = Relationship( # type: ignore
+    produtos: List['Produto'] = Relationship(back_populates='usuario')  # type: ignore
+    produtos_arquivados: List['ProdutoArquivado'] = Relationship(  # type: ignore
         back_populates='usuario'
-    ) # type: ignore
-    vendas: List['Sales'] = Relationship(back_populates='usuario') # type: ignore
-    funcionarios: List["Employees"] = Relationship(back_populates="usuario") # type: ignore
-
+    )  # type: ignore
+    vendas: List['Sales'] = Relationship(back_populates='usuario')  # type: ignore
+    funcionarios: List["Employees"] = Relationship(back_populates="usuario")  # type: ignore
 
 
 # ========================

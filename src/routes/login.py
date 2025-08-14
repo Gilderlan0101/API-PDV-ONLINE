@@ -61,11 +61,11 @@ class Login:
                         'token_type': 'bearer',
                     }
 
-               # 2️ Tentar login como funcionário
+            # 2️ Tentar login como funcionário
             employee = session.exec(
                 select(Employees).where(Employees.email == user.username)
             ).first()
-            
+
             if employee:
                 # Verifica senha (já usando hash se estiver armazenada assim)
                 if not verify_password(user.password, employee.senha):
@@ -73,22 +73,23 @@ class Login:
                         status_code=401,
                         detail='Credenciais inválidas (senha)',
                     )
-            
+
                 if not employee.ativo:
                     raise HTTPException(
                         status_code=403,
                         detail='Funcionário inativo. Entre em contato com a empresa.',
                     )
-            
+
                 return {
                     'id': employee.id,
                     'username': employee.nome,
                     'email': employee.email,
-                    'empresa': employee.usuario.company_name if employee.usuario else None,
+                    'empresa': (
+                        employee.usuario.company_name if employee.usuario else None
+                    ),
                     'tipo': 'funcionario',
                     'message': 'Login realizado com sucesso',
                     'access_token': create_access_token(str(employee.id)),
                     'refresh_token': create_refresh_token(str(employee.id)),
                     'token_type': 'bearer',
                 }
-            

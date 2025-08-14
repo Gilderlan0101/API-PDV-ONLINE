@@ -11,6 +11,7 @@ from src.schemas.schema_product import ProductRegisterSchema
 
 router = APIRouter()
 
+
 @router.post('/criar', status_code=status.HTTP_201_CREATED)
 async def create_product(
     prod: ProductRegisterSchema,
@@ -49,7 +50,9 @@ async def create_product(
                 sector=prod.sector,
                 unit=prod.unit,
                 controllstoke=prod.controllstoke,
-                sales_config=prod.sales_config.model_dump_json() if prod.sales_config else None,
+                sales_config=(
+                    prod.sales_config.model_dump_json() if prod.sales_config else None
+                ),
             )
 
             session.add(register_prod)

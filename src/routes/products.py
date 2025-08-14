@@ -263,7 +263,7 @@
 #                     content={"error": str(e)},
 #                 )
 
-        
+
 #         @self.router.post('/sales', status_code=status.HTTP_200_OK)
 #         async def register_sale(
 #             code: str = Query(..., description='Código do produto'),

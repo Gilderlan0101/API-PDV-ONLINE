@@ -11,6 +11,7 @@ from src.routes.products.helpers import get_product_by_user, to_dict
 
 router = APIRouter()
 
+
 @router.delete('/remove', status_code=status.HTTP_200_OK)
 async def delete_product(
     code: str = Query(..., description='Código do produto'),

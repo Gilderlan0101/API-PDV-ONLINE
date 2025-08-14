@@ -3,8 +3,10 @@ from sqlmodel import Session, select
 from src.model.product import Produto
 from sqlmodel import SQLModel
 
+
 def to_dict(model: SQLModel) -> dict:
     return {k: v for k, v in model.__dict__.items() if not k.startswith('_')}
+
 
 def get_product_by_user(
     session: Session,

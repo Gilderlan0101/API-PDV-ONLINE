@@ -15,6 +15,7 @@ from src.controllers.stoke.stoke_control import gerar_relatorio_completo
 
 router = APIRouter()
 
+
 @router.get('/produtos', response_model=ResponseOut)
 async def list_products(current_user: Usuario = Depends(get_current_user)):
     try:
@@ -37,7 +38,9 @@ async def list_products(current_user: Usuario = Depends(get_current_user)):
                     "stock_atual": p.stock,
                     "stock_min": p.stoke_min,
                     "stock_max": p.stoke_max,
-                    "date_expired": p.date_expired.isoformat() if p.date_expired else None,
+                    "date_expired": (
+                        p.date_expired.isoformat() if p.date_expired else None
+                    ),
                     "price_uni": p.price_uni,
                 }
             )

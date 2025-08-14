@@ -14,6 +14,7 @@ from src.routes.products.helpers import get_product_by_user
 
 router = APIRouter()
 
+
 @router.put('/atualizar', status_code=status.HTTP_200_OK)
 async def update_product(
     code: Optional[str] = Query(None, description='Código do produto'),

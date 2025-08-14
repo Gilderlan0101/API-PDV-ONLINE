@@ -1,4 +1,3 @@
-
 from passlib.hash import bcrypt
 from sqlmodel import Session, select
 

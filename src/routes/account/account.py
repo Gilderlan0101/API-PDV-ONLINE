@@ -10,39 +10,39 @@ from src.schemas.funcs.registre_funcs import FuncionarioCreate
 
 class RegisteEmpreg:
     def __init__(self):
-        
+
         self.router = APIRouter(
             prefix='/auth',
             tags=['Autenticação'],
         )
-        
+
         self.startup_route()
-        
+
     def startup_route(self):
         """Esta rota cadastra um fucionarios"""
-        
+
         @self.router.post('/funcs')
         def funcs(
             current_user: Usuario = Depends(get_current_user),
-            func_data: FuncionarioCreate = Body(...)
+            func_data: FuncionarioCreate = Body(...),
         ):
-            
+
             if not current_user:
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
                     detail="Usuário não autenticado",
                     headers={"WWW-Authenticate": "Bearer"},
-                ) 
-            
+                )
+
             # Verifica se o email já existe
             with Session(engine) as session:
                 if session.exec(
                     select(Employees).where(Employees.email == func_data.email)
                 ).first():
-                    raise HTTPException(status_code=400,  detail='Email já cadastrado.')
-              
+                    raise HTTPException(status_code=400, detail='Email já cadastrado.')
+
             # Criptografa a senha
-             # Criptografa a senha (deve garantir que pwd tenha 4 caracteres)
+            # Criptografa a senha (deve garantir que pwd tenha 4 caracteres)
             if len(func_data.senha) != 4:
                 raise HTTPException(status_code=400, detail="Senha deve ter 4 dígitos.")
             hashed_password = get_hashed_password(func_data.senha)
@@ -56,8 +56,8 @@ class RegisteEmpreg:
                 senha=hashed_password,
                 telefone=func_data.telefone,
                 ativo=True,
-                usuario_id=current_user.id  # type: ignore # liga ao usuário logado
-        )
+                usuario_id=current_user.id,  # type: ignore # liga ao usuário logado
+            )
 
             # Adiciona e salva no banco
             session.add(new_func)
@@ -65,5 +65,7 @@ class RegisteEmpreg:
             session.refresh(new_func)
             print('Novo registro')
 
-            return {"msg": "Funcionário cadastrado com sucesso", "funcionario": new_func}
-                 
+            return {
+                "msg": "Funcionário cadastrado com sucesso",
+                "funcionario": new_func,
+            }

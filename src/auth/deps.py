@@ -20,7 +20,7 @@ reuseable_oauth = OAuth2PasswordBearer(
 
 async def get_current_user(token: str = Depends(reuseable_oauth)) -> SystemUser:
     try:
-        payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[ALGORITHM]) # type: ignore
+        payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[ALGORITHM])  # type: ignore
         token_data = TokenPayload(**payload)
 
         if (
@@ -57,7 +57,9 @@ async def get_current_user(token: str = Depends(reuseable_oauth)) -> SystemUser:
             return SystemUser.model_validate(user_db)
 
         # 🔹 2️⃣ Se não for Usuario, tenta buscar como Funcionário
-        employee_db = session.exec(select(Employees).where(Employees.id == user_id)).first()
+        employee_db = session.exec(
+            select(Employees).where(Employees.id == user_id)
+        ).first()
         if employee_db:
             if not employee_db.ativo:
                 raise HTTPException(
