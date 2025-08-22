@@ -1,7 +1,7 @@
 import random
 import string
 from typing import Optional
-from fastapi import APIRouter, Depends, Query, HTTPException, status
+from fastapi import APIRouter, Depends, Query, status
 
 from src.auth.deps import get_current_user
 from src.model.user import Usuario
@@ -19,7 +19,7 @@ def gerar_codigo_venda(size: int = 6) -> str:
     )
 
 
-@router.post("/vendas/finalizar", status_code=status.HTTP_200_OK)
+@router.post("/finalizar", status_code=status.HTTP_200_OK)
 async def finalizar_venda(
     payment_method: str = Query(
         ..., description="Forma de pagamento: dinheiro, cartão, pix"
@@ -27,54 +27,71 @@ async def finalizar_venda(
     funcionario_id: Optional[int] = Query(None),
     current_user: Usuario = Depends(get_current_user),
 ):
-    produtos = await cart.listar_produtos(current_user.id)
-    if not produtos:
-        raise HTTPException(status_code=400, detail="Carrinho vazio")
-
-    total_venda = 0.0
-    venda_detalhes = []
-
-    for prod in produtos:
-        total_venda += prod.total_price
-        venda_detalhes.append(
-            {
-                "produto_id": prod.product_id,
-                "nome": prod.product_name,
-                "quantidade": prod.quantity,
-                "preco_unitario": prod.price,
+    """Finaliza a venda do usuário e retorna JSON padronizado para frontend"""
+    try:
+        produtos = await cart.listar_produtos(current_user.id)
+        if not produtos:
+            return {
+                "success": False,
+                "data": None,
+                "error": "Carrinho vazio"
             }
-        )
 
-    sale_code = gerar_codigo_venda()
-    notas_fiscais = []
+        total_venda = 0.0
+        venda_detalhes = []
 
-    for prod in venda_detalhes:
-        checkout = Checkout(
-            user_id=current_user.id,
-            product_name=prod["nome"],
-            produto_id=prod["produto_id"],
-            quantity=prod["quantidade"],
-            total_price=prod["quantidade"] * prod["preco_unitario"],
-            lucro_total=0.0,
-            payment_method=payment_method.lower(),
-            funcionario_id=funcionario_id,
-            sale_code=sale_code,
-        )
-        nota = checkout.process_sale(
-            current_user=current_user,
-            product_code=str(prod["produto_id"]),
-            quantity=prod["quantidade"],
-            payment_method=payment_method,
-            funcionario_id=funcionario_id,
-        )
-        notas_fiscais.append(nota)
+        for prod in produtos:
+            total_venda += prod.total_price
+            venda_detalhes.append(
+                {
+                    "produto_id": prod.product_id,
+                    "nome": prod.product_name,
+                    "quantidade": prod.quantity,
+                    "preco_unitario": prod.price,
+                }
+            )
 
-    await cart.limpar_carrinho(current_user.id)
-    relatorio = gerar_relatorio_completo(current_user.id)
+        sale_code = gerar_codigo_venda()
+        notas_fiscais = []
 
-    return {
-        "notas_fiscais": notas_fiscais,
-        "relatorio": relatorio,
-        "total_venda": total_venda,
-        "codigo_da_venda": sale_code,
-    }
+        for prod in venda_detalhes:
+            checkout = Checkout(
+                user_id=current_user.id,
+                product_name=prod["nome"],
+                produto_id=prod["produto_id"],
+                quantity=prod["quantidade"],
+                total_price=prod["quantidade"] * prod["preco_unitario"],
+                lucro_total=0.0,
+                payment_method=payment_method.lower(),
+                funcionario_id=funcionario_id,
+                sale_code=sale_code,
+            )
+            nota = checkout.process_sale(
+                current_user=current_user,
+                product_code=str(prod["produto_id"]),
+                quantity=prod["quantidade"],
+                payment_method=payment_method,
+                funcionario_id=funcionario_id,
+            )
+            notas_fiscais.append(nota)
+
+        await cart.limpar_carrinho(current_user.id)
+        relatorio = gerar_relatorio_completo(current_user.id)
+
+        return {
+            "success": True,
+            "data": {
+                "notas_fiscais": notas_fiscais,
+                "relatorio": relatorio,
+                "total_venda": total_venda,
+                "codigo_da_venda": sale_code
+            },
+            "error": None
+        }
+
+    except Exception as e:
+        return {
+            "success": False,
+            "data": None,
+            "error": f"Erro inesperado: {str(e)}"
+        }

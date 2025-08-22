@@ -1,5 +1,5 @@
 from typing import Optional
-from fastapi import APIRouter, Depends, Query, HTTPException
+from fastapi import APIRouter, Depends, Query
 from fastapi.encoders import jsonable_encoder
 from sqlmodel import Session
 from src.model.user import Usuario
@@ -16,12 +16,34 @@ async def get_product(
     name: Optional[str] = Query(None),
     current_user: Usuario = Depends(get_current_user)
 ):
-    if not code and not name:
-        raise HTTPException(status_code=400, detail="Informe código ou nome do produto")
+    """Busca produto por código ou nome e retorna JSON padronizado para frontend"""
+    try:
+        if not code and not name:
+            return {
+                "success": False,
+                "data": None,
+                "error": "Informe código ou nome do produto"
+            }
 
-    with Session(engine) as session:
-        product = get_product_by_user(session, current_user.id, code, name) # type: ignore
-        if not product:
-            raise HTTPException(status_code=404, detail="Produto não encontrado")
-        return jsonable_encoder(product)  # <-- transforma SQLModel em JSON
+        with Session(engine) as session:
+            product = get_product_by_user(session, current_user.id, code, name)  # type: ignore
 
+            if not product:
+                return {
+                    "success": False,
+                    "data": None,
+                    "error": "Produto não encontrado"
+                }
+
+            return {
+                "success": True,
+                "data": jsonable_encoder(product),
+                "error": None
+            }
+
+    except Exception as e:
+        return {
+            "success": False,
+            "data": None,
+            "error": f"Erro inesperado: {str(e)}"
+        }

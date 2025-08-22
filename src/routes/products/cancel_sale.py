@@ -21,28 +21,41 @@ async def cancel_sale(
     body: CancelRequest,
     current_user: Usuario = Depends(get_current_user),
 ):
+    """Cancela uma venda, restaura estoque e retorna resultado padronizado para frontend"""
     if not current_user.id:
-        raise HTTPException(status_code=400, detail='Invalid user')
+        return {
+            "success": False,
+            "data": None,
+            "error": "Usuário inválido"
+        }
 
-    with Session(engine) as session:
-        try:
+    try:
+        with Session(engine) as session:
             # Busca a venda pelo código
             sale = session.exec(
                 select(Sales).where(
                     Sales.codigo_da_venda == body.code,
-                    Sales.funcionario_id == current_user.id,
+                    Sales.funcionario_id == current_user.id
                 )
             ).first()
 
             if not sale:
-                raise HTTPException(status_code=404, detail='Sale not found')
+                return {
+                    "success": False,
+                    "data": None,
+                    "error": "Venda não encontrada"
+                }
 
             # Recupera o produto relacionado
             product = session.get(Produto, sale.produto_id)
             if not product:
-                raise HTTPException(status_code=404, detail='Product not found')
+                return {
+                    "success": False,
+                    "data": None,
+                    "error": "Produto não encontrado"
+                }
 
-            # Devolve a quantidade ao estoque
+            # Restaura o estoque
             product.stock += sale.quantity
             product.atualizado_em = datetime.now(ZoneInfo('America/Sao_Paulo'))
             session.add(product)
@@ -52,14 +65,18 @@ async def cancel_sale(
             session.commit()
 
             return {
-                "message": "Sale canceled successfully",
-                "restored_stock": product.stock,
-                "product_id": product.id,
+                "success": True,
+                "data": {
+                    "message": "Venda cancelada com sucesso",
+                    "restored_stock": product.stock,
+                    "product_id": product.id
+                },
+                "error": None
             }
 
-        except HTTPException:
-            # Repassa os erros tratados (404, 400 etc.)
-            raise
-        except Exception as e:
-            # Só captura erros inesperados
-            raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
+    except Exception as e:
+        return {
+            "success": False,
+            "data": None,
+            "error": f"Erro inesperado: {str(e)}"
+        }
