@@ -56,7 +56,7 @@ async def finalizar_venda(
             quantity=prod["quantidade"],
             total_price=prod["quantidade"] * prod["preco_unitario"],
             lucro_total=0.0,
-            payment_method=payment_method,
+            payment_method=payment_method.lower(),
             funcionario_id=funcionario_id,
             sale_code=sale_code,
         )

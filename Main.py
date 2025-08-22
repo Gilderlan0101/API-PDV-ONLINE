@@ -17,6 +17,8 @@ from src.routes.account.account import RegisteEmpreg
 
 # Dados de teste mocados
 from src.utils.dados_teste import create_mock_data
+# Configuração do cors
+from fastapi.middleware.cors import CORSMiddleware
 
 
 @asynccontextmanager
@@ -76,6 +78,21 @@ class Server:
             },
         )
         self.start_routes()
+        
+        origins = [
+            "http://localhost:8080",  # sua aplicação frontend
+            "http://127.0.0.1:8080",
+            "http://127.0.0.1:5000"
+        ]
+        
+        self.api.add_middleware(
+            CORSMiddleware,
+            allow_origins=origins,  # ou ["*"] para liberar tudo
+            allow_credentials=True,
+            allow_methods=["*"],    # permite POST, GET, OPTIONS etc.
+            allow_headers=["*"],    # permite Content-Type, Authorization etc.
+        )
+
 
     def start_routes(self):
         """Inclui todas as rotas da API organizadas por funcionalidade e tag."""

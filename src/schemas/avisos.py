@@ -14,6 +14,7 @@ class ProdutoOut(BaseModel):
     stock_max: int
     date_expired: Optional[str]  # ou datetime, mas serializar para str
     price_uni: float
+    lot_bar_code: Optional[int] = None
 
     class Config:
         orm_mode = True  # Para converter direto do ORM

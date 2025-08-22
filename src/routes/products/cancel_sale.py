@@ -1,9 +1,10 @@
-from zoneinfo import ZoneInfo
 from fastapi import APIRouter, Body, status, Depends, HTTPException
-from src.auth.deps import get_current_user
+from pydantic import BaseModel
 from sqlmodel import Session, select
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
+from src.auth.deps import get_current_user
 from src.conf.database import engine
 from src.model.user import Usuario
 from src.model.sale import Sales
@@ -11,10 +12,13 @@ from src.model.product import Produto
 
 router = APIRouter()
 
+class CancelRequest(BaseModel):
+    code: str
+    reason: str | None = None
 
 @router.post('/cancel', status_code=status.HTTP_200_OK)
 async def cancel_sale(
-    code: str = Body(..., description="Código da venda a ser cancelada"),
+    body: CancelRequest,
     current_user: Usuario = Depends(get_current_user),
 ):
     if not current_user.id:
@@ -25,7 +29,7 @@ async def cancel_sale(
             # Busca a venda pelo código
             sale = session.exec(
                 select(Sales).where(
-                    Sales.codigo_da_venda == code,
+                    Sales.codigo_da_venda == body.code,
                     Sales.funcionario_id == current_user.id,
                 )
             ).first()
@@ -53,5 +57,9 @@ async def cancel_sale(
                 "product_id": product.id,
             }
 
+        except HTTPException:
+            # Repassa os erros tratados (404, 400 etc.)
+            raise
         except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
+            # Só captura erros inesperados
+            raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")

@@ -38,10 +38,12 @@ async def list_products(current_user: Usuario = Depends(get_current_user)):
                     "stock_atual": p.stock,
                     "stock_min": p.stoke_min,
                     "stock_max": p.stoke_max,
+                  
                     "date_expired": (
                         p.date_expired.isoformat() if p.date_expired else None
                     ),
                     "price_uni": p.price_uni,
+		   "lot_bar_code":p.lot_bar_code,
                 }
             )
 
