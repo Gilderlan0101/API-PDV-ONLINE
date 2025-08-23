@@ -2,8 +2,9 @@ import random
 import string
 from typing import Optional
 from fastapi import APIRouter, Depends, Query, status
+from sqlmodel import Session
 
-from src.auth.deps import get_current_user
+from src.auth.deps import engine, get_current_user
 from src.model.user import Usuario
 from src.controllers.sales.sales import Checkout
 from src.controllers.stoke.stoke_control import gerar_relatorio_completo
@@ -29,7 +30,7 @@ async def finalizar_venda(
 ):
     """Finaliza a venda do usuário e retorna JSON padronizado para frontend"""
     try:
-        produtos = await cart.listar_produtos(current_user.id)
+        produtos = await cart.listar_produtos(current_user.id) # type: ignore
         if not produtos:
             return {
                 "success": False,
@@ -55,28 +56,47 @@ async def finalizar_venda(
         notas_fiscais = []
 
         for prod in venda_detalhes:
+            # Se funcionario_id for passado mas não existir, usar current_user
+            funcionario_operador_id = funcionario_id
+            funcionario_operador_nome = None
+            if funcionario_id:
+                from src.model.employee import Employees
+                with Session(engine) as session:
+                    funcionario = session.get(Employees, funcionario_id)
+                    if funcionario:
+                        funcionario_operador_nome = funcionario.nome
+                    else:
+                        funcionario_operador_id = current_user.id
+                        funcionario_operador_nome = current_user.username
+            else:
+                funcionario_operador_id = current_user.id
+                funcionario_operador_nome = current_user.username
+    
             checkout = Checkout(
-                user_id=current_user.id,
+                user_id=current_user.id, # type: ignore
                 product_name=prod["nome"],
                 produto_id=prod["produto_id"],
                 quantity=prod["quantidade"],
                 total_price=prod["quantidade"] * prod["preco_unitario"],
                 lucro_total=0.0,
                 payment_method=payment_method.lower(),
-                funcionario_id=funcionario_id,
+                funcionario_id=funcionario_operador_id,
+                funcionario_nome=funcionario_operador_nome,
                 sale_code=sale_code,
             )
+            
             nota = checkout.process_sale(
                 current_user=current_user,
                 product_code=str(prod["produto_id"]),
                 quantity=prod["quantidade"],
                 payment_method=payment_method,
-                funcionario_id=funcionario_id,
+                funcionario_id=funcionario_operador_id,
             )
             notas_fiscais.append(nota)
 
-        await cart.limpar_carrinho(current_user.id)
-        relatorio = gerar_relatorio_completo(current_user.id)
+
+        await cart.limpar_carrinho(current_user.id) # type: ignore
+        relatorio = gerar_relatorio_completo(current_user.id) # type: ignore
 
         return {
             "success": True,
