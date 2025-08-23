@@ -13,7 +13,9 @@ class CartItem(SQLModel, table=True):
     product_name: str  # Nome do produto
     quantity: int  # Quantidade adicionada ao carrinho
     price: float  # Preço unitário do produto
-    total_price: float  # Preço total (price * quantity)
+    total_price: float  # Preço total (price * quantity - desconto + acréscimo)
+    discount: Optional[float] = Field(default=0.0)  # desconto aplicado (R$)
+    addition: Optional[float] = Field(default=0.0)  # acréscimo aplicado (R$)
     sale_code: Optional[str] = Field(
         default=None, max_length=6
     )  # Código da venda quando finalizada
