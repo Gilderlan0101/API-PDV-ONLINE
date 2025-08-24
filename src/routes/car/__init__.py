@@ -3,6 +3,7 @@ from fastapi import APIRouter
 from .create import router as create_router
 from .delete import router as delete_router
 from .list import router as list_router
+from .adjustments import router as update_item
 
 cart_router = APIRouter(
     prefix="/carrinho",
@@ -13,3 +14,5 @@ cart_router = APIRouter(
 cart_router.include_router(create_router, prefix="")
 cart_router.include_router(delete_router, prefix="")
 cart_router.include_router(list_router, prefix="")
+cart_router.include_router(update_item, prefix="")
+

@@ -1,9 +1,14 @@
+import locale
 from typing import Any, Dict, Optional
 from sqlmodel import Session, select, delete
 from src.model.product import Produto
 from src.model.carItems import CartItem
 from src.conf.database import engine
 
+
+
+# Configura locale para Real brasileiro
+locale.setlocale(locale.LC_ALL, "pt_BR.UTF-8")
 
 class CartManagerDB:
     """Carrinho persistido no banco de dados"""
@@ -68,19 +73,20 @@ class CartManagerDB:
             session.commit()
             return {"aviso": "Produto removido"}
 
-    async def limpar_carrinho(self, user_id: int):
-        with Session(engine) as session:
-            stmt = delete(CartItem).where(CartItem.user_id == user_id)  # type: ignore
-            session.exec(stmt)  # type: ignore
-            session.commit()
-            return {"aviso": "Carrinho limpo"}
-
     async def listar_produtos(self, user_id: int):
         with Session(engine) as session:
-            return session.exec(
+            # Remover itens com quantity == 0
+            stmt = delete(CartItem).where(CartItem.user_id == user_id, CartItem.quantity == 0)
+            session.exec(stmt)
+            session.commit()
+
+            # Buscar produtos restantes no carrinho
+            produtos = session.exec(
                 select(CartItem).where(CartItem.user_id == user_id)
             ).all()
 
+        return produtos
+    
     async def remover_produtos_por_venda(self, sale_code: str) -> Dict[str, Any]:
         """
         Remove produtos do carrinho que já foram vendidos, baseado no código da venda.
@@ -103,3 +109,75 @@ class CartManagerDB:
                 session.delete(item)
             session.commit()
             return {"aviso": f"{len(items)} produtos removidos do carrinho."}
+       
+    async def update_produto(
+        self,
+        product_id: int,
+        user_id: int,
+        quantity: Optional[int] = None,
+        discount: Optional[float] = None,
+        addition: Optional[float] = None,
+        replace_quantity: bool = False,
+        replace_discount: bool = False,
+        replace_addition: bool = False,
+    ) -> Dict[str, Any]:
+        with Session(engine) as session:
+            cart_item = session.exec(
+            select(CartItem).where(
+                CartItem.user_id == user_id,
+                CartItem.product_id == product_id
+            )
+        ).first()
+
+        if not cart_item:
+            return {"aviso": "Produto não encontrado no carrinho"}
+
+        # Atualizar quantidade
+        if quantity is not None:
+            if replace_quantity:
+                cart_item.quantity = max(0, quantity)
+            else:
+                cart_item.quantity = max(0, cart_item.quantity + quantity)
+
+        # Atualizar desconto
+        if discount is not None:
+            if replace_discount:
+                cart_item.discount = max(0, discount)
+            else:
+                cart_item.discount = max(0, (cart_item.discount or 0) + discount)
+
+        # Atualizar acréscimo
+        if addition is not None:
+            if replace_addition:
+                cart_item.addition = max(0, addition)
+            else:
+                cart_item.addition = max(0, (cart_item.addition or 0) + addition)
+
+        # Recalcular total
+        cart_item.total_price = (cart_item.price * cart_item.quantity) \
+                                - (cart_item.discount or 0) \
+                                + (cart_item.addition or 0)
+
+        # Se quantidade zerou, remover item do carrinho
+        if cart_item.quantity == 0:
+            session.delete(cart_item)
+            session.commit()
+            return {"aviso": f"{cart_item.product_name} removido do carrinho"}
+
+        # Evitar total negativo
+        if cart_item.total_price < 0:
+            cart_item.total_price = 0
+
+        session.add(cart_item)
+        session.commit()
+        session.refresh(cart_item)
+
+        # Retorno formatado
+        return {
+            "produto": cart_item.product_name,
+            "quantidade": cart_item.quantity,
+            "preco_unitario": locale.currency(cart_item.price, grouping=True),
+            "desconto": locale.currency(cart_item.discount or 0, grouping=True),
+            "acrescimo": locale.currency(cart_item.addition or 0, grouping=True),
+            "total": locale.currency(cart_item.total_price, grouping=True),
+        }

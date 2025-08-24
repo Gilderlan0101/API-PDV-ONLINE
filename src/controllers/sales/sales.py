@@ -143,15 +143,17 @@ class Checkout:
                 from src.model.employee import Employees
 
                 funcionario = session.get(Employees, funcionario_id)
-                if not funcionario:
-                    raise HTTPException(
-                        status_code=404, detail='Funcionário não encontrado'
-                    )
-                funcionario_nome = funcionario.nome
+                if funcionario:
+                    funcionario_nome = funcionario.nome
+                else:
+                    # Se não encontrar no banco, usar o próprio usuário como operador
+                    funcionario_nome = current_user.username
+                    funcionario_id = current_user.id
             else:
                 funcionario_nome = current_user.username
                 funcionario_id = current_user.id
-
+                
+                
             self.product_name = product.name
             self.produto_id = product.id
             self.quantity = quantity
