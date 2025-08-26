@@ -7,6 +7,7 @@ from .list import list_products as list_router
 from .sales import router as sales_router
 from .cancel_sale import router as cancel
 from .buscar_prod import buscar_produtos
+from .upload_img import router as upload_img
 
 products_router = APIRouter(
     prefix="/sales",
@@ -22,3 +23,21 @@ products_router.include_router(list_router, prefix="/list")       # Lista todos 
 products_router.include_router(sales_router, prefix="/sales")    # Finalizar venda
 products_router.include_router(buscar_produtos, prefix="/search") # Buscar produtos
 products_router.include_router(cancel, prefix="/cancel")          # Cancelar venda
+products_router.include_router(upload_img, prefix="/upload") 
+
+from src.routes.fornecedor.registre_fornecedor import router 
+
+fornecedores = APIRouter(
+    prefix="/fornecedores", tags=["fornecedores"]
+)
+
+fornecedores.include_router(router, prefix="")
+
+
+from src.routes.products.ticket import router as ticket
+
+ticket_prods = APIRouter(
+  
+)
+
+ticket_prods.include_router(ticket, prefix="/ticket")

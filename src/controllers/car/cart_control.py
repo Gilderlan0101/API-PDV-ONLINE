@@ -76,8 +76,8 @@ class CartManagerDB:
     async def listar_produtos(self, user_id: int):
         with Session(engine) as session:
             # Remover itens com quantity == 0
-            stmt = delete(CartItem).where(CartItem.user_id == user_id, CartItem.quantity == 0)
-            session.exec(stmt)
+            stmt = delete(CartItem).where(CartItem.user_id == user_id, CartItem.quantity == 0) # type: ignore
+            session.exec(stmt)  # type: ignore
             session.commit()
 
             # Buscar produtos restantes no carrinho
@@ -86,40 +86,16 @@ class CartManagerDB:
             ).all()
 
         return produtos
-    
-    async def remover_produtos_por_venda(self, sale_code: str) -> Dict[str, Any]:
-        """
-        Remove produtos do carrinho que já foram vendidos, baseado no código da venda.
-
-        Args:
-            sale_code (str): Código da venda a ser removida.
-
-        Returns:
-            dict: Aviso sobre quantos produtos foram removidos.
-        """
-        with Session(engine) as session:
-            items = session.exec(
-                select(CartItem).where(CartItem.sale_code == sale_code)
-            ).all()
-
-            if not items:
-                return {"aviso": "Nenhum produto encontrado para este código de venda."}
-
-            for item in items:
-                session.delete(item)
-            session.commit()
-            return {"aviso": f"{len(items)} produtos removidos do carrinho."}
-       
     async def update_produto(
-        self,
-        product_id: int,
-        user_id: int,
-        quantity: Optional[int] = None,
-        discount: Optional[float] = None,
-        addition: Optional[float] = None,
-        replace_quantity: bool = False,
-        replace_discount: bool = False,
-        replace_addition: bool = False,
+    self,
+    product_id: int,
+    user_id: int,
+    quantity: Optional[int] = None,
+    discount: Optional[float] = None,
+    addition: Optional[float] = None,
+    replace_quantity: bool = False,
+    replace_discount: bool = False,
+    replace_addition: bool = False,
     ) -> Dict[str, Any]:
         with Session(engine) as session:
             cart_item = session.exec(
@@ -132,47 +108,51 @@ class CartManagerDB:
         if not cart_item:
             return {"aviso": "Produto não encontrado no carrinho"}
 
-        # Atualizar quantidade
+        # --- Quantidade ---
         if quantity is not None:
             if replace_quantity:
                 cart_item.quantity = max(0, quantity)
             else:
-                cart_item.quantity = max(0, cart_item.quantity + quantity)
+                cart_item.quantity = max(0, (cart_item.quantity or 0) + quantity)
 
-        # Atualizar desconto
+        # Subtotal (sem desconto/acréscimo)
+        subtotal = cart_item.price * cart_item.quantity
+
+        # --- Desconto ---
         if discount is not None:
             if replace_discount:
-                cart_item.discount = max(0, discount)
+                cart_item.discount = max(0, discount)  # substitui
             else:
-                cart_item.discount = max(0, (cart_item.discount or 0) + discount)
+                cart_item.discount = max(0, (cart_item.discount or 0) + discount)  # acumula
 
-        # Atualizar acréscimo
+        # 🔒 Garantir que desconto nunca ultrapasse subtotal
+        if cart_item.discount and cart_item.discount > subtotal:
+            cart_item.discount = subtotal
+
+        # --- Acréscimo ---
         if addition is not None:
             if replace_addition:
                 cart_item.addition = max(0, addition)
             else:
                 cart_item.addition = max(0, (cart_item.addition or 0) + addition)
 
-        # Recalcular total
-        cart_item.total_price = (cart_item.price * cart_item.quantity) \
-                                - (cart_item.discount or 0) \
-                                + (cart_item.addition or 0)
+        # --- Recalcular total ---
+        cart_item.total_price = subtotal - (cart_item.discount or 0) + (cart_item.addition or 0)
 
-        # Se quantidade zerou, remover item do carrinho
+        # 🔒 Evitar negativo
+        if cart_item.total_price < 0:
+            cart_item.total_price = 0
+
+        # Se quantidade zerar → remover item
         if cart_item.quantity == 0:
             session.delete(cart_item)
             session.commit()
             return {"aviso": f"{cart_item.product_name} removido do carrinho"}
 
-        # Evitar total negativo
-        if cart_item.total_price < 0:
-            cart_item.total_price = 0
-
         session.add(cart_item)
         session.commit()
         session.refresh(cart_item)
 
-        # Retorno formatado
         return {
             "produto": cart_item.product_name,
             "quantidade": cart_item.quantity,

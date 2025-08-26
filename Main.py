@@ -9,11 +9,13 @@ from src.conf.database import create_db_and_tables, engine
 # Rotas
 from src.routes.cliente_cnpj import ConsultaRoute
 from src.routes.login import Login
-from src.routes.products import products_router
+from src.routes.products import products_router, fornecedores, ticket_prods
 from src.routes.car import cart_router
 from src.routes.registre import RegisterRoute
 from src.routes.updates import AllDatas
 from src.routes.account.account import RegisteEmpreg
+
+
 
 # Dados de teste mocados
 from src.utils.dados_teste import create_mock_data
@@ -126,6 +128,10 @@ class Server:
 
         # Carrinho
         self.api.include_router(cart_router)
+        
+        self.api.include_router(fornecedores)
+        self.api.include_router(ticket_prods)
+
 
         # Visualização de dados em tempo real
         route_update_dash = AllDatas()

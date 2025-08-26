@@ -45,6 +45,110 @@ class ProductGroup(str, Enum):
     OTHERS = 'outros'
 
 
+# 🔹 Subgroups
+class BeveragesSubGroup(str, Enum):
+    REFRIGERANTES = "Refrigerantes"
+    SUCOS = "Sucos"
+    AGUA = "Água"
+    ENERGETICOS = "Energéticos"
+    CERVEJAS = "Cervejas"
+    VINHOS = "Vinhos"
+    CAFE_CHA = "Café e Chá"
+
+
+class FoodsSubGroup(str, Enum):
+    MASSAS = "Massas"
+    ARROZ_FEIJAO = "Arroz e Feijão"
+    ENLATADOS = "Enlatados"
+    TEMPEROS = "Temperos e Condimentos"
+    CONGELADOS = "Congelados"
+
+
+class FruitsSubGroup(str, Enum):
+    TROPICAIS = "Tropicais"
+    CITRICAS = "Cítricas"
+    VERMELHAS = "Frutas Vermelhas"
+    SECAS = "Frutas Secas"
+
+
+class VegetablesSubGroup(str, Enum):
+    FOLHOSAS = "Folhosas"
+    RAIZES = "Raízes"
+    LEGUMES = "Legumes"
+    BROTOS = "Brotos e Germinados"
+
+
+class MeatsSubGroup(str, Enum):
+    BOVINAS = "Bovinas"
+    SUINAS = "Suínas"
+    AVES = "Aves"
+    EMBUTIDOS = "Embutidos"
+
+
+class FishSubGroup(str, Enum):
+    FRESCOS = "Peixes Frescos"
+    CONGELADOS = "Peixes Congelados"
+    FRUTOS_DO_MAR = "Frutos do Mar"
+
+
+class DairySubGroup(str, Enum):
+    LEITES = "Leites e Bebidas Lácteas"
+    QUEIJOS = "Queijos"
+    IOGURTES = "Iogurtes"
+    MANTEIGAS = "Manteigas e Cremes"
+
+
+class BakerySubGroup(str, Enum):
+    PAES = "Pães"
+    BOLOS = "Bolos"
+    TORTAS = "Tortas"
+    SALGADOS_ASSADOS = "Salgados Assados"
+
+
+class SweetsSubGroup(str, Enum):
+    CHOCOLATES = "Chocolates"
+    BALAS = "Balas e Confeitos"
+    SORVETES = "Sorvetes"
+    BOLACHAS = "Bolachas"
+
+
+class SnacksSubGroup(str, Enum):
+    CHIPS = "Chips"
+    PIPOCAS = "Pipocas"
+    SNACKS_SAUDAVEIS = "Snacks Saudáveis"
+    PETISCOS = "Petiscos"
+
+
+# Adicione os subgrupos restantes da mesma forma, se necessário...
+
+# ======================================
+# 🔹 Units
+# ======================================
+class UnitOfMeasurement(str, Enum):
+    """Unit of measurement for products"""
+
+    UNIT = 'Unidade'
+    KG = 'Kilograma (kg)'
+    GRAM = 'Grama (g)'
+    LITER = 'Litro (l)'
+    ML = 'Mililitro (ml)'
+    MILHEIRO = 'Milheiro'
+    CAIXA = 'Caixa'
+    PACOTE = 'Pacote'
+    PAR = 'Par'
+    ROLO = 'Rolo'
+    SACO = 'Saco'
+    FARDO = 'Fardo'
+    BARRA = 'Barra'
+    POTE = 'Pote'
+    FRASCO = 'Frasco'
+    VIDRO = 'Vidro'
+    UNIDADE_CAIXA = 'Unidade em Caixa'
+
+
+# ======================================
+# 🔹 Product Status / Type
+# ======================================
 class ProductSector(str, Enum):
     """Defines product origin"""
 
@@ -69,21 +173,16 @@ class ProductType(str, Enum):
     RAW_MATERIAL = 'Matéria prima'
 
 
-class UnitOfMeasurement(str, Enum):
-    """Unit of measurement for products"""
-
-    UNIT = 'UNIDADE'
-    KG = 'KG'
-    MILHEIRO = 'MILHEIRO'
-
-
 class TicketType(str, Enum):
     """Types of sales tickets"""
 
-    TICKET_1 = 'Ticket 1'
-    TICKET_2 = 'Ticket 2'
-    TICKET_3 = 'Ticket 3'
-    TICKET_4 = 'Ticket 4'
+    NEW = "Novo"
+    PROMOTION = "Promoção"
+    COMBO = "Combo"
+    BEST_SELLER = "Mais Vendido"
+    SPECIAL_OFFER = "Oferta Especial"
+    SEASONAL = "Sazonal"
+    LIMITED = "Edição Limitada"
 
 
 class ApplyingSalesType(BaseModel):
@@ -107,7 +206,7 @@ class ProductRegisterSchema(BaseModel):
     stock: NonNegativeInt
     stoke_min: NonNegativeInt
     stoke_max: NonNegativeInt
-    date_expired: Optional[datetime] = None  # Compatible with DB
+    date_expired: Optional[datetime] = None
     fabricator: Optional[str] = None
     cost_price: NonNegativeFloat
     price_uni: NonNegativeFloat
@@ -117,13 +216,14 @@ class ProductRegisterSchema(BaseModel):
     image_url: Optional[str] = None
 
     # 🔹 Connected enums and options
-    product_type: ProductType  # Product type
-    active: ProductStatus  # Product active status
-    group: ProductGroup  # Product category
-    sector: ProductSector  # Product sector
-    unit: UnitOfMeasurement  # Unit of measurement
-    controllstoke: ProductStatus  # Stock control
-    sales_config: Optional[ApplyingSalesType] = None  # Sales behavior
+    product_type: ProductType
+    active: ProductStatus
+    group: ProductGroup
+    sub_group: Optional[str] = None  # Novo campo de subgrupo
+    sector: ProductSector
+    unit: UnitOfMeasurement
+    controllstoke: ProductStatus
+    sales_config: Optional[ApplyingSalesType] = None
 
 
 class ProductUpdateSchema(BaseModel):
@@ -148,6 +248,7 @@ class ProductUpdateSchema(BaseModel):
     product_type: Optional[ProductType] = None
     active: Optional[ProductStatus] = None
     group: Optional[ProductGroup] = None
+    sub_group: Optional[str] = None  # Novo campo de subgrupo
     sector: Optional[ProductSector] = None
     unit: Optional[UnitOfMeasurement] = None
     controllstoke: Optional[ProductStatus] = None
