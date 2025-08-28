@@ -244,6 +244,10 @@ class Fornecedor(SQLModel, table=True):
     # Chave estrangeira para usuário
     usuario_id: int = Field(foreign_key="usuarios.id", nullable=False)
     usuario: Optional["Usuario"] = Relationship(back_populates="fornecedores")
+    produtos: List['Produto'] = Relationship(back_populates='fornecedor')
+
+    
+    
 
 
 

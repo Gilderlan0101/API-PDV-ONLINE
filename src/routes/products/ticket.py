@@ -19,22 +19,31 @@ def get_session():
         yield session
 
 
-# ========================
-# 🔹 Criar ticket
-# ========================
 @router.post("/criar", response_model=TicketReadSchema)
 async def create_ticket(
     ticket: TicketCreateSchema,
-    
     session: Session = Depends(get_session),
     current_user: Usuario = Depends(get_current_user)
 ):
+    # Verifica se o usuário já tem um ticket com o mesmo nome
+    statement = select(Ticket).where(
+        Ticket.name == ticket.name,
+        Ticket.usuario_id == current_user.id
+    )
+    existing_ticket = session.exec(statement).first()
+
+    if existing_ticket:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Você já possui um ticket com o nome '{ticket.name}'"
+        )
+
+    # Cria o ticket se não existir duplicado
     db_ticket = Ticket(**ticket.dict(), usuario_id=current_user.id) # type: ignore
     session.add(db_ticket)
     session.commit()
     session.refresh(db_ticket)
     return db_ticket
-
 
 # ========================
 # 🔹 Listar tickets do usuário

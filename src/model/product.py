@@ -30,6 +30,7 @@ class Produto(SQLModel, table=True):
     product_type: Optional[str] = None
     active: Optional[str] = None
     group: Optional[str] = None
+    sub_group: Optional[str] = None
     sector: Optional[str] = None
     unit: Optional[str] = None
     controllstoke: Optional[str] = None
@@ -44,6 +45,10 @@ class Produto(SQLModel, table=True):
 
     usuario_id: int = Field(foreign_key='usuarios.id')
     usuario: Optional['Usuario'] = Relationship(back_populates='produtos')  # type: ignore
+    # 🔹 Relação com fornecedor
+    fornecedor_id: Optional[int] = Field(default=None, foreign_key='fornecedor.id')
+    fornecedor: Optional['Fornecedor'] = Relationship(back_populates='produtos')
+    
 
 
 # ========================

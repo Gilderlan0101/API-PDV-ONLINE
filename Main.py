@@ -15,8 +15,6 @@ from src.routes.registre import RegisterRoute
 from src.routes.updates import AllDatas
 from src.routes.account.account import RegisteEmpreg
 
-
-
 # Dados de teste mocados
 from src.utils.dados_teste import create_mock_data
 # Configuração do cors
@@ -81,15 +79,24 @@ class Server:
         )
         self.start_routes()
         
+        # CONFIGURAÇÃO CORS ATUALIZADA
         origins = [
-            "http://localhost:8080",  # sua aplicação frontend
-            "http://127.0.0.1:8080",
-            "http://127.0.0.1:5000"
-        ]
+             "http://localhost:5000",      # Flask development server
+             "http://127.0.0.1:5000",      # Flask development server
+             "http://localhost:8080",      # Vue.js/React development
+             "http://127.0.0.1:8080",      # Vue.js/React development
+             "http://localhost:3000",      # React development
+             "http://127.0.0.1:3000",      # React development
+             "http://localhost:5173",      # Vite development
+             "http://127.0.0.1:5173",      # Vite development
+             "http://localhost:8000",      # FastAPI itself
+             "http://127.0.0.1:8000",      # FastAPI itself
+         ]
+        
         
         self.api.add_middleware(
             CORSMiddleware,
-            allow_origins=origins,  # ou ["*"] para liberar tudo
+            allow_origins=origins,
             allow_credentials=True,
             allow_methods=["*"],    # permite POST, GET, OPTIONS etc.
             allow_headers=["*"],    # permite Content-Type, Authorization etc.
@@ -141,7 +148,8 @@ class Server:
 
     def run(self, host: str = '127.0.0.1', port: int = 8000):
         """Inicia o servidor Uvicorn."""
-        uvicorn.run('Main:app', host=host, port=port, reload=True)
+        uvicorn.run('Main:app', host=host, port=port, reload=True, log_level="debug")
+
 
 
 # Variável global para o Uvicorn

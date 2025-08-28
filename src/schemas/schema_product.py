@@ -19,30 +19,30 @@ NonNegativeFloat = Annotated[float, Field(ge=0)]
 class ProductGroup(str, Enum):
     """Main product categories"""
 
-    BEVERAGES = 'bebidas'
-    FOODS = 'alimentos'
-    FRUITS = 'frutas'
-    VEGETABLES = 'verduras'
-    MEATS = 'carnes'
-    FISH = 'peixes'
-    DAIRY = 'laticínios'
-    BAKERY = 'padaria'
-    SWEETS = 'doces'
-    SNACKS = 'salgados'
-    HYGIENE = 'higiene'
-    CLEANING = 'limpeza'
-    CLOTHES = 'roupas'
-    SHOES = 'calçados'
-    ACCESSORIES = 'acessórios'
-    ELECTRONICS = 'eletrônicos'
-    HOME_APPLIANCES = 'eletrodomésticos'
-    TOOLS = 'ferramentas'
-    SCHOOL_SUPPLIES = 'material escolar'
-    FURNITURE = 'móveis'
-    TOYS = 'brinquedos'
-    GARDENING = 'jardinagem'
-    PETSHOP = 'petshop'
-    OTHERS = 'outros'
+    BEVERAGES = 'Bebidas'
+    FOODS = 'Alimentos'
+    FRUITS = 'Frutas'
+    VEGETABLES = 'Verduras'
+    MEATS = 'Carnes'
+    FISH = 'Peixes'
+    DAIRY = 'Laticínios'
+    BAKERY = 'Padaria'
+    SWEETS = 'Doces'
+    SNACKS = 'Salgados'
+    HYGIENE = 'Higiene'
+    CLEANING = 'Limpeza'
+    CLOTHES = 'Roupas'
+    SHOES = 'Calçados'
+    ACCESSORIES = 'Acessórios'
+    ELECTRONICS = 'Eletrônicos'
+    HOME_APPLIANCES = 'Eletrodomésticos'
+    TOOLS = 'Ferramentas'
+    SCHOOL_SUPPLIES = 'Material escolar'
+    FURNITURE = 'Móveis'
+    TOYS = 'Brinquedos'
+    GARDENING = 'Jardinagem'
+    PETSHOP = 'Petshop'
+    OTHERS = 'Outros'
 
 
 # 🔹 Subgroups
@@ -218,10 +218,10 @@ class ProductRegisterSchema(BaseModel):
     # 🔹 Connected enums and options
     product_type: ProductType
     active: ProductStatus
-    group: ProductGroup
-    sub_group: Optional[str] = None  # Novo campo de subgrupo
+    group: Optional[str] = None
+    sub_group: Optional[str] = None
     sector: ProductSector
-    unit: UnitOfMeasurement
+    unit: Optional[str] = None
     controllstoke: ProductStatus
     sales_config: Optional[ApplyingSalesType] = None
 
@@ -245,11 +245,11 @@ class ProductUpdateSchema(BaseModel):
     description: Optional[str] = None
 
     # 🔹 Connected enums and options
-    product_type: Optional[ProductType] = None
+    product_type: Optional[str] = None
     active: Optional[ProductStatus] = None
-    group: Optional[ProductGroup] = None
+    group: Optional[str] = None
     sub_group: Optional[str] = None  # Novo campo de subgrupo
-    sector: Optional[ProductSector] = None
-    unit: Optional[UnitOfMeasurement] = None
-    controllstoke: Optional[ProductStatus] = None
-    sales_config: Optional[ApplyingSalesType] = None
+    sector: Optional[str] = None
+    unit: Optional[str] = None
+    controllstoke: Optional[str] = None
+    sales_config: Optional[str] = None

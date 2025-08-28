@@ -47,6 +47,7 @@ async def create_product(
                 product_type=prod.product_type,
                 active=prod.active,
                 group=prod.group,
+                sub_group=prod.sub_group,
                 sector=prod.sector,
                 unit=prod.unit,
                 controllstoke=prod.controllstoke,
