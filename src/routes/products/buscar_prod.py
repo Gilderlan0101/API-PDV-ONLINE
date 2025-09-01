@@ -1,14 +1,24 @@
 from typing import Optional
 from fastapi import APIRouter, Depends, Query
 from fastapi.encoders import jsonable_encoder
-from sqlmodel import Session
+from tortoise.exceptions import DoesNotExist
+
 from src.model.user import Usuario
 from src.model.product import Produto
 from src.auth.deps import get_current_user
-from src.conf.database import engine
-from src.routes.products.helpers import get_product_by_user
 
 buscar_produtos = APIRouter()
+
+
+async def get_product_by_user(user_id: int, code: Optional[str] = None, name: Optional[str] = None) -> Optional[Produto]:
+    """Busca produto pelo usuário, código ou nome."""
+    query = Produto.filter(usuario_id=user_id)
+    if code:
+        query = query.filter(product_code=code)
+    if name:
+        query = query.filter(name=name)
+    return await query.first()
+
 
 @buscar_produtos.get('/buscar', status_code=200)
 async def get_product(
@@ -25,21 +35,20 @@ async def get_product(
                 "error": "Informe código ou nome do produto"
             }
 
-        with Session(engine) as session:
-            product = get_product_by_user(session, current_user.id, code, name)  # type: ignore
+        product = await get_product_by_user(current_user.id, code, name)
 
-            if not product:
-                return {
-                    "success": False,
-                    "data": None,
-                    "error": "Produto não encontrado"
-                }
-
+        if not product:
             return {
-                "success": True,
-                "data": jsonable_encoder(product),
-                "error": None
+                "success": False,
+                "data": None,
+                "error": "Produto não encontrado"
             }
+
+        return {
+            "success": True,
+            "data": jsonable_encoder(product),
+            "error": None
+        }
 
     except Exception as e:
         return {

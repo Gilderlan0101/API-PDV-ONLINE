@@ -19,25 +19,25 @@ products_router = APIRouter(
 products_router.include_router(create_router, prefix="/create")
 products_router.include_router(update_router, prefix="/update")
 products_router.include_router(delete_router, prefix="/delete")
-products_router.include_router(list_router, prefix="/list")       # Lista todos os produtos
+
 products_router.include_router(sales_router, prefix="/sales")    # Finalizar venda
 products_router.include_router(buscar_produtos, prefix="/search") # Buscar produtos
 products_router.include_router(cancel, prefix="/cancel")          # Cancelar venda
 products_router.include_router(upload_img, prefix="/upload") 
 
-from src.routes.fornecedor.registre_fornecedor import router 
 
+# Fornecedor
+from src.routes.fornecedor.registre_fornecedor import router 
 fornecedores = APIRouter(
     prefix="/fornecedores", tags=["fornecedores"]
 )
-
 fornecedores.include_router(router, prefix="")
 
-
+# Tickets
 from src.routes.products.ticket import router as ticket
-
 ticket_prods = APIRouter(
-  
 )
 
 ticket_prods.include_router(ticket, prefix="/ticket")
+
+products_router.include_router(list_router, prefix="/list")       # Lista todos os produtos

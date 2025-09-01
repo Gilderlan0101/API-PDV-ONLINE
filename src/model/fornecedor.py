@@ -1,111 +1,82 @@
-# from __future__ import annotations
-# from typing import TYPE_CHECKING, List, Optional
+from tortoise import fields, models
+from typing import Optional, List, Dict
+from datetime import date, datetime
+from zoneinfo import ZoneInfo
+from enum import Enum
+
+from src.model.product import Produto
+
+# ========================
+# 🔹 Enums
+# ========================
+class SupplierType(str, Enum):
+    PESSOA_JURIDICA = "PJ"
+    PESSOA_FISICA = "PF"
+
+class TaxRegime(str, Enum):
+    SIMPLES_NACIONAL = "Simples Nacional"
+    LUCRO_PRESUMIDO = "Lucro Presumido"
+    LUCRO_REAL = "Lucro Real"
+    MEI = "MEI"
+    OUTRO = "Outro"
+
+class IEStatus(str, Enum):
+    CONTRIBUINTE = "Contribuinte"
+    ISENTO = "Isento"
+    NAO_CONTRIBUINTE = "Não Contribuinte"
+
+class PaymentTerm(str, Enum):
+    AVISTA = "À vista"
+    DIAS_7 = "7 dias"
+    DIAS_14 = "14 dias"
+    DIAS_21 = "21 dias"
+    DIAS_28 = "28 dias"
+    DIAS_30 = "30 dias"
+    DIAS_45 = "45 dias"
+    DIAS_60 = "60 dias"
+    PERSONALIZADO = "Personalizado"
+
+class SupplierStatus(str, Enum):
+    ATIVO = "Ativo"
+    INATIVO = "Inativo"
+    BLOQUEADO = "Bloqueado"
+    PENDENTE = "Pendente"
 
 
-# from datetime import datetime, date
-# from enum import Enum
+# ========================
+# 🔹 Fornecedor
+# ========================
+class Fornecedor(models.Model):
+    id = fields.IntField(pk=True)
+    tipo = fields.CharEnumField(SupplierType, default=SupplierType.PESSOA_JURIDICA)
+    razao_social = fields.CharField(max_length=200)
+    nome_fantasia = fields.CharField(max_length=200, null=True)
+    cnpj = fields.CharField(max_length=14, unique=True, null=True)
+    cpf = fields.CharField(max_length=11, unique=True, null=True)
+    ie_status = fields.CharEnumField(IEStatus, default=IEStatus.CONTRIBUINTE)
+    inscricao_estadual = fields.CharField(max_length=20, null=True)
+    inscricao_municipal = fields.CharField(max_length=20, null=True)
+    regime_tributario = fields.CharEnumField(TaxRegime, default=TaxRegime.SIMPLES_NACIONAL)
+    email = fields.CharField(max_length=200, null=True)
+    telefones = fields.JSONField(null=True)  # lista
+    site = fields.CharField(max_length=200, null=True)
+    contato_principal = fields.JSONField(null=True)  # dict
+    contatos_secundarios = fields.JSONField(null=True)  # lista
+    endereco = fields.JSONField(null=True)  # dict
+    prazo_pagamento = fields.CharEnumField(PaymentTerm, default=PaymentTerm.DIAS_30)
+    prazo_personalizado_dias = fields.IntField(null=True)
+    limite_credito = fields.FloatField(default=0)
+    desconto_padrao_percent = fields.FloatField(default=0)
+    contas_bancarias = fields.JSONField(null=True)  # lista
+    categorias_fornecimento = fields.JSONField(null=True)  # lista
+    observacoes = fields.TextField(null=True)
+    status = fields.CharEnumField(SupplierStatus, default=SupplierStatus.ATIVO)
+    ativo_desde = fields.DateField(null=True)
+    criado_por = fields.CharField(max_length=100, null=True)
+    atualizado_por = fields.CharField(max_length=100, null=True)
+    criado_em = fields.DatetimeField(default=datetime.now(ZoneInfo("America/Sao_Paulo")))
+    atualizado_em = fields.DatetimeField(default=datetime.now(ZoneInfo("America/Sao_Paulo")))
 
-# from sqlmodel import SQLModel, Field, Column, JSON, Relationship, String, Text
-
-# if TYPE_CHECKING:
-#     from src.model.user import Usuario
-
-# # =========================
-# # Enums
-# # =========================
-# class SupplierType(str, Enum):
-#     PESSOA_JURIDICA = "PJ"
-#     PESSOA_FISICA = "PF"
-
-# class TaxRegime(str, Enum):
-#     SIMPLES_NACIONAL = "Simples Nacional"
-#     LUCRO_PRESUMIDO = "Lucro Presumido"
-#     LUCRO_REAL = "Lucro Real"
-#     MEI = "MEI"
-#     OUTRO = "Outro"
-
-# class IEStatus(str, Enum):
-#     CONTRIBUINTE = "Contribuinte"
-#     ISENTO = "Isento"
-#     NAO_CONTRIBUINTE = "Não Contribuinte"
-
-# class PaymentTerm(str, Enum):
-#     AVISTA = "À vista"
-#     DIAS_7 = "7 dias"
-#     DIAS_14 = "14 dias"
-#     DIAS_21 = "21 dias"
-#     DIAS_28 = "28 dias"
-#     DIAS_30 = "30 dias"
-#     DIAS_45 = "45 dias"
-#     DIAS_60 = "60 dias"
-#     PERSONALIZADO = "Personalizado"
-
-# class SupplierStatus(str, Enum):
-#     ATIVO = "Ativo"
-#     INATIVO = "Inativo"
-#     BLOQUEADO = "Bloqueado"
-#     PENDENTE = "Pendente"
-    
-    
-# # =========================
-# # Modelo principal: Fornecedor
-# # =========================
-# class Fornecedor(SQLModel, table=True):
-
-#     id: Optional[int] = Field(default=None, primary_key=True)
-
-#     # Identificação
-#     tipo: SupplierType = Field(default=SupplierType.PESSOA_JURIDICA, index=True)
-#     razao_social: str = Field(sa_column=Column("razao_social", String(200), nullable=False))
-#     nome_fantasia: Optional[str] = Field(default=None, sa_column=Column(String(200)))
-
-#     # Documentos
-#     cnpj: Optional[str] = Field(default=None, sa_column=Column(String(14), unique=True, index=True))
-#     cpf: Optional[str] = Field(default=None, sa_column=Column(String(11), unique=True, index=True))
-#     ie_status: IEStatus = Field(default=IEStatus.CONTRIBUINTE)
-#     inscricao_estadual: Optional[str] = Field(default=None, sa_column=Column(String(20)))
-#     inscricao_municipal: Optional[str] = Field(default=None, sa_column=Column(String(20)))
-
-#     # Fiscal
-#     regime_tributario: TaxRegime = Field(default=TaxRegime.SIMPLES_NACIONAL)
-
-#     # Contatos
-#     email: Optional[str] = Field(default=None, sa_column=Column(String(200)))
-#     telefones: Optional[List[dict]] = Field(default=None, sa_column=Column(JSON))
-#     site: Optional[str] = Field(default=None, sa_column=Column(String(200)))
-#     contato_principal: Optional[dict] = Field(default=None, sa_column=Column(JSON))
-#     contatos_secundarios: Optional[List[dict]] = Field(default=None, sa_column=Column(JSON))
-
-#     # Endereço
-#     endereco: Optional[dict] = Field(default=None, sa_column=Column(JSON))
-
-#     # Financeiro
-#     prazo_pagamento: PaymentTerm = Field(default=PaymentTerm.DIAS_30)
-#     prazo_personalizado_dias: Optional[int] = None
-#     limite_credito: float = Field(default=0)
-#     desconto_padrao_percent: float = Field(default=0)
-
-#     # Bancário
-#     contas_bancarias: Optional[List[dict]] = Field(default=None, sa_column=Column(JSON))
-
-#     # Operacional
-#     categorias_fornecimento: Optional[List[str]] = Field(default=None, sa_column=Column(JSON))
-#     observacoes: Optional[str] = Field(default=None, sa_column=Column(Text))
-#     status: SupplierStatus = Field(default=SupplierStatus.ATIVO)
-
-#     # Auditoria
-#     criado_em: datetime = Field(default_factory=datetime.now)
-#     atualizado_em: datetime = Field(default_factory=datetime.now)
-#     ativo_desde: Optional[date] = None
-#     criado_por: Optional[str] = Field(default=None, sa_column=Column(String(100)))
-#     atualizado_por: Optional[str] = Field(default=None, sa_column=Column(String(100)))
-
-#     # Chave estrangeira para usuário
-#     usuario_id: int = Field(foreign_key="usuarios.id", nullable=False)
-#     usuario: Optional["Usuario"] = Relationship(back_populates="fornecedores")
-
-
-# # =========================
-# # 🔹 Resolver forward refs do SQLModel
-# # =========================
-# Fornecedor.model_rebuild()
+    # 🔹 Relacionamentos
+    usuario = fields.ForeignKeyField("models.Usuario", related_name="fornecedores", on_delete=fields.CASCADE)
+    produtos: fields.ReverseRelation["Produto"]

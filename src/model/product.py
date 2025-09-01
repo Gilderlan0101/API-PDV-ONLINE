@@ -1,94 +1,80 @@
+from tortoise import fields, models
 from datetime import datetime
-from typing import Optional
 from zoneinfo import ZoneInfo
-from sqlmodel import Field, Relationship, SQLModel
+from typing import Optional, List
 
-
-# Relações
-
+from src.model.sale import Sales
 
 # ========================
 # 🔹 Produto
 # ========================
-class Produto(SQLModel, table=True):
-    id: int | None = Field(default=None, primary_key=True)
-    product_code: str = Field(index=True, max_length=50)
-    name: str = Field(index=True, max_length=150)
-    stock: int = Field(default=0)
-    stoke_min: int = Field(default=0)
-    stoke_max: int = Field(default=0)
-    date_expired: Optional[datetime] = None
-    fabricator: Optional[str] = None
-    cost_price: float
-    price_uni: float
-    sale_price: float
-    supplier: Optional[str] = None
-    lot_bar_code: Optional[str] = None
-    image_url: Optional[str] = None
+class Produto(models.Model):
+    id = fields.IntField(pk=True)
+    product_code = fields.CharField(max_length=50, index=True)
+    name = fields.CharField(max_length=150, index=True)
+    stock = fields.IntField(default=0)
+    stoke_min = fields.IntField(default=0)
+    stoke_max = fields.IntField(default=0)
+    date_expired = fields.DatetimeField(null=True)
+    fabricator = fields.CharField(max_length=150, null=True)
+    cost_price = fields.FloatField()
+    price_uni = fields.FloatField()
+    sale_price = fields.FloatField()
+    supplier = fields.CharField(max_length=150, null=True)
+    lot_bar_code = fields.CharField(max_length=100, null=True)
+    image_url = fields.CharField(max_length=255, null=True)
 
-    # 🔹 Campos extras do schema
-    product_type: Optional[str] = None
-    active: Optional[str] = None
-    group: Optional[str] = None
-    sub_group: Optional[str] = None
-    sector: Optional[str] = None
-    unit: Optional[str] = None
-    controllstoke: Optional[str] = None
-    sales_config: Optional[str] = None  # Pode salvar JSON
+    # Campos extras
+    product_type = fields.CharField(max_length=100, null=True)
+    active = fields.BooleanField(default=True)
+    group = fields.CharField(max_length=100, null=True)
+    sub_group = fields.CharField(max_length=100, null=True)
+    sector = fields.CharField(max_length=100, null=True)
+    unit = fields.CharField(max_length=20, null=True)
+    controllstoke = fields.CharField(max_length=50, null=True)
+    sales_config = fields.CharField(max_length=50, null=True)
 
-    criado_em: datetime = Field(
-        default_factory=lambda: datetime.now(ZoneInfo('America/Sao_Paulo'))
+    criado_em = fields.DatetimeField(default=datetime.now(ZoneInfo("America/Sao_Paulo")))
+    atualizado_em = fields.DatetimeField(default=datetime.now(ZoneInfo("America/Sao_Paulo")))
+
+    # 🔹 Relacionamentos
+    usuario = fields.ForeignKeyField(
+        "models.Usuario", related_name="produtos", on_delete=fields.CASCADE
     )
-    atualizado_em: datetime = Field(
-        default_factory=lambda: datetime.now(ZoneInfo('America/Sao_Paulo'))
+    fornecedor = fields.ForeignKeyField(
+        "models.Fornecedor", related_name="produtos", null=True, on_delete=fields.SET_NULL
     )
 
-    usuario_id: int = Field(foreign_key='usuarios.id')
-    usuario: Optional['Usuario'] = Relationship(back_populates='produtos')  # type: ignore
-    # 🔹 Relação com fornecedor
-    fornecedor_id: Optional[int] = Field(default=None, foreign_key='fornecedor.id')
-    fornecedor: Optional['Fornecedor'] = Relationship(back_populates='produtos')
-    
+    vendas: fields.ReverseRelation["Sales"]
 
 
 # ========================
 # 🔹 Produto Arquivado
 # ========================
-class ProdutoArquivado(SQLModel, table=True):
-    """Produto arquivado para histórico e relatórios."""
-
-    id: Optional[int] = Field(default=None, primary_key=True)
-
-    # Copia os dados do produto
-    product_code: str = Field(index=True, max_length=50)
-    name: str = Field(index=True, max_length=150)
-    stock: int = Field(default=0)
-    date_expired: Optional[datetime] = None
-    fabricator: Optional[str] = None
-    cost_price: float
-    price_uni: float
-    sale_price: float
-    supplier: Optional[str] = None
-    lot_bar_code: Optional[str] = None
-    image_url: Optional[str] = None
+class ProdutoArquivado(models.Model):
+    id = fields.IntField(pk=True)
+    product_code = fields.CharField(max_length=50, index=True)
+    name = fields.CharField(max_length=150, index=True)
+    stock = fields.IntField(default=0)
+    date_expired = fields.DatetimeField(null=True)
+    fabricator = fields.CharField(max_length=150, null=True)
+    cost_price = fields.FloatField()
+    price_uni = fields.FloatField()
+    sale_price = fields.FloatField()
+    supplier = fields.CharField(max_length=150, null=True)
+    lot_bar_code = fields.CharField(max_length=100, null=True)
+    image_url = fields.CharField(max_length=255, null=True)
 
     # Motivo do arquivamento
-    description: str = Field(
-        ...,
-        description='Motivo do arquivamento (ex: vendido, danificado, removido)',
-    )
+    description = fields.TextField()
 
-    # Auditoria
-    criado_em: datetime = Field(
-        default_factory=lambda: datetime.now(ZoneInfo('America/Sao_Paulo'))
-    )
-    atualizado_em: datetime = Field(
-        default_factory=lambda: datetime.now(ZoneInfo('America/Sao_Paulo'))
-    )
+    criado_em = fields.DatetimeField(default=datetime.now(ZoneInfo("America/Sao_Paulo")))
+    atualizado_em = fields.DatetimeField(default=datetime.now(ZoneInfo("America/Sao_Paulo")))
 
-    # Relacionamentos
-    usuario_id: int = Field(foreign_key='usuarios.id')
-    usuario: Optional['Usuario'] = Relationship(back_populates='produtos_arquivados')  # type: ignore
-
-    # FK opcional para histórico do produto original
-    produto_id: Optional[int] = Field(default=None, foreign_key='produto.id')
+    # 🔹 Relacionamentos
+    usuario = fields.ForeignKeyField(
+        "models.Usuario", related_name="produtos_arquivados", on_delete=fields.CASCADE
+    )
+    produto = fields.ForeignKeyField(
+        "models.Produto", related_name="arquivados", null=True, on_delete=fields.SET_NULL
+    )

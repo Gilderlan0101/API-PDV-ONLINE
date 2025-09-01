@@ -1,19 +1,24 @@
 from contextlib import asynccontextmanager
+from tortoise import Tortoise
 import uvicorn
 from dotenv import load_dotenv
 from fastapi import FastAPI
 
 # Importa o modelo para registrar na metadata do SQLModel
-from src.conf.database import create_db_and_tables, engine
+from src.conf.database import TORTOISE_ORM
 
 # Rotas
 from src.routes.cliente_cnpj import ConsultaRoute
 from src.routes.login import Login
 from src.routes.products import products_router, fornecedores, ticket_prods
 from src.routes.car import cart_router
-from src.routes.registre import RegisterRoute
-from src.routes.updates import AllDatas
-from src.routes.account.account import RegisteEmpreg
+from src.routes.registre import registerRT
+from src.routes.updates import allDatas
+from src.routes.account.account import registe_empreg
+from src.routes.customer.customer_registration import customers
+from src.routes.cadastros.operador_caixa import operador
+# from src.routes.relatorio.relatorio import router
+
 
 # Dados de teste mocados
 from src.utils.dados_teste import create_mock_data
@@ -25,29 +30,30 @@ from fastapi.middleware.cors import CORSMiddleware
 async def lifespan(app: FastAPI):
     """
     Gerencia o ciclo de vida da aplicação.
-
-    - Carrega variáveis de ambiente
-    - Cria banco e tabelas
-    - Popula dados de teste
     """
     load_dotenv()
-    create_db_and_tables()
+    
+    # Inicializa Tortoise ORM
+    await Tortoise.init(config=TORTOISE_ORM)
+    await Tortoise.generate_schemas()  # cria tabelas se necessário
     print('Banco de dados iniciado e tabelas criadas!')
 
-    # Dados de teste para desenvolvimento
-    create_mock_data()
+    # Popula dados de teste
+    await create_mock_data()
 
     yield
 
-    # Finalização da aplicação
+    # Fecha conexões
+    await Tortoise.close_connections()
     print('Fim da aplicação')
-    engine.dispose()
-
 
 class Server:
     def __init__(self):
         self.api = FastAPI(
             title='PDV API',
+            config=TORTOISE_ORM,
+            generate_schemas=True,
+            add_exception_handlers=True,
             description="""
             API para gerenciamento de um sistema PDV (Ponto de Venda).
 
@@ -113,15 +119,15 @@ class Server:
         )
 
         # Cadastro de usuário
-        register_route = RegisterRoute()
+        
         self.api.include_router(
-            register_route.registerRT, prefix="/auth", tags=["Autenticação"]
+            registerRT, prefix="/auth", tags=["Autenticação"]
         )
 
         # Cadastro de funcionários
-        funcs_router = RegisteEmpreg()
+        
         self.api.include_router(
-            funcs_router.router, prefix="/funcionarios", tags=["Funcionários"]
+            registe_empreg, prefix="/funcionarios", tags=["Funcionários"]
         )
 
         # Consulta de clientes
@@ -138,13 +144,18 @@ class Server:
         
         self.api.include_router(fornecedores)
         self.api.include_router(ticket_prods)
+        
+        self.api.include_router(operador)
 
 
         # Visualização de dados em tempo real
-        route_update_dash = AllDatas()
+        
         self.api.include_router(
-            route_update_dash.allDatas, prefix="/dashboard", tags=["Dashboard"]
+            allDatas, prefix="/dashboard", tags=["Dashboard"]
         )
+        
+        # Cadastra e visualiza dados de clientes
+        self.api.include_router(customers)
 
     def run(self, host: str = '127.0.0.1', port: int = 8000):
         """Inicia o servidor Uvicorn."""

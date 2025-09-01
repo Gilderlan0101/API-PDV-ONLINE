@@ -18,5 +18,7 @@ async def atualizar_item(
         user_id=current_user.id, # type: ignore
         quantity=item.quantity,
         discount=item.discount,
-        addition=item.addition,
+        addition=item.addition,replace_quantity=item.replace_quantity,
+        replace_discount=item.replace_discount,
+        replace_addition=item.replace_addition,
     )

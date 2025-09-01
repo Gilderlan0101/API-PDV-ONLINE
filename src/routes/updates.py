@@ -1,58 +1,61 @@
 from fastapi import APIRouter, Depends, HTTPException
+from datetime import datetime, time
+from zoneinfo import ZoneInfo
+
 from src.model.sale import Sales
 from src.model.user import Usuario
 from src.auth.deps import get_current_user
-from src.conf.database import engine
-from sqlmodel import Session, select
+
+allDatas = APIRouter()
 
 
-class AllDatas:
-    def __init__(self) -> None:
-        self.allDatas = APIRouter()
+@allDatas.get('/profit')
+async def profit(current_user: Usuario = Depends(get_current_user)):
+    """Rota que exibe o lucro do dia em tempo real"""
+    if not current_user.id:
+        raise HTTPException(status_code=400, detail='Usuário inválido')
 
-        self.statup_route()
+    try:
+        # Data atual
+        today = datetime.now(ZoneInfo("America/Sao_Paulo")).date()
 
-    def statup_route(self):
-        """
-        Essas rotas fornecem os dados essenciais para exibição na home da dashboard,
-        incluindo: ganhos totais, produtos mais vendidos, horários de pico de venda,
-        caixas com maior volume de vendas, entre outros insights relevantes.
-        """
+        # Define início e fim do dia
+        start_of_day = datetime.combine(today, time.min, tzinfo=ZoneInfo("America/Sao_Paulo"))
+        end_of_day = datetime.combine(today, time.max, tzinfo=ZoneInfo("America/Sao_Paulo"))
 
-        @self.allDatas.get('/profit')
-        async def profit(current_user: Usuario = Depends(get_current_user)):
-            """Rota que exibe o lucro do dia em tempo real"""
-            total_user_profit = 0.0
-            total = 0.0
-            sales_of_the_day = 0
+        # Busca todas as vendas do usuário no dia atual
+        sales = await Sales.filter(
+            usuario_id=current_user.id,
+            criado_em__gte=start_of_day,
+            criado_em__lte=end_of_day
+        ).all()
 
-            if not current_user.id:
-                raise HTTPException(status_code=400, detail='Usuário inválido')
+        total_user_profit = 0.0  # Receita bruta total
+        total_lucro = 0.0  # Lucro líquido total
+        sales_of_the_day = len(sales)
 
-            try:
-                with Session(engine) as session:
-                    # Busca todas as vendas do usuário
-                    sales = session.exec(
-                        select(Sales).where(Sales.usuario_id == current_user.id)
-                    ).all()
+        sales_list = []
+        for sale in sales:
+            total_user_profit += sale.total_price
+            total_lucro += sale.lucro_total
 
-                    total_user_profit = 0.0  # Receita bruta total (soma total_price)
-                    total = 0.0  # Lucro líquido total (total_price - custo)
-                    sales_of_the_day = 0  # Contador de vendas
+            sales_list.append({
+                'id': sale.id,
+                'product_name': sale.product_name,
+                'quantity': sale.quantity,
+                'total_price': sale.total_price,
+                'lucro_total': sale.lucro_total,
+                'cost_price': sale.cost_price,
+                'codigo_da_venda': sale.codigo_da_venda,
+                'created_at': sale.criado_em.strftime('%d/%m/%Y %H:%M:%S') if sale.criado_em else None
+            })
 
-                    for sale in sales:
-                        total_user_profit += sale.total_price
-                        total += (
-                            sale.lucro_total
-                        )  # lucro_total deve ser lucro líquido (total_price - custo)
-                        sales_of_the_day += 1
+        return {
+            'total_user_profit': f'{total_user_profit:.2f}',  # Receita bruta
+            'total_lucro': f'{total_lucro:.2f}',  # Lucro líquido real
+            'sales_of_the_day': sales_of_the_day,
+            'sales': sales_list,
+        }
 
-                return {
-                    'total_user_profit': f'{total_user_profit:.2f}',  # Receita bruta
-                    'total': f'{total:.2f}',  # Lucro líquido real
-                    'sales_of_the_day': sales_of_the_day,
-                    'sales': sales,
-                }
-
-            except Exception as error:
-                raise HTTPException(status_code=500, detail=str(error))
+    except Exception as error:
+        raise HTTPException(status_code=500, detail=str(error))

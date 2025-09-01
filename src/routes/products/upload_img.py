@@ -1,8 +1,7 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from fastapi.responses import FileResponse
 from pathlib import Path
-from sqlmodel import Session
-from src.conf.database import engine
+from tortoise.transactions import in_transaction
 from src.model.product import Produto
 
 router = APIRouter()
@@ -10,6 +9,7 @@ router = APIRouter()
 # Diretório onde as imagens serão salvas
 IMAGES_DIR = Path("static/images")
 IMAGES_DIR.mkdir(parents=True, exist_ok=True)
+
 
 # ===============================
 # Upload de imagem do produto
@@ -19,7 +19,6 @@ async def upload_image(product_id: int, file: UploadFile = File(...)):
     # Verifica extensão permitida
     allowed_extensions = {".png", ".jpg", ".jpeg", ".gif", ".webp"}
     file_ext = Path(file.filename).suffix.lower()
-
     if file_ext not in allowed_extensions:
         raise HTTPException(status_code=400, detail="Formato de arquivo não suportado")
 
@@ -28,15 +27,14 @@ async def upload_image(product_id: int, file: UploadFile = File(...)):
     file_path = IMAGES_DIR / unique_filename
 
     # Salva o arquivo
+    content = await file.read()
     with open(file_path, "wb") as f:
-        content = await file.read()
         f.write(content)
 
     # Atualiza a URL da imagem no banco
-    with Session(engine) as session:
-        produto = session.get(Produto, product_id)
+    async with in_transaction() as conn:
+        produto = await Produto.filter(id=product_id).using_db(conn).first()
         if not produto:
-            # Remove o arquivo se o produto não existir
             if file_path.exists():
                 file_path.unlink()
             raise HTTPException(status_code=404, detail="Produto não encontrado")
@@ -48,8 +46,7 @@ async def upload_image(product_id: int, file: UploadFile = File(...)):
                 old_path.unlink()
 
         produto.image_url = str(file_path)
-        session.add(produto)
-        session.commit()
+        await produto.save(using_db=conn)
 
     return {
         "message": "Imagem enviada com sucesso",
@@ -62,10 +59,9 @@ async def upload_image(product_id: int, file: UploadFile = File(...)):
 # ===============================
 @router.get("/produto/{product_id}/imagem")
 async def get_image(product_id: int):
-    with Session(engine) as session:
-        produto = session.get(Produto, product_id)
-        if not produto or not produto.image_url:
-            raise HTTPException(status_code=404, detail="Imagem não encontrada")
+    produto = await Produto.filter(id=product_id).first()
+    if not produto or not produto.image_url:
+        raise HTTPException(status_code=404, detail="Imagem não encontrada")
 
     file_path = Path(produto.image_url)
     if not file_path.exists():
@@ -81,7 +77,6 @@ async def get_image(product_id: int):
     }
     content_type = extension_to_type.get(file_path.suffix.lower(), "image/jpeg")
 
-    # Retorna a imagem com headers CORS
     return FileResponse(
         file_path,
         media_type=content_type,

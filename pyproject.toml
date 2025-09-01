@@ -23,6 +23,12 @@ bcrypt = "^4.3.0"
 black = "^25.1.0"
 isort = "^6.0.1"
 validate-docbr = "^1.11.1"
+pydantic-br = "^1.1.0"
+faker = "^37.6.0"
+matplotlib = "^3.10.6"
+fpdf = "^1.7.2"
+reportlab = "^4.4.3"
+tortoise-orm = "^0.25.1"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

@@ -1,36 +1,29 @@
-from datetime import datetime
+from tortoise import fields, models
 from typing import Optional
+from datetime import datetime
 from zoneinfo import ZoneInfo
-from sqlmodel import Field, Relationship, SQLModel
 
 
-# Tabela que registra no banco os produtos vendidos e lucro total
-class Sales(SQLModel, table=True):
 
-    id: Optional[int] = Field(default=None, primary_key=True)
-    product_name: str = Field(index=True, max_length=150)
-    quantity: int = Field(default=1)
-    total_price: float = Field()
-    lucro_total: float = Field(default=0.0)
-    cost_price: float
-
-    criado_em: datetime = Field(
-        default_factory=lambda: datetime.now(ZoneInfo('America/Sao_Paulo'))
-    )
+class Sales(models.Model):
+    id = fields.IntField(pk=True)
+    product_name = fields.CharField(max_length=150)
+    quantity = fields.IntField(default=1)
+    total_price = fields.FloatField()
+    lucro_total = fields.FloatField(default=0.0)
+    cost_price = fields.FloatField()
+    codigo_da_venda = fields.CharField(max_length=6, null=True)
+    criado_em = fields.DatetimeField(default=datetime.now(ZoneInfo("America/Sao_Paulo")))
 
     # 🔹 Relacionamento com o usuário (empresa)
-    usuario_id: int = Field(foreign_key="usuarios.id")  # type: ignore
-    usuario: Optional["Usuario"] = Relationship(back_populates="vendas")  # type: ignore
-    # 🔹 Relacionamento com o funcionário que fez a venda
-    funcionario_id: Optional[int] = Field(
-        default=None,
-        foreign_key="employees.id",  # tem que bater com o nome da tabela no Employees
+    usuario = fields.ForeignKeyField("models.Usuario", related_name="vendas", on_delete=fields.CASCADE)
+
+    # 🔹 Relacionamento com o funcionário
+    funcionario = fields.ForeignKeyField(
+        "models.Employees", related_name="vendas", null=True, on_delete=fields.SET_NULL
     )
 
-    funcionario: Optional["Employees"] = Relationship(back_populates="vendas")  # type: ignore
-
-    # 🔹 Relacionamento com o produto vendido
-    produto_id: Optional[int] = Field(foreign_key="produto.id")
-    codigo_da_venda: Optional[str] = Field(max_length=6)
-
-    produto: Optional["Produto"] = Relationship()  # type: ignore
+    # 🔹 Relacionamento com o produto
+    produto = fields.ForeignKeyField(
+        "models.Produto", related_name="vendas", null=True, on_delete=fields.SET_NULL
+    )

@@ -10,5 +10,5 @@ class TicketReadSchema(BaseModel):
     id: int
     name: str
     description: Optional[str] = None
-    criado_em: datetime
-    atualizado_em: datetime
+    # criado_em: datetime
+    # atualizado_em: datetime

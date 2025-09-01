@@ -25,15 +25,20 @@ async def limpar_carrinho(current_user: Usuario = Depends(get_current_user)):
     return await cart.limpar_carrinho(current_user.id)  # type: ignore
 
 
-@router.delete("/remover_por_venda")
-async def remover_produtos_por_venda(
-    sale_code: str = Query(
-        ..., description="Código da venda para remover produtos do carrinho"
-    ),
-    current_user: Usuario = Depends(get_current_user),
-):
-    """
-    Remove produtos do carrinho baseado no código da venda.
-    Útil para devoluções ou trocas.
-    """
-    return await cart.remover_produtos_por_venda(sale_code)
+
+###################
+#   DESATIVADA    #
+###################
+
+# @router.delete("/remover_por_venda")
+# async def remover_produtos_por_venda(
+#     sale_code: str = Query(
+#         ..., description="Código da venda para remover produtos do carrinho"
+#     ),
+#     current_user: Usuario = Depends(get_current_user),
+# ):
+#     """
+#     Remove produtos do carrinho baseado no código da venda.
+#     Útil para devoluções ou trocas.
+#     """
+#     return await cart.remover_produtos_por_venda(sale_code)
