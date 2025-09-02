@@ -5,7 +5,7 @@ from tortoise.transactions import in_transaction
 from tortoise.functions import Count
 from src.model.user import Usuario
 from src.model.fornecedor import Fornecedor, SupplierStatus
-from src.schemas.fornecedor.schemas_fornecedor import SupplierCreate, SupplierListResponse, SupplierSummary
+from src.schemas.fornecedor.schemas_fornecedor import SupplierBase, SupplierListResponse, SupplierSummary
 from src.auth.deps import get_current_user
 
 router = APIRouter()
@@ -16,7 +16,7 @@ router = APIRouter()
 # ===============================
 @router.post("/cadastra/", status_code=status.HTTP_201_CREATED)
 async def create_fornecedor(
-    fornecedor: SupplierCreate,
+    fornecedor: SupplierBase,
     current_user: Usuario = Depends(get_current_user),
 ):
     if not current_user.id:
