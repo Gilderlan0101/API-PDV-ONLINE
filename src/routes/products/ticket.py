@@ -1,3 +1,5 @@
+from datetime import datetime
+from zoneinfo import ZoneInfo
 from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 from tortoise.transactions import in_transaction
@@ -9,10 +11,6 @@ from src.schemas.fornecedor.schema_ticket import TicketCreateSchema, TicketReadS
 
 router = APIRouter(tags=["Tickets"])
 
-
-# ========================
-# 🔹 Criar ticket
-# ========================
 @router.post("/criar", response_model=TicketReadSchema)
 async def create_ticket(
     ticket: TicketCreateSchema,
@@ -27,9 +25,16 @@ async def create_ticket(
         )
 
     async with in_transaction() as conn:
-        db_ticket = Ticket(**ticket.model_dump(), usuario_id=current_user.id)
+        # 🔹 CORREÇÃO: Defina as datas manualmente
+        now = datetime.now(ZoneInfo("America/Sao_Paulo"))
+        db_ticket = Ticket(
+            **ticket.model_dump(), 
+            usuario_id=current_user.id,
+            criado_em=now,
+            atualizado_em=now
+        )
         await db_ticket.save(using_db=conn)
-        await db_ticket.fetch_related("usuario")  # garante que relacionamento esteja disponível
+        await db_ticket.fetch_related("usuario")
 
     return db_ticket
 
