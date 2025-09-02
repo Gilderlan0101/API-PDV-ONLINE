@@ -1,12 +1,12 @@
 import locale
 from typing import Any, Dict, Optional
-from datetime import datetime
 from src.model.product import Produto
 from src.model.carItems import CartItem
-from src.model.user import Usuario
+from src.model.employee import Employees
 
 # Configura locale para Real brasileiro
 locale.setlocale(locale.LC_ALL, "pt_BR.UTF-8")
+
 
 class CartManagerDB:
     """Carrinho persistido no banco de dados usando Tortoise ORM"""
@@ -18,21 +18,34 @@ class CartManagerDB:
         user_id: int,
         sale_code: Optional[str] = None,
     ) -> Dict[str, Any]:
+        # 1️⃣ Buscar o produto
         produto = await Produto.get_or_none(id=product_id)
         if not produto:
             return {"aviso": "Produto não encontrado"}
         if produto.stock < quantity:
             return {"aviso": "Estoque insuficiente"}
 
-        cart_item = await CartItem.filter(user_id=user_id, product_id=product_id).first()
+        # 2️⃣ Verificar se o user_id é funcionário e pegar o admin dono
+        funcionario = await Employees.get_or_none(id=user_id)
+        if funcionario and funcionario.usuario:
+            user_id_carrinho = funcionario.usuario.id  # carrinho do admin
+            funcionario_id = funcionario.id
+            funcionario_nome = funcionario.nome
+        else:
+            user_id_carrinho = user_id  # admin adicionando direto
+            funcionario_id = None
+            funcionario_nome = None
+
+        # 3️⃣ Adicionar ou atualizar item no carrinho
+        cart_item = await CartItem.get_or_none(user_id=user_id_carrinho, product_id=product_id)
         if cart_item:
             cart_item.quantity += quantity
             cart_item.price_total += produto.sale_price * quantity
-            cart_item.product_code = sale_code
+            cart_item.sale_code = sale_code
             await cart_item.save()
         else:
             cart_item = await CartItem.create(
-                user_id=user_id,
+                user_id=user_id_carrinho,
                 product_id=product_id,
                 product_name=produto.name,
                 quantity=quantity,
@@ -41,13 +54,12 @@ class CartManagerDB:
                 sale_code=sale_code,
             )
 
-        return {"item_adicionado": cart_item}
-
-    async def remove_produto(self, product_id: int, user_id: int):
-        cart_item = await CartItem.filter(user_id=user_id, product_id=product_id).first()
-        if cart_item:
-            await cart_item.delete()
-        return {"aviso": "Produto removido"}
+        return {
+            "item_adicionado": cart_item,
+            "funcionario": {"id": funcionario_id, "nome": funcionario_nome},
+            "admin_produto_id": produto.id,
+            "nome": produto.name
+        }
 
     async def listar_produtos(self, user_id: int):
         # Remove itens com quantity == 0
@@ -57,6 +69,12 @@ class CartManagerDB:
 
         produtos = await CartItem.filter(user_id=user_id).all()
         return produtos
+
+    async def remove_produto(self, product_id: int, user_id: int):
+        cart_item = await CartItem.filter(user_id=user_id, product_id=product_id).first()
+        if cart_item:
+            await cart_item.delete()
+        return {"aviso": "Produto removido"}
 
     async def update_produto(
         self,
@@ -91,7 +109,7 @@ class CartManagerDB:
 
         # --- Total ---
         cart_item.total_price = subtotal - (cart_item.discount or 0) + (cart_item.addition or 0)
-        if cart_item.price_total < 0:
+        if cart_item.total_price < 0:
             cart_item.total_price = 0
 
         if cart_item.quantity == 0:
@@ -105,7 +123,7 @@ class CartManagerDB:
             "preco_unitario": locale.currency(cart_item.price, grouping=True),
             "desconto": locale.currency(cart_item.discount or 0, grouping=True),
             "acrescimo": locale.currency(cart_item.addition or 0, grouping=True),
-            "total": locale.currency(cart_item.price_total, grouping=True),
+            "total": locale.currency(cart_item.total_price, grouping=True),
         }
 
     async def limpar_carrinho(self, user_id: int):

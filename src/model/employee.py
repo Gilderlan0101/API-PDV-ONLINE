@@ -15,7 +15,7 @@ class Employees(models.Model):
     nome = fields.CharField(max_length=150, index=True)
     cargo = fields.CharField(max_length=100, null=True)
     email = fields.CharField(max_length=150, null=True)
-    senha = fields.CharField(max_length=4, null=True)
+    senha = fields.CharField(max_length=90, null=True)
     telefone = fields.CharField(max_length=20, null=True)
     ativo = fields.BooleanField(default=True)
     criado_em = fields.DatetimeField(default=datetime.now(ZoneInfo("America/Sao_Paulo")))

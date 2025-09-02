@@ -38,7 +38,7 @@ async def abertura_caixa(
         raise HTTPException(status_code=400, detail='Este funcionário já possui um caixa aberto.')
 
     # Cria o caixa
-    novo_caixa = await Caixa.create(
+    novo_caixa =  Caixa.create(
         funcionario_id=form.funcionario_id,
         saldo_inicial=form.valor_abertura,
         saldo_atual=form.valor_abertura,

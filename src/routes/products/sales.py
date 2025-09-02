@@ -15,57 +15,60 @@ cart = CartManagerDB()
 
 
 def gerar_codigo_venda(size: int = 6) -> str:
-    return ''.join(
-        random.choice(string.ascii_uppercase + string.digits) for _ in range(size)
-    )
+    """Gera um código aleatório para a venda."""
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=size))
 
 
 @router.post("/finalizar", status_code=status.HTTP_200_OK)
 async def finalizar_venda(
-    payment_method: str = Query(..., description="Forma de pagamento: dinheiro, cartão, pix"),
+    payment_method: str = Query(..., description="Forma de pagamento: dinheiro, cartão, pix, nota"),
     funcionario_id: Optional[int] = Query(None),
     current_user: Usuario = Depends(get_current_user),
 ):
-    """Finaliza a venda do usuário e retorna JSON padronizado para frontend"""
     try:
-        produtos = await cart.listar_produtos(current_user.id)
-        if not produtos:
-            return {
-                "success": False,
-                "data": None,
-                "error": "Carrinho vazio"
-            }
+        # 🔹 Inicializa admin e operador
+        admin_user = current_user
+        funcionario_operador_id = None
+        funcionario_operador_nome = current_user.username
 
+        # 🔹 Se current_user for funcionário, pega o admin dono
+        funcionario = await Employees.filter(id=current_user.id).first()
+        if funcionario and funcionario.usuario:
+            admin_user = await funcionario.usuario
+            funcionario_operador_id = funcionario.id
+            funcionario_operador_nome = funcionario.nome
+
+        # 🔹 Se foi passado um funcionario_id, verifica se pertence ao admin
+        if funcionario_id:
+            funcionario_extra = await Employees.filter(id=funcionario_id, usuario_id=admin_user.id).first()
+            if funcionario_extra:
+                funcionario_operador_id = funcionario_extra.id
+                funcionario_operador_nome = funcionario_extra.nome
+
+        # 🔹 Listar produtos do carrinho do admin dono
+        produtos = await cart.listar_produtos(admin_user.id)
+        if not produtos:
+            return {"success": False, "data": None, "error": "Carrinho vazio"}
+
+        # 🔹 Monta detalhes da venda
         total_venda = 0.0
         venda_detalhes = []
-
         for prod in produtos:
             total_venda += prod.price_total
-            venda_detalhes.append(
-                {
-                    "produto_id": prod.product_id,
-                    "nome": prod.product_name,
-                    "quantidade": prod.quantity,
-                    "preco_unitario": prod.price,
-                }
-            )
+            venda_detalhes.append({
+                "produto_id": prod.product_id,
+                "nome": prod.product_name,
+                "quantidade": prod.quantity,
+                "preco_unitario": prod.price,
+            })
 
         sale_code = gerar_codigo_venda()
         notas_fiscais = []
 
+        # 🔹 Processa cada produto do carrinho
         for prod in venda_detalhes:
-            # Definir funcionário responsável
-            funcionario_operador_id = current_user.id
-            funcionario_operador_nome = current_user.username
-
-            if funcionario_id:
-                funcionario = await Employees.get_or_none(id=funcionario_id)
-                if funcionario:
-                    funcionario_operador_id = funcionario.id
-                    funcionario_operador_nome = funcionario.nome
-
             checkout = Checkout(
-                user_id=current_user.id,
+                user_id=admin_user.id,
                 product_name=prod["nome"],
                 produto_id=prod["produto_id"],
                 quantity=prod["quantidade"],
@@ -78,7 +81,7 @@ async def finalizar_venda(
             )
 
             nota = await checkout.process_sale(
-                current_user=current_user,
+                current_user=admin_user,
                 product_code=str(prod["produto_id"]),
                 quantity=prod["quantidade"],
                 payment_method=payment_method,
@@ -86,8 +89,9 @@ async def finalizar_venda(
             )
             notas_fiscais.append(nota)
 
-        await cart.limpar_carrinho(current_user.id)
-        relatorio = await gerar_relatorio_completo(current_user.id)
+        # 🔹 Limpa o carrinho do admin e gera relatório
+        await cart.limpar_carrinho(admin_user.id)
+        relatorio = await gerar_relatorio_completo(admin_user.id)
 
         return {
             "success": True,
@@ -95,14 +99,15 @@ async def finalizar_venda(
                 "notas_fiscais": notas_fiscais,
                 "relatorio": relatorio,
                 "total_venda": total_venda,
-                "codigo_da_venda": sale_code
+                "codigo_da_venda": sale_code,
+                "funcionario_operador_id": funcionario_operador_id,
+                "funcionario_operador_nome": funcionario_operador_nome,
+                "admin_id": admin_user.id,
             },
-            "error": None
+            "error": None,
         }
 
     except Exception as e:
-        return {
-            "success": False,
-            "data": None,
-            "error": f"Erro inesperado: {str(e)}"
-        }
+        import traceback
+        print(f"Traceback:\n{traceback.format_exc()}")
+        return {"success": False, "data": None, "error": f"Erro inesperado: {str(e)}"}

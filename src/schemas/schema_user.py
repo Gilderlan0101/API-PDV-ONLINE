@@ -75,6 +75,7 @@ class SystemUser(BaseModel):
     company_name: str
     cnpj: Optional[str] = None
     cpf: Optional[str] = None
-    is_active: bool = True  # opcional para controle de acesso
+    is_active: bool = True
+    empresa_id: Optional[int] = None  # 🔹 ID real do usuário master/empresa
 
     model_config = {'from_attributes': True}

@@ -6,6 +6,7 @@ from tortoise.transactions import in_transaction
 from dataclasses import dataclass
 
 from src.model.user import Usuario
+from src.model.employee import Employees
 from src.model.product import Produto
 from src.model.sale import Sales
 
@@ -52,59 +53,83 @@ class Checkout:
             query = query.filter(name=name)
         return await query.first()
 
-    async def process_sale(self, current_user: Usuario, product_code: str, quantity: int,
-                           payment_method: str, funcionario_id: Optional[int] = None):
-        self.user_id = current_user.id
-        self.payment_method = payment_method.lower()
+    async def process_sale(
+        self, 
+        current_user: Usuario, 
+        product_code: str, 
+        quantity: int,
+        payment_method: str, 
+        funcionario_id: Optional[int] = None
+    ):
+        try:
+            print(f"CHECKOUT_DEBUG: Iniciando process_sale")
+            print(f"CHECKOUT_DEBUG: current_user.id={current_user.id}, user_id={self.user_id}")
+            print(f"CHECKOUT_DEBUG: product_code={product_code}, quantity={quantity}")
+            print(f"CHECKOUT_DEBUG: funcionario_id={funcionario_id}, sale_code={self.sale_code}")
 
-        async with in_transaction() as connection:
-            product = await self.get_product_by_user(code=product_code)
-            if not product:
-                raise HTTPException(status_code=404, detail="Produto não encontrado")
-            if product.stock < quantity:
-                raise HTTPException(status_code=400, detail="Estoque insuficiente")
+            # 🔹 Define admin_user e operador
+            admin_user = current_user
+            operador_id = None
+            operador_nome = current_user.username if hasattr(current_user, "username") else str(current_user)
 
-            # Define operador
-            funcionario_nome = current_user.username
+            # 🔹 Se current_user for funcionário, pega o admin dono
+            funcionario_logado = await Employees.filter(id=current_user.id).first()
+            if funcionario_logado and funcionario_logado.usuario:
+                admin_user = funcionario_logado.usuario
+                operador_id = funcionario_logado.id
+                operador_nome = funcionario_logado.nome
+
+            # 🔹 Se foi passado funcionario_id (venda feita por admin para funcionário)
             if funcionario_id:
-                from src.model.employee import Employees
-                funcionario = await Employees.filter(id=funcionario_id).first()
-                if funcionario:
-                    funcionario_nome = funcionario.nome
-                else:
-                    funcionario_id = current_user.id
+                func_extra = await Employees.filter(id=funcionario_id, usuario_id=admin_user.id).first()
+                if func_extra:
+                    operador_id = func_extra.id
+                    operador_nome = func_extra.nome
 
-            self.product_name = product.name
-            self.produto_id = product.id
-            self.quantity = quantity
-            self.total_price = quantity * float(product.sale_price)
-            self.lucro_total = (float(product.sale_price) - float(product.cost_price)) * quantity
-            self.funcionario_id = funcionario_id or current_user.id
-            self.funcionario_nome = funcionario_nome
+            self.funcionario_id = operador_id
+            self.funcionario_nome = operador_nome
+            self.user_id = admin_user.id  # ⚠️ sempre registra a venda com admin
+            self.payment_method = payment_method.lower()
+            self.sale_code = self.sale_code or f"V{random.randint(10000, 99999)}"
 
-            await self.verify_datas()
+            async with in_transaction() as connection:
+                # 🔹 Busca produto
+                product = await self.get_product_by_user(code=product_code)
+                if not product:
+                    raise HTTPException(status_code=404, detail="Produto não encontrado")
 
-            # Atualiza estoque
-            product.stock -= quantity
-            product.atualizado_em = datetime.now()
-            await product.save(using_db=connection)
+                if product.stock < quantity:
+                    raise HTTPException(status_code=400, detail="Estoque insuficiente")
 
-            # Registra venda
-            self.venda = await Sales.create(
-                produto_id=self.produto_id,
-                product_name=self.product_name,
-                quantity=self.quantity,
-                total_price=self.total_price,
-                lucro_total=self.lucro_total,
-                cost_price=float(product.cost_price),
-                usuario_id=current_user.id,
-                funcionario_id=self.funcionario_id,
-                codigo_da_venda=self.sale_code,
-                using_db=connection
-            )
+                # 🔹 Atualiza estoque
+                product.stock -= quantity
+                product.atualizado_em = datetime.now()
+                await product.save(using_db=connection)
 
-            self.usuario = await Usuario.get(id=current_user.id)
-            return self.build_receipt()
+                # 🔹 Cria venda
+                sale_data = {
+                    "product_name": product.name,
+                    "quantity": quantity,
+                    "total_price": quantity * float(product.sale_price),
+                    "lucro_total": (float(product.sale_price) - float(product.cost_price)) * quantity,
+                    "cost_price": float(product.cost_price),
+                    "sale_code": self.sale_code,
+                    "usuario_id": admin_user.id,  # ⚠️ venda vinculada ao admin
+                    "produto_id": product.id,
+                    "using_db": connection
+                }
+                if self.funcionario_id:
+                    sale_data["funcionario_id"] = self.funcionario_id
+
+                self.venda = await Sales.create(**sale_data)
+                self.usuario = admin_user
+                return self.build_receipt()
+
+        except Exception as e:
+            print(f"CHECKOUT_DEBUG: ERRO em process_sale: {str(e)}")
+            import traceback
+            print(f"CHECKOUT_DEBUG: Traceback:\n{traceback.format_exc()}")
+            raise
 
     def build_receipt(self) -> dict:
         if not self.venda or not self.usuario:
@@ -116,9 +141,11 @@ class Checkout:
                     'Razão Social': self.usuario.company_name,
                     'Nome Fantasia': self.usuario.trade_name,
                     'CNPJ': self.usuario.cnpj,
-                    'Endereço': f'{self.usuario.street}, {self.usuario.home_number} - {self.usuario.city}/{self.usuario.state}',
-                    'Inscrição Estadual': self.usuario.state_registration,
-                    'Inscrição Municipal': self.usuario.municipal_registration,
+                    'Endereço': f'{getattr(self.usuario, "street", "")}, '
+                                f'{getattr(self.usuario, "number", "")} - '
+                                f'{getattr(self.usuario, "city", "")}/{getattr(self.usuario, "state", "")}',
+                    'Inscrição Estadual': getattr(self.usuario, "state_registration", ""),
+                    'Inscrição Municipal': getattr(self.usuario, "municipal_registration", ""),
                     "Operado por": self.funcionario_nome or self.usuario.username,
                     'codigo_da_venda': self.sale_code,
                 },
@@ -139,6 +166,7 @@ class Checkout:
         }
 
 
+@dataclass
 class Note(Checkout):
     """Extensão de Checkout para gerar notas fiscais adicionais"""
 
