@@ -32,7 +32,7 @@ class Produto(models.Model):
     sector = fields.CharField(max_length=100, null=True)
     unit = fields.CharField(max_length=20, null=True)
     controllstoke = fields.CharField(max_length=50, null=True)
-    sales_config = fields.CharField(max_length=50, null=True)
+    sales_config = fields.CharField(max_length=150, null=True)
 
     criado_em = fields.DatetimeField(default=datetime.now(ZoneInfo("America/Sao_Paulo")))
     atualizado_em = fields.DatetimeField(default=datetime.now(ZoneInfo("America/Sao_Paulo")))

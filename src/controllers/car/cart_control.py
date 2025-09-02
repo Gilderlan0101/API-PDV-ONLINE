@@ -16,7 +16,7 @@ class CartManagerDB:
         product_id: int,
         quantity: int,
         user_id: int,
-        sale_code: Optional[str] = None,
+        #product_code: str,
     ) -> Dict[str, Any]:
         # Buscar o produto
         produto = await Produto.get_or_none(id=product_id)
@@ -28,7 +28,7 @@ class CartManagerDB:
         # Verificar se o user_id é funcionário e pegar o admin dono
         funcionario = await Employees.get_or_none(id=user_id)
         if funcionario and funcionario.usuario:
-            user_id_carrinho = funcionario.usuario.id  # carrinho do admin
+            user_id_carrinho = funcionario.id  # carrinho do admin
             funcionario_id = funcionario.id
             funcionario_nome = funcionario.nome
         else:
@@ -40,8 +40,8 @@ class CartManagerDB:
         cart_item = await CartItem.get_or_none(user_id=user_id_carrinho, product_id=product_id)
         if cart_item:
             cart_item.quantity += quantity
-            cart_item.total_price += produto.sale_price * quantity
-            cart_item.sale_code = sale_code
+            cart_item.price_total += produto.sale_price * quantity
+            #product_code = cart_item.product_code
             await cart_item.save()
         else:
             cart_item = await CartItem.create(
@@ -51,7 +51,7 @@ class CartManagerDB:
                 quantity=quantity,
                 price=produto.sale_price,
                 total_price=produto.sale_price * quantity,
-                sale_code=sale_code,
+                
             )
 
         return {
@@ -109,8 +109,8 @@ class CartManagerDB:
 
         # --- Total ---
         cart_item.total_price = subtotal - (cart_item.discount or 0) + (cart_item.addition or 0)
-        if cart_item.total_price < 0:
-            cart_item.total_price = 0
+        if cart_item.price_total < 0:
+            cart_item.price_total = 0
 
         if cart_item.quantity == 0:
             await cart_item.delete()
@@ -124,7 +124,7 @@ class CartManagerDB:
             "preco_unitario": format_brl(cart_item.price),
             "desconto": format_brl(cart_item.discount or 0),
             "acrescimo": format_brl(cart_item.addition or 0),
-            "total": format_brl(cart_item.total_price),
+            "total": format_brl(cart_item.price_total),
         }
 
     async def limpar_carrinho(self, user_id: int):

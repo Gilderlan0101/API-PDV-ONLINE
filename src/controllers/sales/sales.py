@@ -2,6 +2,7 @@ import random
 from datetime import datetime
 from typing import Optional
 from fastapi import HTTPException, status
+from jose import exceptions
 from tortoise.transactions import in_transaction
 from dataclasses import dataclass
 
@@ -54,58 +55,60 @@ class Checkout:
         return await query.first()
 
     async def process_sale(
-        self, 
-        current_user: Usuario, 
-        product_code: str, 
-        quantity: int,
-        payment_method: str, 
-        funcionario_id: Optional[int] = None
-    ):
+    self, 
+    current_user: Usuario,  # ✅ Agora recebe objeto Usuario, não ID
+    product_code: str, 
+    quantity: int,
+    payment_method: str, 
+    funcionario_id: Optional[int] = None
+):
         try:
             print(f"CHECKOUT_DEBUG: Iniciando process_sale")
             print(f"CHECKOUT_DEBUG: current_user.id={current_user.id}, user_id={self.user_id}")
-            print(f"CHECKOUT_DEBUG: product_code={product_code}, quantity={quantity}")
-            print(f"CHECKOUT_DEBUG: funcionario_id={funcionario_id}, sale_code={self.sale_code}")
-
+    
             # 🔹 Define admin_user e operador
-            admin_user = current_user
+            admin_user = current_user  # ✅ Já é objeto Usuario
             operador_id = None
             operador_nome = current_user.username if hasattr(current_user, "username") else str(current_user)
-
+    
             # 🔹 Se current_user for funcionário, pega o admin dono
             funcionario_logado = await Employees.filter(id=current_user.id).first()
-            if funcionario_logado and funcionario_logado.usuario:
-                admin_user = funcionario_logado.usuario
+            if funcionario_logado and funcionario_logado.usuario_id:
+                # ✅ CORRETO: Busca o usuário admin pelo ID
+                admin_user = await Usuario.get(id=funcionario_logado.usuario_id)
                 operador_id = funcionario_logado.id
                 operador_nome = funcionario_logado.nome
-
+    
             # 🔹 Se foi passado funcionario_id (venda feita por admin para funcionário)
             if funcionario_id:
-                func_extra = await Employees.filter(id=funcionario_id, usuario_id=admin_user.id).first()
+                func_extra = await Employees.filter(
+                    id=funcionario_id, 
+                    usuario_id=admin_user.id  # ✅ Usa admin_user.id (inteiro)
+                ).first()
                 if func_extra:
                     operador_id = func_extra.id
                     operador_nome = func_extra.nome
-
+    
             self.funcionario_id = operador_id
             self.funcionario_nome = operador_nome
-            self.user_id = admin_user.id  # ⚠️ sempre registra a venda com admin
+            self.user_id = admin_user.id  # ✅ Armazena apenas o ID
             self.payment_method = payment_method.lower()
             self.sale_code = self.sale_code or f"V{random.randint(10000, 99999)}"
-
+    
             async with in_transaction() as connection:
                 # 🔹 Busca produto
                 product = await self.get_product_by_user(code=product_code)
                 if not product:
                     raise HTTPException(status_code=404, detail="Produto não encontrado")
-
+    
                 if product.stock < quantity:
                     raise HTTPException(status_code=400, detail="Estoque insuficiente")
-
+    
                 # 🔹 Atualiza estoque
                 product.stock -= quantity
                 product.atualizado_em = datetime.now()
                 await product.save(using_db=connection)
-
+    
                 # 🔹 Cria venda
                 sale_data = {
                     "product_name": product.name,
@@ -114,23 +117,23 @@ class Checkout:
                     "lucro_total": (float(product.sale_price) - float(product.cost_price)) * quantity,
                     "cost_price": float(product.cost_price),
                     "sale_code": self.sale_code,
-                    "usuario_id": admin_user.id,  # ⚠️ venda vinculada ao admin
+                    "usuario_id": admin_user.id,  # ✅ Usa o ID
                     "produto_id": product.id,
                     "using_db": connection
                 }
                 if self.funcionario_id:
                     sale_data["funcionario_id"] = self.funcionario_id
-
+    
                 self.venda = await Sales.create(**sale_data)
-                self.usuario = admin_user
+                self.usuario = admin_user  # ✅ Mantém objeto para build_receipt
                 return self.build_receipt()
-
+    
         except Exception as e:
             print(f"CHECKOUT_DEBUG: ERRO em process_sale: {str(e)}")
             import traceback
             print(f"CHECKOUT_DEBUG: Traceback:\n{traceback.format_exc()}")
             raise
-
+        
     def build_receipt(self) -> dict:
         if not self.venda or not self.usuario:
             raise HTTPException(status_code=400, detail="Informações da venda incompletas")
