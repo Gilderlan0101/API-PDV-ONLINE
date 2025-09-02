@@ -46,7 +46,7 @@ async def profit(current_user: Usuario = Depends(get_current_user)):
                 'total_price': sale.total_price,
                 'lucro_total': sale.lucro_total,
                 'cost_price': sale.cost_price,
-                'codigo_da_venda': sale.codigo_da_venda,
+                'codigo_da_venda': sale.sale_code,
                 'created_at': sale.criado_em.strftime('%d/%m/%Y %H:%M:%S') if sale.criado_em else None
             })
 
