@@ -23,7 +23,7 @@
 # ):
 #     """
 #     Gera e baixa o relatório de vendas do PDV.
-    
+
 #     Args:
 #         usuario_id: ID do usuário/empresa
 #         start_date: Data inicial do relatório (opcional)

@@ -7,10 +7,11 @@ from src.model.customers import Customer, ZoneInfo
 from src.schemas.customers.schema_customers import (
     GetCustomers,
     SchemasCustomer,
-    SchemasCustomerCreditUpdate
+    SchemasCustomerCreditUpdate,
 )
 
 customers = APIRouter(tags=["Customers"])
+
 
 # ===============================
 # Criar cliente
@@ -25,7 +26,7 @@ async def create_customer(
     if existing_customer:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="⚠️ Cliente já cadastrado com este CPF."
+            detail="⚠️ Cliente já cadastrado com este CPF.",
         )
 
     # Cria o cliente
@@ -43,13 +44,14 @@ async def create_customer(
         credit=form.credit,
         due_date=form.due_date,
         status=form.status.value,  # Enum para string
-        usuario_id=current_user.id
+        usuario_id=current_user.id,
     )
 
     return {
         "message": "✅ Cliente cadastrado com sucesso!",
-        "customer": customer_register
+        "customer": customer_register,
     }
+
 
 # ===============================
 # Listar clientes
@@ -58,6 +60,7 @@ async def create_customer(
 async def list_customer(current_user: Usuario = Depends(get_current_user)):
     customers_list = await Customer.filter(usuario_id=current_user.id).all()
     return customers_list or []
+
 
 # ===============================
 # Atualizar crédito/gasto do cliente
@@ -72,19 +75,19 @@ async def update_customer_credit(
     if not customer:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Cliente não encontrado pelo CPF"
+            detail="Cliente não encontrado pelo CPF",
         )
 
     if update_data.current_balance < 0:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Saldo não pode ser negativo"
+            detail="Saldo não pode ser negativo",
         )
 
     if update_data.current_balance > customer.credit:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Gasto acumulado (R$ {update_data.current_balance:,.2f}) excede o crédito total (R$ {customer.credit:,.2f})"
+            detail=f"Gasto acumulado (R$ {update_data.current_balance:,.2f}) excede o crédito total (R$ {customer.credit:,.2f})",
         )
 
     customer.current_balance = update_data.current_balance
@@ -98,8 +101,9 @@ async def update_customer_credit(
         current_balance=customer.current_balance,
         total_spent=customer.current_balance,
         due_date=customer.due_date,
-        status=customer.status
+        status=customer.status,
     )
+
 
 # ===============================
 # Deletar cliente
@@ -111,10 +115,7 @@ async def delete_customer(
 ):
     customer = await Customer.filter(id=customer_id, usuario_id=current_user.id).first()
     if not customer:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Cliente não encontrado"
-        )
-    
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Cliente não encontrado")
+
     await customer.delete()
     return {"message": "Cliente excluído com sucesso!"}

@@ -19,9 +19,7 @@ async def consulting_CNPJ(cnpj: str) -> dict:
                 data = response.json()
 
                 if data.get('status') == 'ERROR':
-                    return {
-                        'status': f"Erro da API: {data.get('message', 'Sem detalhes')}"
-                    }
+                    return {'status': f"Erro da API: {data.get('message', 'Sem detalhes')}"}
 
                 return {
                     'company_name': data.get('nome') or None,
@@ -51,9 +49,7 @@ async def consulting_CNPJ(cnpj: str) -> dict:
                 }
 
             else:
-                return {
-                    'status': f'Erro {response.status_code}: Falha ao consultar a API CNPJ'
-                }
+                return {'status': f'Erro {response.status_code}: Falha ao consultar a API CNPJ'}
 
     except requests.exceptions.RequestException as erro:
         return {

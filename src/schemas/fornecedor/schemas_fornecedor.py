@@ -5,8 +5,14 @@ from datetime import date, datetime
 import re
 
 from pydantic import (
-    BaseModel, Field, EmailStr, HttpUrl, field_validator, 
-    ConfigDict, constr, model_validator
+    BaseModel,
+    Field,
+    EmailStr,
+    HttpUrl,
+    field_validator,
+    ConfigDict,
+    constr,
+    model_validator,
 )
 
 
@@ -130,34 +136,20 @@ class BankAccount(BaseModel):
 # =========================
 class SupplierBase(BaseModel):
     model_config = ConfigDict(
-        use_enum_values=True, 
+        use_enum_values=True,
         validate_assignment=True,
         from_attributes=True,
-        str_strip_whitespace=True
+        str_strip_whitespace=True,
     )
 
     # Identificação
     tipo: SupplierType = SupplierType.PESSOA_JURIDICA
-    razao_social: str = Field(
-        ..., 
-        max_length=200, 
-        description="Nome empresarial (ou nome completo para PF)"
-    )
-    nome_fantasia: Optional[str] = Field(
-        None, 
-        max_length=200, 
-        description="Apelido comercial"
-    )
-    
+    razao_social: str = Field(..., max_length=200, description="Nome empresarial (ou nome completo para PF)")
+    nome_fantasia: Optional[str] = Field(None, max_length=200, description="Apelido comercial")
+
     # Documentos
-    cnpj: Optional[CNPJType] = Field(
-        None, 
-        description="Apenas números; para PJ"
-    )
-    cpf: Optional[CPFType] = Field(
-        None, 
-        description="Apenas números; para PF"
-    )
+    cnpj: Optional[CNPJType] = Field(None, description="Apenas números; para PJ")
+    cpf: Optional[CPFType] = Field(None, description="Apenas números; para PF")
     ie_status: IEStatus = IEStatus.CONTRIBUINTE
     inscricao_estadual: Optional[IEType] = None
     inscricao_municipal: Optional[str] = Field(None, max_length=20)
@@ -177,12 +169,7 @@ class SupplierBase(BaseModel):
 
     # Financeiro
     prazo_pagamento: PaymentTerm = PaymentTerm.DIAS_30
-    prazo_personalizado_dias: Optional[int] = Field(
-        None, 
-        ge=1, 
-        le=365, 
-        description="Obrigatório se PaymentTerm = PERSONALIZADO"
-    )
+    prazo_personalizado_dias: Optional[int] = Field(None, ge=1, le=365, description="Obrigatório se PaymentTerm = PERSONALIZADO")
     limite_credito: float = Field(0, ge=0)
     desconto_padrao_percent: float = Field(0, ge=0, le=100)
 
@@ -190,10 +177,7 @@ class SupplierBase(BaseModel):
     contas_bancarias: List[BankAccount] = Field(default_factory=list)
 
     # Operacional
-    categorias_fornecimento: List[str] = Field(
-        default_factory=list, 
-        description="Ex.: bebidas, laticínios, matérias-primas"
-    )
+    categorias_fornecimento: List[str] = Field(default_factory=list, description="Ex.: bebidas, laticínios, matérias-primas")
     observacoes: Optional[str] = Field(None, max_length=2000)
     status: SupplierStatus = SupplierStatus.ATIVO
 
@@ -210,7 +194,7 @@ class SupplierBase(BaseModel):
                 raise ValueError('CPF é obrigatório para PF')
             if self.cnpj:
                 raise ValueError('CNPJ não deve ser informado para PF')
-        
+
         return self
 
     @model_validator(mode='after')
@@ -218,47 +202,39 @@ class SupplierBase(BaseModel):
         """Validação do prazo personalizado"""
         if self.prazo_pagamento == PaymentTerm.PERSONALIZADO:
             if self.prazo_personalizado_dias is None:
-                raise ValueError(
-                    'prazo_personalizado_dias é obrigatório quando '
-                    'prazo_pagamento é Personalizado'
-                )
+                raise ValueError('prazo_personalizado_dias é obrigatório quando ' 'prazo_pagamento é Personalizado')
         elif self.prazo_personalizado_dias is not None:
-            raise ValueError(
-                'prazo_personalizado_dias só deve ser informado quando '
-                'prazo_pagamento é Personalizado'
-            )
-        
+            raise ValueError('prazo_personalizado_dias só deve ser informado quando ' 'prazo_pagamento é Personalizado')
+
         return self
 
 
 class SupplierCreate(SupplierBase):
     """Schema para criação de fornecedor"""
+
     pass
 
 
 class SupplierUpdate(SupplierBase):
     """Schema para atualização de fornecedor"""
+
     pass
 
 
 class Supplier(SupplierBase):
     """Schema completo com campos de auditoria"""
+
     id: int = Field(..., description="ID único gerado pelo sistema")
     criado_em: datetime = Field(default_factory=datetime.now)
     atualizado_em: datetime = Field(default_factory=datetime.now)
     ativo_desde: Optional[date] = None
-    criado_por: Optional[str] = Field(
-        None, 
-        description="Usuário que criou o registro"
-    )
-    atualizado_por: Optional[str] = Field(
-        None, 
-        description="Usuário que atualizou o registro"
-    )
+    criado_por: Optional[str] = Field(None, description="Usuário que criou o registro")
+    atualizado_por: Optional[str] = Field(None, description="Usuário que atualizou o registro")
 
 
 class SupplierSummary(BaseModel):
     """Schema resumido para listagens"""
+
     id: int
     razao_social: str
     nome_fantasia: Optional[str] = None
@@ -277,6 +253,7 @@ class SupplierSummary(BaseModel):
 # =========================
 class SupplierResponse(BaseModel):
     """Resposta padrão para APIs"""
+
     success: bool
     message: str
     data: Optional[Supplier] = None
@@ -287,6 +264,7 @@ class SupplierResponse(BaseModel):
 
 class SupplierListResponse(BaseModel):
     """Resposta para listagens"""
+
     success: bool
     total: int
     page: int

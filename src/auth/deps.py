@@ -11,9 +11,7 @@ from src.model.user import Usuario
 from src.model.employee import Employees
 from src.schemas.schema_user import TokenPayload
 
-reuseable_oauth = OAuth2PasswordBearer(
-    tokenUrl="/auth/login", scheme_name="JWT"
-)
+reuseable_oauth = OAuth2PasswordBearer(tokenUrl="/auth/login", scheme_name="JWT")
 
 
 async def get_current_user(token: str = Depends(reuseable_oauth)) -> "SystemUser":
@@ -68,14 +66,13 @@ async def get_current_user(token: str = Depends(reuseable_oauth)) -> "SystemUser
             cpf=None,
             is_active=employee_db.ativo,
             empresa_id=usuario.id if usuario else None,  # 🔹 aqui
-)
-
-        
+        )
 
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
         detail="Usuário ou funcionário não encontrado.",
     )
+
 
 class SystemUser(BaseModel):
     id: int

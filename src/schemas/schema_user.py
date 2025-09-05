@@ -53,7 +53,7 @@ class CompanyRegisterSchema(BaseModel):
 class TokenSchema(BaseModel):
     id: int
     username: str
-    ativo:  bool = True
+    ativo: bool = True
     tipo: str
     email: str
     empresa: str

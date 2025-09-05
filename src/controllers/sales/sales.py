@@ -55,60 +55,60 @@ class Checkout:
         return await query.first()
 
     async def process_sale(
-    self, 
-    current_user: Usuario,  # ✅ Agora recebe objeto Usuario, não ID
-    product_code: str, 
-    quantity: int,
-    payment_method: str, 
-    funcionario_id: Optional[int] = None
-):
+        self,
+        current_user: Usuario,  # ✅ Agora recebe objeto Usuario, não ID
+        product_code: str,
+        quantity: int,
+        payment_method: str,
+        funcionario_id: Optional[int] = None,
+    ):
         try:
             print(f"CHECKOUT_DEBUG: Iniciando process_sale")
             print(f"CHECKOUT_DEBUG: current_user.id={current_user.id}, user_id={self.user_id}")
-    
+
             # 🔹 Define admin_user e operador
             admin_user = current_user  # ✅ Já é objeto Usuario
             operador_id = None
             operador_nome = current_user.username if hasattr(current_user, "username") else str(current_user)
-    
+
             # 🔹 Se current_user for funcionário, pega o admin dono
             funcionario_logado = await Employees.filter(id=current_user.id).first()
-            if funcionario_logado and funcionario_logado.usuario_id:
+            if funcionario_logado and funcionario_logado.usuario_id:  # type: ignore
                 # ✅ CORRETO: Busca o usuário admin pelo ID
-                admin_user = await Usuario.get(id=funcionario_logado.usuario_id)
+                admin_user = await Usuario.get(id=funcionario_logado.usuario_id)  # type: ignore
                 operador_id = funcionario_logado.id
                 operador_nome = funcionario_logado.nome
-    
+
             # 🔹 Se foi passado funcionario_id (venda feita por admin para funcionário)
             if funcionario_id:
                 func_extra = await Employees.filter(
-                    id=funcionario_id, 
-                    usuario_id=admin_user.id  # ✅ Usa admin_user.id (inteiro)
+                    id=funcionario_id,
+                    usuario_id=admin_user.id,  # ✅ Usa admin_user.id (inteiro)
                 ).first()
                 if func_extra:
                     operador_id = func_extra.id
                     operador_nome = func_extra.nome
-    
+
             self.funcionario_id = operador_id
             self.funcionario_nome = operador_nome
             self.user_id = admin_user.id  # ✅ Armazena apenas o ID
             self.payment_method = payment_method.lower()
-            self.sale_code = self.sale_code or f"V{random.randint(10000, 99999)}"
-    
+            self.sale_code = self.sale_code
+
             async with in_transaction() as connection:
                 # 🔹 Busca produto
                 product = await self.get_product_by_user(code=product_code)
                 if not product:
                     raise HTTPException(status_code=404, detail="Produto não encontrado")
-    
+
                 if product.stock < quantity:
                     raise HTTPException(status_code=400, detail="Estoque insuficiente")
-    
+
                 # 🔹 Atualiza estoque
                 product.stock -= quantity
                 product.atualizado_em = datetime.now()
                 await product.save(using_db=connection)
-    
+
                 # 🔹 Cria venda
                 sale_data = {
                     "product_name": product.name,
@@ -119,52 +119,67 @@ class Checkout:
                     "sale_code": self.sale_code,
                     "usuario_id": admin_user.id,  # ✅ Usa o ID
                     "produto_id": product.id,
-                    "using_db": connection
+                    "using_db": connection,
                 }
                 if self.funcionario_id:
                     sale_data["funcionario_id"] = self.funcionario_id
-    
+
                 self.venda = await Sales.create(**sale_data)
                 self.usuario = admin_user  # ✅ Mantém objeto para build_receipt
-                return self.build_receipt()
-    
+
+                itens_venda = await Sales.filter(sale_code=self.sale_code).values(
+                    "product_name",
+                    "quantity",
+                    "total_price",
+                    "lucro_total",
+                )
+
+                return self.build_receipt(itens_venda)
+
         except Exception as e:
             print(f"CHECKOUT_DEBUG: ERRO em process_sale: {str(e)}")
             import traceback
+
             print(f"CHECKOUT_DEBUG: Traceback:\n{traceback.format_exc()}")
             raise
-        
-    def build_receipt(self) -> dict:
+
+    def build_receipt(self, itens: list[dict]) -> dict:
         if not self.venda or not self.usuario:
             raise HTTPException(status_code=400, detail="Informações da venda incompletas")
 
         return {
-            'Nota Fiscal': {
-                'Empresa': {
-                    'Razão Social': self.usuario.company_name,
-                    'Nome Fantasia': self.usuario.trade_name,
-                    'CNPJ': self.usuario.cnpj,
-                    'Endereço': f'{getattr(self.usuario, "street", "")}, '
-                                f'{getattr(self.usuario, "number", "")} - '
-                                f'{getattr(self.usuario, "city", "")}/{getattr(self.usuario, "state", "")}',
-                    'Inscrição Estadual': getattr(self.usuario, "state_registration", ""),
-                    'Inscrição Municipal': getattr(self.usuario, "municipal_registration", ""),
+            "Nota Fiscal": {
+                "Empresa": {
+                    "Razão Social": self.usuario.company_name,
+                    "Nome Fantasia": self.usuario.trade_name,
+                    "CNPJ": self.usuario.cnpj,
+                    "Endereço": f'{getattr(self.usuario, "street", "")}, '
+                    f'{getattr(self.usuario, "number", "")} - '
+                    f'{getattr(self.usuario, "city", "")}/{getattr(self.usuario, "state", "")}',
+                    "Inscrição Estadual": getattr(self.usuario, "state_registration", ""),
+                    "Inscrição Municipal": getattr(self.usuario, "municipal_registration", ""),
                     "Operado por": self.funcionario_nome or self.usuario.username,
-                    'codigo_da_venda': self.sale_code,
+                    "codigo_da_venda": self.sale_code,
                 },
-                'Venda': {
-                    'Produto': self.product_name,
-                    'Quantidade': self.quantity,
-                    'Preço Unitário': f'R$ {self.total_price / self.quantity:.2f}',
-                    'Valor Total': f'R$ {self.total_price:.2f}',
-                    'Lucro Total': f'R$ {self.lucro_total:.2f}',
-                    'Data': datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
-                    'Forma de Pagamento': self.payment_method,
-                    "Operado por": self.funcionario_nome or self.usuario.username,
-                    'codigo_da_venda': self.sale_code,
+                # Aqui "Venda" passa a ser uma lista de produtos
+                "Venda": [
+                    {
+                        "Produto": item["product_name"],
+                        "Quantidade": item["quantity"],
+                        "Preço Unitário": f'R$ {item["total_price"] / item["quantity"]:.2f}',
+                        "Valor Total": f'R$ {item["total_price"]:.2f}',
+                        "Lucro Total": f'R$ {item["lucro_total"]:.2f}',
+                    }
+                    for item in itens
+                ],
+                "Totais": {
+                    "Valor Total Geral": f'R$ {sum(item["total_price"] for item in itens):.2f}',
+                    "Lucro Total Geral": f'R$ {sum(item["lucro_total"] for item in itens):.2f}',
                 },
-                'Cliente': {'Código Interno do Usuário': self.user_id},
-                'Observações': 'Venda registrada com sucesso no sistema PDV.',
+                "Cliente": {"Código Interno do Usuário": self.user_id},
+                "Data": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
+                "Forma de Pagamento": self.payment_method,
+                "Observações": "Venda registrada com sucesso no sistema PDV.",
             }
         }
 
@@ -174,7 +189,12 @@ class Note(Checkout):
     """Extensão de Checkout para gerar notas fiscais adicionais"""
 
     async def verifyFields(self):
-        campos_obrigatorios = [self.user_id, self.product_name, self.quantity, self.produto_id]
+        campos_obrigatorios = [
+            self.user_id,
+            self.product_name,
+            self.quantity,
+            self.produto_id,
+        ]
         if not all(campos_obrigatorios):
             raise HTTPException(status_code=400, detail="Preencha todos os campos obrigatórios.")
         if self.quantity <= 0:

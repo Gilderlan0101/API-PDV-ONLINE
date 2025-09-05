@@ -24,7 +24,7 @@ async def get_product_by_user(user_id: int, code: Optional[str] = None, name: Op
 async def get_product(
     code: Optional[str] = Query(None),
     name: Optional[str] = Query(None),
-    current_user: Usuario = Depends(get_current_user)
+    current_user: Usuario = Depends(get_current_user),
 ):
     """Busca produto por código ou nome e retorna JSON padronizado para frontend"""
     try:
@@ -32,27 +32,15 @@ async def get_product(
             return {
                 "success": False,
                 "data": None,
-                "error": "Informe código ou nome do produto"
+                "error": "Informe código ou nome do produto",
             }
 
         product = await get_product_by_user(current_user.id, code, name)
 
         if not product:
-            return {
-                "success": False,
-                "data": None,
-                "error": "Produto não encontrado"
-            }
+            return {"success": False, "data": None, "error": "Produto não encontrado"}
 
-        return {
-            "success": True,
-            "data": jsonable_encoder(product),
-            "error": None
-        }
+        return {"success": True, "data": jsonable_encoder(product), "error": None}
 
     except Exception as e:
-        return {
-            "success": False,
-            "data": None,
-            "error": f"Erro inesperado: {str(e)}"
-        }
+        return {"success": False, "data": None, "error": f"Erro inesperado: {str(e)}"}

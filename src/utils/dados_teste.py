@@ -10,6 +10,7 @@ from src.model.user import Membro, Usuario
 from src.model.customers import Customer
 from src.model.sale import Sales
 from src.model.employee import Employees
+from src.model.carItems import CartItem
 
 
 async def create_mock_data():
@@ -66,26 +67,146 @@ async def create_mock_data():
         if len(produtos_existentes) < 20:
             print("🔹 Criando 20 produtos...")
             produtos_data = [
-                {"code": "BEB001", "name": "Coca-Cola 2L", "cost": 5.50, "sale": 8.00, "supplier": "Coca-Cola"},
-                {"code": "BEB002", "name": "Suco de Laranja 1L", "cost": 4.00, "sale": 6.50, "supplier": "Del Valle"},
-                {"code": "BEB003", "name": "Água Mineral 500ml", "cost": 1.00, "sale": 2.50, "supplier": "Crystal"},
-                {"code": "BEB004", "name": "Cerveja Heineken 600ml", "cost": 6.00, "sale": 9.00, "supplier": "Heineken"},
-                {"code": "BEB005", "name": "Energético Red Bull", "cost": 7.50, "sale": 12.00, "supplier": "Red Bull"},
-                {"code": "ALI001", "name": "Arroz 5kg", "cost": 18.00, "sale": 25.00, "supplier": "Tio João"},
-                {"code": "ALI002", "name": "Feijão 1kg", "cost": 8.00, "sale": 12.00, "supplier": "Camil"},
-                {"code": "ALI003", "name": "Açúcar 5kg", "cost": 12.00, "sale": 18.00, "supplier": "União"},
-                {"code": "ALI004", "name": "Óleo de Soja 900ml", "cost": 5.00, "sale": 8.00, "supplier": "Liza"},
-                {"code": "ALI005", "name": "Macarrão Espaguete 500g", "cost": 3.50, "sale": 6.00, "supplier": "Renata"},
-                {"code": "LIM001", "name": "Detergente 500ml", "cost": 1.50, "sale": 3.00, "supplier": "Ypê"},
-                {"code": "LIM002", "name": "Sabão em Pó 1kg", "cost": 8.00, "sale": 12.00, "supplier": "OMO"},
-                {"code": "LIM003", "name": "Amaciante 2L", "cost": 9.00, "sale": 15.00, "supplier": "Comfort"},
-                {"code": "LIM004", "name": "Desinfetante 1L", "cost": 4.50, "sale": 7.50, "supplier": "Pinho Sol"},
-                {"code": "LIM005", "name": "Esponja de Aço", "cost": 0.80, "sale": 2.00, "supplier": "Bombril"},
-                {"code": "HIG001", "name": "Pasta de Dente 90g", "cost": 3.00, "sale": 5.50, "supplier": "Colgate"},
-                {"code": "HIG002", "name": "Sabonete 90g", "cost": 1.20, "sale": 2.50, "supplier": "Dove"},
-                {"code": "HIG003", "name": "Shampoo 350ml", "cost": 8.00, "sale": 14.00, "supplier": "Head & Shoulders"},
-                {"code": "HIG004", "name": "Papel Higiênico 4un", "cost": 4.00, "sale": 7.00, "supplier": "Neve"},
-                {"code": "HIG005", "name": "Fio Dental 50m", "cost": 2.50, "sale": 4.50, "supplier": "Oral-B"},
+                {
+                    "code": "BEB001",
+                    "name": "Coca-Cola 2L",
+                    "cost": 5.50,
+                    "sale": 8.00,
+                    "supplier": "Coca-Cola",
+                },
+                {
+                    "code": "BEB002",
+                    "name": "Suco de Laranja 1L",
+                    "cost": 4.00,
+                    "sale": 6.50,
+                    "supplier": "Del Valle",
+                },
+                {
+                    "code": "BEB003",
+                    "name": "Água Mineral 500ml",
+                    "cost": 1.00,
+                    "sale": 2.50,
+                    "supplier": "Crystal",
+                },
+                {
+                    "code": "BEB004",
+                    "name": "Cerveja Heineken 600ml",
+                    "cost": 6.00,
+                    "sale": 9.00,
+                    "supplier": "Heineken",
+                },
+                {
+                    "code": "BEB005",
+                    "name": "Energético Red Bull",
+                    "cost": 7.50,
+                    "sale": 12.00,
+                    "supplier": "Red Bull",
+                },
+                {
+                    "code": "ALI001",
+                    "name": "Arroz 5kg",
+                    "cost": 18.00,
+                    "sale": 25.00,
+                    "supplier": "Tio João",
+                },
+                {
+                    "code": "ALI002",
+                    "name": "Feijão 1kg",
+                    "cost": 8.00,
+                    "sale": 12.00,
+                    "supplier": "Camil",
+                },
+                {
+                    "code": "ALI003",
+                    "name": "Açúcar 5kg",
+                    "cost": 12.00,
+                    "sale": 18.00,
+                    "supplier": "União",
+                },
+                {
+                    "code": "ALI004",
+                    "name": "Óleo de Soja 900ml",
+                    "cost": 5.00,
+                    "sale": 8.00,
+                    "supplier": "Liza",
+                },
+                {
+                    "code": "ALI005",
+                    "name": "Macarrão Espaguete 500g",
+                    "cost": 3.50,
+                    "sale": 6.00,
+                    "supplier": "Renata",
+                },
+                {
+                    "code": "LIM001",
+                    "name": "Detergente 500ml",
+                    "cost": 1.50,
+                    "sale": 3.00,
+                    "supplier": "Ypê",
+                },
+                {
+                    "code": "LIM002",
+                    "name": "Sabão em Pó 1kg",
+                    "cost": 8.00,
+                    "sale": 12.00,
+                    "supplier": "OMO",
+                },
+                {
+                    "code": "LIM003",
+                    "name": "Amaciante 2L",
+                    "cost": 9.00,
+                    "sale": 15.00,
+                    "supplier": "Comfort",
+                },
+                {
+                    "code": "LIM004",
+                    "name": "Desinfetante 1L",
+                    "cost": 4.50,
+                    "sale": 7.50,
+                    "supplier": "Pinho Sol",
+                },
+                {
+                    "code": "LIM005",
+                    "name": "Esponja de Aço",
+                    "cost": 0.80,
+                    "sale": 2.00,
+                    "supplier": "Bombril",
+                },
+                {
+                    "code": "HIG001",
+                    "name": "Pasta de Dente 90g",
+                    "cost": 3.00,
+                    "sale": 5.50,
+                    "supplier": "Colgate",
+                },
+                {
+                    "code": "HIG002",
+                    "name": "Sabonete 90g",
+                    "cost": 1.20,
+                    "sale": 2.50,
+                    "supplier": "Dove",
+                },
+                {
+                    "code": "HIG003",
+                    "name": "Shampoo 350ml",
+                    "cost": 8.00,
+                    "sale": 14.00,
+                    "supplier": "Head & Shoulders",
+                },
+                {
+                    "code": "HIG004",
+                    "name": "Papel Higiênico 4un",
+                    "cost": 4.00,
+                    "sale": 7.00,
+                    "supplier": "Neve",
+                },
+                {
+                    "code": "HIG005",
+                    "name": "Fio Dental 50m",
+                    "cost": 2.50,
+                    "sale": 4.50,
+                    "supplier": "Oral-B",
+                },
             ]
             for p in produtos_data:
                 await Produto.create(
@@ -153,23 +274,32 @@ async def create_mock_data():
                     funcionario = random.choice(funcionarios)
                     funcionario_id = funcionario.id  # ✅ sempre válido
 
-                await Sales.create(
+                # await Sales.create(
+                #     product_name=produto.name,
+                #     quantity=quantidade,
+                #     total_price=preco_total,
+                #     lucro_total=lucro_total,
+                #     cost_price=produto.cost_price,
+                #     criado_em=data_venda,
+                #     cliente_id=cliente.id,
+                #     usuario_id=admin.id,
+                #     funcionario_id=funcionario_id,
+                #     produto_id=produto.id,
+                #     sale_code=f"V{random.randint(10000, 99999)}",
+                # )
+
+                await CartItem.create(
+                    user_id=admin.id,
+                    product_id=produto.id,
                     product_name=produto.name,
                     quantity=quantidade,
-                    total_price=preco_total,
-                    lucro_total=lucro_total,
-                    cost_price=produto.cost_price,
-                    criado_em=data_venda,
-                    cliente_id=cliente.id,
-                    usuario_id=admin.id,
-                    funcionario_id=funcionario_id,
-                    produto_id=produto.id,
-                    codigo_da_venda=f"V{random.randint(10000, 99999)}",
+                    price=produto.sale_price,
+                    total_price=produto.sale_price * quantidade,
                 )
 
                 # Atualiza estoque
-                produto.stock -= quantidade
-                await produto.save()
+                # produto.stock -= quantidade
+                # await produto.save()
 
             print("✅ 50 vendas criadas e estoque atualizado!")
 

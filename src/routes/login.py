@@ -76,7 +76,7 @@ class Login:
                     "id": employee.id,
                     "username": employee.nome,
                     "email": employee.email,
-                    "empresa": employee.usuario.company_name if employee.usuario else None,
+                    "empresa": (employee.usuario.company_name if employee.usuario else None),
                     "tipo": "funcionario",
                     "message": "Login realizado com sucesso",
                     "access_token": create_access_token(str(employee.id)),

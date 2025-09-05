@@ -2,8 +2,8 @@
 # from .relatorio import router
 
 # relatorio = APIRouter(
-   
-  
+
+
 #     responses={404: {"description": "Não encontrado"}},
 # )
 

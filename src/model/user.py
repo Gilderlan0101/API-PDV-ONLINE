@@ -10,6 +10,7 @@ from src.model.employee import Employees
 from src.model.membros import Membro
 from src.model.cnpjCache import CNPJCache
 
+
 class Usuario(models.Model):
     id = fields.IntField(pk=True)
     username = fields.CharField(max_length=150)

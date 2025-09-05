@@ -28,28 +28,22 @@ def verify_password(password: str, hashed_pass: str) -> bool:
     return password_context.verify(password, hashed_pass)
 
 
-def create_access_token(
-    subject: Union[str, Any], expires_delta: Optional[int] = None
-) -> str:
+def create_access_token(subject: Union[str, Any], expires_delta: Optional[int] = None) -> str:
     expire = (
         datetime.now(ZoneInfo('America/Sao_Paulo')) + timedelta(minutes=expires_delta)
         if expires_delta
-        else datetime.now(ZoneInfo('America/Sao_Paulo'))
-        + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        else datetime.now(ZoneInfo('America/Sao_Paulo')) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     )
 
     to_encode = {'exp': expire, 'sub': str(subject)}
     return jwt.encode(to_encode, JWT_SECRET_KEY, ALGORITHM)  # type: ignore
 
 
-def create_refresh_token(
-    subject: Union[str, Any], expires_delta: Optional[int] = None
-) -> str:
+def create_refresh_token(subject: Union[str, Any], expires_delta: Optional[int] = None) -> str:
     expire = (
         datetime.now(ZoneInfo('America/Sao_Paulo')) + timedelta(minutes=expires_delta)
         if expires_delta
-        else datetime.now(ZoneInfo('America/Sao_Paulo'))
-        + timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES)
+        else datetime.now(ZoneInfo('America/Sao_Paulo')) + timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES)
     )
 
     to_encode = {'exp': expire, 'sub': str(subject)}

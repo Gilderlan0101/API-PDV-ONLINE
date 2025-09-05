@@ -6,6 +6,8 @@ from src.model.sale import Sales
 from src.model.user import Usuario
 from src.auth.deps import get_current_user
 
+from src.utils.sales_of_the_day import sales_of_the_day
+
 allDatas = APIRouter()
 
 
@@ -27,33 +29,35 @@ async def profit(current_user: Usuario = Depends(get_current_user)):
         sales = await Sales.filter(
             usuario_id=current_user.id,
             criado_em__gte=start_of_day,
-            criado_em__lte=end_of_day
+            criado_em__lte=end_of_day,
         ).all()
 
         total_user_profit = 0.0  # Receita bruta total
         total_lucro = 0.0  # Lucro líquido total
-        sales_of_the_day = len(sales)
+        qtd_sales_day = await sales_of_the_day(current_user.id)
 
         sales_list = []
         for sale in sales:
             total_user_profit += sale.total_price
             total_lucro += sale.lucro_total
 
-            sales_list.append({
-                'id': sale.id,
-                'product_name': sale.product_name,
-                'quantity': sale.quantity,
-                'total_price': sale.total_price,
-                'lucro_total': sale.lucro_total,
-                'cost_price': sale.cost_price,
-                'codigo_da_venda': sale.sale_code,
-                'created_at': sale.criado_em.strftime('%d/%m/%Y %H:%M:%S') if sale.criado_em else None
-            })
+            sales_list.append(
+                {
+                    'id': sale.id,
+                    'product_name': sale.product_name,
+                    'quantity': sale.quantity,
+                    'total_price': sale.total_price,
+                    'lucro_total': sale.lucro_total,
+                    'cost_price': sale.cost_price,
+                    'codigo_da_venda': sale.sale_code,
+                    'created_at': (sale.criado_em.strftime('%d/%m/%Y %H:%M:%S') if sale.criado_em else None),
+                }
+            )
 
         return {
             'total_user_profit': f'{total_user_profit:.2f}',  # Receita bruta
             'total_lucro': f'{total_lucro:.2f}',  # Lucro líquido real
-            'sales_of_the_day': sales_of_the_day,
+            'sales_of_the_day': qtd_sales_day,
             'sales': sales_list,
         }
 

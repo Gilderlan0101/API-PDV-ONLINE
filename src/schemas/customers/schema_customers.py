@@ -5,14 +5,17 @@ from datetime import date, datetime
 from pydantic_br import CPF, CEP
 import re
 
+
 # ------------------------------
 # Enum de status do cliente
 # ------------------------------
 class Status(Enum):
     """Status do cliente: ATIVO, PENDENTE, ATRASO. Relacionado a fatura"""
+
     ATIVO = 'ATIVO'
     PENDENTE = 'PENDENTE'
     ATRASO = 'ATRASO'
+
 
 # ------------------------------
 # Schema para exibir clientes
@@ -25,7 +28,7 @@ class GetCustomers(BaseModel):
     total_spent: float  # Gasto total acumulado (novo campo)
     due_date: datetime
     status: str
-    
+
     class Config:
         from_attributes = True
 
@@ -36,11 +39,10 @@ class GetCustomers(BaseModel):
         # Formata data
         data['due_date'] = data['due_date'].strftime('%d/%m/%Y')
         return data
-    
-    
+
     def flag_status(self):
         # Aqui comparamos due_date com ela mesma para teste
-        if self.due_date.date() == self.due_date.date():  
+        if self.due_date.date() == self.due_date.date():
             return Status.ATRASO
         return self.status
 
@@ -115,6 +117,7 @@ class SchemasCustomer(BaseModel):
             'type_error.integer': 'O campo {loc} deve ser um número inteiro válido.',
         }
 
+
 # ------------------------------
 # Schema para atualização de clientes (opcional)
 # ------------------------------
@@ -135,7 +138,8 @@ class SchemasCustomerUpdate(BaseModel):
 
     @field_validator('birth_date', 'due_date', mode='before')
     def parse_date(cls, v):
-        if v is None: return v
+        if v is None:
+            return v
         if isinstance(v, str):
             if '/' in v:
                 day, month, year = map(int, v.split('/'))
@@ -148,7 +152,8 @@ class SchemasCustomerUpdate(BaseModel):
 
     @field_validator('tel')
     def validate_tel(cls, v):
-        if v is None: return v
+        if v is None:
+            return v
         digits = re.sub(r'\D', '', v)
         if len(digits) not in [10, 11]:
             raise ValueError("Telefone inválido. Deve ter 10 ou 11 dígitos (com DDD).")
@@ -174,7 +179,7 @@ class SchemasCustomerUpdate(BaseModel):
 # ------------------------------
 class SchemasCustomerCreditUpdate(BaseModel):
     current_balance: confloat(ge=0.0)  # saldo atual >= 0
-    
+
     @field_validator('current_balance')
     def validate_balance(cls, v):
         if v < 0:

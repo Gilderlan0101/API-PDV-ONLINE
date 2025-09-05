@@ -5,6 +5,7 @@ from typing import Optional, List
 
 from src.model.sale import Sales
 
+
 # ========================
 # 🔹 Produto
 # ========================
@@ -38,11 +39,12 @@ class Produto(models.Model):
     atualizado_em = fields.DatetimeField(default=datetime.now(ZoneInfo("America/Sao_Paulo")))
 
     # 🔹 Relacionamentos
-    usuario = fields.ForeignKeyField(
-        "models.Usuario", related_name="produtos", on_delete=fields.CASCADE
-    )
+    usuario = fields.ForeignKeyField("models.Usuario", related_name="produtos", on_delete=fields.CASCADE)
     fornecedor = fields.ForeignKeyField(
-        "models.Fornecedor", related_name="produtos", null=True, on_delete=fields.SET_NULL
+        "models.Fornecedor",
+        related_name="produtos",
+        null=True,
+        on_delete=fields.SET_NULL,
     )
 
     vendas: fields.ReverseRelation["Sales"]
@@ -72,9 +74,10 @@ class ProdutoArquivado(models.Model):
     atualizado_em = fields.DatetimeField(default=datetime.now(ZoneInfo("America/Sao_Paulo")))
 
     # 🔹 Relacionamentos
-    usuario = fields.ForeignKeyField(
-        "models.Usuario", related_name="produtos_arquivados", on_delete=fields.CASCADE
-    )
+    usuario = fields.ForeignKeyField("models.Usuario", related_name="produtos_arquivados", on_delete=fields.CASCADE)
     produto = fields.ForeignKeyField(
-        "models.Produto", related_name="arquivados", null=True, on_delete=fields.SET_NULL
+        "models.Produto",
+        related_name="arquivados",
+        null=True,
+        on_delete=fields.SET_NULL,
     )

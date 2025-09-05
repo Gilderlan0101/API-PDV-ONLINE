@@ -40,7 +40,7 @@ async def create_funcionario(
         senha=hashed_password,
         telefone=func_data.telefone,
         ativo=True,
-        usuario_id=current_user.id
+        usuario_id=current_user.id,
     )
 
     return {

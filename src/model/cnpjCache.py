@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 from typing import Optional
 
+
 class CNPJCache(models.Model):
     id = fields.IntField(pk=True)
     cnpj = fields.CharField(max_length=14)
@@ -10,9 +11,7 @@ class CNPJCache(models.Model):
     updated_at = fields.DatetimeField(default=datetime.now(ZoneInfo("America/Sao_Paulo")))
 
     # 🔹 Relacionamento com o usuário dono do cache
-    usuario = fields.ForeignKeyField(
-        "models.Usuario", related_name="cnpj_cache", null=True
-    )
+    usuario = fields.ForeignKeyField("models.Usuario", related_name="cnpj_cache", null=True)
 
     # 🔹 Método para verificar se o cache ainda é válido
     def is_valid(self, ttl_minutes: int = 8) -> bool:

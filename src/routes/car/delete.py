@@ -8,9 +8,7 @@ cart = CartManagerDB()
 
 
 @router.delete("/remover/{product_id}")
-async def remover_produto(
-    product_id: int, current_user: Usuario = Depends(get_current_user)
-):
+async def remover_produto(product_id: int, current_user: Usuario = Depends(get_current_user)):
     """
     Remove um produto específico do carrinho.
     """
@@ -23,7 +21,6 @@ async def limpar_carrinho(current_user: Usuario = Depends(get_current_user)):
     Limpa todos os produtos do carrinho do usuário.
     """
     return await cart.limpar_carrinho(current_user.id)  # type: ignore
-
 
 
 ###################

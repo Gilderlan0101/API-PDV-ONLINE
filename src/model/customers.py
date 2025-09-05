@@ -5,6 +5,7 @@ from typing import Optional, List
 
 from src.model.sale import Sales
 
+
 class Customer(models.Model):
     """
     Modelo de Clientes vinculados a um usuário (empresa) e com relacionamento com vendas.
@@ -38,11 +39,7 @@ class Customer(models.Model):
     updated_at = fields.DatetimeField(default=datetime.now(ZoneInfo("America/Sao_Paulo")))
 
     # 🔹 Relacionamento com usuário
-    usuario = fields.ForeignKeyField(
-        "models.Usuario",
-        related_name="customers",
-        on_delete=fields.CASCADE
-    )
+    usuario = fields.ForeignKeyField("models.Usuario", related_name="customers", on_delete=fields.CASCADE)
 
     # 🔹 Relacionamento com vendas
     vendas: fields.ReverseRelation["Sales"]

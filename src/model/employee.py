@@ -6,6 +6,7 @@ from typing import Optional
 from src.model.caixa import Caixa
 from src.model.customers import Sales
 
+
 class Employees(models.Model):
     """
     Funcionários do PDV vinculados a um usuário (empresa).
@@ -22,10 +23,10 @@ class Employees(models.Model):
 
     # 🔹 Relacionamento com o usuário (empresa)
     usuario = fields.ForeignKeyField(
-        "models.Usuario",  
+        "models.Usuario",
         related_name="funcionarios",
         null=True,
-        on_delete=fields.SET_NULL
+        on_delete=fields.SET_NULL,
     )
 
     # 🔹 Relacionamento com vendas feitas pelo funcionário

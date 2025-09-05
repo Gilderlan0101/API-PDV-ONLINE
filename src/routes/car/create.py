@@ -16,4 +16,4 @@ async def adicionar_produto(
     """
     Adiciona um produto ao carrinho do usuário.
     """
-    return await cart.add_produto(product_id, quantity, current_user.id)  
+    return await cart.add_produto(product_id, quantity, current_user.id)

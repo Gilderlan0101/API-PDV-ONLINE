@@ -17,11 +17,13 @@ from src.routes.updates import allDatas
 from src.routes.account.account import registe_empreg
 from src.routes.customer.customer_registration import customers
 from src.routes.cadastros.operador_caixa import operador
+
 # from src.routes.relatorio.relatorio import router
 
 
 # Dados de teste mocados
 from src.utils.dados_teste import create_mock_data
+
 # Configuração do cors
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -32,7 +34,7 @@ async def lifespan(app: FastAPI):
     Gerencia o ciclo de vida da aplicação.
     """
     load_dotenv()
-    
+
     # Inicializa Tortoise ORM
     await Tortoise.init(config=TORTOISE_ORM)
     await Tortoise.generate_schemas()  # cria tabelas se necessário
@@ -46,6 +48,7 @@ async def lifespan(app: FastAPI):
     # Fecha conexões
     await Tortoise.close_connections()
     print('Fim da aplicação')
+
 
 class Server:
     def __init__(self):
@@ -84,87 +87,73 @@ class Server:
             },
         )
         self.start_routes()
-        
+
         # CONFIGURAÇÃO CORS ATUALIZADA
         origins = [
-             "http://localhost:5000",      # Flask development server
-             "http://127.0.0.1:5000",      # Flask development server
-             "http://localhost:8080",      # Vue.js/React development
-             "http://127.0.0.1:8080",      # Vue.js/React development
-             "http://localhost:3000",      # React development
-             "http://127.0.0.1:3000",      # React development
-             "http://localhost:5173",      # Vite development
-             "http://127.0.0.1:5173",      # Vite development
-             "http://localhost:8000",      # FastAPI itself
-             "http://127.0.0.1:8000",        # FastAPI itself
-             "https://front-end-pdv.onrender.com"
-         ]
-        
-        
+            "http://localhost:5000",  # Flask development server
+            "http://127.0.0.1:5000",  # Flask development server
+            "http://localhost:8080",  # Vue.js/React development
+            "http://127.0.0.1:8080",  # Vue.js/React development
+            "http://localhost:3000",  # React development
+            "http://127.0.0.1:3000",  # React development
+            "http://localhost:5173",  # Vite development
+            "http://127.0.0.1:5173",  # Vite development
+            "http://localhost:8000",  # FastAPI itself
+            "http://127.0.0.1:8000",  # FastAPI itself
+            "https://front-end-pdv.onrender.com",
+        ]
+
         self.api.add_middleware(
             CORSMiddleware,
             allow_origins=origins,
             allow_credentials=True,
-            allow_methods=["*"],    # permite POST, GET, OPTIONS etc.
-            allow_headers=["*"],    # permite Content-Type, Authorization etc.
+            allow_methods=["*"],  # permite POST, GET, OPTIONS etc.
+            allow_headers=["*"],  # permite Content-Type, Authorization etc.
         )
-
 
     def start_routes(self):
         """Inclui todas as rotas da API organizadas por funcionalidade e tag."""
 
         # Login
         login_route = Login()
-        self.api.include_router(
-            login_route.loginRT, tags=["Autenticação"]
-        )
+        self.api.include_router(login_route.loginRT, tags=["Autenticação"])
 
         # Cadastro de usuário
-        
-        self.api.include_router(
-            registerRT, prefix="/auth", tags=["Autenticação"]
-        )
+
+        self.api.include_router(registerRT, prefix="/auth", tags=["Autenticação"])
 
         # Cadastro de funcionários
-        
-        self.api.include_router(
-            registe_empreg, prefix="/funcionarios", tags=["Funcionários"]
-        )
+
+        self.api.include_router(registe_empreg, prefix="/funcionarios", tags=["Funcionários"])
 
         # Consulta de clientes
         consultaroute = ConsultaRoute()
-        self.api.include_router(
-            consultaroute.router, prefix="/clientes", tags=["Consultas"]
-        )
+        self.api.include_router(consultaroute.router, prefix="/clientes", tags=["Consultas"])
 
         # Produtos
         self.api.include_router(products_router)
 
         # Carrinho
         self.api.include_router(cart_router)
-        
+
         self.api.include_router(fornecedores)
         self.api.include_router(ticket_prods)
-        
+
         self.api.include_router(operador)
 
-
         # Visualização de dados em tempo real
-        
-        self.api.include_router(
-            allDatas, prefix="/dashboard", tags=["Dashboard"]
-        )
-        
+
+        self.api.include_router(allDatas, prefix="/dashboard", tags=["Dashboard"])
+
         # Cadastra e visualiza dados de clientes
         self.api.include_router(customers)
 
     def run(self, host: str = '127.0.0.1', port: int = 8000):
-        """Inicia o servidor Uvicorn."""
+        """Inicia o sevidor Uvicorn."""
         uvicorn.run('Main:app', host=host, port=port, reload=True, log_level="debug")
 
 
-
-# Variável global para o Uvicorn
+# Variavel global para o Uvicorn
 app = Server().api
 
 if __name__ == '__main__':

@@ -4,10 +4,12 @@ from tortoise.models import Model
 from tortoise import fields
 from src.model.user import Usuario
 
+
 class Ticket(Model):
     """
     Modelo de Tickets vinculado a um usuário (empresa).
     """
+
     id = fields.IntField(pk=True)
     name = fields.CharField(max_length=150)
     description = fields.TextField(null=True)
@@ -17,9 +19,7 @@ class Ticket(Model):
     atualizado_em = fields.DatetimeField(auto_now=True)
 
     # 🔹 Relacionamento com usuário (empresa)
-    usuario: fields.ForeignKeyRelation["Usuario"] = fields.ForeignKeyField(
-        "models.Usuario", related_name="tickets"
-    )
+    usuario: fields.ForeignKeyRelation["Usuario"] = fields.ForeignKeyField("models.Usuario", related_name="tickets")
 
     class Meta:
         table = "ticket"

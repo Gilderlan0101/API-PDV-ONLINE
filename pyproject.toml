@@ -29,13 +29,15 @@ matplotlib = "^3.10.6"
 fpdf = "^1.7.2"
 reportlab = "^4.4.3"
 tortoise-orm = "^0.25.1"
+qrcode = "^8.2"
+crcmod = "^1.7"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.black]
-line-length = 88
+line-length = 150
 skip-string-normalization = true
 
 [tool.isort]

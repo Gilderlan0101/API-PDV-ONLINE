@@ -10,9 +10,11 @@ from src.model.product import Produto
 
 router = APIRouter()
 
+
 class CancelRequest(BaseModel):
     code: str
     reason: str | None = None
+
 
 @router.post('/cancel', status_code=status.HTTP_200_OK)
 async def cancel_sale(
@@ -21,11 +23,7 @@ async def cancel_sale(
 ):
     """Cancela uma venda, restaura estoque e retorna resultado padronizado para frontend"""
     if not current_user.id:
-        return {
-            "success": False,
-            "data": None,
-            "error": "Usuário inválido"
-        }
+        return {"success": False, "data": None, "error": "Usuário inválido"}
 
     try:
         # 🔹 Busca a venda pelo código e usuário
@@ -35,20 +33,12 @@ async def cancel_sale(
         ).first()
 
         if not sale:
-            return {
-                "success": False,
-                "data": None,
-                "error": "Venda não encontrada"
-            }
+            return {"success": False, "data": None, "error": "Venda não encontrada"}
 
         # 🔹 Recupera o produto relacionado
         product = await Produto.get_or_none(product_code=sale.codigo_da_venda)
         if not product:
-            return {
-                "success": False,
-                "data": None,
-                "error": "Produto não encontrado"
-            }
+            return {"success": False, "data": None, "error": "Produto não encontrado"}
 
         # 🔹 Restaura o estoque
         product.stock += sale.quantity
@@ -63,14 +53,10 @@ async def cancel_sale(
             "data": {
                 "message": "Venda cancelada com sucesso",
                 "restored_stock": product.stock,
-                "product_id": product.id
+                "product_id": product.id,
             },
-            "error": None
+            "error": None,
         }
 
     except Exception as e:
-        return {
-            "success": False,
-            "data": None,
-            "error": f"Erro inesperado: {str(e)}"
-        }
+        return {"success": False, "data": None, "error": f"Erro inesperado: {str(e)}"}

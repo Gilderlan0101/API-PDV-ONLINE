@@ -15,4 +15,3 @@ cart_router.include_router(create_router, prefix="")
 cart_router.include_router(delete_router, prefix="")
 cart_router.include_router(list_router, prefix="")
 cart_router.include_router(update_item, prefix="")
-

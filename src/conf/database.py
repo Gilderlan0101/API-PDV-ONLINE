@@ -14,9 +14,7 @@ else:
 
 # Configuração do Tortoise ORM
 TORTOISE_ORM = {
-    "connections": {
-        "default": sqlite_url
-    },
+    "connections": {"default": sqlite_url},
     "apps": {
         "models": {
             "models": [
@@ -30,10 +28,10 @@ TORTOISE_ORM = {
                 "src.model.fornecedor",
                 "src.model.membros",
                 "src.model.cnpjCache",
-                "src.model.tickets",   # corrigido para plural
-                #"aerich.models",       # obrigatório se for usar migrações com Aerich
+                "src.model.tickets",  # corrigido para plural
+                # "aerich.models",       # obrigatório se for usar migrações com Aerich
             ],
             "default_connection": "default",
         }
-    }
+    },
 }

@@ -18,11 +18,7 @@ async def create_product(
         raise HTTPException(status_code=400, detail="Usuário inválido")
 
     try:
-        date_expired = (
-            datetime.combine(prod.date_expired, datetime.min.time())
-            if prod.date_expired
-            else None
-        )
+        date_expired = datetime.combine(prod.date_expired, datetime.min.time()) if prod.date_expired else None
         image_url = str(prod.image_url) if prod.image_url else None
 
         # 🔹 Criar produto no banco com Tortoise
@@ -48,9 +44,7 @@ async def create_product(
             sector=prod.sector,
             unit=prod.unit,
             controllstoke=prod.controllstoke,
-            sales_config=(
-                prod.sales_config.model_dump_json() if prod.sales_config else None
-            ),
+            sales_config=(prod.sales_config.model_dump_json() if prod.sales_config else None),
         )
 
         return {

@@ -3,6 +3,7 @@ from src.model.product import Produto
 from src.model.carItems import CartItem
 from src.model.employee import Employees
 
+
 # Função para formatar valores em Real brasileiro
 def format_brl(value: float) -> str:
     return f"R$ {value:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
@@ -16,7 +17,7 @@ class CartManagerDB:
         product_id: int,
         quantity: int,
         user_id: int,
-        #product_code: str,
+        # product_code: str,
     ) -> Dict[str, Any]:
         # Buscar o produto
         produto = await Produto.get_or_none(id=product_id)
@@ -41,7 +42,7 @@ class CartManagerDB:
         if cart_item:
             cart_item.quantity += quantity
             cart_item.price_total += produto.sale_price * quantity
-            #product_code = cart_item.product_code
+            # product_code = cart_item.product_code
             await cart_item.save()
         else:
             cart_item = await CartItem.create(
@@ -51,14 +52,13 @@ class CartManagerDB:
                 quantity=quantity,
                 price=produto.sale_price,
                 total_price=produto.sale_price * quantity,
-                
             )
 
         return {
             "item_adicionado": cart_item,
             "funcionario": {"id": funcionario_id, "nome": funcionario_nome},
             "admin_produto_id": produto.id,
-            "nome": produto.name
+            "nome": produto.name,
         }
 
     async def listar_produtos(self, user_id: int):

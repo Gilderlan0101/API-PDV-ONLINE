@@ -1,5 +1,3 @@
-import random
-import string
 from typing import Optional
 from fastapi import APIRouter, Depends, Query, status
 
@@ -9,14 +7,14 @@ from src.controllers.sales.sales import Checkout
 from src.controllers.stoke.stoke_control import gerar_relatorio_completo
 from src.controllers.car.cart_control import CartManagerDB
 from src.model.employee import Employees
+from src.utils.sales_code_generator import gerar_codigo_venda
+from src.controllers.sales.fetch_sales import get_sales
+from src.controllers.sales.delete_sales import delete_or_update_product_sale
+
 
 router = APIRouter()
 cart = CartManagerDB()
 
-
-def gerar_codigo_venda(size: int = 6) -> str:
-    """Gera um código aleatório para a venda."""
-    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=size))
 
 @router.post("/finalizar", status_code=status.HTTP_200_OK)
 async def finalizar_venda(
@@ -42,10 +40,10 @@ async def finalizar_venda(
         # 🔹 SE FOI PASSADO funcionario_id (admin vendendo para funcionário)
         if funcionario_id:
             funcionario_extra = await Employees.filter(
-                id=funcionario_id, 
-                usuario_id=admin_user.id  # ✅ Verifica se funcionário pertence ao admin
+                id=funcionario_id,
+                usuario_id=admin_user.id,  # ✅ Verifica se funcionário pertence ao admin
             ).first()
-            
+
             if funcionario_extra:
                 funcionario_operador_id = funcionario_extra.id
                 funcionario_operador_nome = funcionario_extra.nome
@@ -63,12 +61,14 @@ async def finalizar_venda(
         venda_detalhes = []
         for prod in produtos:
             total_venda += prod.price_total
-            venda_detalhes.append({
-                "produto_id": prod.product_id,
-                "nome": prod.product_name,
-                "quantidade": prod.quantity,
-                "preco_unitario": prod.price,
-            })
+            venda_detalhes.append(
+                {
+                    "produto_id": prod.product_id,
+                    "nome": prod.product_name,
+                    "quantidade": prod.quantity,
+                    "preco_unitario": prod.price,
+                }
+            )
 
         sale_code = gerar_codigo_venda()
         notas_fiscais = []
@@ -117,5 +117,50 @@ async def finalizar_venda(
 
     except Exception as e:
         import traceback
+
         print(f"Traceback:\n{traceback.format_exc()}")
         return {"success": False, "data": None, "error": f"Erro inesperado: {str(e)}"}
+
+
+@router.get('/buscar/venda')
+async def buscar_venda(sale_code: str, current_user: Usuario = Depends(get_current_user)):
+    """Buscar venda pelo código"""
+    try:
+        # ✅ Chamada correta da função assíncrona
+        vendas = await get_sales(current_user.id, sale_code)
+
+        # Transformar objetos de vendas em dicionário para retornar JSON
+        resultado = [
+            {
+                "produto": venda.product_name,
+                "quantidade": venda.quantity,
+                "preco_unitario": float(venda.total_price / venda.quantity),
+                "valor_total": float(venda.total_price),
+                "lucro_total": float(venda.lucro_total),
+                "codigo_da_venda": venda.sale_code,
+            }
+            for venda in vendas
+        ]
+
+        return {"success": True, "data": resultado, "error": None}
+
+    except Exception as e:
+        import traceback
+
+        print(f"Erro em buscar_venda:\n{traceback.format_exc()}")
+        return {"success": False, "data": None, "error": str(e)}
+
+
+@router.delete('/deleta/venda/')
+async def delete_sale(
+    sale_code: str = Query(...),
+    product_id: int = Query(...),
+    quantity: Optional[int] = None,
+    # current_user: Usuario = Depends(get_current_user)
+):
+
+    var = await delete_or_update_product_sale(1, sale_code, product_id, quantity)
+    if var:
+        return var
+    else:
+        return var

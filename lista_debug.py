@@ -1,50 +1,19 @@
-from tortoise import Tortoise, run_async
-from src.model.user import Usuario
-from src.model.employee import Employees
-import os
+lista = ['dd11', 'dd11', 'dd12', 'dd11']
 
-DB_PATH = "/home/dev/projetos/API-PDV-ONLINE/back-end/usurios.db"
+vendas = 0
 
-async def debug_usuarios_funcionarios():
-    """Função para debug que lista todos os usuários e seus funcionários"""
 
-    print("=" * 60)
-    print("DEBUG: LISTA DE USUÁRIOS E FUNCIONÁRIOS")
-    print("=" * 60)
+for i, valor_atual in enumerate(lista):
+    if i < len(lista) - 1:
+        proximo_valor = lista[i + 1]
+        print(f"Índice {i}: {valor_atual} vs Índice {i+1}: {proximo_valor}")
 
-    # Inicializa conexão com o banco SQLite existente
-    await Tortoise.init(
-        db_url=f"sqlite://{DB_PATH}",
-        modules={"models": ["src.model.user", "src.model.employee"]},
-    )
-    # NÃO gera schemas se o banco já existe
-    # await Tortoise.generate_schemas()
+        if valor_atual != proximo_valor:
+            vendas += 1
 
-    # Busca todos os usuários
-    usuarios = await Usuario.all()
-    
-    for usuario in usuarios:
-        print(f"\n📋 USUÁRIO: ID={usuario.id}, Username='{usuario.username}', Email='{usuario.email}'")
-        print(f"   Company: '{usuario.company_name}', CNPJ: {usuario.cnpj}")
-        
-        # Busca funcionários deste usuário
-        funcionarios = await Employees.filter(usuario_id=usuario.id).all()
-        
-        if funcionarios:
-            print(f"   👥 FUNCIONÁRIOS ({len(funcionarios)}):")
-            for func in funcionarios:
-                print(f"      - ID: {func.id}, Nome: '{func.nome}', Cargo: '{func.cargo}', Email: '{func.email}'")
-                print(f"        Ativo: {func.ativo}, Criado em: {func.criado_em}")
-        else:
-            print(f"   ❌ NENHUM FUNCIONÁRIO CADASTRADO PARA ESTE USUÁRIO")
-    
-    print("=" * 60)
-    print("DEBUG COMPLETO")
-    print("=" * 60)
+        if valor_atual == proximo_valor:
+            print([valor_atual, proximo_valor])
 
-    # Fecha conexões ao final
-    await Tortoise.close_connections()
-
-# Executa a função
-if __name__ == "__main__":
-    run_async(debug_usuarios_funcionarios())
+    else:
+        print(f"Fim da lista. Não há próximo valor para o índice {i}.")
+print(vendas)

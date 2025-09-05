@@ -22,26 +22,17 @@ class Sales(models.Model):
     criado_em = fields.DatetimeField(auto_now_add=True)
 
     # 🔹 Relacionamento com o usuário (empresa dono da venda)
-    usuario = fields.ForeignKeyField(
-        "models.Usuario",
-        related_name="vendas",
-        on_delete=fields.CASCADE
-    )
+    usuario = fields.ForeignKeyField("models.Usuario", related_name="vendas", on_delete=fields.CASCADE)
 
     # 🔹 Relacionamento com o funcionário operador (opcional)
-    funcionario = fields.ForeignKeyField(
-        "models.Employees",
-        related_name="vendas",
-        null=True,
-        on_delete=fields.SET_NULL
-    )
+    funcionario = fields.ForeignKeyField("models.Employees", related_name="vendas", null=True, on_delete=fields.SET_NULL)
 
     # 🔹 Relacionamento com o produto (obrigatório)
     produto = fields.ForeignKeyField(
         "models.Produto",
         related_name="vendas",
         null=False,
-        on_delete=fields.RESTRICT  # impede apagar produto se houver vendas
+        on_delete=fields.RESTRICT,  # impede apagar produto se houver vendas
     )
 
     class Meta:

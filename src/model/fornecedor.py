@@ -6,12 +6,14 @@ from enum import Enum
 
 from src.model.product import Produto
 
+
 # ========================
 # 🔹 Enums
 # ========================
 class SupplierType(str, Enum):
     PESSOA_JURIDICA = "PJ"
     PESSOA_FISICA = "PF"
+
 
 class TaxRegime(str, Enum):
     SIMPLES_NACIONAL = "Simples Nacional"
@@ -20,10 +22,12 @@ class TaxRegime(str, Enum):
     MEI = "MEI"
     OUTRO = "Outro"
 
+
 class IEStatus(str, Enum):
     CONTRIBUINTE = "Contribuinte"
     ISENTO = "Isento"
     NAO_CONTRIBUINTE = "Não Contribuinte"
+
 
 class PaymentTerm(str, Enum):
     AVISTA = "À vista"
@@ -35,6 +39,7 @@ class PaymentTerm(str, Enum):
     DIAS_45 = "45 dias"
     DIAS_60 = "60 dias"
     PERSONALIZADO = "Personalizado"
+
 
 class SupplierStatus(str, Enum):
     ATIVO = "Ativo"

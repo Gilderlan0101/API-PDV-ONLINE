@@ -5,7 +5,11 @@ from tortoise.transactions import in_transaction
 from tortoise.functions import Count
 from src.model.user import Usuario
 from src.model.fornecedor import Fornecedor, SupplierStatus
-from src.schemas.fornecedor.schemas_fornecedor import SupplierBase, SupplierListResponse, SupplierSummary
+from src.schemas.fornecedor.schemas_fornecedor import (
+    SupplierBase,
+    SupplierListResponse,
+    SupplierSummary,
+)
 from src.auth.deps import get_current_user
 
 router = APIRouter()
@@ -59,11 +63,7 @@ async def create_fornecedor(
 # Listar fornecedores
 # ===============================
 @router.get('/listar', response_model=SupplierListResponse)
-async def list_fornecedores(
-    current_user: Usuario = Depends(get_current_user),
-    page: int = 1,
-    size: int = 20
-):
+async def list_fornecedores(current_user: Usuario = Depends(get_current_user), page: int = 1, size: int = 20):
     offset = (page - 1) * size
     fornecedores = await Fornecedor.filter(usuario_id=current_user.id).offset(offset).limit(size)
 
@@ -79,7 +79,7 @@ async def list_fornecedores(
             email=f.email,
             status=f.status,
             cidade=f.endereco.get('cidade') if f.endereco else "",
-            uf=f.endereco.get('uf') if f.endereco else ""
+            uf=f.endereco.get('uf') if f.endereco else "",
         )
         for f in fornecedores
     ]
@@ -89,7 +89,7 @@ async def list_fornecedores(
         total=total_count,
         page=page,
         pages=(total_count // size) + (1 if total_count % size > 0 else 0),
-        data=data
+        data=data,
     )
 
 
@@ -97,10 +97,7 @@ async def list_fornecedores(
 # Deletar fornecedor
 # ===============================
 @router.delete('/apagar/{fornecedor_id}', status_code=status.HTTP_200_OK)
-async def delete_fornecedor(
-    fornecedor_id: int,
-    current_user: Usuario = Depends(get_current_user)
-):
+async def delete_fornecedor(fornecedor_id: int, current_user: Usuario = Depends(get_current_user)):
     async with in_transaction() as conn:
         fornecedor = await Fornecedor.filter(id=fornecedor_id, usuario_id=current_user.id).using_db(conn).first()
         if not fornecedor:

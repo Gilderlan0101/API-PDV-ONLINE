@@ -50,7 +50,7 @@ async def upload_image(product_id: int, file: UploadFile = File(...)):
 
     return {
         "message": "Imagem enviada com sucesso",
-        "image_url": f"/sales/upload/produto/{product_id}/imagem"
+        "image_url": f"/sales/upload/produto/{product_id}/imagem",
     }
 
 
@@ -73,7 +73,7 @@ async def get_image(product_id: int):
         ".jpg": "image/jpeg",
         ".jpeg": "image/jpeg",
         ".gif": "image/gif",
-        ".webp": "image/webp"
+        ".webp": "image/webp",
     }
     content_type = extension_to_type.get(file_path.suffix.lower(), "image/jpeg")
 
@@ -84,8 +84,8 @@ async def get_image(product_id: int):
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Methods": "GET, OPTIONS",
             "Access-Control-Allow-Headers": "Authorization, Content-Type",
-            "Cache-Control": "public, max-age=3600"
-        }
+            "Cache-Control": "public, max-age=3600",
+        },
     )
 
 

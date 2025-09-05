@@ -7,10 +7,7 @@ from ..model.user import Usuario, CNPJCache
 from ..schemas.schema_user import CompanyRegisterSchema
 from ..services.consulting_cnpj import consulting_CNPJ
 
-registerRT = APIRouter(
-    prefix='/auth',
-    tags=['Autenticação']
-)
+registerRT = APIRouter(prefix='/auth', tags=['Autenticação'])
 
 
 @registerRT.post('/cadastro', status_code=status.HTTP_201_CREATED)
@@ -55,7 +52,7 @@ async def register(user: CompanyRegisterSchema):
             full_data = CNPJCache(
                 cnpj=user.cnpj,
                 data_json=json.dumps(searching_for_data, ensure_ascii=False),
-                usuario_id=new_user.id
+                usuario_id=new_user.id,
             )
             await full_data.save(using_db=conn)
 
@@ -65,5 +62,5 @@ async def register(user: CompanyRegisterSchema):
         'username': new_user.username,
         'email': new_user.email,
         'empresa': new_user.company_name,
-        'criado_em': new_user.criado_em.strftime('%d/%m/%Y %H:%M:%S')
+        'criado_em': new_user.criado_em.strftime('%d/%m/%Y %H:%M:%S'),
     }

@@ -1,8 +1,9 @@
 from tortoise.models import Model
 from tortoise import fields
 
+
 class CartItem(Model):
-    """ CarItem é responsável por guardar compras do cliente temporariamente. """
+    """CarItem é responsável por guardar compras do cliente temporariamente."""
 
     id = fields.IntField(pk=True)
     user_id = fields.IntField(null=False)

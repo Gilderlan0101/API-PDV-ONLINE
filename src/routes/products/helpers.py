@@ -28,20 +28,16 @@ async def get_product_by_user(
     return await query.first()
 
 
-async def get_customers(
-    user_id: int,
-    customer_name: Optional[str] = None,
-    cpf: Optional[str] = None
-) -> Optional[Customer]:
+async def get_customers(user_id: int, customer_name: Optional[str] = None, cpf: Optional[str] = None) -> Optional[Customer]:
     """
     🔍 Busca clientes do usuário atual com filtros opcionais.
     """
     query = Customer.filter(usuario_id=user_id)
-    
+
     if customer_name:
         query = query.filter(full_name__icontains=customer_name)
     if cpf:
         cpf_clean = re.sub(r'\D', '', cpf)
         query = query.filter(cpf__contains=cpf_clean)
-    
+
     return await query.first()

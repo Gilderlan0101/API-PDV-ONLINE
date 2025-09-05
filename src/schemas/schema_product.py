@@ -121,6 +121,7 @@ class SnacksSubGroup(str, Enum):
 
 # Adicione os subgrupos restantes da mesma forma, se necessário...
 
+
 # ======================================
 # 🔹 Units
 # ======================================
@@ -217,11 +218,11 @@ class ProductRegisterSchema(BaseModel):
 
     # 🔹 Connected enums and options
     product_type: ProductType
-    active:  ProductStatus
-    group: str # Optional[str] = None
-    sub_group: str # Optional[str] = None
-    sector: str # ProductSector
-    unit:  str # Optional[str] = None
+    active: ProductStatus
+    group: str  # Optional[str] = None
+    sub_group: str  # Optional[str] = None
+    sector: str  # ProductSector
+    unit: str  # Optional[str] = None
     controllstoke: ProductStatus
     sales_config: Optional[ApplyingSalesType] = None
 

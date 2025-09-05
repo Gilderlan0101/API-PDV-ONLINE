@@ -2,6 +2,7 @@ from typing import Dict, Any
 from src.model.caixa import Caixa
 from src.model.sale import Sales
 
+
 async def get_caixa_details(funcionario_id: int, caixa_id: int) -> Dict[str, Any]:
     """
     Retorna o resumo do caixa de um funcionário:
@@ -16,10 +17,7 @@ async def get_caixa_details(funcionario_id: int, caixa_id: int) -> Dict[str, Any
         raise ValueError("Caixa não encontrado.")
 
     # Busca todas as vendas do funcionário desde a abertura do caixa
-    vendas = await Sales.filter(
-        funcionario_id=funcionario_id,
-        criado_em__gte=caixa.criado_em
-    ).all()
+    vendas = await Sales.filter(funcionario_id=funcionario_id, criado_em__gte=caixa.criado_em).all()
 
     # Inicializa totais
     total_sistema = 0.0
@@ -44,5 +42,5 @@ async def get_caixa_details(funcionario_id: int, caixa_id: int) -> Dict[str, Any
         "valor_sistema": total_sistema,
         "diferenca": diferenca,
         "vendas": vendas,
-        "total_por_pagamento": total_por_pagamento
+        "total_por_pagamento": total_por_pagamento,
     }
