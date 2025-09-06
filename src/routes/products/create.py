@@ -5,6 +5,7 @@ from src.auth.deps import get_current_user
 from src.model.product import Produto
 from src.model.user import Usuario
 from src.schemas.schema_product import ProductRegisterSchema
+from src.utils.sales_code_generator import barcode_generator
 
 router = APIRouter(prefix="/produtos", tags=["Produtos"])
 
@@ -46,6 +47,7 @@ async def create_product(
             controllstoke=prod.controllstoke,
             sales_config=(prod.sales_config.model_dump_json() if prod.sales_config else None),
         )
+        barcode_generator(current_user.id)
 
         return {
             "message": "Produto cadastrado com sucesso!",

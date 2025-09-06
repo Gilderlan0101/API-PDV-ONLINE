@@ -34,6 +34,8 @@ class Sales(models.Model):
         null=False,
         on_delete=fields.RESTRICT,  # impede apagar produto se houver vendas
     )
+    
+    
 
     class Meta:
         table = "sales"

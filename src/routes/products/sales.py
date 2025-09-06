@@ -9,7 +9,7 @@ from src.controllers.car.cart_control import CartManagerDB
 from src.model.employee import Employees
 from src.utils.sales_code_generator import gerar_codigo_venda
 from src.controllers.sales.fetch_sales import get_sales
-from src.controllers.sales.delete_sales import delete_or_update_product_sale
+from src.controllers.sales.delete_sales import delete_or_update_sale
 
 
 router = APIRouter()
@@ -126,8 +126,11 @@ async def finalizar_venda(
 async def buscar_venda(sale_code: str, current_user: Usuario = Depends(get_current_user)):
     """Buscar venda pelo código"""
     try:
-        # ✅ Chamada correta da função assíncrona
+        
         vendas = await get_sales(current_user.id, sale_code)
+        
+        
+        
 
         # Transformar objetos de vendas em dicionário para retornar JSON
         resultado = [
@@ -138,9 +141,12 @@ async def buscar_venda(sale_code: str, current_user: Usuario = Depends(get_curre
                 "valor_total": float(venda.total_price),
                 "lucro_total": float(venda.lucro_total),
                 "codigo_da_venda": venda.sale_code,
+                "data": venda.criado_em.date().strftime('%d/%m/%Y %H:%M:%S')
             }
             for venda in vendas
+            
         ]
+        
 
         return {"success": True, "data": resultado, "error": None}
 
@@ -153,13 +159,17 @@ async def buscar_venda(sale_code: str, current_user: Usuario = Depends(get_curre
 
 @router.delete('/deleta/venda/')
 async def delete_sale(
-    sale_code: str = Query(...),
     product_id: int = Query(...),
     quantity: Optional[int] = None,
+    current_user: Usuario = Depends(get_current_user)
     # current_user: Usuario = Depends(get_current_user)
 ):
+    
+    """O usuario/fucionario pode deleta uma venda ou edita uma venda realiza.
+        caso o fucionario delete a compra a quantidade de imtes volta para o stoke automaticamente
+    """
 
-    var = await delete_or_update_product_sale(1, sale_code, product_id, quantity)
+    var = await delete_or_update_sale(current_user.id, product_id, quantity)
     if var:
         return var
     else:

@@ -11,6 +11,7 @@ from src.model.customers import Customer
 from src.model.sale import Sales
 from src.model.employee import Employees
 from src.model.carItems import CartItem
+from src.utils.sales_code_generator import barcode_generator
 
 
 async def create_mock_data():
@@ -300,6 +301,8 @@ async def create_mock_data():
                 # Atualiza estoque
                 # produto.stock -= quantidade
                 # await produto.save()
+                await barcode_generator(admin.id)
+                
 
             print("✅ 50 vendas criadas e estoque atualizado!")
 

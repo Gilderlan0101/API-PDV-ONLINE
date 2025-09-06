@@ -3,12 +3,12 @@ from src.model.product import Produto
 from typing import Optional
 
 
-async def delete_or_update_product_sale(user_id: int, sale_code: str, product_id: int, new_quantity: Optional[int] = None):
+async def delete_or_update_sale(user_id: int, sale_id: int, new_quantity: Optional[int] = None):
     """
-    Atualiza ou deleta um item da venda.
+    Atualiza ou deleta uma venda específica da tabela Sales.
 
     - Se new_quantity for informado:
-        - Atualiza a quantidade.
+        - Atualiza a quantidade da venda.
         - Recalcula total_price e lucro_total.
         - Ajusta o estoque do produto corretamente.
     - Se new_quantity for None:
@@ -16,13 +16,13 @@ async def delete_or_update_product_sale(user_id: int, sale_code: str, product_id
         - Devolve a quantidade total ao estoque do produto.
     """
     try:
-        # Busca a venda
-        sale = await Sales.filter(usuario_id=user_id, sale_code=sale_code, id=product_id).first()
+        # Busca a venda pelo ID da venda (não do produto)
+        sale = await Sales.filter(usuario_id=user_id, id=sale_id).first()
         if not sale:
-            return {"status": 404, "msg": "Nenhum registro encontrado para atualizar ou deletar."}
+            return {"status": 404, "msg": "Venda não encontrada."}
 
-        # Busca o produto
-        produto = await Produto.get(id=product_id)
+        # Busca o produto relacionado à venda
+        produto = await Produto.get(id=sale.produto_id) # type: ignore
 
         if new_quantity is not None:
             # Guarda quantidade antiga
@@ -35,12 +35,14 @@ async def delete_or_update_product_sale(user_id: int, sale_code: str, product_id
             await sale.save()
 
             # Ajusta estoque corretamente
-            produto.stock += (old_quantity - new_quantity)  # Se diminuiu, devolve para o estoque; se aumentou, diminui
+            produto.stock += (old_quantity - new_quantity)
             await produto.save()
 
             return {
                 "status": 200,
                 "msg": "Venda atualizada com sucesso!",
+                "sale_id": sale.id,
+                "product_id": produto.id,
                 "new_total_price": sale.total_price,
                 "old_quantity": old_quantity,
                 "new_quantity": new_quantity,
@@ -53,7 +55,14 @@ async def delete_or_update_product_sale(user_id: int, sale_code: str, product_id
             await produto.save()
 
             await sale.delete()
-            return {"status": 200, "msg": "Venda deletada com sucesso.", "new_stock": produto.stock}
+            return {
+                "status": 200, 
+                "msg": "Venda deletada com sucesso.", 
+                "sale_id": sale_id,
+                "product_id": produto.id,
+                "quantity_returned": sale.quantity,
+                "new_stock": produto.stock
+            }
 
     except Exception as e:
         return {"status": 500, "error": f"Erro ao atualizar ou deletar venda: {str(e)}"}
