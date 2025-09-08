@@ -5,6 +5,8 @@ import re
 from faker import Faker
 from tortoise.transactions import in_transaction
 
+from src.controllers.caixa.cash_controller import CashController
+from src.controllers.sales.separate_payment_methods import separating_sales_by_payments
 from src.model.product import Produto
 from src.model.user import Membro, Usuario
 from src.model.customers import Customer
@@ -60,6 +62,16 @@ async def create_mock_data():
                 )
                 print(f"✅ Funcionário criado: {funcionario.nome}")
             funcionarios_existentes = await Employees.filter(usuario_id=admin.id).all()
+
+        print("🔹 Criando caixas para funcionários...")
+        for funcionario in funcionarios_existentes:
+            try:
+                caixa = await CashController.abrir_caixa(
+                    usuario_id=admin.id, funcionario_id=funcionario.id, saldo_inicial=100.0, nome=f"Caixa {funcionario.nome}"
+                )
+                print(f"✅ Caixa criado para {funcionario.nome}: R$ {caixa.saldo_inicial}")
+            except Exception as e:
+                print(f"⚠️  Caixa já existe para {funcionario.nome}: {e}")
 
         # ========================
         # Criar produtos
@@ -246,7 +258,7 @@ async def create_mock_data():
                     credit=round(random.uniform(100, 1000), 2),
                     current_balance=round(random.uniform(0, 500), 2),
                     due_date=(datetime.now() + timedelta(days=random.randint(30, 365))).isoformat(),
-                    status="ATIVO",
+                    status=random.choices(['ATIVO', 'ATRASO', 'PENDENTE']),
                     usuario_id=admin.id,
                 )
             print("✅ 30 clientes criados!")
@@ -261,7 +273,7 @@ async def create_mock_data():
             clientes = await Customer.filter(usuario_id=admin.id).all()
             funcionarios = await Employees.filter(usuario_id=admin.id).all()
 
-            for _ in range(50):
+            for i in range(50):
                 produto = random.choice(produtos)
                 cliente = random.choice(clientes)
                 quantidade = random.randint(1, 10)
@@ -271,38 +283,52 @@ async def create_mock_data():
 
                 # Aleatoriza funcionário válido
                 funcionario_id = None
+                caixa_id = None
+
                 if funcionarios and random.choice([True, False]):
                     funcionario = random.choice(funcionarios)
-                    funcionario_id = funcionario.id  # ✅ sempre válido
+                    funcionario_id = funcionario.id
 
-                # await Sales.create(
-                #     product_name=produto.name,
-                #     quantity=quantidade,
-                #     total_price=preco_total,
-                #     lucro_total=lucro_total,
-                #     cost_price=produto.cost_price,
-                #     criado_em=data_venda,
-                #     cliente_id=cliente.id,
-                #     usuario_id=admin.id,
-                #     funcionario_id=funcionario_id,
-                #     produto_id=produto.id,
-                #     sale_code=f"V{random.randint(10000, 99999)}",
-                # )
+                    # Busca caixa aberto do funcionário
+                    caixa = await CashController.get_caixa_aberto_funcionario(funcionario_id)
+                    if caixa:
+                        caixa_id = caixa.id
 
-                await CartItem.create(
-                    user_id=admin.id,
-                    product_id=produto.id,
+                forma_pagamento = random.choice(["PIX", "NOTA", "DINHEIRO", "CARTAO", "FIADO"])
+
+                # Cria a venda
+                venda = await Sales.create(
                     product_name=produto.name,
                     quantity=quantidade,
-                    price=produto.sale_price,
-                    total_price=produto.sale_price * quantidade,
+                    total_price=preco_total,
+                    lucro_total=lucro_total,
+                    cost_price=produto.cost_price,
+                    criado_em=data_venda,
+                    cliente_id=cliente.id,
+                    usuario_id=admin.id,
+                    funcionario_id=funcionario_id,
+                    payment_method=forma_pagamento,
+                    produto_id=produto.id,
+                    sale_code=f"V{random.randint(10000, 99999)}",
+                    caixa_id=caixa_id,  # ✅ Associa ao caixa
                 )
 
+                # Se a venda foi associada a um caixa, atualiza o saldo
+                if caixa_id:
+                    try:
+                        await CashController.registrar_venda_caixa(
+                            caixa_id=caixa_id, venda_id=venda.id, valor_venda=preco_total, forma_pagamento=forma_pagamento
+                        )
+                        print(f"✅ Venda {i+1} registrada no caixa {caixa_id}")
+                    except Exception as e:
+                        print(f"⚠️ Erro ao registrar venda no caixa: {e}")
+
                 # Atualiza estoque
-                # produto.stock -= quantidade
-                # await produto.save()
-                await barcode_generator(admin.id)
-                
+                produto.stock -= quantidade
+                await produto.save()
+
+            await barcode_generator(admin.id)
+            await separating_sales_by_payments(admin.id)
 
             print("✅ 50 vendas criadas e estoque atualizado!")
 

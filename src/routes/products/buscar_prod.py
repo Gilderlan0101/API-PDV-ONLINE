@@ -1,23 +1,12 @@
 from typing import Optional
 from fastapi import APIRouter, Depends, Query
 from fastapi.encoders import jsonable_encoder
-from tortoise.exceptions import DoesNotExist
 
 from src.model.user import Usuario
-from src.model.product import Produto
 from src.auth.deps import get_current_user
+from src.utils.get_produtos_user import get_product_by_user
 
 buscar_produtos = APIRouter()
-
-
-async def get_product_by_user(user_id: int, code: Optional[str] = None, name: Optional[str] = None) -> Optional[Produto]:
-    """Busca produto pelo usuário, código ou nome."""
-    query = Produto.filter(usuario_id=user_id)
-    if code:
-        query = query.filter(product_code=code)
-    if name:
-        query = query.filter(name=name)
-    return await query.first()
 
 
 @buscar_produtos.get('/buscar', status_code=200)

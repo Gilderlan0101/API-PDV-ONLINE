@@ -8,15 +8,7 @@ from fastapi import FastAPI
 from src.conf.database import TORTOISE_ORM
 
 # Rotas
-from src.routes.cliente_cnpj import ConsultaRoute
-from src.routes.login import Login
-from src.routes.products import products_router, fornecedores, ticket_prods
-from src.routes.car import cart_router
-from src.routes.registre import registerRT
-from src.routes.updates import allDatas
-from src.routes.account.account import registe_empreg
-from src.routes.customer.customer_registration import customers
-from src.routes.cadastros.operador_caixa import operador
+from src.routes.__init__ import *
 
 # from src.routes.relatorio.relatorio import router
 
@@ -39,7 +31,6 @@ async def lifespan(app: FastAPI):
     await Tortoise.init(config=TORTOISE_ORM)
     await Tortoise.generate_schemas()  # cria tabelas se necessário
     print('Banco de dados iniciado e tabelas criadas!')
-    
 
     # Popula dados de teste
     await create_mock_data()
@@ -115,39 +106,15 @@ class Server:
     def start_routes(self):
         """Inclui todas as rotas da API organizadas por funcionalidade e tag."""
 
-        # Login
-        login_route = Login()
-        self.api.include_router(login_route.loginRT, tags=["Autenticação"])
-
-        # Cadastro de usuário
-
-        self.api.include_router(registerRT, prefix="/auth", tags=["Autenticação"])
-
-        # Cadastro de funcionários
-
-        self.api.include_router(registe_empreg, prefix="/funcionarios", tags=["Funcionários"])
-
-        # Consulta de clientes
-        consultaroute = ConsultaRoute()
-        self.api.include_router(consultaroute.router, prefix="/clientes", tags=["Consultas"])
-
-        # Produtos
-        self.api.include_router(products_router)
-
-        # Carrinho
-        self.api.include_router(cart_router)
-
-        self.api.include_router(fornecedores)
-        self.api.include_router(ticket_prods)
-
-        self.api.include_router(operador)
-
-        # Visualização de dados em tempo real
-
-        self.api.include_router(allDatas, prefix="/dashboard", tags=["Dashboard"])
-
-        # Cadastra e visualiza dados de clientes
-        self.api.include_router(customers)
+        self.api.include_router(auth)
+        self.api.include_router(Funcionários)
+        self.api.include_router(clientes)
+        self.api.include_router(produtos)
+        self.api.include_router(carrinho)
+        self.api.include_router(fornecedor)
+        self.api.include_router(tickets)
+        self.api.include_router(caixa)
+        self.api.include_router(dashboard)
 
     def run(self, host: str = '127.0.0.1', port: int = 8000):
         """Inicia o sevidor Uvicorn."""

@@ -22,7 +22,7 @@ async def delete_or_update_sale(user_id: int, sale_id: int, new_quantity: Option
             return {"status": 404, "msg": "Venda não encontrada."}
 
         # Busca o produto relacionado à venda
-        produto = await Produto.get(id=sale.produto_id) # type: ignore
+        produto = await Produto.get(id=sale.produto_id)  # type: ignore
 
         if new_quantity is not None:
             # Guarda quantidade antiga
@@ -35,7 +35,7 @@ async def delete_or_update_sale(user_id: int, sale_id: int, new_quantity: Option
             await sale.save()
 
             # Ajusta estoque corretamente
-            produto.stock += (old_quantity - new_quantity)
+            produto.stock += old_quantity - new_quantity
             await produto.save()
 
             return {
@@ -46,7 +46,7 @@ async def delete_or_update_sale(user_id: int, sale_id: int, new_quantity: Option
                 "new_total_price": sale.total_price,
                 "old_quantity": old_quantity,
                 "new_quantity": new_quantity,
-                "new_stock": produto.stock
+                "new_stock": produto.stock,
             }
 
         else:
@@ -56,12 +56,12 @@ async def delete_or_update_sale(user_id: int, sale_id: int, new_quantity: Option
 
             await sale.delete()
             return {
-                "status": 200, 
-                "msg": "Venda deletada com sucesso.", 
+                "status": 200,
+                "msg": "Venda deletada com sucesso.",
                 "sale_id": sale_id,
                 "product_id": produto.id,
                 "quantity_returned": sale.quantity,
-                "new_stock": produto.stock
+                "new_stock": produto.stock,
             }
 
     except Exception as e:

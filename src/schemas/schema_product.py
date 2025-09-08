@@ -202,8 +202,8 @@ class ApplyingSalesType(BaseModel):
 class ProductRegisterSchema(BaseModel):
     """Schema for registering a new product"""
 
-    product_code: Str50
     name: Str150
+    product_code: Str50
     stock: NonNegativeInt
     stoke_min: NonNegativeInt
     stoke_max: NonNegativeInt

@@ -20,6 +20,10 @@ def gerar_codigo_venda(size: int = 6) -> str:
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=size))
 
 
+def lot_bar_code_size(size: int = 13) -> str:
+    """Gera um código aleatório para a venda."""
+    return ''.join(random.choices(string.digits, k=size))
+
 
 def quicksort(arr, key=lambda x: x):
     """Ordena uma lista usando quicksort."""
@@ -34,7 +38,7 @@ def quicksort(arr, key=lambda x: x):
 
 async def barcode_generator(user_id: int, size: int = 13):
     """Gera códigos para produtos com lot_bar_code vazio e ordena pelo código."""
-    
+
     # Busca produtos do usuário
     products = await Produto.filter(usuario_id=user_id)
 

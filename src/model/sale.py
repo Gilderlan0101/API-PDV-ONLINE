@@ -1,6 +1,14 @@
 from tortoise import fields, models
-from datetime import datetime
-from zoneinfo import ZoneInfo
+
+from enum import StrEnum
+
+
+class PaymentMethods(StrEnum):
+    PIX = "PIX"
+    CARTAO = "CARTAO"
+    DINHEIRO = "DINHEIRO"
+    NOTA = "NOTA"
+    FIADO = "FIADO"
 
 
 class Sales(models.Model):
@@ -18,7 +26,7 @@ class Sales(models.Model):
     lucro_total = fields.FloatField(default=0.0)
     cost_price = fields.FloatField()
     sale_code = fields.CharField(max_length=6, null=True, index=True)
-
+    payment_method = fields.CharEnumField(PaymentMethods, max_length=9)
     criado_em = fields.DatetimeField(auto_now_add=True)
 
     # 🔹 Relacionamento com o usuário (empresa dono da venda)
@@ -34,8 +42,8 @@ class Sales(models.Model):
         null=False,
         on_delete=fields.RESTRICT,  # impede apagar produto se houver vendas
     )
-    
-    
+
+    caixa = fields.ForeignKeyField("models.Caixa", related_name="vendas", null=True, on_delete=fields.SET_NULL)  # Pode ser null se não tiver caixa
 
     class Meta:
         table = "sales"

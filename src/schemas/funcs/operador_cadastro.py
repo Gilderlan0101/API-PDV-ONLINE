@@ -14,7 +14,4 @@ class CaixaFuncionarioCreate(SQLModel):
 # 🔹 Schema de Atualização do Caixa (Fechamento)
 # ========================
 class CaixaFuncionarioUpdate(SQLModel):
-    valor_fechamento: float = Field(..., description="Valor contado no fechamento")
-    valor_sistema: float = Field(..., description="Valor registrado pelo sistema")
-    diferenca: Optional[float] = Field(None, description="Diferença entre contado e sistema")
-    aberto: bool = Field(default=False, description="Status do caixa (False = fechado)")
+    caixa_id: int = Field(..., description="ID do caixa a ser fechado")
