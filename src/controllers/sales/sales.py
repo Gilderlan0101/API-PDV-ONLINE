@@ -62,8 +62,6 @@ class Checkout:
         funcionario_id: Optional[int] = None,
     ):
         try:
-            print(f"CHECKOUT_DEBUG: Iniciando process_sale")
-            print(f"CHECKOUT_DEBUG: current_user.id={current_user.id}, user_id={self.user_id}")
 
             # 🔹 Define admin_user e operador
             admin_user = current_user  # ✅ Já é objeto Usuario
@@ -201,49 +199,29 @@ class Note(Checkout):
         await self.verify_datas()
         await self.verifyFields()
 
-
-# Procesa carrinho antes de finaliza uma venda
 async def validating_information(current_user, payment_method: str, employee_operator_id: Optional[int] = None):
-
     from src.utils.sales_code_generator import gerar_codigo_venda
-
-    # Carrinho do cliente
     from src.controllers.car.cart_control import CartManagerDB
 
     cart = CartManagerDB()
 
     try:
-
-        # Inicializa admin e operador
-        if hasattr(current_user, "username"):
-            employee_operator_name = current_user.username
-        elif hasattr(current_user, "nome"):
-            employee_operator_name = current_user.username
-        else:
-            employee_operator_name = "Nome não disponível"
-
-        # Verifica se o current_user é um funcionário
-        is_employee = await Employees.filter(id=current_user.id).first()
-
-        if is_employee and is_employee.usuario:
-            # Busca o usuário pelo ID do relacionamento
-            admin_user = await Usuario.get(id=is_employee.id)
-            employee_operator_id = is_employee.id
-            employee_operator_name = is_employee.nome
-        else:
-            admin_user = current_user
-            employee_operator_id = None
-
-        # Se foi passado employee_operator_id (admin vendendo para funcionário)
-        extra_employee = None
-        if employee_operator_id:
-            extra_employee = await Employees.filter(id=employee_operator_id, usuario=admin_user.id).first()
-
-        if extra_employee:
-            employee_operator_id = extra_employee.id
-            employee_operator_name = extra_employee.nome
-        else:
-            return {"status": False, "message": "Funcionário não encontrado"}
+        # VERIFICA SE É UM FUNCIONÁRIO
+        employee = await Employees.filter(id=current_user.id).first()
+        
+        if not employee:
+            return {"status": False, "message": "Apenas funcionários podem realizar vendas"}
+        
+        # Se chegou aqui, é um funcionário
+        employee_operator_id = employee.id
+        employee_operator_name = employee.nome
+        
+        # Busca o usuário (admin/dono) pelo relacionamento do funcionário
+        
+        admin_user = await Usuario.get(id=employee.usuario_id) # type: ignore
+        
+        if not admin_user:
+            return {"status": False, "message": "Usuário admin não encontrado"}
 
         # Lista produtos do carrinho do admin/dono
         products = await cart.listar_produtos(admin_user.id)
@@ -251,74 +229,71 @@ async def validating_information(current_user, payment_method: str, employee_ope
         if not products:
             return {"success": False, "data": None, "error": "Carrinho vazio"}
 
-        if products:
-            sale_total = 0.0
-            sale_details = []
-            for prod in products:
-                sale_total += prod.price_total
-                sale_details.append(
-                    {
-                        "product_id": prod.product_id,
-                        "product_name": prod.product_name,
-                        "quantity": prod.quantity,
-                        "unit_price": prod.price,
-                    }
-                )
+        # Resto do código permanece igual...
+        sale_total = 0.0
+        sale_details = []
+        for prod in products:
+            sale_total += prod.price_total
+            sale_details.append(
+                {
+                    "product_id": prod.product_id,
+                    "product_name": prod.product_name,
+                    "quantity": prod.quantity,
+                    "unit_price": prod.price,
+                }
+            )
 
-            # Gerando codigo de venda e nota de compra
-            sale_code = gerar_codigo_venda()
-            invoice = []
-            for prod in sale_details:
-                checkout = Checkout(
-                    user_id=admin_user.id,
-                    product_name=prod["product_name"],
-                    produto_id=prod["product_id"],
-                    quantity=prod["quantity"],
-                    total_price=prod["quantity"] * prod["unit_price"],  # ✅ corrigido
-                    lucro_total=0.0,
-                    payment_method=payment_method.upper(),
-                    funcionario_id=employee_operator_id,
-                    funcionario_nome=employee_operator_name,
-                    sale_code=sale_code,
-                )
-                # Nota fiscal
-                coupon = await checkout.process_sale(
-                    current_user=admin_user,
-                    product_code=str(prod["product_id"]),
-                    quantity=prod["quantity"],
-                    payment_method=payment_method.upper(),
-                    funcionario_id=employee_operator_id,
-                )
+        # Gerando codigo de venda e nota de compra
+        sale_code = gerar_codigo_venda()
+        invoice = []
+        
+        for prod in sale_details:
+            checkout = Checkout(
+                user_id=admin_user.id,
+                product_name=prod["product_name"],
+                produto_id=prod["product_id"],
+                quantity=prod["quantity"],
+                total_price=prod["quantity"] * prod["unit_price"],  
+                lucro_total=0.0,
+                payment_method=payment_method.upper(),
+                funcionario_id=employee_operator_id,
+                funcionario_nome=employee_operator_name,
+                sale_code=sale_code,
+            )
+            
+            # Nota fiscal
+            coupon = await checkout.process_sale(
+                current_user=admin_user,
+                product_code=str(prod["product_id"]),
+                quantity=prod["quantity"],
+                payment_method=payment_method.upper(),
+                funcionario_id=employee_operator_id,
+            )
 
-                if coupon:
-                    invoice.append(coupon)
+            if coupon:
+                invoice.append(coupon)
+            else:
+                raise Exception("Erro ao processar a venda")
 
-                else:
-                    raise Exception(
-                        {
-                            'message': 'O objeto coupon neste momento é None verifique no arquivo controller/sales.py',
-                            'tipo': type(invoice),
-                            'local': invoice if invoice is None else 'invoice esta com erros',
-                        }
-                    )
-            # Limpa o carrinho do admin e gera relatório
-            await cart.limpar_carrinho(admin_user.id)
-            from src.controllers.stoke.stoke_control import gerar_relatorio_completo
+        # Limpa o carrinho do admin e gera relatório
+        await cart.limpar_carrinho(admin_user.id)
+        from src.controllers.stoke.stoke_control import gerar_relatorio_completo
 
-            report = await gerar_relatorio_completo(admin_user.id)
-            return {
-                "success": True,
-                "data": {
-                    "notas_fiscais": invoice,
-                    "relatorio": report,
-                    "total_venda": sale_total,
-                    "codigo_da_venda": sale_code,
-                    "funcionario_operador_id": employee_operator_id,
-                    "funcionario_operador_nome": employee_operator_name,
-                    "admin_id": admin_user.id,
-                },
-                "error": None,
-            }
+        report = await gerar_relatorio_completo(admin_user.id)
+        
+        return {
+            "success": True,
+            "data": {
+                "notas_fiscais": invoice,
+                "relatorio": report,
+                "total_venda": sale_total,
+                "codigo_da_venda": sale_code,
+                "funcionario_operador_id": employee_operator_id,
+                "funcionario_operador_nome": employee_operator_name,
+                "admin_id": admin_user.id,
+            },
+            "error": None,
+        }
 
     except Exception as e:
         return {"success": False, "data": None, "error": str(e)}
