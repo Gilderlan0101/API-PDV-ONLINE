@@ -16,6 +16,7 @@ router = APIRouter(tags=["Tickets"])
 async def create_ticket(ticket: TicketCreateSchema, current_user: Usuario = Depends(get_current_user)):
     # Verifica se o usuário já possui ticket com o mesmo nome
     existing_ticket = await Ticket.filter(name=ticket.name, usuario_id=current_user.id).first()
+
     if existing_ticket:
         raise HTTPException(
             status_code=400,

@@ -1,0 +1,20 @@
+- Cria uma rota onde podmos edita um fucionario os dados que o usuario master vai pode edita:
+    -- Função do fucionario.
+    -- Ativa ou desativar um fucionario
+- Cria uma rota que o usuario admin pode remove um fucionario
+
+
+Refatora a função de abri caixa e fechamento de caixa.
+    -- Evita que um fucionario abra varios caixa
+    -- fechamento: Ao se fechado o a rota deve pedi o id do fucionario e retona os seguintes dados
+        -- Hora de abertura
+        -- Hora de fechamento
+        -- Valor de abertura
+        -- Valor que o sistema registrou 
+        -- exibir valor faltante se tive
+
+Ao finaliza uma venda devemos verifica quem é operado do caixa
+atualizar os dados do caixa do fucionario
+
+
+Exibi resultador de caixas fechados

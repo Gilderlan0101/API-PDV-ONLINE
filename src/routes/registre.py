@@ -2,6 +2,8 @@ import json
 from fastapi import APIRouter, HTTPException, status
 from tortoise.transactions import in_transaction
 
+from ..model.tickets import criar_tickets_padrao
+
 from ..auth.auth_jwt import get_hashed_password
 from ..model.user import Usuario, CNPJCache
 from ..schemas.schema_user import CompanyRegisterSchema
@@ -43,6 +45,8 @@ async def register(user: CompanyRegisterSchema):
         state=getattr(user, 'state', None),
     )
 
+    # Criando tickts padrão
+
     async with in_transaction() as conn:
         await new_user.save(using_db=conn)
 
@@ -55,6 +59,7 @@ async def register(user: CompanyRegisterSchema):
                 usuario_id=new_user.id,
             )
             await full_data.save(using_db=conn)
+    await criar_tickets_padrao(new_user)
 
     # Retorno seguro (sem senha)
     return {

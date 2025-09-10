@@ -6,6 +6,8 @@ from src.routes.car import cart_router
 from src.routes.registre import registerRT
 from src.routes.updates import allDatas
 from src.routes.account.account import registe_empreg
+from src.routes.account.employee_list import registe_empreg
+
 from src.routes.customer.customer_registration import customers
 from src.routes.caixa.operador_caixa import operador
 from src.routes.car.pdv import router as result_sales

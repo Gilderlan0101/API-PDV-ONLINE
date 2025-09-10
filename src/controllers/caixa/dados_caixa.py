@@ -1,7 +1,6 @@
 from typing import Dict, Any
 from src.model.caixa import Caixa
 from src.model.sale import Sales
-from datetime import datetime
 
 
 async def get_caixa_details(caixa_id: int) -> Dict[str, Any]:
@@ -30,7 +29,7 @@ async def get_caixa_details(caixa_id: int) -> Dict[str, Any]:
 
     return {
         "caixa_id": caixa.id,
-        "funcionario_id": caixa.funcionario_id,
+        "funcionario_id": caixa.nome,
         "valor_abertura": caixa.saldo_inicial,
         "valor_sistema": total_sistema,
         "total_por_pagamento": total_por_pagamento,

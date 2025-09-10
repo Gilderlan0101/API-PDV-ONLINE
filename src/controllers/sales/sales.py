@@ -126,21 +126,18 @@ class Checkout:
 
                 self.venda = await Sales.create(**sale_data)
                 self.usuario = admin_user  # Mantém objeto para build_receipt
-                
-                item_venda = {
-                "product_name": product.name,
-                "quantity": quantity,
-                "total_price": quantity * float(product.sale_price),
-                "lucro_total": (float(product.sale_price) - float(product.cost_price)) * quantity,
-                }
-            
-                return self.build_receipt([item_venda])  # ✅ Passa uma lista com um item
-                           
 
+                item_venda = {
+                    "product_name": product.name,
+                    "quantity": quantity,
+                    "total_price": quantity * float(product.sale_price),
+                    "lucro_total": (float(product.sale_price) - float(product.cost_price)) * quantity,
+                }
+
+                return self.build_receipt([item_venda])  # ✅ Passa uma lista com um item
 
         except Exception as e:
             raise HTTPException(status_code=400, detail=f"CHECKOUT_DEBUG: ERRO em process_sale: {str(e.__class__.__name__)}")
-           
 
     def build_receipt(self, itens: list[dict]) -> dict:
         if not self.venda or not self.usuario:
@@ -240,10 +237,7 @@ async def validating_information(current_user, payment_method: str, employee_ope
         # Se foi passado employee_operator_id (admin vendendo para funcionário)
         extra_employee = None
         if employee_operator_id:
-            extra_employee = await Employees.filter(
-                id=employee_operator_id,
-                usuario=admin_user.id
-            ).first()
+            extra_employee = await Employees.filter(id=employee_operator_id, usuario=admin_user.id).first()
 
         if extra_employee:
             employee_operator_id = extra_employee.id
@@ -251,14 +245,12 @@ async def validating_information(current_user, payment_method: str, employee_ope
         else:
             return {"status": False, "message": "Funcionário não encontrado"}
 
-
         # Lista produtos do carrinho do admin/dono
         products = await cart.listar_produtos(admin_user.id)
 
         if not products:
-                return {"success": False, "data": None, "error": "Carrinho vazio"}
+            return {"success": False, "data": None, "error": "Carrinho vazio"}
 
-           
         if products:
             sale_total = 0.0
             sale_details = []
@@ -270,7 +262,8 @@ async def validating_information(current_user, payment_method: str, employee_ope
                         "product_name": prod.product_name,
                         "quantity": prod.quantity,
                         "unit_price": prod.price,
-                    })
+                    }
+                )
 
             # Gerando codigo de venda e nota de compra
             sale_code = gerar_codigo_venda()
@@ -299,18 +292,19 @@ async def validating_information(current_user, payment_method: str, employee_ope
 
                 if coupon:
                     invoice.append(coupon)
-                    
+
                 else:
                     raise Exception(
                         {
-                        'message': 'O objeto coupon neste momento é None verifique no arquivo controller/sales.py',
-                        'tipo': type(invoice),
-                        'local': invoice if invoice is None else 'invoice esta com erros'
-                         
-                         })
+                            'message': 'O objeto coupon neste momento é None verifique no arquivo controller/sales.py',
+                            'tipo': type(invoice),
+                            'local': invoice if invoice is None else 'invoice esta com erros',
+                        }
+                    )
             # Limpa o carrinho do admin e gera relatório
             await cart.limpar_carrinho(admin_user.id)
             from src.controllers.stoke.stoke_control import gerar_relatorio_completo
+
             report = await gerar_relatorio_completo(admin_user.id)
             return {
                 "success": True,
@@ -328,5 +322,3 @@ async def validating_information(current_user, payment_method: str, employee_ope
 
     except Exception as e:
         return {"success": False, "data": None, "error": str(e)}
-
-
