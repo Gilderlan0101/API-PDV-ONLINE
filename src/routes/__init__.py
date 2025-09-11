@@ -5,11 +5,13 @@ from src.routes.fornecedor.registre_fornecedor import router as fornecedores_rt
 from src.routes.car import cart_router
 from src.routes.registre import registerRT
 from src.routes.updates import allDatas
-from src.routes.account.account import registe_empreg
-from src.routes.account.employee_list import registe_empreg
+from src.routes.account.account import employees_router
+from src.routes.account.employee_list import employees_router
 
 from src.routes.customer.customer_registration import customers
 from src.routes.caixa.operador_caixa import operador
+from src.routes.caixa.box_closing import operador
+
 from src.routes.car.pdv import router as result_sales
 
 from src.routes.products.buscar_prod import buscar_produtos
@@ -42,7 +44,7 @@ Funcionários = APIRouter(
 )
 
 # Cadastro de funcionários
-Funcionários.include_router(registe_empreg, prefix="/funcionarios", tags=["Funcionários"])
+Funcionários.include_router(employees_router, prefix="/funcionarios", tags=["Funcionários"])
 
 clientes = APIRouter(
     tags=["Consultas"],

@@ -11,6 +11,8 @@ from src.model.user import Usuario
 from src.model.employee import Employees  # ← Funcionários
 from src.schemas.schema_user import TokenSchema
 
+from src.model.user import Membro
+
 
 class Login:
     def __init__(self):
@@ -83,6 +85,36 @@ class Login:
                     "refresh_token": create_refresh_token(str(employee.id)),
                     "token_type": "bearer",
                 }
+
+
+             # 🔹 3) Login como membro
+            membros = await Membro.get_or_none(email=user.username).select_related("usuario")
+
+            if membros:
+                if not verify_password(user.password, membros.senha):
+                    raise HTTPException(
+                        status_code=401,
+                        detail="Credenciais inválidas (senha)",
+                    )
+
+                if not membros.ativo:
+                    raise HTTPException(
+                        status_code=403,
+                        detail="Funcionário inativo. Entre em contato com a empresa.",
+                    )
+
+                return {
+                    "id": membros.id,
+                    "username": membros.nome,
+                    "email": membros.email,
+                    "empresa": (membros.usuario.company_name if membros.usuario else None),
+                    "tipo": "funcionario",
+                    "message": "Login realizado com sucesso",
+                    "access_token": create_access_token(str(membros.id)),
+                    "refresh_token": create_refresh_token(str(membros.id)),
+                    "token_type": "bearer",
+                }
+
 
             raise HTTPException(
                 status_code=401,

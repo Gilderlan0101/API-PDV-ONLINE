@@ -7,6 +7,9 @@ from typing import Optional
 class Membro(models.Model):
     id = fields.IntField(pk=True)
     nome = fields.CharField(max_length=150)
+    email = fields.CharField(max_length=110, null=False)
+    senha = fields.CharField(max_length=130, null=False)
+    ativo = fields.BooleanField(default=True)
     cpf = fields.CharField(max_length=11, null=True, default=None)
     cnpj = fields.CharField(max_length=14, null=True, default=None)
     gerente = fields.CharField(max_length=100)

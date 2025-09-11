@@ -5,6 +5,7 @@ import re
 from faker import Faker
 from tortoise.transactions import in_transaction
 
+from src.auth.auth_jwt import get_hashed_password
 from src.controllers.caixa.cash_controller import CashController
 from src.controllers.sales.separate_payment_methods import separating_sales_by_payments
 from src.model.product import Produto
@@ -12,7 +13,6 @@ from src.model.user import Membro, Usuario
 from src.model.customers import Customer
 from src.model.sale import Sales
 from src.model.employee import Employees
-from src.model.carItems import CartItem
 from src.utils.sales_code_generator import barcode_generator
 
 
@@ -40,6 +40,9 @@ async def create_mock_data():
             )
             await Membro.create(
                 nome="Filial Centro",
+                email='membro@test.com',
+                senha=get_hashed_password('1234'),
+                ativo=True,
                 gerente="João",
                 usuario_id=admin.id,
             )
@@ -56,7 +59,8 @@ async def create_mock_data():
                     nome=fake.first_name(),
                     cargo=random.choice(["Caixa", "Vendedor", "Estoquista"]),
                     email=fake.email(),
-                    senha="1234",
+                    senha=get_hashed_password('1234'),
+
                     ativo=True,
                     usuario_id=admin.id,
                 )

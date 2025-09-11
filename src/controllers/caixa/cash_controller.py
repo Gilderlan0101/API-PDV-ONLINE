@@ -72,98 +72,98 @@ class CashController:
 
 
     @staticmethod
-    async def registrar_venda_caixa(caixa_id: int, venda_id: int, valor_venda: float, forma_pagamento: str):
-        """
-        Registra uma venda no caixa e atualiza o saldo
-        """
-
+    async def registrar_venda_caixa(caixa_id: int, venda_obj: Sales, valor_venda: float, forma_pagamento: str):
         caixa = await Caixa.get_or_none(id=caixa_id)
-
-        if  not caixa or not caixa.aberto:
-          
+        if not caixa or not caixa.aberto:
             raise Exception("Caixa não encontrado ou fechado")
 
-        # Atualiza saldo do caixa
+        # Verifica se venda_obj é realmente uma instância de Sales
+        if not isinstance(venda_obj, Sales):
+            raise Exception(f"Objeto de venda inválido: {type(venda_obj)}")
+
         caixa.saldo_atual += valor_venda
-        await caixa.save()
-        
-        # Registra movimentação
+
+        # Registra movimentação - CORRIGIDO: passar a instância completa de Sales
         await CashMovement.create(
             tipo="ENTRADA",
             valor=valor_venda,
-            descricao=f"Venda #{venda_id} - {forma_pagamento}",
-            caixa_id=caixa.id,
-            funcionario=caixa.nome,
-            venda_id=venda_id,
-            )
-        
+            descricao=f"Venda #{venda_obj.id} - {forma_pagamento}",
+            caixa=caixa,  # Passar instância do caixa
+            usuario=caixa.usuario,  # Passar instância do usuário
+            funcionario=caixa.funcionario,  # Passar instância do funcionário (pode ser None)
+            venda=venda_obj,  # CORREÇÃO: passar a instância completa de Sales
+        )
+
+        await caixa.save()
         return caixa
 
+
+
     @staticmethod
-    async def fechar_caixa(caixa_id: int):
+    async def fechar_caixa(usuario_id: int):
         """
-        Fecha o caixa e calcula as diferenças
+        Fecha o caixa aberto do usuário e calcula as diferenças
         """
         date = []
-        caixa = await Caixa.get_or_none(id=caixa_id)
 
-        # Verifica se o caixa existe e está aberto
-        match (caixa, caixa.aberto if caixa else False):
+        # 🔹 Busca o caixa aberto do usuário
+        caixa = await Caixa.filter(funcionario_id=usuario_id, aberto=True).first()
 
-            case (None, _) | (_, False):
-                # Caixa não encontrado OU encontrado mas já fechado
-                raise Exception("Caixa não encontrado ou já fechado")
+        if not caixa:
+            return None  # nenhum caixa aberto encontrado
 
-            case (_, True):
-                # Caixa encontrado e aberto - procede com o fechamento
-                # Calcula valor do sistema (saldo inicial + entradas - saídas)
-                entradas = await CashMovement.filter(
-                    caixa_id=caixa_id, 
-                    tipo__in=["ENTRADA", "ABERTURA"]
-                ).all()
+        # Calcula entradas e saídas
+        entradas = await CashMovement.filter(
+            caixa_id=caixa.id,
+            tipo__in=["ENTRADA", "ABERTURA"]
+        ).all()
 
-                saidas = await CashMovement.filter(
-                    caixa_id=caixa_id, 
-                    tipo="SAIDA"
-                ).all()
+        saidas = await CashMovement.filter(
+            caixa_id=caixa.id,
+            tipo="SAIDA"
+        ).all()
 
-                total_entradas = sum([mov.valor for mov in entradas])
-                total_saidas = sum([mov.valor for mov in saidas])
-                valor_sistema = total_entradas - total_saidas
-                valor_fechamento = caixa.saldo_atual
+        total_entradas = sum([mov.valor for mov in entradas])
+        total_saidas = sum([mov.valor for mov in saidas])
+        valor_sistema = total_entradas - total_saidas
+        valor_fechamento = caixa.saldo_atual
 
-                # Atualiza caixa
-                caixa.valor_fechamento = valor_fechamento
-                caixa.valor_sistema = valor_sistema
-                caixa.diferenca = valor_fechamento - valor_sistema
-                caixa.aberto = False
-                caixa.atualizado_em = datetime.now(ZoneInfo("America/Sao_Paulo"))
-                await caixa.save()
+        # Atualiza caixa
+        caixa.valor_fechamento = valor_fechamento
+        caixa.valor_sistema = valor_sistema
+        caixa.diferenca = valor_fechamento - valor_sistema
+        caixa.aberto = False
+        caixa.atualizado_em = datetime.now(ZoneInfo("America/Sao_Paulo"))
+        await caixa.save()
 
-                # Registra movimentação de fechamento
-                await CashMovement.create(
-                    tipo="FECHAMENTO",
-                    valor=valor_fechamento,
-                    descricao=f"Fechamento do caixa - Sistema: {valor_sistema}, Fechamento: {valor_fechamento}, Dif: {caixa.diferenca}",
-                    caixa_id=caixa.id,
-                    usuario_id=caixa.usuario.id,  # Acessa o ID através do objeto usuario
-                    funcionario_id=caixa.funcionario.id if caixa.funcionario else None,  # Acessa o ID através do objeto funcionario (pode ser null)
-                )
-                
+        # Registra movimentação
+        await CashMovement.create(
+            tipo="FECHAMENTO",
+            valor=valor_fechamento,
+            descricao=(
+                f"Fechamento do caixa - Sistema: {valor_sistema}, "
+                f"Fechamento: {valor_fechamento}, Dif: {caixa.diferenca}"
+            ),
+            caixa_id=caixa.id,
+            usuario_id=caixa.usuario_id,
+            funcionario_id=caixa.funcionario_id,
+        )
+
         date.append(
             {
-            "tipo": "FECHAMENTO",
-            "valor": valor_fechamento,
-            "descricao": f"Fechamento do caixa - Sistema: {valor_sistema}, Fechamento: {valor_fechamento}, Dif: {caixa.diferenca}",
-            "caixa_id": caixa.id,
-            "usuario_id":  caixa.usuario.id,  # Acessa o ID através do objeto usuario
-            "funcionario_id": caixa.funcionario.id if caixa.funcionario else None,  # Acessa o ID através do objeto funcionario (pode ser null)
+                "tipo": "FECHAMENTO",
+                "valor": valor_fechamento,
+                "nome": caixa.nome,
+                "descricao": f"Fechamento do caixa - Sistema: {valor_sistema}, "
+                             f"Fechamento: {valor_fechamento}, Dif: {caixa.diferenca}",
+                "caixa_id": caixa.id,
+                "usuario_id": caixa.usuario_id,
+                "funcionario_id": caixa.funcionario_id,
             }
         )
-        
-        
+
         return date
-    
+
     
     
     @staticmethod
@@ -235,6 +235,8 @@ class FinalizationObjcts:
     def __init__(self, checkout_instance: Checkout = None) -> None:
         self.checkout = checkout_instance
         self.dados_recibo = checkout_instance.receipt_data if checkout_instance else None
+
+
         
     async def Updating_cash_values(self, caixa_id: int):
         """
@@ -250,9 +252,9 @@ class FinalizationObjcts:
                 raise Exception("Nenhum dado de venda disponível")
             
             # Obtém informações da venda
-            venda_id = getattr(self.checkout.venda, 'id', None)
-            if not venda_id:
-                raise Exception("ID da venda não encontrado")
+            venda_obj = self.checkout.venda
+            if not venda_obj or not isinstance(venda_obj, Sales):
+                raise Exception("Venda não encontrada ou objeto inválido")
             
             # Calcula valor total da venda
             if isinstance(self.checkout.receipt_data, list):
@@ -263,15 +265,31 @@ class FinalizationObjcts:
             # Obtém forma de pagamento
             forma_pagamento = getattr(self.checkout, 'payment_method', 'PIX')
             
-            # Registra no caixa usando o método estático do CashController
-            resultado = await CashController.registrar_venda_caixa(
-                caixa_id=caixa_id,
-                venda_id=venda_id,
-                valor_venda=valor_total,
-                forma_pagamento=forma_pagamento.upper()
+            # Verifica se o caixa existe e está aberto
+            caixa = await Caixa.get_or_none(id=caixa_id).prefetch_related('usuario', 'funcionario')
+            if not caixa or not caixa.aberto:
+                raise Exception("Caixa não encontrado ou fechado")
+
+            # Atualiza saldo do caixa
+            caixa.saldo_atual += valor_total
+            await caixa.save()
+
+            # Registra movimentação no caixa - CORRIGIDO: passar instâncias completas
+            await CashMovement.create(
+                tipo="ENTRADA",
+                valor=valor_total,
+                descricao=f"Venda #{venda_obj.id} - {forma_pagamento}",
+                caixa=caixa,  # Instância completa
+                usuario=caixa.usuario,  # Instância completa
+                funcionario=caixa.funcionario,  # Instância completa (pode ser None)
+                venda=venda_obj,  # Instância completa de Sales
             )
-            
-            return resultado
+
+            # Atualiza a venda com a referência ao caixa
+            venda_obj.caixa = caixa  # Se houver relação inversa
+            await venda_obj.save()
+
+            return caixa
             
         except Exception as e:
             print(f"Erro detalhado ao atualizar caixa: {str(e)}")

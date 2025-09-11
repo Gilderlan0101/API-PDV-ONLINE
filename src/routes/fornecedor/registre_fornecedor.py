@@ -10,6 +10,9 @@ from src.schemas.fornecedor.schemas_fornecedor import (
     SupplierListResponse,
     SupplierSummary,
 )
+
+from src.schemas.fornecedor.update_spplierBase import  SupplierUpdate
+
 from src.auth.deps import get_current_user
 
 router = APIRouter()
@@ -105,3 +108,47 @@ async def delete_fornecedor(fornecedor_id: int, current_user: Usuario = Depends(
 
         await fornecedor.delete(using_db=conn)
         return {"message": "Fornecedor deletado com sucesso!"}
+
+
+
+
+
+# ===============================
+# Atualizar fornecedor
+# ===============================
+@router.put('/atualiza/{fornecedor_id}', status_code=status.HTTP_200_OK)
+async def update_fornecedor(
+    fornecedor_id: int,
+    form: SupplierUpdate,
+    current_user: Usuario = Depends(get_current_user)
+):
+    async with in_transaction() as conn:
+        # Busca o fornecedor
+        fornecedor = await Fornecedor.filter(id=fornecedor_id, usuario_id=current_user.id).using_db(conn).first()
+        if not fornecedor:
+            raise HTTPException(status_code=404, detail="Fornecedor não encontrado")
+
+        # Evita duplicidade de CNPJ/CPF se vierem no update
+        if form.cnpj and form.cnpj != fornecedor.cnpj:
+            exists = await Fornecedor.filter(cnpj=form.cnpj).exclude(id=fornecedor_id).using_db(conn).first()
+            if exists:
+                raise HTTPException(status_code=400, detail="CNPJ já cadastrado")
+        if form.cpf and form.cpf != fornecedor.cpf:
+            exists = await Fornecedor.filter(cpf=form.cpf).exclude(id=fornecedor_id).using_db(conn).first()
+            if exists:
+                raise HTTPException(status_code=400, detail="CPF já cadastrado")
+
+        # Atualiza apenas os campos enviados
+        update_data = form.model_dump(exclude_unset=True)
+        for key, value in update_data.items():
+            if key == "site" and value is not None:
+                value = str(value)
+            setattr(fornecedor, key, value)
+
+        # Atualiza dados de auditoria
+        fornecedor.atualizado_em = datetime.now(ZoneInfo("America/Sao_Paulo"))
+        fornecedor.atualizado_por = str(current_user.id)
+
+        await fornecedor.save(using_db=conn)
+
+        return {"message": "Fornecedor atualizado com sucesso!", "fornecedor_id": fornecedor.id}

@@ -1,9 +1,24 @@
-methods = {
-    'Pix': [{'Product_name': '', 'amount': '', 'date': '', 'employee': ''}],
-    'Cartão': [{'Product_name': '', 'amount': '', 'date': '', 'employee': ''}],
-    'Dinheiro': [{'Product_name': '', 'amount': '', 'date': '', 'employee': ''}],
-    'Nota': [{'Product_name': '', 'amount': '', 'date': '', 'employee': ''}],
-    'Fiado': [{'Product_name': '', 'amount': '', 'date': '', 'employee': ''}],
-}
-methods['Pix'][0]['Product_name'] = 'teste'
-print(len(methods['Pix']))
+
+
+# from controllers.caixa.cash_controller import CashController, Checkout
+
+
+# class FinalizationObjcts(CashController):
+#     def __init__(self) -> None:
+#         super().__init__()
+#         self.checkout = Checkout()
+#         dados_recibo = self.checkout.receipt_data
+        
+        
+#     # async def Updating_cash_values(self):
+#     #     """
+#     #     Passando os compos necessario para atualiza o caixa.
+#     #     Este é o ultimo processo em uma venda
+#     #     """
+#     #     self.registrar_venda_caixa(
+            
+#     #     )
+    
+    
+#     for data in dados_recibo:
+#         prin()

@@ -9,6 +9,7 @@ from pydantic import BaseModel, EmailStr, ValidationError
 from src.auth.auth_jwt import ALGORITHM, JWT_SECRET_KEY
 from src.model.user import Usuario
 from src.model.employee import Employees
+from src.model.user import Membro
 from src.schemas.schema_user import TokenPayload
 
 reuseable_oauth = OAuth2PasswordBearer(tokenUrl="/auth/login", scheme_name="JWT")
@@ -73,15 +74,48 @@ async def get_current_user(token: str = Depends(reuseable_oauth)) -> "SystemUser
         detail="Usuário ou funcionário não encontrado.",
     )
 
+    # Tentando com Membors
+    membro_db = Membro.get_or_none(id=user_id).select_related("usuario")
+    if membro_db:
+        if not membro_db.ativo:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Acesso negado..",
+                )
+
+
+        membro = membro_db.usuario
+
+        return SystemUser(
+            id=membro.id,
+            username=membro.nome if usuario else membro.nome,
+            email=membro.email or (usuario.email if usuario else None),
+            gerente=membro.gerente or None,
+            cnpj=membro.cnpj if usuario.cnpj else None,
+            cpf=membro.cpf,
+            is_active=membro.ativo,
+            empresa_id=usuario.id if usuario else None,  # 🔹 aqui
+        )
+
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail="Usuário ou funcionário não encontrado.",
+    )
+
+
+
+from typing import Optional
+from pydantic import BaseModel, EmailStr
 
 class SystemUser(BaseModel):
     id: int
     username: str
     email: EmailStr
-    company_name: str
+    company_name: Optional[str] = None
     cnpj: Optional[str] = None
     cpf: Optional[str] = None
+    gerente: Optional[str] = None  # ✅ Correto - use ":" em vez de "="
     is_active: bool = True
-    empresa_id: Optional[int] = None  # 🔹 ID real do usuário master/empresa
+    empresa_id: Optional[int] = None
 
     model_config = {'from_attributes': True}

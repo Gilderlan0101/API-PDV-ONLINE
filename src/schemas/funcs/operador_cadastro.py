@@ -1,5 +1,6 @@
 from typing import Optional
 from sqlmodel import SQLModel, Field
+from pydantic import BaseModel
 
 
 # ========================
@@ -15,3 +16,8 @@ class CaixaFuncionarioCreate(SQLModel):
 # ========================
 class CaixaFuncionarioUpdate(SQLModel):
     caixa_id: int = Field(..., description="ID do caixa a ser fechado")
+
+class AberturaCaixaRequest(BaseModel):
+    funcionario_id: int
+    saldo_inicial: float
+    nome: Optional[str] = "Caixa Principal"

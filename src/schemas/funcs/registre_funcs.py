@@ -16,3 +16,5 @@ class OutputFormat(BaseModel):
     email: str
     telefone: Optional[str] = None
     ativo: bool
+
+

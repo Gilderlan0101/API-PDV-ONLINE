@@ -5,10 +5,10 @@ from src.model.employee import Employees
 from src.routes.registre import get_hashed_password
 from src.schemas.funcs.registre_funcs import FuncionarioCreate
 
-registe_empreg = APIRouter(prefix='/auth', tags=['Autenticação'])
+employees_router = APIRouter(prefix='/auth', tags=['Autenticação'])
 
 
-@registe_empreg.post('/funcs')
+@employees_router.post('/funcs')
 async def create_funcionario(
     func_data: FuncionarioCreate = Body(...),
     current_user: Usuario = Depends(get_current_user),

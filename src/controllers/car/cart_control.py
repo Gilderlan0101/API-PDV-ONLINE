@@ -89,7 +89,7 @@ class CartManagerDB:
     ) -> Dict[str, Any]:
         cart_item = await CartItem.filter(user_id=user_id, product_id=product_id).first()
         if not cart_item:
-            return {"aviso": "Produto não encontrado no carrinho"}
+            return {"message": "Produto não encontrado no carrinho"}
 
         # --- Quantidade ---
         if quantity is not None:
