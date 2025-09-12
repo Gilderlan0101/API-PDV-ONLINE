@@ -16,7 +16,7 @@ class Customer(models.Model):
     # Dados pessoais
     full_name = fields.CharField(max_length=150)
     birth_date = fields.DatetimeField()
-    cpf = fields.CharField(max_length=11, unique=True, index=True)
+    cpf = fields.CharField(max_length=14, unique=True, index=True)
     mother_name = fields.CharField(max_length=150, null=True)
 
     # Endereço
@@ -29,7 +29,7 @@ class Customer(models.Model):
 
     # Financeiro
     credit = fields.FloatField()
-    current_balance = fields.FloatField()
+    current_balance = fields.FloatField(default=0)
     total_spent = fields.FloatField(default=0)
     due_date = fields.DatetimeField()
     status = fields.CharField(max_length=20, default="ativo")
