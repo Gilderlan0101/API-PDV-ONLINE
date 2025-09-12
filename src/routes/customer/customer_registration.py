@@ -74,7 +74,7 @@ async def create_customer(
 # ===============================
 # Listar clientes
 # ===============================
-@customers.get("/list-customer", response_model=List[SchemasCustomer])
+@customers.get("/list-customer", response_model=List[GetCustomers])
 async def list_customer(current_user: Usuario = Depends(get_current_user)):
     return await Customer.filter(usuario_id=current_user.id).all()
 

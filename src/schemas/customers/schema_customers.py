@@ -103,3 +103,4 @@ class SchemasCustomerCreditUpdate(BaseModel):
         if v < 0:
             raise ValueError('Saldo não pode ser negativo')
         return v
+
