@@ -72,6 +72,7 @@ class SchemasCustomer(BaseModel):
 # Schema para listar clientes / exibir cliente
 # ------------------------------
 class GetCustomers(BaseModel):
+    id: int
     full_name: str
     cpf: str
     credit: float
