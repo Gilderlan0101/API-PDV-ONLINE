@@ -247,7 +247,7 @@ class ProductUpdateSchema(BaseModel):
 
     # 🔹 Connected enums and options
     product_type: Optional[str] = None
-    active: Optional[ProductStatus] = None
+    active: Optional[str] = None
     group: Optional[str] = None
     sub_group: Optional[str] = None  # Novo campo de subgrupo
     sector: Optional[str] = None
