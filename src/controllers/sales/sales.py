@@ -232,7 +232,8 @@ class Checkout:
             products = await cart.listar_produtos(admin_user.id)
     
             if not products:
-                return {"success": False, "error": "Carrinho vazio"}
+                pass
+                # return {"success": False, "error": "Carrinho vazio"}
     
             # Processa cada produto
             sale_total = 0.0
