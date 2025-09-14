@@ -30,7 +30,7 @@ class Checkout:
     venda: Optional[Sales] = field(default=None)
     usuario: Optional[Usuario] = field(default=None)
 
-    VALID_PAYMENT_METHODS = ['PIX', 'CARTAO', 'DINHEIRO', 'NOTA', 'FIADO']
+    VALID_PAYMENT_METHODS = ['PIX', 'CARTAO', 'DINHEIRO', 'NOTA', 'FIADO', 'CARTÃO']
 
     def __post_init__(self):
         if self.payment_method and self.payment_method.upper() not in self.VALID_PAYMENT_METHODS:

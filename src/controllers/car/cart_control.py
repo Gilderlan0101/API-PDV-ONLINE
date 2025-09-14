@@ -28,14 +28,18 @@ class CartManagerDB:
 
         # Verificar se o user_id é funcionário e pegar o admin dono
         funcionario = await Employees.get_or_none(id=user_id)
+
         if funcionario and funcionario.usuario:
-            user_id_carrinho = funcionario.id  # carrinho do admin
+            
+            user_id_carrinho = funcionario.usuario_id  # carrinho do ADMIN
             funcionario_id = funcionario.id
             funcionario_nome = funcionario.nome
         else:
+
             user_id_carrinho = user_id  # admin adicionando direto
             funcionario_id = None
             funcionario_nome = None
+
 
         # Adicionar ou atualizar item no carrinho
         cart_item = await CartItem.get_or_none(user_id=user_id_carrinho, product_id=product_id)

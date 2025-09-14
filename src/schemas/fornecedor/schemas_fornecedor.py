@@ -174,7 +174,7 @@ class SupplierBase(BaseModel):
     desconto_padrao_percent: float = Field(0, ge=0, le=100)
 
     # Bancário
-    #contas_bancarias: Optional[BankAccount] = Field(default_factory=list)
+    contas_bancarias: Optional[BankAccount] = Field(default_factory=list)
 
     # Operacional
     categorias_fornecimento: List[str] = Field(default_factory=list, description="Ex.: bebidas, laticínios, matérias-primas")
