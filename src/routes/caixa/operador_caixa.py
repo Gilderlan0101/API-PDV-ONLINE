@@ -1,6 +1,6 @@
-# src/routes/caixa_routes.py (ou onde estão suas rotas atuais)
+# src/routes/caixa_routes.py
 from fastapi import APIRouter, Depends, HTTPException, status, Body
-from src.auth.deps import  get_current_user
+from src.auth.deps import get_current_user
 from src.schemas.funcs.operador_cadastro import (
     AberturaCaixaRequest,
     CaixaFuncionarioCreate,
@@ -12,11 +12,9 @@ from src.model.employee import Employees
 
 from src.controllers.caixa.cash_controller import CashController
 
-
-
 operador = APIRouter()
 
-# Sua rota de abertura (Refatorada)
+# --- Rota de Abertura de Caixa ---
 
 @operador.post('/abertura')
 async def abertura_caixa(
@@ -24,35 +22,42 @@ async def abertura_caixa(
     current_user: Usuario = Depends(get_current_user),
 ):
     """Abre o caixa para o próprio funcionário."""
-    # O front-end já garante que a requisição tem um token válido.
-    # A dependência `get_current_user` já cuida da autenticação.
+    if not current_user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuário não autenticado")
 
-    # 1. Encontra o funcionário logado
-    funcionario = await Employees.filter(usuario_id=current_user.id).first()
+    # Opção 1 (Recomendada): Filtrar usando o objeto de relacionamento
+    # A ORM cuida do filtro pelo ID automaticamente.
+    funcionario = await Employees.filter(usuario=current_user).first()
     
-    # 2. Verifica se o usuário tem um registro de funcionário
+    # Opção 2 (Alternativa): Filtrar usando o nome da coluna no banco de dados
+    # Isso também funciona e pode ser útil para depuração.
+    # funcionario = await Employees.filter(usuario_id=current_user.id).first()
+
     if not funcionario:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Usuário não é um funcionário válido ou não encontrado."
         )
 
-    # 3. Usa os dados do funcionário para abrir o caixa
     print(f"Tentando abrir caixa para usuario_id: {current_user.id}, funcionario_id: {funcionario.id}")
     
     try:
         caixa = await CashController.abrir_caixa(
             usuario_id=current_user.id,
-            funcionario_id=funcionario.id, # Passa o ID do funcionário encontrado
+            funcionario_id=funcionario.id,
             saldo_inicial=request.saldo_inicial,
             nome=funcionario.nome or f"Caixa {funcionario.id} - {current_user.company_name}",
         )
         return {"status": 200, "msg": "Caixa aberto com sucesso.", "caixa": caixa}
 
     except Exception as e:
-        # Pega a mensagem de erro do CashController (ex: "Já existe um caixa aberto")
         raise HTTPException(status_code=400, detail=str(e))
 
+---
+
+### Outras Rotas (Completas e Inalteradas)
+
+```python
 @operador.get('/caixa/{caixa_id}/resumo')
 async def resumo_caixa(
     caixa_id: int,
@@ -63,7 +68,6 @@ async def resumo_caixa(
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuário não autenticado")
 
     try:
-        # Verifica se o caixa pertence ao usuário
         caixa = await Caixa.get_or_none(id=caixa_id, usuario_id=current_user.id)
         if not caixa:
             raise HTTPException(status_code=404, detail="Caixa não encontrado.")
@@ -71,14 +75,12 @@ async def resumo_caixa(
         if not caixa.aberto:
             raise HTTPException(status_code=400, detail="Este caixa já está fechado.")
 
-        # Obtém os dados do caixa
         dados = await CashController.get_caixa_details(caixa_id)
 
-        return {"status": 200, "dados": dados, "valor_sugerido_fechamento": caixa.saldo_atual}  # Saldo atual do caixa
+        return {"status": 200, "dados": dados, "valor_sugerido_fechamento": caixa.saldo_atual}
 
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
-
 
 @operador.get('/infos/caixas')
 async def information_from_all_cashiers(current_user: Usuario = Depends(get_current_user)):
