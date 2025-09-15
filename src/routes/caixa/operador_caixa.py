@@ -16,6 +16,7 @@ from src.controllers.caixa.cash_controller import CashController
 
 operador = APIRouter()
 
+# Sua rota de abertura (Refatorada)
 
 @operador.post('/abertura')
 async def abertura_caixa(
@@ -23,32 +24,34 @@ async def abertura_caixa(
     current_user: Usuario = Depends(get_current_user),
 ):
     """Abre o caixa para o próprio funcionário."""
-    if not current_user:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuário não autenticado")
+    # O front-end já garante que a requisição tem um token válido.
+    # A dependência `get_current_user` já cuida da autenticação.
 
+    # 1. Encontra o funcionário logado
+    funcionario = await Employees.filter(usuario_id=current_user.id).first()
+    
+    # 2. Verifica se o usuário tem um registro de funcionário
+    if not funcionario:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Usuário não é um funcionário válido ou não encontrado."
+        )
+
+    # 3. Usa os dados do funcionário para abrir o caixa
+    print(f"Tentando abrir caixa para usuario_id: {current_user.id}, funcionario_id: {funcionario.id}")
+    
     try:
-        # Verifica se o current_user é um funcionário
-        funcionario = await Employees.filter(id=current_user.id).first()
-        
-        if not funcionario:
-            raise HTTPException(status_code=400, detail="Apenas funcionários podem abrir caixa")
-        
-        print(f"Tentando abrir caixa para usuario_id: {current_user.id}, funcionario_id: {funcionario.id}")
-        
         caixa = await CashController.abrir_caixa(
             usuario_id=current_user.id,
-            funcionario_id=funcionario.id,
+            funcionario_id=funcionario.id, # Passa o ID do funcionário encontrado
             saldo_inicial=request.saldo_inicial,
             nome=funcionario.nome or f"Caixa {funcionario.id} - {current_user.company_name}",
         )
-
         return {"status": 200, "msg": "Caixa aberto com sucesso.", "caixa": caixa}
 
     except Exception as e:
-        print(f"Erro ao abrir caixa: {str(e)}")
+        # Pega a mensagem de erro do CashController (ex: "Já existe um caixa aberto")
         raise HTTPException(status_code=400, detail=str(e))
-
-
 
 @operador.get('/caixa/{caixa_id}/resumo')
 async def resumo_caixa(
