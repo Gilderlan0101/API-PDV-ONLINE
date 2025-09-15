@@ -3,6 +3,7 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from src.auth.deps import get_current_user
 from src.model.user import Usuario
+from src.model.employee import Employees
 from src.model.customers import Customer, ZoneInfo
 from src.schemas.customers.schema_customers import SchemasCustomer, SchemasCustomerCreditUpdate, GetCustomers
 
@@ -76,7 +77,19 @@ async def create_customer(
 # ===============================
 @customers.get("/list-customer", response_model=List[GetCustomers])
 async def list_customer(current_user: Usuario = Depends(get_current_user)):
-    return await Customer.filter(usuario_id=current_user.id).all()
+
+    # Buscando dados do fucionario
+    funcionario = await Employees(id=current_user.id).first()
+
+    # Buscando o admin dono do fucionario
+    admin = funcionario.usuario_id
+
+    if admin != None:
+        return await Customer.filter(usuario_id=funcionario.usuario_id).all()
+
+
+
+    
 
 
 # ===============================
