@@ -22,7 +22,7 @@ class CashController:
         Abre um novo caixa para um funcionário, garantindo que só um fique aberto
         """
         # Verifica se o usuário existe
-        usuario_exists = await Usuario.exists(id=usuario_id)
+        usuario_exists = await Employees.exists(id=usuario_id)
         if not usuario_exists:
             raise Exception("Usuário não encontrado")
         

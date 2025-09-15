@@ -26,7 +26,7 @@ async def abertura_caixa(
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuário não autenticado")
 
     # Correção: Use o ID explícito do usuário para o campo de chave estrangeira
-    funcionario = await Employees.filter(usuario_id=current_user.id).first()
+    funcionario = await Employees.filter(id=current_user.id).first()
     
     if not funcionario:
         raise HTTPException(
@@ -74,6 +74,8 @@ async def resumo_caixa(
 
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
 
 @operador.get('/infos/caixas')
 async def information_from_all_cashiers(current_user: Usuario = Depends(get_current_user)):
