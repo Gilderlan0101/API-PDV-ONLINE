@@ -2,6 +2,7 @@ from typing import Any, Dict, Optional
 from src.model.product import Produto
 from src.model.carItems import CartItem
 from src.model.employee import Employees
+from src.model.user import Usuario
 
 
 # Função para formatar valores em Real brasileiro
@@ -12,41 +13,45 @@ def format_brl(value: float) -> str:
 class CartManagerDB:
     """Carrinho persistido no banco de dados usando Tortoise ORM"""
 
+    async def _get_cart_owner_id(self, user_id: int) -> int:
+        """
+        Função auxiliar para obter o ID do dono do carrinho.
+        Se o usuário logado for um funcionário, o carrinho pertence ao seu administrador.
+        Se for o administrador, o carrinho pertence a ele mesmo.
+        """
+        # Verifica se o user_id logado existe na tabela de funcionários.
+        # Isso garante que a pesquisa retorne 0 ou 1 resultado, evitando o erro.
+        funcionario = await Employees.get_or_none(id=user_id)
+
+        # Se o usuário logado for um funcionário, o dono do carrinho é seu administrador.
+        # O ID do administrador está no campo usuario_id do registro do funcionário.
+        if funcionario:
+            return funcionario.usuario_id
+
+        # Se o usuário não for um funcionário, ele é o administrador.
+        # O dono do carrinho é o próprio user_id.
+        return user_id
+
+
     async def add_produto(
         self,
         product_id: int,
         quantity: int,
         user_id: int,
-        # product_code: str,
     ) -> Dict[str, Any]:
-        # Buscar o produto
         produto = await Produto.get_or_none(id=product_id)
         if not produto:
             return {"aviso": "Produto não encontrado"}
         if produto.stock < quantity:
             return {"aviso": "Estoque insuficiente"}
 
-        # Verificar se o user_id é funcionário e pegar o admin dono
-        funcionario = await Employees.get_or_none(id=user_id)
-
-        if funcionario and funcionario.usuario:
-            
-            user_id_carrinho = funcionario.usuario_id  # carrinho do ADMIN
-            funcionario_id = funcionario.id
-            funcionario_nome = funcionario.nome
-        else:
-
-            user_id_carrinho = user_id  # admin adicionando direto
-            funcionario_id = None
-            funcionario_nome = None
-
-
+        user_id_carrinho = await self._get_cart_owner_id(user_id)
+        
         # Adicionar ou atualizar item no carrinho
         cart_item = await CartItem.get_or_none(user_id=user_id_carrinho, product_id=product_id)
         if cart_item:
             cart_item.quantity += quantity
             cart_item.price_total += produto.sale_price * quantity
-            # product_code = cart_item.product_code
             await cart_item.save()
         else:
             cart_item = await CartItem.create(
@@ -57,6 +62,14 @@ class CartManagerDB:
                 price=produto.sale_price,
                 total_price=produto.sale_price * quantity,
             )
+
+        return {
+            "item_adicionado": cart_item,
+            "admin_produto_id": produto.id,
+            "nome": produto.name,
+        }
+
+
 
         return {
             "item_adicionado": cart_item,
