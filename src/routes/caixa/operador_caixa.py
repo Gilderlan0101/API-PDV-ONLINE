@@ -53,11 +53,7 @@ async def abertura_caixa(
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
----
 
-### Outras Rotas (Completas e Inalteradas)
-
-```python
 @operador.get('/caixa/{caixa_id}/resumo')
 async def resumo_caixa(
     caixa_id: int,
