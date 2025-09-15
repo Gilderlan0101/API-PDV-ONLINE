@@ -107,6 +107,7 @@ async def update_customer_credit(
     await customer.save()
 
     return GetCustomers(
+        id=customer.id,
         full_name=customer.full_name,
         cpf=customer.cpf,
         credit=customer.credit,
