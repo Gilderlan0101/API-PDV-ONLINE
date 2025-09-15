@@ -25,14 +25,9 @@ async def abertura_caixa(
     if not current_user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuário não autenticado")
 
-    # Opção 1 (Recomendada): Filtrar usando o objeto de relacionamento
-    # A ORM cuida do filtro pelo ID automaticamente.
-    funcionario = await Employees.filter(usuario=current_user).first()
+    # Correção: Use o ID explícito do usuário para o campo de chave estrangeira
+    funcionario = await Employees.filter(usuario_id=current_user.id).first()
     
-    # Opção 2 (Alternativa): Filtrar usando o nome da coluna no banco de dados
-    # Isso também funciona e pode ser útil para depuração.
-    # funcionario = await Employees.filter(usuario_id=current_user.id).first()
-
     if not funcionario:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -52,6 +47,8 @@ async def abertura_caixa(
 
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
 
 
 @operador.get('/caixa/{caixa_id}/resumo')
