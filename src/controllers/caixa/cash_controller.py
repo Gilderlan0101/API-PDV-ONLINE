@@ -17,14 +17,14 @@ from src.controllers.sales.sales import Checkout
 class CashController:
 
     @staticmethod
-    async def abrir_caixa(usuario_id: int, funcionario_id: int, saldo_inicial: float, nome: str):
+    async def abrir_caixa(funcionario_id: int, saldo_inicial: float, nome: str):
         """
         Abre um novo caixa para um funcionário, garantindo que só um fique aberto
         """
         # Verifica se o usuário existe
-        usuario_exists = await Employees.exists(id=usuario_id)
-        if not usuario_exists:
-            raise Exception("Usuário não encontrado")
+        # usuario_exists = await Employees.exists(id=usuario_id)
+        # if not usuario_exists:
+        #     raise Exception("Usuário não encontrado")
         
         # Verifica se o funcionário existe
         funcionario = await Employees.filter(id=funcionario_id).first()
@@ -43,9 +43,12 @@ class CashController:
             # Usa o primeiro caixa aberto como o "oficial"
             return caixas_abertos[0]
         
-        # Usa nome do funcionário se não foi passado
+        # Pegando o nome do fucionario
         if not nome:
             nome = funcionario.nome
+
+        # Buscar o usuario dono do fucionario: usuario_id
+        usuario_id =  funcionario.usuario_id
         
         # Se não tinha nenhum aberto, cria novo caixa
         caixa = await Caixa.create(

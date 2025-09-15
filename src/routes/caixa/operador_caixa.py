@@ -19,14 +19,12 @@ operador = APIRouter()
 @operador.post('/abertura')
 async def abertura_caixa(
     request: AberturaCaixaRequest,
-    current_user: Usuario = Depends(get_current_user),
 ):
     """Abre o caixa para o próprio funcionário."""
-    if not current_user:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuário não autenticado")
+    
 
     # Correção: Use o ID explícito do usuário para o campo de chave estrangeira
-    funcionario = await Employees.filter(id=current_user.id).first()
+    funcionario = await Employees.filter(id=request.funcionario_id).first()
     
     if not funcionario:
         raise HTTPException(
@@ -34,12 +32,11 @@ async def abertura_caixa(
             detail="Usuário não é um funcionário válido ou não encontrado."
         )
 
-    print(f"Tentando abrir caixa para usuario_id: {current_user.id}, funcionario_id: {funcionario.id}")
+    # print(f"Tentando abrir caixa para usuario_id: {current_user.id}, funcionario_id: {funcionario.id}")
     
     try:
         caixa = await CashController.abrir_caixa(
-            usuario_id=current_user.id,
-            funcionario_id=funcionario.id,
+            funcionario_id=request.funcionario_id,
             saldo_inicial=request.saldo_inicial,
             nome=funcionario.nome or f"Caixa {funcionario.id} - {current_user.company_name}",
         )
