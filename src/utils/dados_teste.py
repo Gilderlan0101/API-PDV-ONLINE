@@ -1,4 +1,5 @@
 from passlib.hash import bcrypt
+from datetime import datetime
 from faker import Faker
 import re
 from tortoise.transactions import in_transaction
@@ -24,7 +25,7 @@ async def create_mock_data():
             admin = await Usuario.create(
                 username="admin",
                 email="admin@test.com",
-                password=bcrypt.hash("123456"),
+                password=get_hashed_password("123456"),
                 company_name="Empresa Teste 1",
                 trade_name="Loja Central",
                 membros=1,
@@ -113,7 +114,7 @@ async def create_mock_data():
                     cep=fake.postcode(),
                     credit=500.00,
                     current_balance=0.00,
-                    due_date=None,
+                    due_date=datetime.now(),
                     status="ATIVO",
                     usuario_id=admin.id,
                 )

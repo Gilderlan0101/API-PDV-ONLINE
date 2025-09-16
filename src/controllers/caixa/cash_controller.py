@@ -40,8 +40,8 @@ class CashController:
         #         caixa.aberto = False
         #         await caixa.save()
 
-            # Usa o primeiro caixa aberto como o "oficial"
-            return caixas_abertos
+            # # Usa o primeiro caixa aberto como o "oficial"
+            # return caixas_abertos
         
         # Pegando o nome do fucionario
         if not nome:
