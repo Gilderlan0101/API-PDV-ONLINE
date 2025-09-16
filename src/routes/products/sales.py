@@ -1,13 +1,12 @@
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-
 from src.controllers.caixa.cash_controller import CashController, FinalizationObjcts
 from src.auth.deps import get_current_user
 from src.model.user import Usuario
+from src.model.employee import Employees
 from src.controllers.sales.sales import Checkout
 from src.controllers.car.cart_control import CartManagerDB
 from src.controllers.sales.delete_sales import delete_or_update_sale
-
 
 router = APIRouter()
 cart = CartManagerDB()
@@ -15,21 +14,43 @@ cart = CartManagerDB()
 @router.post("/finalizar", status_code=status.HTTP_200_OK)
 async def finalizar_venda(
     payment_method: str = Query(..., description="Forma de pagamento: dinheiro, cartão, pix, nota"),
-    
+    customer_id: Optional[int] = Query(None, description="ID do cliente para venda em nota"),
+    installments: Optional[int] = Query(None, description="Número de parcelas para cartão"),
+    valor_recebido: Optional[float] = Query(None, description="Valor recebido em dinheiro"),
+    troco: Optional[float] = Query(None, description="Troco para pagamento em dinheiro"),
     current_user: Usuario = Depends(get_current_user),
 ):
     """
-    Finaliza venda - APENAS para funcionários
+    Finaliza venda - para admin e funcionários
     """
 
     try:
-
+        # Verifica se o usuário atual é um funcionário
+        funcionario = await Employees.filter(id=current_user.id).first()
         
+        if funcionario:
+            # Se for funcionário, o operador é o próprio funcionário
+            employee_operator_id = current_user.id
+            # O dono do carrinho é o admin (usuario_id do funcionário)
+            cart_owner_id = funcionario.usuario_id
+        else:
+            # Se for admin, o operador é o próprio admin
+            employee_operator_id = current_user.id
+            cart_owner_id = current_user.id
+
+        # Primeiro, obtém os itens do carrinho para verificar se há itens
+        cart_items = await cart.listar_produtos(cart_owner_id)
+        if not cart_items:
+            raise HTTPException(status_code=400, detail="Carrinho vazio. Adicione produtos antes de finalizar a venda.")
 
         validation_process = await Checkout.validating_information(
             current_user=current_user, 
             payment_method=payment_method,
-            employee_operator_id= current_user.id  # employee_operator_id: È o propior usuario logado   
+            employee_operator_id=employee_operator_id,
+            customer_id=customer_id,
+            installments=installments,
+            valor_recebido=valor_recebido,
+            troco=troco
         ) 
         
         if not validation_process.get("success"):
@@ -66,6 +87,9 @@ async def finalizar_venda(
                 validation_process["data"]["caixa_atualizado"] = False
                 validation_process["data"]["caixa_erro"] = str(e)
         
+        # Limpa o carrinho após finalizar a venda
+        await cart.limpar_carrinho(cart_owner_id)
+        
         return validation_process
         
     except HTTPException:
@@ -74,21 +98,23 @@ async def finalizar_venda(
         print(f"Erro inesperado ao finalizar venda: {e}")
         raise HTTPException(status_code=500, detail=f"Erro interno ao processar venda: {str(e)}")
 
-
 @router.delete('/deleta/venda/')
 async def delete_sale(
     product_id: int = Query(...),
     quantity: Optional[int] = None,
     current_user: Usuario = Depends(get_current_user),
-    # current_user: Usuario = Depends(get_current_user)
 ):
-    """O usuario/fucionario pode deleta uma venda ou edita uma venda realiza.
-    caso o fucionario delete a compra a quantidade de imtes volta para o stoke automaticamente
-    """
-
-    result = await delete_or_update_sale(current_user.id, product_id, quantity)
-    match result:
-        case True:
-            return result
-        case False:
-            return result
+    """O usuario/funcionario pode deletar uma venda ou editar uma venda realizada."""
+    
+    # Verifica se o usuário atual é um funcionário
+    funcionario = await Employees.filter(id=current_user.id).first()
+    
+    if funcionario:
+        # Se for funcionário, usa o usuario_id do funcionário (ID do admin)
+        user_id_carrinho = funcionario.usuario_id
+    else:
+        # Se não for funcionário, é admin e usa seu próprio ID
+        user_id_carrinho = current_user.id
+    
+    result = await delete_or_update_sale(user_id_carrinho, product_id, quantity)
+    return result

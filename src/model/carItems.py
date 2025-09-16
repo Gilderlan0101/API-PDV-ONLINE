@@ -11,7 +11,7 @@ class CartItem(Model):
     product_name = fields.TextField(null=False)
     quantity = fields.IntField(null=False)
     price = fields.FloatField(null=False)
-    price_total = fields.FloatField(null=False, default=0.0)  # ⚡ Corrigido
+    total_price = fields.FloatField(null=False, default=0.0)  # ⚡ Corrigido
     discount = fields.FloatField(null=True)
     addition = fields.FloatField(null=True)
     product_code = fields.TextField(null=True)

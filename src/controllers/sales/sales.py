@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional, Tuple, Any
+from typing import Optional, Tuple, Any, List, Dict
 from fastapi import HTTPException, status
 from tortoise.transactions import in_transaction
 from dataclasses import dataclass, field
@@ -8,8 +8,7 @@ from src.model.user import Usuario
 from src.model.employee import Employees
 from src.model.product import Produto
 from src.model.sale import Sales
-
-
+from src.model.customers import Customer
 
 @dataclass
 class Checkout:
@@ -29,6 +28,10 @@ class Checkout:
     sale_code: Optional[str] = field(default=None)
     venda: Optional[Sales] = field(default=None)
     usuario: Optional[Usuario] = field(default=None)
+    customer_id: Optional[int] = field(default=None)  # Adicionado customer_id
+    installments: Optional[int] = field(default=None)  # Adicionado installments
+    valor_recebido: Optional[float] = field(default=None)  # Adicionado valor_recebido
+    troco: Optional[float] = field(default=None)  # Adicionado troco
 
     VALID_PAYMENT_METHODS = ['PIX', 'CARTAO', 'DINHEIRO', 'NOTA', 'FIADO', 'CARTÃO']
 
@@ -56,6 +59,16 @@ class Checkout:
             self.status = False
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Informe todos os dados")
         
+        # Validações específicas por método de pagamento
+        if self.payment_method.upper() == 'DINHEIRO':
+            if self.valor_recebido is None or self.valor_recebido <= 0:
+                raise HTTPException(status_code=400, detail="Valor recebido é obrigatório para pagamento em dinheiro")
+            if self.troco is None:
+                self.troco = 0.0
+        
+        if self.payment_method.upper() == 'CARTAO' and self.installments is None:
+            self.installments = 1  # Default para 1 parcela
+        
         self.status = True
         return self.status
 
@@ -74,7 +87,12 @@ class Checkout:
         if not itens or not self.usuario:
             raise HTTPException(status_code=400, detail="Informações da venda incompletas")
 
-        return {
+        # Informações do cliente se existir
+        cliente_info = {"Código Interno do Usuário": self.user_id}
+        if self.customer_id:
+            cliente_info["Cliente ID"] = self.customer_id
+
+        receipt_data = {
             "Nota Fiscal": {
                 "Empresa": {
                     "Razão Social": self.usuario.company_name,
@@ -102,12 +120,31 @@ class Checkout:
                     "Valor Total Geral": f'R$ {sum(item["total_price"] for item in itens):.2f}',
                     "Lucro Total Geral": f'R$ {sum(item["lucro_total"] for item in itens):.2f}',
                 },
-                "Cliente": {"Código Interno do Usuário": self.user_id},
+                "Cliente": cliente_info,
                 "Data": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
                 "Forma de Pagamento": self.payment_method,
-                "Observações": "Venda registrada com sucesso no sistema PDV.",
             }
         }
+
+        # Adiciona informações específicas do método de pagamento
+        if self.payment_method.upper() == 'DINHEIRO':
+            receipt_data["Nota Fiscal"]["Pagamento"] = {
+                "Valor Recebido": f'R$ {self.valor_recebido:.2f}',
+                "Troco": f'R$ {self.troco:.2f}'
+            }
+        elif self.payment_method.upper() == 'CARTAO':
+            receipt_data["Nota Fiscal"]["Pagamento"] = {
+                "Parcelas": self.installments
+            }
+        elif self.payment_method.upper() == 'NOTA' and self.customer_id:
+            receipt_data["Nota Fiscal"]["Pagamento"] = {
+                "Tipo": "Venda em Nota",
+                "Cliente ID": self.customer_id
+            }
+
+        receipt_data["Nota Fiscal"]["Observações"] = "Venda registrada com sucesso no sistema PDV."
+
+        return receipt_data
 
     async def process_sale(
         self,
@@ -116,6 +153,10 @@ class Checkout:
         quantity: int,
         payment_method: str,
         funcionario_id: Optional[int] = None,
+        customer_id: Optional[int] = None,
+        installments: Optional[int] = None,
+        valor_recebido: Optional[float] = None,
+        troco: Optional[float] = None,
     ) -> Tuple[dict, bool]:
         """Processa uma venda completa"""
         try:
@@ -145,6 +186,10 @@ class Checkout:
             self.funcionario_nome = operador_nome
             self.user_id = admin_user.id
             self.payment_method = payment_method.upper()
+            self.customer_id = customer_id
+            self.installments = installments
+            self.valor_recebido = valor_recebido
+            self.troco = troco
 
             async with in_transaction() as connection:
                 # Busca produto
@@ -182,6 +227,18 @@ class Checkout:
                 
                 if self.funcionario_id:
                     sale_data["funcionario_id"] = self.funcionario_id
+                
+                if self.customer_id:
+                    sale_data["customer_id"] = self.customer_id
+                
+                if self.installments:
+                    sale_data["installments"] = self.installments
+                
+                if self.valor_recebido:
+                    sale_data["valor_recebido"] = self.valor_recebido
+                
+                if self.troco:
+                    sale_data["troco"] = self.troco
 
                 self.venda = await Sales.create(**sale_data)
                 self.usuario = admin_user
@@ -205,7 +262,15 @@ class Checkout:
             raise HTTPException(status_code=400, detail=f"Erro ao processar venda: {str(e)}")
 
     @staticmethod
-    async def validating_information(current_user, payment_method: str, employee_operator_id: Optional[int] = None) -> dict:
+    async def validating_information(
+        current_user: Usuario,
+        payment_method: str,
+        employee_operator_id: Optional[int] = None,
+        customer_id: Optional[int] = None,
+        installments: Optional[int] = None,
+        valor_recebido: Optional[float] = None,
+        troco: Optional[float] = None,
+    ) -> dict:
         """Valida informações antes do processamento"""
         from src.utils.sales_code_generator import gerar_codigo_venda
         from src.controllers.car.cart_control import CartManagerDB
@@ -232,14 +297,26 @@ class Checkout:
             products = await cart.listar_produtos(admin_user.id)
     
             if not products:
-
                 return {"success": False, "error": "Carrinho vazio"}
+    
+            # Validações específicas por método de pagamento
+            if payment_method.upper() == 'DINHEIRO':
+                if valor_recebido is None or valor_recebido <= 0:
+                    return {"success": False, "error": "Valor recebido é obrigatório para pagamento em dinheiro"}
+                if troco is None:
+                    troco = 0.0
+            
+            if payment_method.upper() == 'CARTAO' and installments is None:
+                installments = 1
+            
+            if payment_method.upper() == 'NOTA' and customer_id is None:
+                return {"success": False, "error": "Customer ID é obrigatório para venda em nota"}
     
             # Processa cada produto
             sale_total = 0.0
             sale_details = []
             for prod in products:
-                sale_total += prod.price_total
+                sale_total += prod.total_price
                 sale_details.append({
                     "product_id": prod.product_id,
                     "product_name": prod.product_name,
@@ -250,6 +327,7 @@ class Checkout:
             # Gera código de venda
             sale_code = gerar_codigo_venda()
             invoice = []
+            last_checkout_instance = None
             
             for prod in sale_details:
                 checkout = Checkout(
@@ -263,6 +341,10 @@ class Checkout:
                     funcionario_id=employee_operator_id,
                     funcionario_nome=employee_operator_name,
                     sale_code=sale_code,
+                    customer_id=customer_id,
+                    installments=installments,
+                    valor_recebido=valor_recebido,
+                    troco=troco,
                 )
                 
                 # Processa a venda
@@ -272,6 +354,10 @@ class Checkout:
                     quantity=prod["quantity"],
                     payment_method=payment_method.upper(),
                     funcionario_id=employee_operator_id,
+                    customer_id=customer_id,
+                    installments=installments,
+                    valor_recebido=valor_recebido,
+                    troco=troco,
                 )
     
                 if status:
@@ -296,6 +382,7 @@ class Checkout:
                     "funcionario_operador_nome": employee_operator_name,
                     "admin_id": admin_user.id,
                     "checkout_instance": last_checkout_instance,
+                    "customer_id": customer_id,
                 },
                 "error": None,
             }

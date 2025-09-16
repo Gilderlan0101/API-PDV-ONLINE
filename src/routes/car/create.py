@@ -8,7 +8,6 @@ from src.controllers.car.cart_control import CartManagerDB
 router = APIRouter(tags=["Carrinho"])
 cart = CartManagerDB()
 
-
 @router.post("/adicionar")
 async def adicionar_produto(
     product_id: int = Query(..., description="ID do produto a ser adicionado"),
@@ -16,11 +15,16 @@ async def adicionar_produto(
     current_user: Usuario = Depends(get_current_user),
 ):
     """
-    Adiciona um produto ao carrinho do usuário. ou fucuinario
+    Adiciona um produto ao carrinho do usuário ou funcionário.
     """
-
-    fucionario = await Employees.filter(id=current_user.id).first()
-    admin = fucionario.usuario_id
-
-    if admin != None:
-        return await cart.add_produto(product_id, quantity, fucionario.usuario_id)
+    # Verifica se o usuário atual é um funcionário
+    funcionario = await Employees.filter(id=current_user.id).first()
+    
+    if funcionario:
+        # Se for funcionário, usa o usuario_id do funcionário (que é o ID do admin)
+        user_id_carrinho = funcionario.usuario_id
+    else:
+        # Se não for funcionário, é admin e usa seu próprio ID
+        user_id_carrinho = current_user.id
+    
+    return await cart.add_produto(product_id, quantity, user_id_carrinho)
