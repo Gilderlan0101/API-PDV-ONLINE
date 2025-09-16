@@ -10,11 +10,11 @@ from src.conf.database import TORTOISE_ORM
 # Rotas
 from src.routes.__init__ import *
 
-# from src.routes.relatorio.relatorio import router
+#from src.routes.relatorio.relatorio import router
 
 
 # Dados de teste mocados
-# from src.utils.dados_teste import create_mock_data
+from src.utils.dados_teste import create_mock_data
 
 # Configuração do cors
 from fastapi.middleware.cors import CORSMiddleware
@@ -33,7 +33,7 @@ async def lifespan(app: FastAPI):
     print('Banco de dados iniciado e tabelas criadas!')
 
     # Popula dados de teste
-    # await create_mock_data()
+    await create_mock_data()
 
     yield
 

@@ -34,14 +34,14 @@ class CashController:
         # Busca todos os caixas abertos do funcionário
         caixas_abertos = await Caixa.filter(funcionario_id=funcionario_id, aberto=True).all()
         
-        if caixas_abertos:
-            # Fecha todos os caixas existentes (mantém só o primeiro)
-            for caixa in caixas_abertos[1:]:
-                caixa.aberto = False
-                await caixa.save()
+        # if caixas_abertos:
+        #     # Fecha todos os caixas existentes (mantém só o primeiro)
+        #     for caixa in caixas_abertos[1:]:
+        #         caixa.aberto = False
+        #         await caixa.save()
 
             # Usa o primeiro caixa aberto como o "oficial"
-            return caixas_abertos[0]
+            return caixas_abertos
         
         # Pegando o nome do fucionario
         if not nome:
