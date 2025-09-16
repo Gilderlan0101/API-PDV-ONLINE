@@ -65,7 +65,7 @@ class CartManagerDB:
                 product_name=produto.name,
                 quantity=quantity,
                 price=produto.cost_price,
-                total_price=produto.total_price * quantity,
+                total_price=produto.cost_price * quantity,
             )
             
             # Atualiza o estoque do produto
