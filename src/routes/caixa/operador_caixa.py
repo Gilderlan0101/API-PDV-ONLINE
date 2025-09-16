@@ -1,6 +1,6 @@
 # src/routes/caixa_routes.py
 from fastapi import APIRouter, Depends, HTTPException, status, Body
-from src.auth.deps import get_current_user
+from src.auth.deps import get_current_user, SystemUser
 from src.schemas.funcs.operador_cadastro import (
     AberturaCaixaRequest,
     CaixaFuncionarioCreate,
@@ -16,34 +16,23 @@ operador = APIRouter()
 
 # --- Rota de Abertura de Caixa ---
 
+
 @operador.post('/abertura')
 async def abertura_caixa(
     request: AberturaCaixaRequest,
+    current_user: SystemUser = Depends(get_current_user),
 ):
-    """Abre o caixa para o próprio funcionário."""
-    
-
-    # Correção: Use o ID explícito do usuário para o campo de chave estrangeira
     funcionario = await Employees.filter(id=request.funcionario_id).first()
-    
     if not funcionario:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Usuário não é um funcionário válido ou não encontrado."
-        )
+        raise HTTPException(status_code=400, detail="Funcionário não encontrado.")
 
-    # print(f"Tentando abrir caixa para usuario_id: {current_user.id}, funcionario_id: {funcionario.id}")
-    
-    try:
-        caixa = await CashController.abrir_caixa(
-            funcionario_id=request.funcionario_id,
-            saldo_inicial=request.saldo_inicial,
-            nome=funcionario.nome or f"Caixa {funcionario.id} - {current_user.company_name}",
-        )
-        return {"status": 200, "msg": "Caixa aberto com sucesso.", "caixa": caixa}
-
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    caixa = await CashController.abrir_caixa(
+        funcionario_id=request.funcionario_id,
+        saldo_inicial=request.saldo_inicial,
+        nome=funcionario.nome or f"Caixa {funcionario.id} - {current_user.company_name}",
+        # usuario_id=current_user.id,  # 👈 chave aqui
+    )
+    return {"status": 200, "msg": "Caixa aberto com sucesso.", "caixa": caixa}
 
 
 
