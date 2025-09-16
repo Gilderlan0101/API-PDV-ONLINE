@@ -80,7 +80,7 @@ class CartManagerDB:
                 "product_name": cart_item.product_name,
                 "quantity": cart_item.quantity,
                 "price": float(cart_item.price),
-                "total_price": float(cart_item.price_total)
+                "total_price": float(cart_item.total_price)
             },
             "admin_produto_id": produto.id,
             "nome": produto.name,

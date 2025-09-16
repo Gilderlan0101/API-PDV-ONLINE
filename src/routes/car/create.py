@@ -23,8 +23,10 @@ async def adicionar_produto(
     if funcionario:
         # Se for funcionário, usa o usuario_id do funcionário (que é o ID do admin)
         user_id_carrinho = funcionario.usuario_id
+        print('E um fucionario')
     else:
         # Se não for funcionário, é admin e usa seu próprio ID
         user_id_carrinho = current_user.id
+        print('Não e um fucionario')
     
     return await cart.add_produto(product_id, quantity, user_id_carrinho)
