@@ -64,7 +64,7 @@ class CartManagerDB:
                 product_id=product_id,
                 product_name=produto.name,
                 quantity=quantity,
-                price=produto.total_price,
+                price=produto.cost_price,
                 total_price=produto.total_price * quantity,
             )
             
