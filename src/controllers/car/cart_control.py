@@ -22,7 +22,7 @@ class CartManagerDB:
         
         if funcionario:
             # Se for funcionário, retorna o ID do admin (usuario_id)
-            return funcionario.usuario_id
+            return funcionario.id
         
         # Se não for funcionário, retorna o próprio ID (admin)
         return user_id
