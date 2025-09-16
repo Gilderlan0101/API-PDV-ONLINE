@@ -100,5 +100,5 @@ async def information_from_all_cashiers(current_user: Usuario = Depends(get_curr
         return infos
 
     else:
-        print('nada encontrado')
-        raise HTTPException(status_code=200, detail='dados não encontrado.')
+        return []
+        # raise HTTPException(status_code=200, detail='dados não encontrado.')
