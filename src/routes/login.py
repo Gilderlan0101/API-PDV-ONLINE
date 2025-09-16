@@ -86,8 +86,7 @@ class Login:
                     "token_type": "bearer",
                 }
 
-
-             # 🔹 3) Login como membro
+            # 🔹 3) Login como membro
             membros = await Membro.get_or_none(email=user.username).select_related("usuario")
 
             if membros:
@@ -114,7 +113,6 @@ class Login:
                     "refresh_token": create_refresh_token(str(membros.id)),
                     "token_type": "bearer",
                 }
-
 
             raise HTTPException(
                 status_code=401,

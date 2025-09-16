@@ -20,6 +20,13 @@ class Caixa(models.Model):
     criado_em = fields.DatetimeField(default=datetime.now(ZoneInfo("America/Sao_Paulo")))
     atualizado_em = fields.DatetimeField(default=datetime.now(ZoneInfo("America/Sao_Paulo")))
 
+    # # Colunas temporarias para gerenciamento do caiax
+    # produto_nome = fields.TextField(null=True)
+    # produto_id = fields.IntField(null=True)
+    # quantidade = fields.IntField(default=0, null=True)
+
+    valor_total = fields.FloatField(default=0.0)
+
     # 🔹 Relacionamentos
     usuario = fields.ForeignKeyField("models.Usuario", related_name="caixas", on_delete=fields.CASCADE)
 

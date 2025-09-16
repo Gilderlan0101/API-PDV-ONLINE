@@ -11,7 +11,7 @@ from src.schemas.fornecedor.schemas_fornecedor import (
     SupplierSummary,
 )
 
-from src.schemas.fornecedor.update_spplierBase import  SupplierUpdate
+from src.schemas.fornecedor.update_spplierBase import SupplierUpdate
 
 from src.auth.deps import get_current_user
 
@@ -110,18 +110,11 @@ async def delete_fornecedor(fornecedor_id: int, current_user: Usuario = Depends(
         return {"message": "Fornecedor deletado com sucesso!"}
 
 
-
-
-
 # ===============================
 # Atualizar fornecedor
 # ===============================
 @router.put('/atualiza/{fornecedor_id}', status_code=status.HTTP_200_OK)
-async def update_fornecedor(
-    fornecedor_id: int,
-    form: SupplierUpdate,
-    current_user: Usuario = Depends(get_current_user)
-):
+async def update_fornecedor(fornecedor_id: int, form: SupplierUpdate, current_user: Usuario = Depends(get_current_user)):
     async with in_transaction() as conn:
         # Busca o fornecedor
         fornecedor = await Fornecedor.filter(id=fornecedor_id, usuario_id=current_user.id).using_db(conn).first()

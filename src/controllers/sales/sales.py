@@ -10,6 +10,7 @@ from src.model.product import Produto
 from src.model.sale import Sales
 from src.model.customers import Customer
 
+
 @dataclass
 class Checkout:
     """
@@ -58,17 +59,17 @@ class Checkout:
         if not self.product_name or not self.quantity:
             self.status = False
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Informe todos os dados")
-        
+
         # Validações específicas por método de pagamento
         if self.payment_method.upper() == 'DINHEIRO':
             if self.valor_recebido is None or self.valor_recebido <= 0:
                 raise HTTPException(status_code=400, detail="Valor recebido é obrigatório para pagamento em dinheiro")
             if self.troco is None:
                 self.troco = 0.0
-        
+
         if self.payment_method.upper() == 'CARTAO' and self.installments is None:
             self.installments = 1  # Default para 1 parcela
-        
+
         self.status = True
         return self.status
 
@@ -128,19 +129,11 @@ class Checkout:
 
         # Adiciona informações específicas do método de pagamento
         if self.payment_method.upper() == 'DINHEIRO':
-            receipt_data["Nota Fiscal"]["Pagamento"] = {
-                "Valor Recebido": f'R$ {self.valor_recebido:.2f}',
-                "Troco": f'R$ {self.troco:.2f}'
-            }
+            receipt_data["Nota Fiscal"]["Pagamento"] = {"Valor Recebido": f'R$ {self.valor_recebido:.2f}', "Troco": f'R$ {self.troco:.2f}'}
         elif self.payment_method.upper() == 'CARTAO':
-            receipt_data["Nota Fiscal"]["Pagamento"] = {
-                "Parcelas": self.installments
-            }
+            receipt_data["Nota Fiscal"]["Pagamento"] = {"Parcelas": self.installments}
         elif self.payment_method.upper() == 'NOTA' and self.customer_id:
-            receipt_data["Nota Fiscal"]["Pagamento"] = {
-                "Tipo": "Venda em Nota",
-                "Cliente ID": self.customer_id
-            }
+            receipt_data["Nota Fiscal"]["Pagamento"] = {"Tipo": "Venda em Nota", "Cliente ID": self.customer_id}
 
         receipt_data["Nota Fiscal"]["Observações"] = "Venda registrada com sucesso no sistema PDV."
 
@@ -167,8 +160,8 @@ class Checkout:
 
             # Se current_user for funcionário, pega o admin dono
             funcionario_logado = await Employees.filter(id=current_user.id).first()
-            if funcionario_logado and funcionario_logado.usuario_id: # type: ignore
-                admin_user = await Usuario.get(id=funcionario_logado.usuario_id) # type: ignore
+            if funcionario_logado and funcionario_logado.usuario_id:  # type: ignore
+                admin_user = await Usuario.get(id=funcionario_logado.usuario_id)  # type: ignore
                 operador_id = funcionario_logado.id
                 operador_nome = funcionario_logado.nome
 
@@ -224,19 +217,19 @@ class Checkout:
                     "produto_id": product.id,
                     "using_db": connection,
                 }
-                
+
                 if self.funcionario_id:
                     sale_data["funcionario_id"] = self.funcionario_id
-                
+
                 if self.customer_id:
                     sale_data["customer_id"] = self.customer_id
-                
+
                 if self.installments:
                     sale_data["installments"] = self.installments
-                
+
                 if self.valor_recebido:
                     sale_data["valor_recebido"] = self.valor_recebido
-                
+
                 if self.troco:
                     sale_data["troco"] = self.troco
 
@@ -250,7 +243,7 @@ class Checkout:
                     "total_price": total_price,
                     "lucro_total": lucro_total,
                 }
-                
+
                 self.status = True
                 self._set_receipt_data([item_venda])
 
@@ -276,59 +269,61 @@ class Checkout:
         from src.controllers.car.cart_control import CartManagerDB
 
         cart = CartManagerDB()
-    
+
         try:
             # Verifica se é um funcionário
             employee = await Employees.filter(id=current_user.id).first()
-            
+
             if not employee:
                 return {"success": False, "message": "Apenas funcionários podem realizar vendas"}
-            
+
             employee_operator_id = employee.id
             employee_operator_name = employee.nome
-            
+
             # Busca o usuário admin
-            admin_user = await Usuario.get(id=employee.usuario_id) # type: ignore
-            
+            admin_user = await Usuario.get(id=employee.usuario_id)  # type: ignore
+
             if not admin_user:
                 return {"success": False, "message": "Usuário admin não encontrado"}
-    
+
             # Lista produtos do carrinho
             products = await cart.listar_produtos(admin_user.id)
-    
+
             if not products:
                 return {"success": False, "error": "Carrinho vazio"}
-    
+
             # Validações específicas por método de pagamento
             if payment_method.upper() == 'DINHEIRO':
                 if valor_recebido is None or valor_recebido <= 0:
                     return {"success": False, "error": "Valor recebido é obrigatório para pagamento em dinheiro"}
                 if troco is None:
                     troco = 0.0
-            
+
             if payment_method.upper() == 'CARTAO' and installments is None:
                 installments = 1
-            
+
             if payment_method.upper() == 'NOTA' and customer_id is None:
                 return {"success": False, "error": "Customer ID é obrigatório para venda em nota"}
-    
+
             # Processa cada produto
             sale_total = 0.0
             sale_details = []
             for prod in products:
                 sale_total += prod.total_price
-                sale_details.append({
-                    "product_id": prod.product_id,
-                    "product_name": prod.product_name,
-                    "quantity": prod.quantity,
-                    "unit_price": prod.price,
-                })
-    
+                sale_details.append(
+                    {
+                        "product_id": prod.product_id,
+                        "product_name": prod.product_name,
+                        "quantity": prod.quantity,
+                        "unit_price": prod.price,
+                    }
+                )
+
             # Gera código de venda
             sale_code = gerar_codigo_venda()
             invoice = []
             last_checkout_instance = None
-            
+
             for prod in sale_details:
                 checkout = Checkout(
                     user_id=admin_user.id,
@@ -346,7 +341,7 @@ class Checkout:
                     valor_recebido=valor_recebido,
                     troco=troco,
                 )
-                
+
                 # Processa a venda
                 coupon, status = await checkout.process_sale(
                     current_user=admin_user,
@@ -359,18 +354,19 @@ class Checkout:
                     valor_recebido=valor_recebido,
                     troco=troco,
                 )
-    
+
                 if status:
                     invoice.append(coupon)
                     last_checkout_instance = checkout
                 else:
                     return {"success": False, "error": "Erro ao processar a venda"}
-    
+
             # Limpa carrinho e gera relatório
             await cart.limpar_carrinho(admin_user.id)
             from src.controllers.stoke.stoke_control import gerar_relatorio_completo
+
             report = await gerar_relatorio_completo(admin_user.id)
-            
+
             return {
                 "success": True,
                 "data": {
@@ -386,7 +382,7 @@ class Checkout:
                 },
                 "error": None,
             }
-    
+
         except Exception as e:
             return {"success": False, "error": str(e)}
 
@@ -394,7 +390,7 @@ class Checkout:
 @dataclass
 class Note(Checkout):
     """Extensão de Checkout para gerar notas fiscais adicionais"""
-    
+
     async def verifyFields(self) -> bool:
         """Verifica campos obrigatórios"""
         campos_obrigatorios = [
@@ -408,12 +404,12 @@ class Note(Checkout):
         if self.quantity <= 0:
             raise HTTPException(status_code=400, detail="A quantidade deve ser maior que zero.")
         return True
-    
+
     async def createNote(self) -> dict:
         """Cria uma nota fiscal"""
         await self.verify_datas()
         await self.verifyFields()
-        
+
         # Lógica específica para criação de nota
         if self.receipt_data:
             return self.build_receipt(self.receipt_data)

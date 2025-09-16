@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 
+
 class FuncionarioCreate(BaseModel):
     nome: str
     cargo: str
@@ -16,5 +17,3 @@ class OutputFormat(BaseModel):
     email: str
     telefone: Optional[str] = None
     ativo: bool
-
-

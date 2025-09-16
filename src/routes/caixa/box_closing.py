@@ -3,14 +3,15 @@ from src.auth.deps import get_current_user
 from src.controllers.caixa.cash_controller import CashController
 from src.routes.caixa.operador_caixa import operador
 from src.model.user import Usuario
-#from src.model.caixa import Caixa
+
+# from src.model.caixa import Caixa
 
 
 from src.controllers.caixa.cash_controller import CashController
 
+
 @operador.get('/fechamento/valores')
 async def collection_of_the_day(current_user: Usuario = Depends(get_current_user)):
-    
     '''
     Buscando informaçoes sobre os caixas fechados
     '''
@@ -18,7 +19,6 @@ async def collection_of_the_day(current_user: Usuario = Depends(get_current_user
     var = await CashController.get_caixa_details(current_user.id)
 
     return var
-
 
 
 @operador.get('/fechamento')
@@ -30,10 +30,7 @@ async def fechamento_caixa(
         resultado = await CashController.fechar_caixa(usuario_id=current_user)
 
         if not resultado:
-            raise HTTPException(
-                status_code=404, 
-                detail="Nenhum caixa aberto encontrado para este usuário."
-            )
+            raise HTTPException(status_code=404, detail="Nenhum caixa aberto encontrado para este usuário.")
 
         return {
             "status": 200,

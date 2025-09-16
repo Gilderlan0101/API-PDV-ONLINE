@@ -10,7 +10,7 @@ from src.conf.database import TORTOISE_ORM
 # Rotas
 from src.routes.__init__ import *
 
-#from src.routes.relatorio.relatorio import router
+# from src.routes.relatorio.relatorio import router
 
 
 # Dados de teste mocados
@@ -92,8 +92,8 @@ class Server:
             "http://127.0.0.1:5173",  # Vite development
             "http://localhost:8000",  # FastAPI itself
             "http://127.0.0.1:8000",  # FastAPI itself
-            "https://front-end-pdv.onrender.com",    # Frontend Flask
-            "https://api-pdv-online.onrender.com",   # Backend FastAPI
+            "https://front-end-pdv.onrender.com",  # Frontend Flask
+            "https://api-pdv-online.onrender.com",  # Backend FastAPI
         ]
 
         self.api.add_middleware(

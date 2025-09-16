@@ -9,26 +9,26 @@ async def updatedateEmployee(user_id: int, id_employee: int):
     parms: user_id: int id
     parms: id_employee: int id
     '''
-    
+
     try:
-        
+
         #
         employees = await Employees.filter(usuario_id=user_id, id=id_employee).first()
-        
+
         match employees:
-            
+
             case employees if employees is not None:
-               pass
-                
+                pass
+
             case _:
                 raise HTTPException(status_code=404, detail='Usuario não encontrado.')
-    
+
     except tortoise.exceptions.BaseORMException:
         pass
-    
+
     finally:
         try:
             pass
-        
+
         except tortoise.exceptions.BaseORMException:
             pass

@@ -17,6 +17,7 @@ class CaixaFuncionarioCreate(SQLModel):
 class CaixaFuncionarioUpdate(SQLModel):
     caixa_id: int = Field(..., description="ID do caixa a ser fechado")
 
+
 class AberturaCaixaRequest(BaseModel):
     funcionario_id: int
     saldo_inicial: float

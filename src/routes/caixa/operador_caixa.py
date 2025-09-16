@@ -35,8 +35,6 @@ async def abertura_caixa(
     return {"status": 200, "msg": "Caixa aberto com sucesso.", "caixa": caixa}
 
 
-
-
 @operador.get('/caixa/{caixa_id}/resumo')
 async def resumo_caixa(
     caixa_id: int,
@@ -62,7 +60,6 @@ async def resumo_caixa(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-
 @operador.get('/infos/caixas')
 async def information_from_all_cashiers(current_user: Usuario = Depends(get_current_user)):
 
@@ -79,12 +76,7 @@ async def information_from_all_cashiers(current_user: Usuario = Depends(get_curr
         for data in cashs:
             if data.aberto:
 
-                infos.append({
-                'Nome': data.nome,
-                'ID': data.id,
-                'Aberto': data.aberto,
-                'Saldo_atual': data.saldo_atual
-                })
+                infos.append({'Nome': data.nome, 'ID': data.id, 'Aberto': data.aberto, 'Saldo_atual': data.saldo_atual})
 
         return infos
 

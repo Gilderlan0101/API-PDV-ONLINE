@@ -88,10 +88,6 @@ async def list_customer(current_user: Usuario = Depends(get_current_user)):
         return await Customer.filter(usuario_id=funcionario.usuario_id).all()
 
 
-
-    
-
-
 # ===============================
 # Atualizar crédito/gasto do cliente
 # ===============================

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, Query
 from src.auth.deps import get_current_user, SystemUser
-#from src.model.user import Usuario
+
+# from src.model.user import Usuario
 from src.model.employee import Employees
 
 from src.controllers.car.cart_control import CartManagerDB
@@ -8,8 +9,9 @@ from src.controllers.car.cart_control import CartManagerDB
 router = APIRouter(tags=["Carrinho"])
 
 
-
 cart = CartManagerDB()
+
+
 @router.post("/adicionar")
 async def adicionar_produto(
     product_id: int = Query(..., description="ID do produto a ser adicionado"),
@@ -20,6 +22,6 @@ async def adicionar_produto(
     Adiciona um produto ao carrinho do usuário ou funcionário.
     """
     # sempre usar empresa_id para amarrar ao dono
-    user_id_carrinho = current_user.empresa_id
+    user_id_carrinho = current_user.id
 
     return await cart.add_produto(product_id, quantity, user_id_carrinho)

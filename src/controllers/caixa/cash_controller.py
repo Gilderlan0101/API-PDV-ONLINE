@@ -14,6 +14,7 @@ from src.model.sale import Sales
 
 from src.controllers.sales.sales import Checkout
 
+
 class CashController:
 
     @staticmethod
@@ -25,31 +26,31 @@ class CashController:
         # usuario_exists = await Employees.exists(id=usuario_id)
         # if not usuario_exists:
         #     raise Exception("Usuário não encontrado")
-        
+
         # Verifica se o funcionário existe
         funcionario = await Employees.filter(id=funcionario_id).first()
         if not funcionario:
             raise Exception("Funcionário não encontrado")
-        
+
         # Busca todos os caixas abertos do funcionário
         caixas_abertos = await Caixa.filter(funcionario_id=funcionario_id, aberto=True).all()
-        
+
         # if caixas_abertos:
         #     # Fecha todos os caixas existentes (mantém só o primeiro)
         #     for caixa in caixas_abertos[1:]:
         #         caixa.aberto = False
         #         await caixa.save()
 
-            # # Usa o primeiro caixa aberto como o "oficial"
-            # return caixas_abertos
-        
+        # # Usa o primeiro caixa aberto como o "oficial"
+        # return caixas_abertos
+
         # Pegando o nome do fucionario
         if not nome:
             nome = funcionario.nome
 
         # Buscar o usuario dono do fucionario: usuario_id
-        usuario_id =  funcionario.usuario_id
-        
+        usuario_id = funcionario.usuario_id
+
         # Se não tinha nenhum aberto, cria novo caixa
         caixa = await Caixa.create(
             nome=nome,
@@ -71,8 +72,6 @@ class CashController:
         )
 
         return caixa
-
-
 
     @staticmethod
     async def registrar_venda_caixa(caixa_id: int, venda_obj: Sales, valor_venda: float, forma_pagamento: str):
@@ -100,8 +99,6 @@ class CashController:
         await caixa.save()
         return caixa
 
-
-
     @staticmethod
     async def fechar_caixa(usuario_id: int):
         """
@@ -116,15 +113,9 @@ class CashController:
             return None  # nenhum caixa aberto encontrado
 
         # Calcula entradas e saídas
-        entradas = await CashMovement.filter(
-            caixa_id=caixa.id,
-            tipo__in=["ENTRADA", "ABERTURA"]
-        ).all()
+        entradas = await CashMovement.filter(caixa_id=caixa.id, tipo__in=["ENTRADA", "ABERTURA"]).all()
 
-        saidas = await CashMovement.filter(
-            caixa_id=caixa.id,
-            tipo="SAIDA"
-        ).all()
+        saidas = await CashMovement.filter(caixa_id=caixa.id, tipo="SAIDA").all()
 
         total_entradas = sum([mov.valor for mov in entradas])
         total_saidas = sum([mov.valor for mov in saidas])
@@ -143,10 +134,7 @@ class CashController:
         await CashMovement.create(
             tipo="FECHAMENTO",
             valor=valor_fechamento,
-            descricao=(
-                f"Fechamento do caixa - Sistema: {valor_sistema}, "
-                f"Fechamento: {valor_fechamento}, Dif: {caixa.diferenca}"
-            ),
+            descricao=(f"Fechamento do caixa - Sistema: {valor_sistema}, " f"Fechamento: {valor_fechamento}, Dif: {caixa.diferenca}"),
             caixa_id=caixa.id,
             usuario_id=caixa.usuario_id,
             funcionario_id=caixa.funcionario_id,
@@ -157,8 +145,7 @@ class CashController:
                 "tipo": "FECHAMENTO",
                 "valor": valor_fechamento,
                 "nome": caixa.nome,
-                "descricao": f"Fechamento do caixa - Sistema: {valor_sistema}, "
-                             f"Fechamento: {valor_fechamento}, Dif: {caixa.diferenca}",
+                "descricao": f"Fechamento do caixa - Sistema: {valor_sistema}, " f"Fechamento: {valor_fechamento}, Dif: {caixa.diferenca}",
                 "caixa_id": caixa.id,
                 "usuario_id": caixa.usuario_id,
                 "funcionario_id": caixa.funcionario_id,
@@ -167,8 +154,6 @@ class CashController:
 
         return date
 
-    
-    
     @staticmethod
     async def get_caixa_details(user_id: int) -> Dict[str, Any]:
         """
@@ -191,7 +176,7 @@ class CashController:
                 total_por_pagamento = {}
                 total_sistema = 0
                 for sale in sales:
-              
+
                     total_sistema += sale.total_price
                     metodo = sale.payment_method.value
                     total_por_pagamento[metodo] = total_por_pagamento.get(metodo, 0) + sale.total_price
@@ -203,19 +188,20 @@ class CashController:
                 else:
                     diferenca = None
 
-
-                infos.append({
-                    "caixa_id": caixa.id,
-                    "nome": caixa.nome,
-                    "saldo_inicial": caixa.saldo_inicial,
-                    "valor_fechamento": caixa.valor_fechamento,
-                    "valor_sistema": total_sistema,
-                    "diferenca": diferenca,
-                    "aberto_em": caixa.criado_em.strftime('%d/%m/%y | %H:%M'),
-                    "fechamento": caixa.atualizado_em.strftime('%d/%m/%y | %H:%M'),
-                    "total_por_pagamento": total_por_pagamento,
-                    "total_vendas": len(sales),
-                })
+                infos.append(
+                    {
+                        "caixa_id": caixa.id,
+                        "nome": caixa.nome,
+                        "saldo_inicial": caixa.saldo_inicial,
+                        "valor_fechamento": caixa.valor_fechamento,
+                        "valor_sistema": total_sistema,
+                        "diferenca": diferenca,
+                        "aberto_em": caixa.criado_em.strftime('%d/%m/%y | %H:%M'),
+                        "fechamento": caixa.atualizado_em.strftime('%d/%m/%y | %H:%M'),
+                        "total_por_pagamento": total_por_pagamento,
+                        "total_vendas": len(sales),
+                    }
+                )
 
         return infos
 
@@ -239,8 +225,6 @@ class FinalizationObjcts:
         self.checkout = checkout_instance
         self.dados_recibo = checkout_instance.receipt_data if checkout_instance else None
 
-
-        
     async def Updating_cash_values(self, caixa_id: int):
         """
         Passando os campos necessários para atualizar o caixa.
@@ -249,25 +233,25 @@ class FinalizationObjcts:
         try:
             if not self.checkout:
                 raise Exception("Instância do Checkout não fornecida")
-            
+
             # Verifica se há dados do recibo
             if not self.checkout.receipt_data:
                 raise Exception("Nenhum dado de venda disponível")
-            
+
             # Obtém informações da venda
             venda_obj = self.checkout.venda
             if not venda_obj or not isinstance(venda_obj, Sales):
                 raise Exception("Venda não encontrada ou objeto inválido")
-            
+
             # Calcula valor total da venda
             if isinstance(self.checkout.receipt_data, list):
                 valor_total = sum(item.get('total_price', 0) for item in self.checkout.receipt_data)
             else:
                 valor_total = self.checkout.receipt_data.get('total_price', 0)
-            
+
             # Obtém forma de pagamento
             forma_pagamento = getattr(self.checkout, 'payment_method', 'PIX')
-            
+
             # Verifica se o caixa existe e está aberto
             caixa = await Caixa.get_or_none(id=caixa_id).prefetch_related('usuario', 'funcionario')
             if not caixa or not caixa.aberto:
@@ -293,7 +277,7 @@ class FinalizationObjcts:
             await venda_obj.save()
 
             return caixa
-            
+
         except Exception as e:
             print(f"Erro detalhado ao atualizar caixa: {str(e)}")
             raise Exception(f"Erro ao atualizar caixa: {str(e)}")
