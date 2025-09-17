@@ -32,7 +32,8 @@ class SchemasCustomer(BaseModel):
     tel: str
     cep: CEP
     credit: confloat(ge=0)
-    current_balance: Optional[confloat(ge=0)] = None  # se não passar, backend preenche com credit
+    # se não passar, backend preenche com credit
+    current_balance: Optional[confloat(ge=0)] = None
     due_date: datetime
     status: Status
 

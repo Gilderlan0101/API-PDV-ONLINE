@@ -1,11 +1,10 @@
+from src.auth.auth_jwt import get_hashed_password, verify_password
 import unittest
 import os
 import sys
 
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-
-from src.auth.auth_jwt import get_hashed_password, verify_password
 
 
 class TestAuth(unittest.TestCase):
@@ -16,7 +15,8 @@ class TestAuth(unittest.TestCase):
 
     def test_create_hash(self):
         self.assertIsNotNone(self.hashed)
-        self.assertNotEqual(self.password, self.hashed)  # Hash não pode ser igual à senha original
+        # Hash não pode ser igual à senha original
+        self.assertNotEqual(self.password, self.hashed)
 
     def test_verify_hash(self):
         self.assertTrue(verify_password(self.password, self.hashed))

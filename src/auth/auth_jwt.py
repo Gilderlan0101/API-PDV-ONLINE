@@ -47,4 +47,5 @@ def create_refresh_token(subject: Union[str, Any], expires_delta: Optional[int] 
     )
 
     to_encode = {'exp': expire, 'sub': str(subject)}
-    return jwt.encode(to_encode, JWT_REFRESH_SECRET_KEY, ALGORITHM)  # type: ignore
+    # type: ignore
+    return jwt.encode(to_encode, JWT_REFRESH_SECRET_KEY, ALGORITHM)

@@ -36,6 +36,8 @@ class Usuario(models.Model):
     district = fields.CharField(max_length=50, default="Valor não informado")
     city = fields.CharField(max_length=100, default="Valor não informado")
     state = fields.CharField(max_length=50, default="Valor não informado")
+    is_active = fields.BooleanField(default=True)
+    pending = fields.BooleanField(default=False)
 
     criado_em = fields.DatetimeField(default=datetime.now(ZoneInfo('America/Sao_Paulo')))
     atualizado_em = fields.DatetimeField(default=datetime.now(ZoneInfo('America/Sao_Paulo')))

@@ -92,7 +92,8 @@ class CashController:
             descricao=f"Venda #{venda_obj.id} - {forma_pagamento}",
             caixa=caixa,  # Passar instância do caixa
             usuario=caixa.usuario,  # Passar instância do usuário
-            funcionario=caixa.funcionario,  # Passar instância do funcionário (pode ser None)
+            # Passar instância do funcionário (pode ser None)
+            funcionario=caixa.funcionario,
             venda=venda_obj,  # CORREÇÃO: passar a instância completa de Sales
         )
 
@@ -268,7 +269,8 @@ class FinalizationObjcts:
                 descricao=f"Venda #{venda_obj.id} - {forma_pagamento}",
                 caixa=caixa,  # Instância completa
                 usuario=caixa.usuario,  # Instância completa
-                funcionario=caixa.funcionario,  # Instância completa (pode ser None)
+                # Instância completa (pode ser None)
+                funcionario=caixa.funcionario,
                 venda=venda_obj,  # Instância completa de Sales
             )
 

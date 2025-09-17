@@ -10,7 +10,8 @@ class CashMovement(models.Model):
     """
 
     id = fields.IntField(pk=True)
-    tipo = fields.CharField(max_length=20)  # 'ENTRADA', 'SAIDA', 'ABERTURA', 'FECHAMENTO'
+    # 'ENTRADA', 'SAIDA', 'ABERTURA', 'FECHAMENTO'
+    tipo = fields.CharField(max_length=20)
     valor = fields.FloatField()
     descricao = fields.TextField()
     criado_em = fields.DatetimeField(default=datetime.now(ZoneInfo("America/Sao_Paulo")))

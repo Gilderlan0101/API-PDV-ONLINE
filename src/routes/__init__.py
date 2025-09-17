@@ -24,6 +24,8 @@ from src.routes.products.ticket import router as ticket_prods
 from src.routes.products.sales import router as sales
 from src.routes.products.cancel_sale import router as cancel_sales
 
+from src.routes.user.clientes import router as system_user
+
 
 auth = APIRouter(
     tags=["Autenticação"],
@@ -108,3 +110,13 @@ dashboard = APIRouter(
 
 dashboard.include_router(allDatas, prefix="/dashboard", tags=["Dashboard"])
 dashboard.include_router(result_sales)
+
+# Visualização de dados em tempo real dashboard
+system_ = APIRouter(
+    tags=["system_user"],
+    responses={404: {"description": "Não encontrado"}},
+    )
+
+dashboard.include_router(system_user)
+
+

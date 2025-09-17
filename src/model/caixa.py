@@ -15,7 +15,8 @@ class Caixa(models.Model):
     saldo_atual = fields.FloatField(default=0.0)  # Atualizado com vendas
     valor_fechamento = fields.FloatField(null=True)  # Valor informado ao fechar
     valor_sistema = fields.FloatField(null=True)  # Total do sistema calculado
-    diferenca = fields.FloatField(null=True)  # Diferença entre valor_fechamento e valor_sistema
+    # Diferença entre valor_fechamento e valor_sistema
+    diferenca = fields.FloatField(null=True)
     aberto = fields.BooleanField(default=False)
     criado_em = fields.DatetimeField(default=datetime.now(ZoneInfo("America/Sao_Paulo")))
     atualizado_em = fields.DatetimeField(default=datetime.now(ZoneInfo("America/Sao_Paulo")))

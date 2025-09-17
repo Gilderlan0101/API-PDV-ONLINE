@@ -32,6 +32,7 @@ async def create_mock_data():
                 cnpj="12345678000199",
                 city="São Paulo",
                 state="SP",
+                pending=True,
             )
             await Membro.create(
                 nome="Filial Centro",

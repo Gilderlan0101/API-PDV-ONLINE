@@ -20,26 +20,34 @@ from src.utils.dados_teste import create_mock_data
 from fastapi.middleware.cors import CORSMiddleware
 
 
+# Testando dados para admin
+from src.controllers.user.system_users import LoginInSystem, SystemUser
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """
-    Gerencia o ciclo de vida da aplicação.
-    """
     load_dotenv()
 
-    # Inicializa Tortoise ORM
     await Tortoise.init(config=TORTOISE_ORM)
-    await Tortoise.generate_schemas()  # cria tabelas se necessário
-    print('Banco de dados iniciado e tabelas criadas!')
+    await Tortoise.generate_schemas()
+    print("Banco de dados iniciado e tabelas criadas!")
 
-    # Popula dados de teste
     await create_mock_data()
 
-    yield
+    yield  # ← aqui roda a aplicação
 
-    # Fecha conexões
+    # Testa o login/consulta usuários ANTES de fechar conexão
+    login = LoginInSystem("nathec@gmail.com", "_py3go5BZ}61FhC99kwi")
+    system_user = SystemUser()
+    await system_user.VerifyLogin(login.username, login.password)  # agora é await
+    await system_user.ViewInfoCustomes(1)
+    await system_user.UsersPending()
+    await system_user.UpdateIs_pending(1)
+    await system_user.NewUsersThisMonth()
+    system_user.view()
+
     await Tortoise.close_connections()
-    print('Fim da aplicação')
+    print("Fim da aplicação")
 
 
 class Server:

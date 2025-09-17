@@ -30,10 +30,12 @@ class Employees(models.Model):
     )
 
     # 🔹 Relacionamento com vendas feitas pelo funcionário
-    vendas: fields.ReverseRelation["Sales"]  # Relacionamento reverso (precisa do modelo Sales)
+    # Relacionamento reverso (precisa do modelo Sales)
+    vendas: fields.ReverseRelation["Sales"]
 
     # 🔹 Relacionamento com caixas abertos por esse funcionário
-    caixas: fields.ReverseRelation["Caixa"]  # Relacionamento reverso (precisa do modelo Caixa)
+    # Relacionamento reverso (precisa do modelo Caixa)
+    caixas: fields.ReverseRelation["Caixa"]
 
     class Meta:
         table = "employees"

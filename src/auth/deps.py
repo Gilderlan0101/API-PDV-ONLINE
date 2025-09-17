@@ -1,3 +1,5 @@
+from pydantic import BaseModel, EmailStr
+from typing import Optional
 from datetime import datetime
 from typing import Any, Optional
 
@@ -100,10 +102,6 @@ async def get_current_user(token: str = Depends(reuseable_oauth)) -> "SystemUser
         status_code=status.HTTP_404_NOT_FOUND,
         detail="Usuário ou funcionário não encontrado.",
     )
-
-
-from typing import Optional
-from pydantic import BaseModel, EmailStr
 
 
 class SystemUser(BaseModel):

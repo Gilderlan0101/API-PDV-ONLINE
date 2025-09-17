@@ -161,7 +161,8 @@ class Checkout:
             # Se current_user for funcionário, pega o admin dono
             funcionario_logado = await Employees.filter(id=current_user.id).first()
             if funcionario_logado and funcionario_logado.usuario_id:  # type: ignore
-                admin_user = await Usuario.get(id=funcionario_logado.usuario_id)  # type: ignore
+                # type: ignore
+                admin_user = await Usuario.get(id=funcionario_logado.usuario_id)
                 operador_id = funcionario_logado.id
                 operador_nome = funcionario_logado.nome
 
@@ -281,7 +282,8 @@ class Checkout:
             employee_operator_name = employee.nome
 
             # Busca o usuário admin
-            admin_user = await Usuario.get(id=employee.usuario_id)  # type: ignore
+            # type: ignore
+            admin_user = await Usuario.get(id=employee.usuario_id)
 
             if not admin_user:
                 return {"success": False, "message": "Usuário admin não encontrado"}
