@@ -1,6 +1,6 @@
 # src/routes/system_user.py
 from fastapi import APIRouter, HTTPException
-from src.controllers.user.system_users import SystemUser
+from src.controllers.user.system_users import LoginInSystem, SystemUser
 
 router = APIRouter(prefix="/system-user", tags=["System User"])
 
@@ -8,7 +8,7 @@ router = APIRouter(prefix="/system-user", tags=["System User"])
 @router.post("/login")
 async def verify_login(username: str, password: str):
     system = SystemUser()
-    result = await system.VerifyLogin(username, password)
+    result = LoginInSystem(username, password)
     if not result:
         raise HTTPException(status_code=401, detail="Acesso negado")
     return {"message": "Login realizado com sucesso"}
@@ -33,10 +33,10 @@ async def update_is_pending(customer_id: int):
     return await system.UpdateIs_pending(customer_id)
 
 
-@router.get("/customer/{customer_id}")
-async def view_info_customer(customer_id: int):
+@router.get("/customer/")
+async def view_info_customer():
     system = SystemUser()
-    await system.ViewInfoCustomes(customer_id)
+    await system.ViewInfoCustomes()
     return system.view()
 
 

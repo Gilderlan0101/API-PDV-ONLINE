@@ -16,6 +16,8 @@ from src.routes.car.pdv import router as result_sales
 
 from src.routes.products.buscar_prod import buscar_produtos
 from src.routes.products.list import list_products as list_router
+from src.routes.products.product_information import list_products as product_info
+
 from src.routes.products.create import router as create_products
 from src.routes.products.update import router as updates_products
 from src.routes.products.delete import router as delete_products
@@ -66,6 +68,7 @@ produtos = APIRouter(
 produtos.include_router(upload_img)
 produtos.include_router(buscar_produtos)
 produtos.include_router(list_router)
+produtos.include_router(product_info)
 produtos.include_router(create_products)
 produtos.include_router(updates_products)
 produtos.include_router(delete_products)
@@ -115,8 +118,6 @@ dashboard.include_router(result_sales)
 system_ = APIRouter(
     tags=["system_user"],
     responses={404: {"description": "Não encontrado"}},
-    )
+)
 
 dashboard.include_router(system_user)
-
-

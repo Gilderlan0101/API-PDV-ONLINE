@@ -2,6 +2,7 @@ from passlib.hash import bcrypt
 from datetime import datetime
 from faker import Faker
 import re
+import random
 from tortoise.transactions import in_transaction
 
 from src.auth.auth_jwt import get_hashed_password
@@ -29,10 +30,34 @@ async def create_mock_data():
                 company_name="Empresa Teste 1",
                 trade_name="Loja Central",
                 membros=1,
-                cnpj="12345678000199",
+                cnpj="12345638000199",
                 city="São Paulo",
                 state="SP",
                 pending=True,
+            )
+            admin_2 = await Usuario.create(
+                username="admin",
+                email="admin_2@test.com",
+                password=get_hashed_password("123456"),
+                company_name="Empresa Teste 1",
+                trade_name="Loja Central",
+                membros=1,
+                cnpj="12245678000199",
+                city="São Paulo",
+                state="SP",
+                pending=True,
+            )
+            admin_3 = await Usuario.create(
+                username="admin",
+                email="admin_3@test.com",
+                password=get_hashed_password("123456"),
+                company_name="Empresa Teste 1",
+                trade_name="Loja Central",
+                membros=1,
+                cnpj="12345678000199",
+                city="São Paulo",
+                state="SP",
+                is_active=False,
             )
             await Membro.create(
                 nome="Filial Centro",
@@ -90,6 +115,7 @@ async def create_mock_data():
                     price_uni=p["cost"] * 1.2,
                     sale_price=p["sale"],
                     supplier=p["supplier"],
+                    group=random.choice(['Bebidas', 'Gelados', 'Brinquedos']),
                     usuario_id=admin.id,
                 )
                 print(f"✅ Produto criado: {p['name']}")

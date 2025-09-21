@@ -22,8 +22,6 @@ class LoginInSystem:
             return False
 
 
-
-
 @dataclass
 class SystemUser:
     # Iniciando variáveis vazias
@@ -76,9 +74,6 @@ class SystemUser:
             print("Erro ao atualizar cliente:", e)
             raise HTTPException(status_code=500, detail="Entre em contato com o desenvolvedor.")
 
-
-
-
     async def UpdateIs_pending(self, customer_id: int):
         """Atualiza dados de um cliente"""
         try:
@@ -98,45 +93,38 @@ class SystemUser:
             print("Erro ao atualizar cliente:", e)
             raise HTTPException(status_code=500, detail="Entre em contato com o desenvolvedor.")
 
-
-
-
-
-
-
-    async def ViewInfoCustomes(self, customer_id: int):
+    async def ViewInfoCustomes(self):
         """Visualiza todos os dados do cliente"""
         try:
-            customer = await Usuario.filter(id=customer_id).first()
+            customer = await Usuario.all()
 
             if customer:
-                self.data.append(
-                    {
-                        "user_data": {
-                            "username": customer.username,
-                            "email": customer.email,
-                            "company_name": customer.company_name,
-                            "trade_name": customer.trade_name,
-                            "cpf": customer.cpf,
-                            "cnpj": customer.cnpj,
-                            "state_registration": customer.state_registration,
-                            "municipal_registration": customer.municipal_registration,
-                            "cnae_principal": customer.cnae_principal,
-                            "crt": customer.crt,
-                            "cep": customer.cep,
-                            "street": customer.street,
-                            "home_number": customer.home_number,
-                            "complement": customer.complement,
-                            "district": customer.district,
-                            "city": customer.city,
-                            "state": customer.state,
-                            "is_active": customer.is_active,
-                            "criado_em": customer.criado_em,
-                            "pending": customer.pending,
-
+                for user in customer:
+                    self.data.append(
+                        {
+                            "user_data": {
+                                "email": user.email,
+                                "company_name": user.company_name,
+                                "trade_name": user.trade_name,
+                                "cpf": user.cpf,
+                                "cnpj": user.cnpj,
+                                "state_registration": user.state_registration,
+                                "municipal_registration": user.municipal_registration,
+                                "cnae_principal": user.cnae_principal,
+                                "crt": user.crt,
+                                "cep": user.cep,
+                                "street": user.street,
+                                "home_number": user.home_number,
+                                "complement": user.complement,
+                                "district": user.district,
+                                "city": user.city,
+                                "state": user.state,
+                                "is_active": user.is_active,
+                                "criado_em": user.criado_em,
+                                "pending": user.pending,
+                            }
                         }
-                    }
-                )
+                    )
 
                 print(self.data)
             else:
@@ -150,22 +138,15 @@ class SystemUser:
         """Retorna a quantidade de usuários pendentes"""
         try:
             # Exemplo: se você tiver um campo `pending=True/False`
-            users_pending = await Usuario.filter(pending=True).all()
+            users_pending = await Usuario.filter(pending=False).all()
 
             if users_pending:
                 self.data.append({"pending": len(users_pending)})
 
-            print("-" * 50)
-            for i, item in enumerate(self.data, start=1):
-                print(f"[{i}] ------------------------------")
-                print(json.dumps(item, indent=4, ensure_ascii=False, default=str))  # deixa bonitinho tipo JSON
-                print("-" * 50)
+            return len(users_pending)
 
         except Exception as e:
             print("Erro em UsersPending:", e)
-
-
-
 
     async def NewUsersThisMonth(self):
         """Retorna a quantidade de usuários cadastrados no mês atual"""
@@ -177,16 +158,9 @@ class SystemUser:
             total = await Usuario.filter(criado_em__gte=start_of_month).count()
             self.data.append({'total_customer': total})
 
-            
-
         except Exception as e:
             print("Erro ao contar novos clientes:", e)
             return {"novos_clientes_mes": 0}
 
-
-
-
     def view(self):
         return self.data
-
-   

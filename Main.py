@@ -21,8 +21,9 @@ from fastapi.middleware.cors import CORSMiddleware
 
 
 # Testando dados para admin
-from src.controllers.user.system_users import LoginInSystem, SystemUser
+# from src.controllers.user.system_users import LoginInSystem, SystemUser
 
+from src.controllers.products.monitoring_products import ProductsInfos
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -37,14 +38,19 @@ async def lifespan(app: FastAPI):
     yield  # ← aqui roda a aplicação
 
     # Testa o login/consulta usuários ANTES de fechar conexão
-    login = LoginInSystem("nathec@gmail.com", "_py3go5BZ}61FhC99kwi")
-    system_user = SystemUser()
-    await system_user.VerifyLogin(login.username, login.password)  # agora é await
-    await system_user.ViewInfoCustomes(1)
-    await system_user.UsersPending()
-    await system_user.UpdateIs_pending(1)
-    await system_user.NewUsersThisMonth()
-    system_user.view()
+    # login = LoginInSystem("nathec@gmail.com", "_py3go5BZ}61FhC99kwi")
+    # system_user = SystemUser()
+    # await system_user.VerifyLogin(login.username, login.password)  # agora é await
+    # await system_user.ViewInfoCustomes(1)
+    # await system_user.UsersPending()
+    # await system_user.UpdateIs_pending(1)
+    # await system_user.NewUsersThisMonth()
+    # system_user.view()
+
+    var = ProductsInfos(1)
+    await var.Quantity_products_stoke()
+    await var.price_of_all_stock()
+    await var.separating_products_by_category()
 
     await Tortoise.close_connections()
     print("Fim da aplicação")
