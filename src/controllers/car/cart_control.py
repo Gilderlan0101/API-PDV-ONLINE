@@ -14,11 +14,6 @@ class CartManagerDB:
     """Carrinho persistido no banco de dados usando Tortoise ORM"""
 
     async def _get_caixa_id(self, user_id: int) -> int:
-
-        print(user_id)
-        print(user_id)
-        print(user_id)
-
         """
         Função para obter o ID do caixa ativo do usuário/funcionário.
         """

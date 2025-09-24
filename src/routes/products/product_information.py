@@ -1,32 +1,36 @@
-
 from fastapi import APIRouter, Depends
-from src.routes.products.list import list_products
 from src.auth.deps import get_current_user
 from src.schemas.schema_user import SystemUser
-from src.controllers.products.monitoring_products import ProductsInfos
+from src.controllers.products.monitoring_products import ProductInfo
+
+list_products = APIRouter(prefix="/products", tags=["Produtos"])
 
 
-@list_products.get('/por_categoria')
+@list_products.get("/por-categoria")
 async def products_by_category(current_user: SystemUser = Depends(get_current_user)):
-
-	var = ProductsInfos(current_user.id)
-	await var.Quantity_products_stoke()
-	teste = await var.separating_products_by_category()
-	return teste
-
-
-
-@list_products.get('/quantidade_stoke')
-async def Quantity_prod_stoke(current_user: SystemUser = Depends(get_current_user)):
-
-	var = ProductsInfos(current_user.id)
-	
-	return await var.Quantity_products_stoke()
+    """
+    Retorna todos os produtos do usuário separados por categoria.
+    """
+    product_info = ProductInfo(current_user.id)
+    products = await product_info.get_products_by_category()
+    return {"products": products}
 
 
-@list_products.get('/valor_stoke')
-async def price_of_all_stock_(current_user: SystemUser = Depends(get_current_user)):
+@list_products.get("/quantidade-estoque")
+async def quantity_in_stock(current_user: SystemUser = Depends(get_current_user)):
+    """
+    Retorna a quantidade total de produtos em estoque do usuário.
+    """
+    product_info = ProductInfo(current_user.id)
+    quantity = await product_info.count_products()
+    return {"quantity": quantity}
 
-	var = ProductsInfos(current_user.id)
-	
-	return await var.price_of_all_stock()
+
+@list_products.get("/valor-estoque")
+async def total_stock_price(current_user: SystemUser = Depends(get_current_user)):
+    """
+    Retorna o valor total de custo do estoque do usuário.
+    """
+    product_info = ProductInfo(current_user.id)
+    total_price = await product_info.calculate_total_stock_price()
+    return {"total_stock_price": total_price}

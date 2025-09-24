@@ -24,6 +24,7 @@ class Checkout:
     payment_method: str = field(default="")
     total_price: float = field(default=0.0)
     lucro_total: float = field(default=0.0)
+    cpf: Optional[str] = field(default=None)
     funcionario_id: Optional[int] = field(default=None)
     funcionario_nome: Optional[str] = field(default=None)
     sale_code: Optional[str] = field(default=None)
@@ -34,9 +35,10 @@ class Checkout:
     valor_recebido: Optional[float] = field(default=None)  # Adicionado valor_recebido
     troco: Optional[float] = field(default=None)  # Adicionado troco
 
-    VALID_PAYMENT_METHODS = ['PIX', 'CARTAO', 'DINHEIRO', 'NOTA', 'FIADO', 'CARTÃO']
+    VALID_PAYMENT_METHODS = ['PIX', 'CARTAO', 'DINHEIRO', 'NOTA', 'FIADO', 'CARTÃO', 'PARCIAL', 'CREDIARIO']
 
     def __post_init__(self):
+        valid_methods = self.VALID_PAYMENT_METHODS + ['PARCIAL']
         if self.payment_method and self.payment_method.upper() not in self.VALID_PAYMENT_METHODS:
             raise ValueError("Forma de pagamento inválida")
         self.status = False
@@ -70,6 +72,14 @@ class Checkout:
         if self.payment_method.upper() == 'CARTAO' and self.installments is None:
             self.installments = 1  # Default para 1 parcela
 
+        if self.payment_method.upper() == 'PARCIAL':
+            if not self.cpf:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="CPF é obrigatório para pagamento Parcial")
+            if self.valor_recebido is None or self.valor_recebido <= 0:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Valor recebido é obrigatório para pagamento parcial")
+            if self.valor_recebido > self.total_price:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Valor recebido não pode ser maior que o total")
+
         self.status = True
         return self.status
 
@@ -83,9 +93,10 @@ class Checkout:
             query = query.filter(name=name)
         return await query.first()
 
-    def build_receipt(self, itens: list[dict]) -> dict:
+    async def build_receipt(self, itens: list[dict]) -> dict:
         """Método regular para construir o recibo"""
         if not itens or not self.usuario:
+
             raise HTTPException(status_code=400, detail="Informações da venda incompletas")
 
         # Informações do cliente se existir
@@ -134,6 +145,28 @@ class Checkout:
             receipt_data["Nota Fiscal"]["Pagamento"] = {"Parcelas": self.installments}
         elif self.payment_method.upper() == 'NOTA' and self.customer_id:
             receipt_data["Nota Fiscal"]["Pagamento"] = {"Tipo": "Venda em Nota", "Cliente ID": self.customer_id}
+        elif self.payment_method.upper() == "PARCIAL":
+            receipt_data["Nota Fiscal"]["Pagamento"] = {"Tipo": "PARCIAL", "cliente": self.cpf}
+
+            # Caso a venda seja do tipo PARCIAL:
+            # - Utilizamos a classe PartialPayment para registrar a dívida do cliente.
+            # - O valor da dívida é atualizado sempre que um funcionário seleciona o cliente e realiza um pagamento.
+            # - Quando o valor restante chega a ZERO, o cliente é automaticamente removido do banco de dados
+            #   (conforme a lógica atual implementada).
+
+            # from src.controllers.payments.partial import PartialPayment
+
+            # # Cadastrado uma venda no modo partial
+            # partial = PartialPayment(
+            #     product=self.product_name,
+            #     total_price=self.total_price,
+            #     valor_recebido=self.valor_recebido,
+            #     cpf=self.cpf,
+            #     user_id=self.user_id
+            #     )
+
+            # resultado_parcial = await partial.process_partial_sale()
+            # receipt_data["Nota Fiscal"]["Resultado_Parcial"] = resultado_parcial["update_result"]
 
         receipt_data["Nota Fiscal"]["Observações"] = "Venda registrada com sucesso no sistema PDV."
 
@@ -262,6 +295,7 @@ class Checkout:
         employee_operator_id: Optional[int] = None,
         customer_id: Optional[int] = None,
         installments: Optional[int] = None,
+        cpf: Optional[str] = None,
         valor_recebido: Optional[float] = None,
         troco: Optional[float] = None,
     ) -> dict:

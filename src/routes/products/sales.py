@@ -1,12 +1,14 @@
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from src.controllers.caixa.cash_controller import CashController, FinalizationObjcts
-from src.auth.deps import get_current_user
+from src.auth.deps import get_current_user, SystemUser
 from src.model.user import Usuario
 from src.model.employee import Employees
 from src.controllers.sales.sales import Checkout
 from src.controllers.car.cart_control import CartManagerDB
 from src.controllers.sales.delete_sales import delete_or_update_sale
+from src.schemas.payments.payment_methods import InputData
+from src.controllers.payments.partial import PartialPayment
 
 router = APIRouter()
 cart = CartManagerDB()
@@ -14,9 +16,10 @@ cart = CartManagerDB()
 
 @router.post("/finalizar", status_code=status.HTTP_200_OK)
 async def finalizar_venda(
-    payment_method: str = Query(..., description="Forma de pagamento: dinheiro, cartão, pix, nota"),
+    payment_method: str = Query(..., description="Forma de pagamento: dinheiro, cartão, pix, nota, parcial"),
     customer_id: Optional[int] = Query(None, description="ID do cliente para venda em nota"),
     installments: Optional[int] = Query(None, description="Número de parcelas para cartão"),
+    cpf: Optional[str] = Query(None, description='CPF passado dinamicamente em vendas parcias'),
     valor_recebido: Optional[float] = Query(None, description="Valor recebido em dinheiro"),
     troco: Optional[float] = Query(None, description="Troco para pagamento em dinheiro"),
     current_user: Usuario = Depends(get_current_user),
@@ -46,10 +49,11 @@ async def finalizar_venda(
 
         validation_process = await Checkout.validating_information(
             current_user=current_user,
-            payment_method=payment_method,
+            payment_method=payment_method.upper(),
             employee_operator_id=employee_operator_id,
             customer_id=customer_id,
             installments=installments,
+            cpf=cpf,
             valor_recebido=valor_recebido,
             troco=troco,
         )
@@ -120,3 +124,27 @@ async def delete_sale(
 
     result = await delete_or_update_sale(user_id_carrinho, product_id, quantity)
     return result
+
+
+@router.post('/pagamento-parcial')
+async def payment_partial(data: InputData, current_user: SystemUser = Depends(get_current_user)):
+
+    try:
+
+        if not current_user.id:
+            raise HTTPException(status_code=400, detail='Usuario não encontrado.')
+
+        data.user_id = current_user.id
+
+        partial = PartialPayment(
+            product=data.product_name, total_price=data.total_price, valor_recebido=data.valor_recebido, cpf=data.cpf, user_id=data.user_id
+        )
+
+        result = await partial.process_partial_sale()
+        return result
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f'Erro interno: {e}')
+
+    except TypeError as e:
+        raise HTTPException(status_code=500, detail=f'Erro interno: {e}')

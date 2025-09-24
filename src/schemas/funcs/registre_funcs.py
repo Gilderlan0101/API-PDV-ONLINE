@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from typing import Optional
 
 
-class FuncionarioCreate(BaseModel):
+class EmployeesCreate(BaseModel):
     nome: str
     cargo: str
     email: str

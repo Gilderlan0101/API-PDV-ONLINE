@@ -4,12 +4,15 @@ from faker import Faker
 import re
 import random
 from tortoise.transactions import in_transaction
-
+from src.model.partial import Partial
 from src.auth.auth_jwt import get_hashed_password
 from src.model.product import Produto
 from src.model.user import Membro, Usuario
 from src.model.customers import Customer
 from src.model.employee import Employees
+from src.controllers.payments.partial import PartialPayment
+
+__PAYMENT_METHODS = ['PIX', 'CARTAO', 'DINHEIRO']
 
 
 async def create_mock_data():
@@ -146,5 +149,44 @@ async def create_mock_data():
                     usuario_id=admin.id,
                 )
                 print(f"✅ Cliente criado: {nome}")
+
+        # Cadastrado uma venda no formato de pagamento parcial
+        # Onde o objetivo e recebe um um valor ate que a divida seja fechada
+
+        import json
+
+        names = ['Gilderlan', 'maria', 'otavio', 'mainco', 'jessica']
+        cpfs = [123456789098, 123454439098, 123256739098, 43645298723383, 103456789098]
+        tels = [1234567891234, 13456732156754, 398765432121, 83645298710983, 98876547658767]
+
+        for name, cpf, tel in zip(names, cpfs, tels):
+            partial = await Partial.filter(customers_name=name, usuario_id=admin.id).first()
+            if not partial:
+
+                await Partial.create(
+                    usuario_id=admin.id,
+                    customers_name=name,
+                    cpf=str(cpf),  # pega 1 CPF
+                    tel=str(tel),  # pega 1 telefone
+                    product_name=random.choice(produtos_data).get("name"),
+                    value=100.00,
+                    payment_method=random.choice(__PAYMENT_METHODS),
+                    date=datetime.now(),
+                )
+
+        cliente_teste = await Partial.first()
+
+        if cliente_teste:
+            # Criando a instância da classe
+            teste_venda_parcial = PartialPayment(
+                payment_method=cliente_teste.payment_method,
+                value_received=50,  # pagando metade
+                cpf=cliente_teste.cpf,
+                user_id=cliente_teste.usuario_id
+            )
+
+            # Rodando a atualização
+            resultado = await teste_venda_parcial.update_value()
+            print("Dados de cliente atualizado")
 
         print("🎉 Dados de teste criados com sucesso (mínimos necessários)!")

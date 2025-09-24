@@ -8,7 +8,14 @@ from src.routes.updates import allDatas
 from src.routes.account.account import employees_router
 from src.routes.account.employee_list import employees_router
 
+# Cadastro de clientes
 from src.routes.customer.customer_registration import customers
+from src.routes.customer.registre_customer_partial import customers as registre_user_partial
+
+
+# Metodos de pagamentos
+from src.routes.payments.partial import partial as payment_partial
+
 from src.routes.caixa.operador_caixa import operador
 from src.routes.caixa.box_closing import operador
 
@@ -59,6 +66,9 @@ clientes = APIRouter(
 consultaroute = ConsultaRoute()
 clientes.include_router(consultaroute.router, prefix="/clientes", tags=["Consultas"])
 clientes.include_router(customers)
+clientes.include_router(registre_user_partial)
+
+
 # Produtos
 produtos = APIRouter(
     tags=["Produtos"],
@@ -72,6 +82,7 @@ produtos.include_router(product_info)
 produtos.include_router(create_products)
 produtos.include_router(updates_products)
 produtos.include_router(delete_products)
+
 
 # Carrinho
 carrinho = APIRouter(
@@ -121,3 +132,12 @@ system_ = APIRouter(
 )
 
 dashboard.include_router(system_user)
+
+
+# Metodos de pagamento
+paymente = APIRouter(
+    tags=['Pagamentos'],
+    responses={404: {'description': 'Não encontrado'}},
+)
+
+paymente.include_router(payment_partial)

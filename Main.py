@@ -23,35 +23,27 @@ from fastapi.middleware.cors import CORSMiddleware
 # Testando dados para admin
 # from src.controllers.user.system_users import LoginInSystem, SystemUser
 
-from src.controllers.products.monitoring_products import ProductsInfos
+from src.controllers.products.monitoring_products import ProductInfo
+
+# from src.controllers.payments.partial import PartialPayment, Person
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # Carrega variáveis de ambiente
     load_dotenv()
 
+    # Inicializa banco de dados e gera tabelas
     await Tortoise.init(config=TORTOISE_ORM)
     await Tortoise.generate_schemas()
     print("Banco de dados iniciado e tabelas criadas!")
 
+    # Cria dados mock
     await create_mock_data()
 
-    yield  # ← aqui roda a aplicação
+    yield  # ← Aqui a aplicação roda
 
-    # Testa o login/consulta usuários ANTES de fechar conexão
-    # login = LoginInSystem("nathec@gmail.com", "_py3go5BZ}61FhC99kwi")
-    # system_user = SystemUser()
-    # await system_user.VerifyLogin(login.username, login.password)  # agora é await
-    # await system_user.ViewInfoCustomes(1)
-    # await system_user.UsersPending()
-    # await system_user.UpdateIs_pending(1)
-    # await system_user.NewUsersThisMonth()
-    # system_user.view()
-
-    var = ProductsInfos(1)
-    await var.Quantity_products_stoke()
-    await var.price_of_all_stock()
-    await var.separating_products_by_category()
-
+    # Fecha conexões
     await Tortoise.close_connections()
     print("Fim da aplicação")
 
@@ -130,6 +122,7 @@ class Server:
         self.api.include_router(tickets)
         self.api.include_router(caixa)
         self.api.include_router(dashboard)
+        self.api.include_router(paymente)
 
     def run(self, host: str = '127.0.0.1', port: int = 8000):
         """Inicia o sevidor Uvicorn."""

@@ -1,93 +1,96 @@
+from fastapi import HTTPException, status
 from src.model.product import Produto
-from fastapi import HTTPException
 
 
-class ProductsInfos:
-    '''
-    Class responsavel por buscar informações dos produtos do usúario return dict or None
-    '''
+class ProductInfo:
+    """
+    Retrieve stock information for a given user.
 
-    def __init__(self, user_id: int):  # user_id: ID do usuario
-        '''Sempre inicia as variaves vazias'''
-        self.prducts = []  # informaçoes do stoque
-        self.quantity = 0  # Quantiade em stoque
-        self.price_total_stoke = float(0.00)  # Preço total em estoque
-        self.user_id = user_id
+    Args:
+        user_id (int): ID of the user whose stock will be queried.
 
-    async def Quantity_products_stoke(self):
-        '''Busca a quantiade de produtos em estoque'''
+    Attributes:
+        products (list): List to store product data.
+        quantity (int): Total number of products.
+        total_stock_price (float): Sum of all product costs.
+        user_id (int): The user ID used for queries.
+    """
+
+    def __init__(self, user_id: int) -> None:
+        """Initialize empty values and store user_id."""
+        self.products: list = []
+        self.quantity: int = 0
+        self.total_stock_price: float = 0.0
+        self.user_id: int = user_id
+
+    async def _get_products(self):
+        """
+        Query the database for all products of the given user.
+
+        Returns:
+            list: A list of Produto objects.
+        """
         try:
-
-            global product
-
-            # Bucando todos os produtos do usuario
-            product = await Produto.filter(usuario_id=self.user_id).all()
-
-            # Se a quantidade e maior que zero
-            if len(product) > 0:
-                for prod in product:
-                    self.quantity += 1
-
-                self.prducts.append({'quantity_in_stoke': self.quantity})
-
-            else:  # Caso não encontre o valor continua sendo zero (0)
-                self.quantity = 0
-
-        except ValueError:
-            if type(self.user_id) != int:
-                var = self.Quantity_products_stoke(int(self.user_id))
-            else:
-                pass
-
+            products = await Produto.filter(usuario_id=self.user_id).all()
+            return products
         except Exception as e:
-            raise HTTPException(status_code=500, detail=f'Erro interno desconhecido: {e}')
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Database query error: {e}",
+            )
 
-        finally:
+    async def count_products(self) -> int:
+        """
+        Count how many products exist in the user's stock.
 
-            return self.prducts
+        Returns:
+            int: Quantity of products in stock.
+        """
+        products = await self._get_products()
+        self.quantity = len(products)
+        return self.quantity
 
-    async def price_of_all_stock(self):
-        '''Calcularo valor total em stoke'''
+    async def calculate_total_stock_price(self) -> float:
+        """
+        Calculate the total cost of all products in stock.
 
-        try:
+        Returns:
+            float: Total stock cost.
+        """
+        products = await self._get_products()
+        self.total_stock_price = sum(prod.cost_price for prod in products)
+        return round(self.total_stock_price, 2)
 
-            if product:
-                for prod in product:
+    async def get_products_by_category(self) -> list[dict]:
+        """
+        Separate products by category and return their details.
 
-                    if self.quantity > 0:
-                        self.price_total_stoke += prod.cost_price
+        Returns:
+            list[dict]: List of product data grouped by category.
+        """
+        products = await self._get_products()
+        self.products = [
+            {
+                "name": prod.name,
+                "category": prod.group,
+                "stock": prod.stock,
+                "sale_price": prod.sale_price,
+                "active": prod.active,
+            }
+            for prod in products
+        ]
+        return self.products
 
-                self.prducts.append({'price_stoke': round(self.price_total_stoke, 2)})
-            else:
-                return
+    @property
+    def stock_summary(self) -> dict:
+        """
+        Property to return a summarized view of the stock data.
 
-        except Exception as e:
-
-            raise HTTPException(status_code=500, detail=f'Erro interno desconhecido: {e}')
-
-        finally:
-            return self.prducts
-
-    async def separating_products_by_category(self):
-        try:
-
-            if product:
-                for prod in product:
-                    self.prducts.append(
-                        {
-                            "name": prod.name,
-                            "category": prod.group,
-                            "stock": prod.stock,
-                            "sale_price": prod.sale_price,
-                            "active": prod.active
-                        }
-                    )
-
-
-
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Erro interno desconhecido: {e}")
-
-        finally:
-            print(self.prducts)
-            return self.prducts
+        Returns:
+            dict: Summary with quantity and total price.
+        """
+        return {
+            "user_id": self.user_id,
+            "quantity": self.quantity,
+            "total_stock_price": self.total_stock_price,
+        }

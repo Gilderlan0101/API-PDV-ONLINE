@@ -1,9 +1,11 @@
+from fastapi import HTTPException, status
 from src.model.sale import Sales
 
 
-async def separating_sales_by_payments(user_id: int):
+async def separating_sales_by_payments(user_id: int) -> dict[list]:
     """
-    Separa todas as vendas por métodos de pagamentos
+    Separa todas as vendas por métodos de pagamentos.
+    methods: (dict): Pix, Cartão, Dinheiro, Nota, Fiado.
     """
     methods = {'Pix': [], 'Cartão': [], 'Dinheiro': [], 'Nota': [], 'Fiado': []}
 
@@ -29,5 +31,4 @@ async def separating_sales_by_payments(user_id: int):
         return methods
 
     except Exception as e:
-        print(f"Erro: {e}")
-        return methods
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detailf=f'Erro desconhecido: {e}')

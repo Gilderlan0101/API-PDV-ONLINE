@@ -24,6 +24,7 @@ TORTOISE_ORM = {
                 "src.model.caixa",
                 "src.model.cashmovement",
                 "src.model.sale",
+                "src.model.partial",
                 "src.model.carItems",
                 "src.model.product",
                 "src.model.fornecedor",

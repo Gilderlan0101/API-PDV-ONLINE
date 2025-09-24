@@ -3,17 +3,33 @@ from src.auth.deps import get_current_user
 from src.model.user import Usuario
 from src.model.employee import Employees
 from src.routes.registre import get_hashed_password
-from src.schemas.funcs.registre_funcs import FuncionarioCreate
+from src.schemas.funcs.registre_funcs import EmployeesCreate
 
 employees_router = APIRouter(prefix='/auth', tags=['Autenticação'])
 
+# Tamananho da senha que o funcionario deve conte
+PASSWORD_LENGTH = 4
+
 
 @employees_router.post('/funcs')
-async def create_funcionario(
-    func_data: FuncionarioCreate = Body(...),
+async def create_employees(
+    func_data: EmployeesCreate = Body(...),
     current_user: Usuario = Depends(get_current_user),
 ):
-    """Cadastra um novo funcionário"""
+    """
+    Cadastra um novo funcionário.
+
+    Args:
+        func_data (EmployeesCreate): Dados do funcionário.
+        current_user: (Usuario): Usuário autenticado que está criando um funcionário.
+
+    Raises:
+        HTTPException: Se não estive autenticado, email já cadastrado ou seha inválida.
+
+
+    Returns:
+        dict: Mensagem de sucesso e dados do funcionário criado.
+    """
 
     if not current_user:
         raise HTTPException(
@@ -22,14 +38,19 @@ async def create_funcionario(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    # Verifica se o email já existe
+    # Verificando se esse email já existe
     existing = await Employees.filter(email=func_data.email).first()
+
     if existing:
-        raise HTTPException(status_code=400, detail='Email já cadastrado.')
+
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Email já cadastrado.')
 
     # Valida senha de 4 dígitos
-    if len(func_data.senha) != 4:
-        raise HTTPException(status_code=400, detail="Senha deve ter 4 dígitos.")
+    if len(func_data.senha) != len(PASSWORD_LENGTH):
+
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Senha deve ter {PASSWORD_LENGTH} dígitos.")
+
+    # Criando Hash da senha
     hashed_password = get_hashed_password(func_data.senha)
 
     # Cria funcionário
