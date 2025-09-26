@@ -9,6 +9,11 @@ from src.model.employee import Employees
 from src.model.product import Produto
 from src.model.sale import Sales
 from src.model.customers import Customer
+from src.utils.payments_config import VALID_PAYMENT_METHODS
+from src.utils.get_produtos_user import get_product_by_user
+from src.controllers.sales.receipt_build import build_receipt
+
+from tortoise.expressions import Q
 
 
 @dataclass
@@ -30,16 +35,15 @@ class Checkout:
     sale_code: Optional[str] = field(default=None)
     venda: Optional[Sales] = field(default=None)
     usuario: Optional[Usuario] = field(default=None)
-    customer_id: Optional[int] = field(default=None)  # Adicionado customer_id
-    installments: Optional[int] = field(default=None)  # Adicionado installments
-    valor_recebido: Optional[float] = field(default=None)  # Adicionado valor_recebido
-    troco: Optional[float] = field(default=None)  # Adicionado troco
-
-    VALID_PAYMENT_METHODS = ['PIX', 'CARTAO', 'DINHEIRO', 'NOTA', 'FIADO', 'CARTÃO', 'PARCIAL', 'CREDIARIO']
+    customer_id: Optional[int] = field(default=None)
+    installments: Optional[int] = field(default=None)
+    valor_recebido: Optional[float] = field(default=None)
+    troco: Optional[float] = field(default=None)
 
     def __post_init__(self):
-        valid_methods = self.VALID_PAYMENT_METHODS + ['PARCIAL']
-        if self.payment_method and self.payment_method.upper() not in self.VALID_PAYMENT_METHODS:
+        # 🔹 CORREÇÃO: Usar a variável valid_methods que foi definida
+        valid_methods = VALID_PAYMENT_METHODS + ['PARCIAL']
+        if self.payment_method and self.payment_method.upper() not in valid_methods:
             raise ValueError("Forma de pagamento inválida")
         self.status = False
         self._receipt_data = None
@@ -53,124 +57,49 @@ class Checkout:
         """Property para acessar os dados do recibo"""
         return self._receipt_data
 
-    async def verify_datas(self) -> bool:
-        """Verifica se os dados básicos estão presentes"""
-        if not self.user_id:
-            self.status = False
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuário inválido")
-        if not self.product_name or not self.quantity:
-            self.status = False
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Informe todos os dados")
+    # 🔹 CORREÇÃO: Adicionar self como primeiro parâmetro do método
+    async def get_product_by_user(self, user_id: int, code: Optional[str] = None, name: Optional[str] = None) -> Optional[Produto]:
+        """Busca produto pelo usuário, código ou nome - versão mais flexível e eficiente"""
 
-        # Validações específicas por método de pagamento
-        if self.payment_method.upper() == 'DINHEIRO':
-            if self.valor_recebido is None or self.valor_recebido <= 0:
-                raise HTTPException(status_code=400, detail="Valor recebido é obrigatório para pagamento em dinheiro")
-            if self.troco is None:
-                self.troco = 0.0
+        try:
+            from tortoise.expressions import Q
 
-        if self.payment_method.upper() == 'CARTAO' and self.installments is None:
-            self.installments = 1  # Default para 1 parcela
+            if not code and not name:
+                return None
 
-        if self.payment_method.upper() == 'PARCIAL':
-            if not self.cpf:
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="CPF é obrigatório para pagamento Parcial")
-            if self.valor_recebido is None or self.valor_recebido <= 0:
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Valor recebido é obrigatório para pagamento parcial")
-            if self.valor_recebido > self.total_price:
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Valor recebido não pode ser maior que o total")
+            # Cria a consulta inicial para o usuário
+            query = Q(usuario_id=user_id)
 
-        self.status = True
-        return self.status
+            # Adiciona a lógica de busca por OR
+            search_terms = Q()
 
-    @staticmethod
-    async def get_product_by_user(code: Optional[str] = None, name: Optional[str] = None) -> Optional[Produto]:
-        """Busca produto por código ou nome"""
-        query = Produto.all()
-        if code:
-            query = query.filter(id=int(code))
-        if name:
-            query = query.filter(name=name)
-        return await query.first()
+            if code:
+                code_clean = str(code).strip().upper()
+                code_no_spaces = code_clean.replace(" ", "")
 
-    async def build_receipt(self, itens: list[dict]) -> dict:
-        """Método regular para construir o recibo"""
-        if not itens or not self.usuario:
+                search_terms |= Q(product_code=code_clean)
+                search_terms |= Q(product_code__icontains=code_clean)
 
-            raise HTTPException(status_code=400, detail="Informações da venda incompletas")
+                # Adiciona a busca sem espaços se for diferente
+                if code_no_spaces != code_clean:
+                    search_terms |= Q(product_code=code_no_spaces)
 
-        # Informações do cliente se existir
-        cliente_info = {"Código Interno do Usuário": self.user_id}
-        if self.customer_id:
-            cliente_info["Cliente ID"] = self.customer_id
+            if name:
+                name_clean = name.strip().upper()
+                search_terms |= Q(name__icontains=name_clean)
 
-        receipt_data = {
-            "Nota Fiscal": {
-                "Empresa": {
-                    "Razão Social": self.usuario.company_name,
-                    "Nome Fantasia": self.usuario.trade_name or "Não informado",
-                    "CNPJ": self.usuario.cnpj or "Não informado",
-                    "Endereço": f'{getattr(self.usuario, "street", "")}, '
-                    f'{getattr(self.usuario, "home_number", "")} - '
-                    f'{getattr(self.usuario, "city", "")}/{getattr(self.usuario, "state", "")}',
-                    "Inscrição Estadual": getattr(self.usuario, "state_registration", "Não informado"),
-                    "Inscrição Municipal": getattr(self.usuario, "municipal_registration", "Não informado"),
-                    "Operado por": self.funcionario_nome or self.usuario.username,
-                    "codigo_da_venda": self.sale_code,
-                },
-                "Venda": [
-                    {
-                        "product_name": item["product_name"],
-                        "Quantidade": item["quantity"],
-                        "Preço Unitário": f'R$ {item["total_price"] / item["quantity"]:.2f}',
-                        "Valor Total": f'R$ {item["total_price"]:.2f}',
-                        "Lucro Total": f'R$ {item["lucro_total"]:.2f}',
-                    }
-                    for item in itens
-                ],
-                "Totais": {
-                    "Valor Total Geral": f'R$ {sum(item["total_price"] for item in itens):.2f}',
-                    "Lucro Total Geral": f'R$ {sum(item["lucro_total"] for item in itens):.2f}',
-                },
-                "Cliente": cliente_info,
-                "Data": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
-                "Forma de Pagamento": self.payment_method,
-            }
-        }
+            # Executa a busca combinando todas as condições com AND
+            # O AND é implícito ao passar múltiplos Q objects no filter
+            product = await Produto.filter(query, search_terms).first()
 
-        # Adiciona informações específicas do método de pagamento
-        if self.payment_method.upper() == 'DINHEIRO':
-            receipt_data["Nota Fiscal"]["Pagamento"] = {"Valor Recebido": f'R$ {self.valor_recebido:.2f}', "Troco": f'R$ {self.troco:.2f}'}
-        elif self.payment_method.upper() == 'CARTAO':
-            receipt_data["Nota Fiscal"]["Pagamento"] = {"Parcelas": self.installments}
-        elif self.payment_method.upper() == 'NOTA' and self.customer_id:
-            receipt_data["Nota Fiscal"]["Pagamento"] = {"Tipo": "Venda em Nota", "Cliente ID": self.customer_id}
-        elif self.payment_method.upper() == "PARCIAL":
-            receipt_data["Nota Fiscal"]["Pagamento"] = {"Tipo": "PARCIAL", "cliente": self.cpf}
+            if not product:
+                print(f"❌ Nenhum produto encontrado para o usuário {user_id} com os termos fornecidos.")
 
-            # Caso a venda seja do tipo PARCIAL:
-            # - Utilizamos a classe PartialPayment para registrar a dívida do cliente.
-            # - O valor da dívida é atualizado sempre que um funcionário seleciona o cliente e realiza um pagamento.
-            # - Quando o valor restante chega a ZERO, o cliente é automaticamente removido do banco de dados
-            #   (conforme a lógica atual implementada).
+            return product
 
-            # from src.controllers.payments.partial import PartialPayment
-
-            # # Cadastrado uma venda no modo partial
-            # partial = PartialPayment(
-            #     product=self.product_name,
-            #     total_price=self.total_price,
-            #     valor_recebido=self.valor_recebido,
-            #     cpf=self.cpf,
-            #     user_id=self.user_id
-            #     )
-
-            # resultado_parcial = await partial.process_partial_sale()
-            # receipt_data["Nota Fiscal"]["Resultado_Parcial"] = resultado_parcial["update_result"]
-
-        receipt_data["Nota Fiscal"]["Observações"] = "Venda registrada com sucesso no sistema PDV."
-
-        return receipt_data
+        except Exception as e:
+            print(f"❌ Erro na busca do produto: {e}")
+            return None
 
     async def process_sale(
         self,
@@ -186,6 +115,10 @@ class Checkout:
     ) -> Tuple[dict, bool]:
         """Processa uma venda completa"""
         try:
+            # 🔹 CORREÇÃO: Validar parâmetros obrigatórios
+            if not product_code or not quantity or not payment_method:
+                raise HTTPException(status_code=400, detail="Código do produto, quantidade e forma de pagamento são obrigatórios")
+
             # Define admin_user e operador
             admin_user = current_user
             operador_id = funcionario_id
@@ -193,8 +126,7 @@ class Checkout:
 
             # Se current_user for funcionário, pega o admin dono
             funcionario_logado = await Employees.filter(id=current_user.id).first()
-            if funcionario_logado and funcionario_logado.usuario_id:  # type: ignore
-                # type: ignore
+            if funcionario_logado and funcionario_logado.usuario_id:
                 admin_user = await Usuario.get(id=funcionario_logado.usuario_id)
                 operador_id = funcionario_logado.id
                 operador_nome = funcionario_logado.nome
@@ -218,40 +150,56 @@ class Checkout:
             self.valor_recebido = valor_recebido
             self.troco = troco
 
-            async with in_transaction() as connection:
-                # Busca produto
-                product = await self.get_product_by_user(code=product_code)
-                if not product:
-                    self.status = False
-                    raise HTTPException(status_code=404, detail="Produto não encontrado")
+            if not product_code or not quantity or not payment_method:
+                raise HTTPException(status_code=400, detail="Código do produto, quantidade e forma de pagamento são obrigatórios")
 
-                if product.stock < quantity:
+            from tortoise import transactions
+
+            @transactions.atomic()
+            async def process_transaction():
+                nonlocal product
+
+            # Buscar produto dentro da transação
+            product = await self.get_product_by_user(user_id=self.user_id, code=product_code.strip())
+
+            if not product:
+                raise HTTPException(status_code=404, detail="Produto não encontrado")
+
+                # 🔹 CORREÇÃO: Converter para int para comparação segura
+                stock_int = int(product.stock) if product.stock else 0
+                quantity_int = int(quantity)
+
+                if stock_int < quantity_int:
                     self.status = False
-                    raise HTTPException(status_code=400, detail="Estoque insuficiente")
+                    raise HTTPException(status_code=400, detail=f"Estoque insuficiente. Disponível: {stock_int}, Solicitado: {quantity_int}")
 
                 # Atualiza estoque
-                product.stock -= quantity
+                product.stock = stock_int - quantity_int
                 product.atualizado_em = datetime.now()
                 await product.save(using_db=connection)
 
-                # Calcula totais
-                total_price = quantity * float(product.sale_price)
-                lucro_total = (float(product.sale_price) - float(product.cost_price)) * quantity
+                # 🔹 CORREÇÃO: Converter preços para float de forma segura
+                sale_price = float(product.sale_price) if product.sale_price else 0.0
+                cost_price = float(product.cost_price) if product.cost_price else 0.0
 
-                # Cria venda
+                # Calcula totais
+                total_price = quantity_int * sale_price
+                lucro_total = (sale_price - cost_price) * quantity_int
+
+                # 🔹 CORREÇÃO: Preparar dados da venda sem 'using_db' no dicionário
                 sale_data = {
                     "product_name": product.name,
-                    "quantity": quantity,
-                    "payment_method": payment_method,
+                    "quantity": quantity_int,
+                    "payment_method": payment_method.upper(),
                     "total_price": total_price,
                     "lucro_total": lucro_total,
-                    "cost_price": float(product.cost_price),
+                    "cost_price": cost_price,
                     "sale_code": self.sale_code,
                     "usuario_id": admin_user.id,
                     "produto_id": product.id,
-                    "using_db": connection,
                 }
 
+                # 🔹 CORREÇÃO: Adicionar campos opcionais apenas se existirem
                 if self.funcionario_id:
                     sale_data["funcionario_id"] = self.funcionario_id
 
@@ -261,193 +209,56 @@ class Checkout:
                 if self.installments:
                     sale_data["installments"] = self.installments
 
-                if self.valor_recebido:
-                    sale_data["valor_recebido"] = self.valor_recebido
+                if self.valor_recebido is not None:
+                    sale_data["valor_recebido"] = float(self.valor_recebido)
 
-                if self.troco:
-                    sale_data["troco"] = self.troco
+                if self.troco is not None:
+                    sale_data["troco"] = float(self.troco)
 
-                self.venda = await Sales.create(**sale_data)
+                # 🔹 CORREÇÃO: Criar venda passando connection separadamente
+                self.venda = await Sales.create(**sale_data, using_db=connection)
                 self.usuario = admin_user
 
                 # Prepara item para o recibo
                 item_venda = {
                     "product_name": product.name,
-                    "quantity": quantity,
+                    "quantity": quantity_int,
+                    "unit_price": sale_price,
                     "total_price": total_price,
                     "lucro_total": lucro_total,
+                    "cost_price": cost_price,
                 }
 
                 self.status = True
                 self._set_receipt_data([item_venda])
 
-                # Retorna o recibo e status
-                return self.build_receipt([item_venda]), self.status
+                # 🔹 CORREÇÃO: Gerar sale_code se não existir
+                if not self.sale_code and self.venda:
+                    self.sale_code = f"V{self.venda.id:06d}"
 
+                # Retorna o recibo e status
+                receipt = await build_receipt(
+                    itens=[item_venda],
+                    usuario=self.usuario,
+                    funcionario_nome=self.funcionario_nome,
+                    sale_code=self.sale_code,
+                    payment_method=self.payment_method,
+                    valor_recebido=self.valor_recebido,
+                    troco=self.troco,
+                    installments=self.installments,
+                    customer_id=self.customer_id,
+                    cpf=self.cpf,
+                )
+
+                return receipt, self.status
+
+        except HTTPException:
+            raise
         except Exception as e:
             self.status = False
+            # 🔹 CORREÇÃO: Log mais detalhado do erro
+            print(f"Erro detalhado no process_sale: {str(e)}")
+            import traceback
+
+            print(f"Traceback: {traceback.format_exc()}")
             raise HTTPException(status_code=400, detail=f"Erro ao processar venda: {str(e)}")
-
-    @staticmethod
-    async def validating_information(
-        current_user: Usuario,
-        payment_method: str,
-        employee_operator_id: Optional[int] = None,
-        customer_id: Optional[int] = None,
-        installments: Optional[int] = None,
-        cpf: Optional[str] = None,
-        valor_recebido: Optional[float] = None,
-        troco: Optional[float] = None,
-    ) -> dict:
-        """Valida informações antes do processamento"""
-        from src.utils.sales_code_generator import gerar_codigo_venda
-        from src.controllers.car.cart_control import CartManagerDB
-
-        cart = CartManagerDB()
-
-        try:
-            # Verifica se é um funcionário
-            employee = await Employees.filter(id=current_user.id).first()
-
-            if not employee:
-                return {"success": False, "message": "Apenas funcionários podem realizar vendas"}
-
-            employee_operator_id = employee.id
-            employee_operator_name = employee.nome
-
-            # Busca o usuário admin
-            # type: ignore
-            admin_user = await Usuario.get(id=employee.usuario_id)
-
-            if not admin_user:
-                return {"success": False, "message": "Usuário admin não encontrado"}
-
-            # Lista produtos do carrinho
-            products = await cart.listar_produtos(admin_user.id)
-
-            if not products:
-                return {"success": False, "error": "Carrinho vazio"}
-
-            # Validações específicas por método de pagamento
-            if payment_method.upper() == 'DINHEIRO':
-                if valor_recebido is None or valor_recebido <= 0:
-                    return {"success": False, "error": "Valor recebido é obrigatório para pagamento em dinheiro"}
-                if troco is None:
-                    troco = 0.0
-
-            if payment_method.upper() == 'CARTAO' and installments is None:
-                installments = 1
-
-            if payment_method.upper() == 'NOTA' and customer_id is None:
-                return {"success": False, "error": "Customer ID é obrigatório para venda em nota"}
-
-            # Processa cada produto
-            sale_total = 0.0
-            sale_details = []
-            for prod in products:
-                sale_total += prod.total_price
-                sale_details.append(
-                    {
-                        "product_id": prod.product_id,
-                        "product_name": prod.product_name,
-                        "quantity": prod.quantity,
-                        "unit_price": prod.price,
-                    }
-                )
-
-            # Gera código de venda
-            sale_code = gerar_codigo_venda()
-            invoice = []
-            last_checkout_instance = None
-
-            for prod in sale_details:
-                checkout = Checkout(
-                    user_id=admin_user.id,
-                    product_name=prod["product_name"],
-                    produto_id=prod["product_id"],
-                    quantity=prod["quantity"],
-                    total_price=prod["quantity"] * prod["unit_price"],
-                    lucro_total=0.0,
-                    payment_method=payment_method.upper(),
-                    funcionario_id=employee_operator_id,
-                    funcionario_nome=employee_operator_name,
-                    sale_code=sale_code,
-                    customer_id=customer_id,
-                    installments=installments,
-                    valor_recebido=valor_recebido,
-                    troco=troco,
-                )
-
-                # Processa a venda
-                coupon, status = await checkout.process_sale(
-                    current_user=admin_user,
-                    product_code=str(prod["product_id"]),
-                    quantity=prod["quantity"],
-                    payment_method=payment_method.upper(),
-                    funcionario_id=employee_operator_id,
-                    customer_id=customer_id,
-                    installments=installments,
-                    valor_recebido=valor_recebido,
-                    troco=troco,
-                )
-
-                if status:
-                    invoice.append(coupon)
-                    last_checkout_instance = checkout
-                else:
-                    return {"success": False, "error": "Erro ao processar a venda"}
-
-            # Limpa carrinho e gera relatório
-            await cart.limpar_carrinho(admin_user.id)
-            from src.controllers.stoke.stoke_control import gerar_relatorio_completo
-
-            report = await gerar_relatorio_completo(admin_user.id)
-
-            return {
-                "success": True,
-                "data": {
-                    "notas_fiscais": invoice,
-                    "relatorio": report,
-                    "total_venda": sale_total,
-                    "codigo_da_venda": sale_code,
-                    "funcionario_operador_id": employee_operator_id,
-                    "funcionario_operador_nome": employee_operator_name,
-                    "admin_id": admin_user.id,
-                    "checkout_instance": last_checkout_instance,
-                    "customer_id": customer_id,
-                },
-                "error": None,
-            }
-
-        except Exception as e:
-            return {"success": False, "error": str(e)}
-
-
-@dataclass
-class Note(Checkout):
-    """Extensão de Checkout para gerar notas fiscais adicionais"""
-
-    async def verifyFields(self) -> bool:
-        """Verifica campos obrigatórios"""
-        campos_obrigatorios = [
-            self.user_id,
-            self.product_name,
-            self.quantity,
-            self.produto_id,
-        ]
-        if not all(campos_obrigatorios):
-            raise HTTPException(status_code=400, detail="Preencha todos os campos obrigatórios.")
-        if self.quantity <= 0:
-            raise HTTPException(status_code=400, detail="A quantidade deve ser maior que zero.")
-        return True
-
-    async def createNote(self) -> dict:
-        """Cria uma nota fiscal"""
-        await self.verify_datas()
-        await self.verifyFields()
-
-        # Lógica específica para criação de nota
-        if self.receipt_data:
-            return self.build_receipt(self.receipt_data)
-        else:
-            raise HTTPException(status_code=400, detail="Nenhum dado de venda disponível")

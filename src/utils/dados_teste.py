@@ -182,7 +182,7 @@ async def create_mock_data():
                 payment_method=cliente_teste.payment_method,
                 value_received=50,  # pagando metade
                 cpf=cliente_teste.cpf,
-                user_id=cliente_teste.usuario_id
+                user_id=cliente_teste.usuario_id,
             )
 
             # Rodando a atualização

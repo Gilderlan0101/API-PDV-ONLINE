@@ -1,9 +1,12 @@
 from typing import Any, Dict, Optional
+from fastapi import HTTPException
 from src.model.product import Produto
 from src.model.carItems import CartItem
 from src.model.employee import Employees
 from src.model.caixa import Caixa
 from src.model.user import Usuario
+
+from src.utils.sales_code_generator import gerar_codigo_venda
 
 
 def format_brl(value: float) -> str:
@@ -18,23 +21,28 @@ class CartManagerDB:
         Função para obter o ID do caixa ativo do usuário/funcionário.
         """
         # Verifica se é um funcionário
-        funcionario = await Employees.get_or_none(id=user_id)
+        try:
 
-        if funcionario:
-            # Busca o caixa ativo deste funcionário
-            caixa_ativo = await Caixa.filter(funcionario_id=funcionario.id, aberto=True).first()
+            funcionario = await Employees.get_or_none(id=user_id)
 
-            if caixa_ativo:
-                return caixa_ativo.id
+            if funcionario:
+                # Busca o caixa ativo deste funcionário
+                caixa_ativo = await Caixa.filter(funcionario_id=funcionario.id, aberto=True).first()
 
-        # Se não for funcionário, busca caixa do admin
-        caixa_admin = await Caixa.filter(usuario_id=user_id, aberto=True).first()
+                if caixa_ativo:
+                    return caixa_ativo.id
 
-        if caixa_admin:
-            return caixa_admin.id
+            # Se não for funcionário, busca caixa do admin
+            caixa_admin = await Caixa.filter(usuario_id=user_id, aberto=True).first()
 
-        # Se não encontrar caixa, retorna o user_id (fallback)
-        return user_id
+            if caixa_admin:
+                return caixa_admin.id
+
+            # Se não encontrar caixa, retorna o user_id (fallback)
+            return user_id
+
+        except Exception as e:
+            raise HTTPException(status_code=404, deital=f'Erro ao buscar caixa: {e}')
 
     async def add_produto(
         self,
@@ -71,6 +79,12 @@ class CartManagerDB:
             await produto.save()
         else:
             # Cria novo item no carrinho
+
+            # Busncando codigo do produto
+            get_code_prodct = await Produto.get_or_none(usuario_id=user_id, id=product_id)
+            if not get_code_prodct:
+                return {"aviso": "Produto não encontrado"}
+
             cart_item = await CartItem.create(
                 caixa_id=user_id,  # ✅ Corrigido: usa caixa_id
                 product_id=product_id,
@@ -78,6 +92,7 @@ class CartManagerDB:
                 quantity=quantity,
                 price=produto.cost_price,
                 total_price=produto.cost_price * quantity,
+                product_code=get_code_prodct.product_code,  # pega do primeiro item da lista
             )
 
             # Atualiza o estoque do produto
@@ -90,6 +105,7 @@ class CartManagerDB:
                 "id": cart_item.id,
                 "product_id": cart_item.product_id,
                 "product_name": cart_item.product_name,
+                "product_code": cart_item.product_code,
                 "quantity": cart_item.quantity,
                 "price": float(cart_item.price),
                 "total_price": float(cart_item.total_price),
@@ -142,7 +158,7 @@ class CartManagerDB:
     ) -> Dict[str, Any]:
         caixa_id = await self._get_caixa_id(user_id)
 
-        # ✅ Corrigido: usa caixa_id em vez de user_id
+        # Corrigido: usa caixa_id em vez de user_id
         cart_item = await CartItem.filter(caixa_id=caixa_id, product_id=product_id).first()
 
         if not cart_item:

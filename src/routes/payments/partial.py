@@ -15,66 +15,63 @@ __PAYMENT_METHODS = ['PIX', 'CARTAO', 'DINHEIRO']
 @partial.post('/registra-venda')
 async def registre_sale_in_partial(data: InputData, current_user: SystemUser = Depends(get_current_user)):
     """
-    Rota responsável por registrar uma venda em "partial" (dívida em aberto) no nome de um cliente.
+    Rota para registrar uma venda no modo PARCIAL (dívida em aberto) vinculada a um cliente.
 
     Args:
         data (InputData): Dados de entrada contendo:
             - product_name (str): Nome do produto.
-            - total_price (float | int): Valor da venda.
+            - total_price (float): Valor total da venda.
             - cpf (str): CPF do cliente.
             - user_id (int): ID do usuário responsável.
         current_user (SystemUser): Usuário autenticado, obtido via dependência.
 
     Returns:
         dict: Mensagem de sucesso ou erro no registro da dívida.
-              Exemplo: {"message": "Dívida registrada com sucesso."}
 
-    Notas:
-        - Antes de registrar a venda, é verificado se o cliente existe pelo CPF.
-        - Caso o cliente seja encontrado e não possua valor pendente (`value == 0`),
-          o campo `value` será atualizado para o valor de `data.total_price`.
-        - Se já houver dívida ativa, nenhuma alteração é feita.
+    Fluxo:
+        1. Verifica se o produto existe para o usuário logado.
+        2. Verifica se o cliente existe pelo CPF.
+        3. Se não houver dívida ativa (value == 0), registra a nova dívida.
+        4. Caso contrário, retorna mensagem informando dívida ativa.
     """
 
     try:
-        # Checando se cliente existe antes de abrir uma dívida no nome dele
+        # 🔹 1. Checar se o produto existe no estoque do usuário logado
+        get_product = await get_product_by_user(user_id=current_user.empresa_id, code=None, name=data.product_name)
+
+        if not get_product:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Produto '{data.product_name}' não está cadastrado.")
+
+        # 🔹 2. Buscar cliente pelo CPF
         checking_client = await Partial.filter(usuario_id=current_user.empresa_id, cpf=data.cpf).first()
-        get_product = get_product_by_user(user_id=current_user.empresa_id, code=None, name=data.product_name)
 
-        if get_product:
+        if not checking_client:
+            return {"message": "Cliente não encontrado."}
 
-            if checking_client:
-                # Verificando se o value é == 0
-                if checking_client.value is None:
-                    # Atualizando valor
-                    await Partial.filter(usuario_id=current_user.empresa_id, cpf=data.cpf).update(value=data.total_price, product_name=data.product_name)
+        # 🔹 3. Se cliente existe mas não tem dívida (value == 0 ou None), registrar nova dívida
+        if not checking_client.value or checking_client.value == 0:
+            await Partial.filter(usuario_id=current_user.empresa_id, cpf=data.cpf).update(value=data.total_price, product_name=data.product_name)
 
-                    # Buscando cliente novamente para exibir os dados atualizado
-                    updated_client = await Partial.filter(usuario_id=current_user.empresa_id, cpf=data.cpf).first()
+            # Buscar cliente atualizado
+            updated_client = await Partial.filter(usuario_id=current_user.empresa_id, cpf=data.cpf).first()
 
-                    for c in updated_client:
+            return {
+                "message": "Dívida registrada com sucesso.",
+                "response": {
+                    "name": updated_client.customers_name,
+                    "product": updated_client.product_name,
+                    "value": updated_client.value,
+                },
+            }
 
-                        return {
-                            "message": "Dívida registrada com sucesso.",
-                            "response": [
-                                {
-                                    "name": c.customers_name,
-                                    "product": c.product_name,
-                                    "value": c.value,
-                                }
-                            ],
-                        }
+        # 🔹 4. Cliente já tem dívida ativa
+        return {"message": "O cliente já possui dívida ativa."}
 
-                else:
-                    return {"message": "O cliente já possui dívida ativa."}
-
-            else:
-                return {"message": "Cliente não encontrado."}
-        else:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'{dta.product_name} Não esta cadastrado.')
-
+    except HTTPException:
+        raise  # re-levanta exceções HTTP sem alterar
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Erro interno ao tentar registrar venda em partial: {e}")
+        # Captura erros inesperados
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Erro interno ao tentar registrar venda em parcial: {e}")
 
 
 @partial.get('/dividas-atual')
@@ -98,13 +95,12 @@ async def get_all_active_debts(current_user: SystemUser = Depends(get_current_us
     return await PartialPayment.view(user_id=current_user.id)
 
 
-
 @partial.get('/dividas-pagas')
 async def paids(current_user: SystemUser = Depends(get_current_user)):
     '''
     get_all_active_debts: Responsavel por buscar todas as dividas pagas
     '''
- 
+
     return await PartialPayment.debts_paid(user_id=current_user.empresa_id)
 
 
@@ -138,4 +134,4 @@ async def update_pending_debt(data: ReceivePaymentPartial, current_user: SystemU
         return await update_value.update_value()
 
     except Exception as e:
-        print(e)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Erro interno: {e}")

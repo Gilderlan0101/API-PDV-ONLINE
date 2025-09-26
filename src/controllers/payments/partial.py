@@ -70,30 +70,18 @@ class PartialPayment:
         # 1. Validação inicial
         # =====================
         if not getattr(self, "cpf", None):
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="CPF não informado."
-            )
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="CPF não informado.")
 
         if self.value_received is None:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="valor_recebido é obrigatório."
-            )
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="valor_recebido é obrigatório.")
 
         try:
             paid_value = Decimal(str(self.value_received))
         except (InvalidOperation, ValueError):
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="valor_recebido inválido."
-            )
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="valor_recebido inválido.")
 
         if paid_value <= 0:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="valor_recebido deve ser maior que zero."
-            )
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="valor_recebido deve ser maior que zero.")
 
         # =====================
         # 2. Busca dívida parcial
@@ -102,10 +90,7 @@ class PartialPayment:
             table_partial = await Partial.filter(cpf=self.cpf).first()
 
             if not table_partial:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail="Nenhuma dívida parcial encontrada para este CPF."
-                )
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhuma dívida parcial encontrada para este CPF.")
 
         # =====================
         # 3. Calcula novo saldo
@@ -124,7 +109,7 @@ class PartialPayment:
             payment_data = {
                 "date": datetime.now(ZoneInfo("America/Sao_Paulo")).isoformat(),
                 "payment_method": self.payment_method,
-                "paid_value": float(round(paid_value, 2))  # <<< valor pago (não saldo)
+                "paid_value": float(round(paid_value, 2)),  # <<< valor pago (não saldo)
             }
 
             await finished_debts.create(
@@ -133,8 +118,8 @@ class PartialPayment:
                 cpf=table_partial.cpf,
                 tel=table_partial.tel,
                 value=float(round(paid_value, 2)),  # <<< valor recebido neste pagamento
-                payments=payment_data,              # JSON com detalhes
-                usuario_id=self.user_id
+                payments=payment_data,  # JSON com detalhes
+                usuario_id=self.user_id,
             )
         except Exception as e:
             # Melhor log para debug interno
@@ -151,12 +136,7 @@ class PartialPayment:
                 # Remove dívida porque foi quitada
                 await table_partial.delete()
 
-                return {
-                    "message": "✅ Dívida quitada e registro removido.",
-                    "cpf": table_partial.cpf,
-                    "novo_valor": 0.0,
-                    "change": change
-                }
+                return {"message": "✅ Dívida quitada e registro removido.", "cpf": table_partial.cpf, "novo_valor": 0.0, "change": change}
 
             # Atualiza saldo parcial
             table_partial.value = float(round(remaining_value, 2))
@@ -166,20 +146,12 @@ class PartialPayment:
 
         except Exception as e:
             print(f"⚠️ Erro ao atualizar dívida parcial: {e}")
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Erro interno ao atualizar dívida."
-            )
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Erro interno ao atualizar dívida.")
 
         # =====================
         # 6. Resposta final
         # =====================
-        return {
-            "cpf": table_partial.cpf,
-            "novo_valor": table_partial.value,
-            "ultimo_pagamento": float(round(paid_value, 2))
-        }
-
+        return {"cpf": table_partial.cpf, "novo_valor": table_partial.value, "ultimo_pagamento": float(round(paid_value, 2))}
 
     @staticmethod
     async def view(user_id: int):
@@ -196,8 +168,6 @@ class PartialPayment:
             for parcial in table_partial
         ]
 
-
-
     @staticmethod
     async def debts_paid(user_id: int):
         """Visualiza todas as dívidas parciais do usuário"""
@@ -209,9 +179,7 @@ class PartialPayment:
                 "product_name": parcial.product_name,
                 "value": parcial.value,
                 "payments": parcial.payments,
-                "status": "OK"
-
+                "status": "OK",
             }
             for parcial in paid
         ]
-

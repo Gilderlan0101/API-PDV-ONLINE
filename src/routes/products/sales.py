@@ -5,10 +5,12 @@ from src.auth.deps import get_current_user, SystemUser
 from src.model.user import Usuario
 from src.model.employee import Employees
 from src.controllers.sales.sales import Checkout
+from src.controllers.sales.validators import validating_information
 from src.controllers.car.cart_control import CartManagerDB
 from src.controllers.sales.delete_sales import delete_or_update_sale
 from src.schemas.payments.payment_methods import InputData
 from src.controllers.payments.partial import PartialPayment
+from src.controllers.sales.services import processar_venda_carrinho
 
 router = APIRouter()
 cart = CartManagerDB()
@@ -25,30 +27,29 @@ async def finalizar_venda(
     current_user: Usuario = Depends(get_current_user),
 ):
     """
-    Finaliza venda - para admin e funcionários
+    Finaliza venda - para admin e funcionários.
     """
-
     try:
-        # Verifica se o usuário atual é um funcionário
+        # 🔹 Verifica se o usuário atual é um funcionário
         funcionario = await Employees.filter(id=current_user.id).first()
 
         if funcionario:
-            # Se for funcionário, o operador é o próprio funcionário
             employee_operator_id = current_user.id
-            # O dono do carrinho é o admin (usuario_id do funcionário)
             cart_owner_id = funcionario.usuario_id
         else:
-            # Se for admin, o operador é o próprio admin
             employee_operator_id = current_user.id
             cart_owner_id = current_user.id
 
-        # Primeiro, obtém os itens do carrinho para verificar se há itens
+        # 🔹 Verifica itens no carrinho
         cart_items = await cart.listar_produtos(cart_owner_id)
+
         if not cart_items:
             raise HTTPException(status_code=400, detail="Carrinho vazio. Adicione produtos antes de finalizar a venda.")
 
-        validation_process = await Checkout.validating_information(
-            current_user=current_user,
+        # 🔹 CORREÇÃO: Processar TODOS os itens do carrinho
+        validation_process = await processar_venda_carrinho(
+            user_id=current_user.id,
+            cart_items=cart_items,
             payment_method=payment_method.upper(),
             employee_operator_id=employee_operator_id,
             customer_id=customer_id,
@@ -62,45 +63,71 @@ async def finalizar_venda(
             error_msg = validation_process.get("message") or validation_process.get("error") or "Erro ao processar venda"
             raise HTTPException(status_code=400, detail=error_msg)
 
-        # Obtém a instância do checkout
-        checkout_instance = validation_process["data"].get("checkout_instance")
+        validation_data = validation_process.get("data", {})
+        checkout_instance = validation_data.get("checkout_instance")
 
-        if not checkout_instance:
-            raise HTTPException(status_code=500, detail="Instância do checkout não retornada")
+        if not checkout_instance or not hasattr(checkout_instance, 'venda'):
+            raise HTTPException(status_code=500, detail="Instância do checkout inválida ou venda não processada")
 
-        # Processa atualização do caixa
-        funcionario_operador_id = validation_process["data"]["funcionario_operador_id"]
-        caixa_aberto = await CashController.get_caixa_aberto_funcionario(funcionario_operador_id)
+        if not checkout_instance.venda or not hasattr(checkout_instance.venda, 'id'):
+            raise HTTPException(status_code=500, detail="Venda não foi criada corretamente no processo de checkout")
 
+        # 🔹 Atualiza valores do caixa
+        caixa_aberto = await CashController.get_caixa_aberto_funcionario(employee_operator_id)
         if not caixa_aberto:
-            # Pode ser crítico ou apenas um aviso, dependendo da regra de negócio
-            print(f"Atenção: Nenhum caixa aberto encontrado para o funcionário {funcionario_operador_id}")
-            # Se for crítico, descomente a linha abaixo:
-            # raise HTTPException(status_code=400, detail="Nenhum caixa aberto para o funcionário")
-        else:
-            try:
-                finalizacao = FinalizationObjcts(checkout_instance)
-                await finalizacao.Updating_cash_values(caixa_aberto.id)
-                print("Caixa atualizado com sucesso!")
+            raise HTTPException(status_code=404, detail=f"Atenção: Nenhum caixa aberto encontrado para o funcionário {employee_operator_id}")
 
-                # Adiciona informação do caixa na resposta
-                validation_process["data"]["caixa_atualizado"] = True
-                validation_process["data"]["caixa_id"] = caixa_aberto.id
+        try:
+            finalizacao = FinalizationObjcts(checkout_instance)
+            await finalizacao.Updating_cash_values(caixa_aberto.id)
 
-            except Exception as e:
-                print(f"Erro ao atualizar caixa (venda processada mas caixa não atualizado): {e}")
-                validation_process["data"]["caixa_atualizado"] = False
-                validation_process["data"]["caixa_erro"] = str(e)
+            sale_code = getattr(checkout_instance, 'sale_code', 'N/A')
+            payment_method_final = getattr(checkout_instance, 'payment_method', payment_method.upper())
+            total_venda = validation_data.get("total_venda", 0)
 
-        # Limpa o carrinho após finalizar a venda
-        await cart.limpar_carrinho(cart_owner_id)
+            resumo_venda = {
+                "sale_code": sale_code,
+                "total_venda": total_venda,
+                "payment_method": payment_method_final,
+                "funcionario_operador_id": employee_operator_id,
+                "caixa_id": caixa_aberto.id,
+                "customer_id": customer_id,
+                "venda_id": checkout_instance.venda.id,
+                "quantidade_itens": len(cart_items),  # 🔹 Adiciona quantidade de itens
+            }
 
-        return validation_process
+            await cart.limpar_carrinho(user_id=current_user.id)
 
-    except HTTPException:
-        raise
+        except Exception as e:
+            print(f"Erro ao atualizar caixa (venda processada mas caixa não atualizado): {e}")
+
+            sale_code = getattr(checkout_instance, 'sale_code', 'N/A')
+            payment_method_final = getattr(checkout_instance, 'payment_method', payment_method.upper())
+            total_venda = validation_data.get("total_venda", 0)
+
+            resumo_venda = {
+                "sale_code": sale_code,
+                "total_venda": total_venda,
+                "payment_method": payment_method_final,
+                "funcionario_operador_id": employee_operator_id,
+                "caixa_atualizado": False,
+                "caixa_erro": str(e),
+                "customer_id": customer_id,
+                "venda_id": checkout_instance.venda.id if checkout_instance.venda else None,
+                "quantidade_itens": len(cart_items),
+            }
+
+        return {"success": True, "message": "Venda finalizada com sucesso", "data": resumo_venda}
+
+    except HTTPException as e:
+        raise e
     except Exception as e:
-        print(f"Erro inesperado ao finalizar venda: {e}")
+        print(f"Erro interno ao processar venda: {str(e)}")
+        print(f"Tipo do erro: {type(e)}")
+        import traceback
+
+        print(f"Traceback completo: {traceback.format_exc()}")
+
         raise HTTPException(status_code=500, detail=f"Erro interno ao processar venda: {str(e)}")
 
 

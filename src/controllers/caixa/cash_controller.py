@@ -235,51 +235,66 @@ class FinalizationObjcts:
             if not self.checkout:
                 raise Exception("Instância do Checkout não fornecida")
 
-            # Verifica se há dados do recibo
-            if not self.checkout.receipt_data:
-                raise Exception("Nenhum dado de venda disponível")
+            # 🔹 CORREÇÃO: Verifica se a venda existe no checkout
+            if not hasattr(self.checkout, 'venda') or not self.checkout.venda:
+                raise Exception("Venda não encontrada no processo de checkout")
 
-            # Obtém informações da venda
             venda_obj = self.checkout.venda
-            if not venda_obj or not isinstance(venda_obj, Sales):
-                raise Exception("Venda não encontrada ou objeto inválido")
 
-            # Calcula valor total da venda
-            if isinstance(self.checkout.receipt_data, list):
+            # 🔹 CORREÇÃO: Garante que venda_obj é uma instância de Sales
+            if not isinstance(venda_obj, Sales):
+                raise Exception(f"Tipo inválido para venda: {type(venda_obj)}. Esperado: Sales")
+
+            # 🔹 CORREÇÃO: Calcula valor total de forma segura
+            if self.checkout.receipt_data and isinstance(self.checkout.receipt_data, list):
                 valor_total = sum(item.get('total_price', 0) for item in self.checkout.receipt_data)
             else:
-                valor_total = self.checkout.receipt_data.get('total_price', 0)
+                # Usa o total_price do checkout ou da venda como fallback
+                valor_total = getattr(self.checkout, 'total_price', getattr(venda_obj, 'total_price', 0))
 
-            # Obtém forma de pagamento
-            forma_pagamento = getattr(self.checkout, 'payment_method', 'PIX')
+            # 🔹 CORREÇÃO: Obtém forma de pagamento de forma segura
+            forma_pagamento = getattr(self.checkout, 'payment_method', getattr(venda_obj, 'payment_method', 'PIX'))
 
             # Verifica se o caixa existe e está aberto
             caixa = await Caixa.get_or_none(id=caixa_id).prefetch_related('usuario', 'funcionario')
-            if not caixa or not caixa.aberto:
-                raise Exception("Caixa não encontrado ou fechado")
+            if not caixa:
+                raise Exception(f"Caixa com ID {caixa_id} não encontrado")
+            if not caixa.aberto:
+                raise Exception("Caixa está fechado")
 
             # Atualiza saldo do caixa
             caixa.saldo_atual += valor_total
             await caixa.save()
 
-            # Registra movimentação no caixa - CORRIGIDO: passar instâncias completas
-            await CashMovement.create(
-                tipo="ENTRADA",
-                valor=valor_total,
-                descricao=f"Venda #{venda_obj.id} - {forma_pagamento}",
-                caixa=caixa,  # Instância completa
-                usuario=caixa.usuario,  # Instância completa
-                # Instância completa (pode ser None)
-                funcionario=caixa.funcionario,
-                venda=venda_obj,  # Instância completa de Sales
-            )
+            # 🔹 CORREÇÃO: Prepara dados para CashMovement de forma segura
+            movimento_data = {
+                "tipo": "ENTRADA",
+                "valor": valor_total,
+                "descricao": f"Venda #{venda_obj.id} - {forma_pagamento}",
+                "caixa_id": caixa.id,
+                "venda_id": venda_obj.id,
+            }
 
-            # Atualiza a venda com a referência ao caixa
-            venda_obj.caixa = caixa  # Se houver relação inversa
+            # Adiciona usuário se existir
+            if caixa.usuario:
+                movimento_data["usuario_id"] = caixa.usuario.id
+
+            # Adiciona funcionário se existir
+            if caixa.funcionario:
+                movimento_data["funcionario_id"] = caixa.funcionario.id
+
+            await CashMovement.create(**movimento_data)
+
+            # 🔹 CORREÇÃO: Atualiza a venda com o caixa_id
+            venda_obj.caixa_id = caixa.id
             await venda_obj.save()
 
+            print(f"✅ Caixa atualizado com sucesso. Venda #{venda_obj.id} processada.")
             return caixa
 
         except Exception as e:
-            print(f"Erro detalhado ao atualizar caixa: {str(e)}")
+            print(f"❌ Erro detalhado ao atualizar caixa: {str(e)}")
+            import traceback
+
+            print(f"📋 Traceback: {traceback.format_exc()}")
             raise Exception(f"Erro ao atualizar caixa: {str(e)}")

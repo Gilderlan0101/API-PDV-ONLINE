@@ -1,5 +1,8 @@
 # src/routes/caixa_routes.py
-from fastapi import APIRouter, Depends, HTTPException, status, Body
+from fastapi import APIRouter, Depends, HTTPException, status, Body, Query
+from typing import Optional
+from datetime import datetime
+
 from src.auth.deps import get_current_user, SystemUser
 from src.schemas.funcs.operador_cadastro import (
     AberturaCaixaRequest,
@@ -9,8 +12,11 @@ from src.schemas.funcs.operador_cadastro import (
 from src.model.user import Usuario
 from src.model.caixa import Caixa
 from src.model.employee import Employees
+from tortoise.expressions import Q
+
 
 from src.controllers.caixa.cash_controller import CashController
+from src.controllers.caixa.cash_reports import CashReportController
 
 operador = APIRouter()
 
@@ -83,3 +89,16 @@ async def information_from_all_cashiers(current_user: Usuario = Depends(get_curr
     else:
         return []
         # raise HTTPException(status_code=200, detail='dados não encontrado.')
+
+
+cash_report_controller = CashReportController()
+
+
+@operador.get("/relatorio_caixa")
+async def get_cash_report_route(
+    current_user: Usuario = Depends(get_current_user),
+    filter_data: Optional[datetime] = Query(None),
+    employee_name: Optional[str] = Query(None),
+):
+    reports = await cash_report_controller.get_cash_reports(user_id=current_user.id, filter_data=filter_data, employee_name=employee_name)
+    return reports
