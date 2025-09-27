@@ -94,3 +94,13 @@ class ProductInfo:
             "quantity": self.quantity,
             "total_stock_price": self.total_stock_price,
         }
+
+    async def low_product_stock(self) -> dict:
+
+        p = 0
+        products = await self._get_products()
+        # Conta o número de produtos que estão abaixo do estoque mínimo.
+        # O contador (p) é incrementado em +1. Ex: 10 produtos
+        all_products_with_low_stock = sum([ p+1 for prod in products  if prod.id and prod.stock < prod.stoke_min])  
+        return all_products_with_low_stock
+

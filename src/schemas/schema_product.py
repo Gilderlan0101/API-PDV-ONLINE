@@ -219,10 +219,10 @@ class ProductRegisterSchema(BaseModel):
     # 🔹 Connected enums and options
     product_type: ProductType
     active: ProductStatus
-    group: str  # Optional[str] = None
-    sub_group: str  # Optional[str] = None
-    sector: str  # ProductSector
-    unit: str  # Optional[str] = None
+    group: Optional[str] = None
+    sub_group: Optional[str] = None
+    sector: ProductSector
+    unit: Optional[str] = None
     controllstoke: ProductStatus
     sales_config: Optional[ApplyingSalesType] = None
 

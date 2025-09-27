@@ -111,7 +111,7 @@ async def create_mock_data():
                 await Produto.create(
                     product_code=p["code"],
                     name=p["name"],
-                    stock=100,
+                    stock=10,
                     stoke_max=300,
                     stoke_min=20,
                     cost_price=p["cost"],

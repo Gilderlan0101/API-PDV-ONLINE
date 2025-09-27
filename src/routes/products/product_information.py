@@ -34,3 +34,14 @@ async def total_stock_price(current_user: SystemUser = Depends(get_current_user)
     product_info = ProductInfo(current_user.id)
     total_price = await product_info.calculate_total_stock_price()
     return {"total_stock_price": total_price}
+
+
+@list_products.get('/stoque-baixo')
+async def low_stock(current_user: SystemUser = Depends(get_current_user)) -> dict:
+    """
+    Retorna todos os produtos com estoque baixo
+    """
+
+    product_info = ProductInfo(current_user.id)
+    all_products_witch_low_stock = await product_info.low_product_stock()
+    return {"stokc": all_products_witch_low_stock}
