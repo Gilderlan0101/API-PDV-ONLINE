@@ -172,6 +172,7 @@ class ProductType(str, Enum):
     ADDITIONAL = 'Adicional'
     EDITABLE_VALUE = 'Valor editável'
     RAW_MATERIAL = 'Matéria prima'
+    ELECTRONICS = "Eletrônico"
 
 
 class TicketType(str, Enum):
@@ -193,7 +194,6 @@ class ApplyingSalesType(BaseModel):
     rate: Optional[ProductStatus] = None
     balance: Optional[ProductStatus] = None
     valid: Optional[str] = None
-    ticket: Optional[TicketType] = None
 
 
 # ======================================
@@ -221,6 +221,7 @@ class ProductRegisterSchema(BaseModel):
     active: ProductStatus
     group: Optional[str] = None
     sub_group: Optional[str] = None
+    ticket: Optional[str] = None
     sector: ProductSector
     unit: Optional[str] = None
     controllstoke: ProductStatus

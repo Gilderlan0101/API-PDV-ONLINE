@@ -20,12 +20,16 @@ from src.utils.dados_teste import create_mock_data
 from fastapi.middleware.cors import CORSMiddleware
 
 
+######################################################################
 # Testando dados para admin
 # from src.controllers.user.system_users import LoginInSystem, SystemUser
 
-from src.controllers.products.monitoring_products import ProductInfo
-
+# from src.controllers.products.monitoring_products import ProductInfo
 # from src.controllers.payments.partial import PartialPayment, Person
+# from src.controllers.products.products_infors import Products
+
+
+######################################################################
 
 
 @asynccontextmanager

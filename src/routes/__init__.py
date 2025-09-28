@@ -24,10 +24,10 @@ from src.routes.caixa.box_closing import operador
 
 from src.routes.car.pdv import router as result_sales
 
+# Rotas relacionadas a produtos
 from src.routes.products.buscar_prod import buscar_produtos
 from src.routes.products.list import list_products as list_router
 from src.routes.products.product_information import list_products as product_info
-
 from src.routes.products.create import router as create_products
 from src.routes.products.update import router as updates_products
 from src.routes.products.delete import router as delete_products
@@ -35,6 +35,7 @@ from src.routes.products.upload_img import router as upload_img
 from src.routes.products.ticket import router as ticket_prods
 from src.routes.products.sales import router as sales
 from src.routes.products.cancel_sale import router as cancel_sales
+from src.routes.products.deep_infos import product_deep_infos
 
 from src.routes.user.clientes import router as system_user
 
@@ -88,6 +89,7 @@ produtos.include_router(product_info)
 produtos.include_router(create_products)
 produtos.include_router(updates_products)
 produtos.include_router(delete_products)
+produtos.include_router(product_deep_infos)
 
 
 # Carrinho

@@ -46,6 +46,7 @@ async def create_product(
             group=prod.group,
             sub_group=prod.sub_group,
             sector=prod.sector,
+            ticket=prod.ticket,
             unit=prod.unit,
             controllstoke=prod.controllstoke,
             sales_config=(prod.sales_config.model_dump_json() if prod.sales_config else None),

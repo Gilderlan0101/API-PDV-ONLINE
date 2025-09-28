@@ -30,6 +30,7 @@ class Produto(models.Model):
     active = fields.BooleanField(default=True)
     group = fields.CharField(max_length=100, null=True)
     sub_group = fields.CharField(max_length=100, null=True)
+    ticket = fields.TextField(null=True, default="Novo")
     sector = fields.CharField(max_length=100, null=True)
     unit = fields.CharField(max_length=20, null=True)
     controllstoke = fields.CharField(max_length=50, null=True)

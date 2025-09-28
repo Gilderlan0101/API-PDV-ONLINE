@@ -107,23 +107,34 @@ async def create_mock_data():
             {"code": "PROD010", "name": "Detergente 500ml", "cost": 1.50, "sale": 3.00, "supplier": "Ypê"},
         ]
 
+        tickets = [
+            {"ticket": "Novo"},
+            {"ticket": "Promoção"},
+            {"ticket": "Ofertas"},
+            {"ticket": "Destaques"},
+        ]
+
         for p in produtos_data:
-            produto = await Produto.filter(product_code=p["code"], usuario_id=admin.id).first()
-            if not produto:
-                await Produto.create(
-                    product_code=p["code"],
-                    name=p["name"],
-                    stock=10,
-                    stoke_max=300,
-                    stoke_min=20,
-                    cost_price=p["cost"],
-                    price_uni=p["cost"] * 1.2,
-                    sale_price=p["sale"],
-                    supplier=p["supplier"],
-                    group=random.choice(['Bebidas', 'Gelados', 'Brinquedos']),
-                    usuario_id=admin.id,
-                )
-                print(f"✅ Produto criado: {p['name']}")
+            for ticket in tickets:
+                produto = await Produto.filter(product_code=p["code"], usuario_id=admin.id).first()
+                if not produto:
+                    ticket = random.choice([t["ticket"] for t in tickets])
+                    await Produto.create(
+                        product_code=p["code"],
+                        name=p["name"],
+                        stock=10,
+                        stoke_max=300,
+                        stoke_min=20,
+                        cost_price=p["cost"],
+                        price_uni=p["cost"] * 1.2,
+                        sale_price=p["sale"],
+                        supplier=p["supplier"],
+                        ticket=ticket,
+                        controllstoke=random.choice(["Sim", "Não"]),
+                        group=random.choice(['Bebidas', 'Gelados', 'Brinquedos']),
+                        usuario_id=admin.id,
+                    )
+                    print(f"✅ Produto criado: {p['name']}")
 
         # ========================
         # Criar clientes (3 ativos)
