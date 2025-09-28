@@ -11,6 +11,7 @@ from src.model.user import Membro, Usuario
 from src.model.customers import Customer
 from src.model.employee import Employees
 from src.controllers.payments.partial import PartialPayment
+from src.utils.sales_code_generator import lot_bar_code_size
 
 __PAYMENT_METHODS = ['PIX', 'CARTAO', 'DINHEIRO']
 
@@ -84,6 +85,7 @@ async def create_mock_data():
                     cargo="Funcionário",
                     email=email,
                     senha=get_hashed_password("1234"),
+                    telefone=lot_bar_code_size(),
                     ativo=True,
                     usuario_id=admin.id,
                 )

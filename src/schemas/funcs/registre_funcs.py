@@ -17,3 +17,10 @@ class OutputFormat(BaseModel):
     email: str
     telefone: Optional[str] = None
     ativo: bool
+
+
+class UpdateEmployee(BaseModel):
+
+    email: Optional[str] = None
+    username: Optional[str] = None
+    password: Optional[str] = None
