@@ -7,9 +7,17 @@ import re
 
 def to_dict(model) -> dict:
     """
-    Converte um objeto Tortoise ORM em dicionário.
+    Converte um objeto Tortoise ORM em dicionário,
+    ignorando campos que são relacionamentos ou QuerySets.
     """
-    return {field: getattr(model, field) for field in model._meta.fields_map}
+    data = {}
+    for field in model._meta.fields_map:
+        value = getattr(model, field)
+        # Ignora relacionamentos e QuerySets
+        if hasattr(value, "all") or hasattr(value, "_meta"):
+            continue
+        data[field] = value
+    return data
 
 
 async def get_product_by_user(
