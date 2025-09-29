@@ -144,7 +144,7 @@ class SupplierBase(BaseModel):
 
     # Identificação
     tipo: SupplierType = SupplierType.PESSOA_JURIDICA
-    razao_social: Optional[str] = Field(..., max_length=200, description="Nome empresarial (ou nome completo para PF)")
+    razao_social: str = Field(..., max_length=200)
     nome_fantasia: Optional[str] = Field(None, max_length=200, description="Apelido comercial")
 
     # Documentos
@@ -173,8 +173,8 @@ class SupplierBase(BaseModel):
     limite_credito: Optional[float] = Field(0, ge=0)
     desconto_padrao_percent: float = Field(0, ge=0, le=100)
 
-    # Bancário
-    contas_bancarias: Optional[BankAccount] = Field(default_factory=list)
+    # Bancário - CORREÇÃO AQUI: mudado para List[BankAccount]
+    contas_bancarias: List[BankAccount] = Field(default_factory=list)
 
     # Operacional
     categorias_fornecimento: List[str] = Field(default_factory=list, description="Ex.: bebidas, laticínios, matérias-primas")

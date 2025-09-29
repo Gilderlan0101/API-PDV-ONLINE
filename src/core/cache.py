@@ -1,6 +1,10 @@
 import redis
+import os
 
+# URL completa com usuário, senha, host e porta
+REDIS_URL = "redis://default:Tv7qHTyVjk5fxc0QcK55CAKsikJqoJz4@redis-12349.crce196.sa-east-1-2.ec2.redns.redis-cloud.com:12349"
 
-client = redis.Redis(host='127.0.0.1', port=6379, db=0)
+# Cria o cliente
+client = redis.Redis.from_url(REDIS_URL, decode_responses=True)
 
-__all__ = ['client']
+__all__ = ["client"]
