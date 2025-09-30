@@ -26,7 +26,8 @@ async def getEmployees(user_id: int):
                     formate_data = OutputFormat(nome=date.nome, cargo=date.cargo, email=date.email, telefone=date.telefone, ativo=date.ativo)
                     if date.ativo is True:
                         employee_information.append(
-                            {
+                            {   
+                                "id": formate_data.id,
                                 'nome': formate_data.nome,
                                 'cargo': formate_data.cargo,
                                 'email': formate_data.email,
