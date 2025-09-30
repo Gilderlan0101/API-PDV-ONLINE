@@ -1,8 +1,10 @@
-from http.client import HTTPException
 import tortoise
+import json
+from http.client import HTTPException
 import tortoise.exceptions
 from src.model.employee import Employees
 from src.schemas.funcs.registre_funcs import OutputFormat
+from src.core.cache import client
 from fastapi import HTTPException
 
 
@@ -17,6 +19,14 @@ async def getEmployees(user_id: int):
 
         employees = await Employees.filter(usuario_id=user_id).all()
         employee_information = []
+
+
+        cache_key = f"employee:{user_id}"
+        # Verifica se já tem cache
+        cache = client.get(cache_key)
+        if cache:
+            print('CACHE EM FUNCIONÁRIOS.')
+            return json.loads(cache)
 
         match employees:
 
@@ -36,6 +46,8 @@ async def getEmployees(user_id: int):
                             }
                         )
 
+                # Salvando obj em cache
+                client.setex(cache_key, 60, json.dumps(employee_information))
                 return employee_information
 
             case _:

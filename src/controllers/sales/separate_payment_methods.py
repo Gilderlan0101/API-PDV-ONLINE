@@ -1,6 +1,7 @@
+import json
 from fastapi import HTTPException, status
 from src.model.sale import Sales
-
+from src.core.cache import client
 
 async def separating_sales_by_payments(user_id: int) -> dict[list]:
     """
@@ -10,6 +11,13 @@ async def separating_sales_by_payments(user_id: int) -> dict[list]:
     methods = {'Pix': [], 'Cartão': [], 'Dinheiro': [], 'Nota': [], 'Fiado': []}
 
     try:
+
+        cache_key = f"payments:{user_id}"
+        cache = client.get(cache_key)
+
+        if cache:
+            return json.loads(cache) 
+
         if not user_id:
             return methods
 
@@ -28,7 +36,8 @@ async def separating_sales_by_payments(user_id: int) -> dict[list]:
             else:
                 methods[payment] = [data]
 
+        client.setex(cache_key, 60, json.dumps(methods))
         return methods
 
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detailf=f'Erro desconhecido: {e}')
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f'Erro desconhecido: {e}')
