@@ -46,7 +46,7 @@ async def create_employees(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Email já cadastrado.')
 
     # Valida senha de 4 dígitos
-    if len(func_data.senha) != len(PASSWORD_LENGTH):
+    if len(str(func_data.senha)) != PASSWORD_LENGTH:
 
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Senha deve ter {PASSWORD_LENGTH} dígitos.")
 
