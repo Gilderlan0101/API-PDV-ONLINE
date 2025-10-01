@@ -3,6 +3,7 @@ from fastapi import HTTPException, status
 from src.model.sale import Sales
 from src.core.cache import client
 
+
 async def separating_sales_by_payments(user_id: int) -> dict[list]:
     """
     Separa todas as vendas por métodos de pagamentos.
@@ -16,7 +17,7 @@ async def separating_sales_by_payments(user_id: int) -> dict[list]:
         cache = client.get(cache_key)
 
         if cache:
-            return json.loads(cache) 
+            return json.loads(cache)
 
         if not user_id:
             return methods

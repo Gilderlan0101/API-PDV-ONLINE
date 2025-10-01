@@ -15,6 +15,7 @@ class OutputFormat(BaseModel):
     nome: str
     cargo: str
     email: str
+    valor_venda: Optional[int] = None
     telefone: Optional[str] = None
     ativo: bool
 

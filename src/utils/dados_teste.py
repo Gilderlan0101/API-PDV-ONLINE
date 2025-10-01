@@ -10,21 +10,26 @@ from src.model.product import Produto
 from src.model.user import Membro, Usuario
 from src.model.customers import Customer
 from src.model.employee import Employees
+from src.controllers.sales.sales import Checkout  # Importado
 from src.controllers.payments.partial import PartialPayment
 from src.utils.sales_code_generator import lot_bar_code_size
+import json
+from fastapi import HTTPException  # Necessário para capturar o erro do Checkout
 
 __PAYMENT_METHODS = ['PIX', 'CARTAO', 'DINHEIRO']
 
 
 async def create_mock_data():
-    """Cria usuário admin, funcionários, clientes e produtos de teste (mínimo necessário)."""
+    """Cria usuário admin, funcionários, clientes e produtos de teste (mínimo necessário) e realiza uma venda."""
     fake = Faker("pt_BR")
+
+    # Garante que 'admin' seja definido fora do 'if not admin' para uso posterior
+    admin = await Usuario.filter(email="admin@test.com").first()
 
     async with in_transaction() as conn:
         # ========================
         # Criar usuário admin
         # ========================
-        admin = await Usuario.filter(email="admin@test.com").first()
         if not admin:
             print("🔹 Criando usuário admin...")
             admin = await Usuario.create(
@@ -39,7 +44,7 @@ async def create_mock_data():
                 state="SP",
                 pending=True,
             )
-            admin_2 = await Usuario.create(
+            await Usuario.create(
                 username="admin",
                 email="admin_2@test.com",
                 password=get_hashed_password("123456"),
@@ -51,7 +56,7 @@ async def create_mock_data():
                 state="SP",
                 pending=True,
             )
-            admin_3 = await Usuario.create(
+            await Usuario.create(
                 username="admin",
                 email="admin_3@test.com",
                 password=get_hashed_password("123456"),
@@ -77,6 +82,7 @@ async def create_mock_data():
         # Criar funcionários (fixos)
         # ========================
         funcionarios_emails = ["gilderlan@teste.com", "maria@teste.com", "gilvan@teste.com"]
+        funcionario_venda = None  # Definir como None
         for email in funcionarios_emails:
             funcionario = await Employees.filter(email=email, usuario_id=admin.id).first()
             if not funcionario:
@@ -90,6 +96,10 @@ async def create_mock_data():
                     usuario_id=admin.id,
                 )
                 print(f"✅ Funcionário criado: {funcionario.nome}")
+
+            # Pega o primeiro funcionário criado para usar na venda
+            if not funcionario_venda:
+                funcionario_venda = funcionario
 
         # ========================
         # Criar produtos (10 fixos)
@@ -114,27 +124,35 @@ async def create_mock_data():
             {"ticket": "Destaques"},
         ]
 
+        produto_venda = None  # Definir como None
+
         for p in produtos_data:
-            for ticket in tickets:
-                produto = await Produto.filter(product_code=p["code"], usuario_id=admin.id).first()
-                if not produto:
-                    ticket = random.choice([t["ticket"] for t in tickets])
-                    await Produto.create(
-                        product_code=p["code"],
-                        name=p["name"],
-                        stock=10,
-                        stoke_max=300,
-                        stoke_min=20,
-                        cost_price=p["cost"],
-                        price_uni=p["cost"] * 1.2,
-                        sale_price=p["sale"],
-                        supplier=p["supplier"],
-                        ticket=ticket,
-                        controllstoke=random.choice(["Sim", "Não"]),
-                        group=random.choice(['Bebidas', 'Gelados', 'Brinquedos']),
-                        usuario_id=admin.id,
-                    )
-                    print(f"✅ Produto criado: {p['name']}")
+            # Filtra apenas um para a criação, se não existir.
+            # O loop "for ticket in tickets" está incorreto, pois cria 4 produtos iguais se não filtrado.
+            # Corrigido para criar apenas um produto por código se ele não existir.
+            produto = await Produto.filter(product_code=p["code"], usuario_id=admin.id).first()
+            if not produto:
+                ticket_choice = random.choice([t["ticket"] for t in tickets])
+                produto = await Produto.create(
+                    product_code=p["code"],
+                    name=p["name"],
+                    stock=10,
+                    stoke_max=300,
+                    stoke_min=20,
+                    cost_price=p["cost"],
+                    price_uni=p["cost"] * 1.2,
+                    sale_price=p["sale"],
+                    supplier=p["supplier"],
+                    ticket=ticket_choice,
+                    controllstoke=random.choice(["Sim", "Não"]),
+                    group=random.choice(['Bebidas', 'Gelados', 'Brinquedos']),
+                    usuario_id=admin.id,
+                )
+                print(f"✅ Produto criado: {p['name']}")
+
+            # Pega o primeiro produto criado para usar na venda
+            if not produto_venda:
+                produto_venda = produto
 
         # ========================
         # Criar clientes (3 ativos)
@@ -163,11 +181,9 @@ async def create_mock_data():
                 )
                 print(f"✅ Cliente criado: {nome}")
 
-        # Cadastrado uma venda no formato de pagamento parcial
-        # Onde o objetivo e recebe um um valor ate que a divida seja fechada
-
-        import json
-
+        # ========================
+        # Cadastrar Vendas Parciais
+        # ========================
         names = ['Gilderlan', 'maria', 'otavio', 'mainco', 'jessica']
         cpfs = [123456789098, 123454439098, 123256739098, 43645298723383, 103456789098]
         tels = [1234567891234, 13456732156754, 398765432121, 83645298710983, 98876547658767]
@@ -175,12 +191,11 @@ async def create_mock_data():
         for name, cpf, tel in zip(names, cpfs, tels):
             partial = await Partial.filter(customers_name=name, usuario_id=admin.id).first()
             if not partial:
-
                 await Partial.create(
                     usuario_id=admin.id,
                     customers_name=name,
-                    cpf=str(cpf),  # pega 1 CPF
-                    tel=str(tel),  # pega 1 telefone
+                    cpf=str(cpf),
+                    tel=str(tel),
                     product_name=random.choice(produtos_data).get("name"),
                     value=100.00,
                     payment_method=random.choice(__PAYMENT_METHODS),
@@ -190,16 +205,67 @@ async def create_mock_data():
         cliente_teste = await Partial.first()
 
         if cliente_teste:
-            # Criando a instância da classe
             teste_venda_parcial = PartialPayment(
                 payment_method=cliente_teste.payment_method,
-                value_received=50,  # pagando metade
+                value_received=50,
                 cpf=cliente_teste.cpf,
                 user_id=cliente_teste.usuario_id,
             )
-
-            # Rodando a atualização
             resultado = await teste_venda_parcial.update_value()
             print("Dados de cliente atualizado")
+
+        # ========================
+        # 🎯 INÍCIO DA VENDA DE TESTE (CHECKOUT)
+        # ========================
+        if admin and produto_venda and funcionario_venda:
+
+            # Dados da Venda
+            PROD_CODE = produto_venda.product_code
+            QUANTITY = 3  # Aumentado para 3
+            PAYMENT = random.choice(__PAYMENT_METHODS)
+
+            # Calcula o valor total e o troco (se for DINHEIRO)
+            total_venda = produto_venda.sale_price * QUANTITY
+            # Recebe um valor 10.00 a mais se for DINHEIRO, senão recebe o valor exato
+            valor_recebido = total_venda + 10.00 if PAYMENT == 'DINHEIRO' else total_venda
+            troco = 10.00 if PAYMENT == 'DINHEIRO' else 0.0
+
+            print("\n🛒 Iniciando processo de Checkout (Venda de Teste)...")
+
+            checkout_processor = Checkout()
+
+            try:
+                # O método process_sale espera o `current_user` ser o objeto do usuário logado (Admin ou Funcionario)
+                receipt, status_ok = await checkout_processor.process_sale(
+                    current_user=admin,  # Passa o objeto Usuario (Admin)
+                    product_code=PROD_CODE,
+                    quantity=QUANTITY,
+                    payment_method=PAYMENT,
+                    funcionario_id=funcionario_venda.id,  # Venda atribuída ao funcionário
+                    valor_recebido=valor_recebido,
+                    troco=troco,
+                )
+
+                if status_ok:
+                    print(f"✅ Venda Processada com Sucesso!")
+                    print(f"  - Produto: {produto_venda.name}")
+                    print(f"  - Quantidade: {QUANTITY}")
+                    print(f"  - Total: R$ {total_venda:.2f}")
+                    print(f"  - Pagamento: {PAYMENT}")
+                    print(f"  - Código da Venda: {checkout_processor.sale_code}")
+                    print(f"  - Novo Estoque: {produto_venda.stock - QUANTITY}")
+                else:
+                    print("❌ Venda falhou, mas não levantou exceção. Verifique logs do Checkout.")
+
+            except HTTPException as e:
+                print(f"❌ Erro HTTP ao processar a venda de teste: {e.detail}")
+            except Exception as e:
+                print(f"❌ Erro inesperado ao processar a venda de teste: {e}")
+        else:
+            print("🛑 Dados essenciais (Admin, Produto ou Funcionário) não encontrados para a venda de teste.")
+
+        # ========================
+        # Fim da Transação
+        # ========================
 
         print("🎉 Dados de teste criados com sucesso (mínimos necessários)!")

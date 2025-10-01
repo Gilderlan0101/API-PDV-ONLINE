@@ -2,6 +2,8 @@ from fastapi import APIRouter, Depends
 from src.auth.deps import get_current_user
 from src.schemas.schema_user import SystemUser
 from src.controllers.products.monitoring_products import ProductInfo
+from src.controllers.sales.sales_controller import information_about_sales_and_products_and_employees
+
 
 list_products = APIRouter(prefix="/products", tags=["Produtos"])
 
@@ -45,3 +47,12 @@ async def low_stock(current_user: SystemUser = Depends(get_current_user)) -> dic
     product_info = ProductInfo(current_user.id)
     all_products_witch_low_stock = await product_info.low_product_stock()
     return {"stokc": all_products_witch_low_stock}
+
+
+@list_products.get('/informacao-geral-vendas')
+async def informatios(current_user: SystemUser = Depends(get_current_user)):
+    """
+    Retona informação completa sobre vendas, quem vendeu, quantidade,data entre outras informaçoes
+    """
+
+    return await information_about_sales_and_products_and_employees(user_id=current_user.id)

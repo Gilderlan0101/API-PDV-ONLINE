@@ -20,12 +20,10 @@ async def getEmployees(user_id: int):
         employees = await Employees.filter(usuario_id=user_id).all()
         employee_information = []
 
-
         cache_key = f"employee:{user_id}"
         # Verifica se já tem cache
         cache = client.get(cache_key)
         if cache:
-            print('CACHE EM FUNCIONÁRIOS.')
             return json.loads(cache)
 
         match employees:
@@ -33,12 +31,21 @@ async def getEmployees(user_id: int):
             case employees if len(employees) > 0:
                 for date in employees:
 
-                    formate_data = OutputFormat(nome=date.nome, cargo=date.cargo, email=date.email, telefone=date.telefone, ativo=date.ativo)
+                    formate_data = OutputFormat(
+                        nome=date.nome,
+                        valor_venda=date.result_of_all_sales if date.result_of_all_sales is not None else 0,
+                        cargo=date.cargo,
+                        email=date.email,
+                        telefone=date.telefone,
+                        ativo=date.ativo,
+                    )
+
                     if date.ativo is True:
                         employee_information.append(
-                            {   
+                            {
                                 "id": date.id,
                                 'nome': formate_data.nome,
+                                "valor_venda": formate_data.valor_venda,
                                 'cargo': formate_data.cargo,
                                 'email': formate_data.email,
                                 'telefone': formate_data.telefone or '',

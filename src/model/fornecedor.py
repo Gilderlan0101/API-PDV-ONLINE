@@ -56,17 +56,17 @@ class Fornecedor(models.Model):
     tipo = fields.CharEnumField(SupplierType, default=SupplierType.PESSOA_JURIDICA)
     razao_social = fields.CharField(max_length=200)
     nome_fantasia = fields.CharField(max_length=200, null=True)
-    
+
     # REMOVER unique=True ou usar index=True apenas
     cnpj = fields.CharField(max_length=14, null=True, index=True)  # Removido unique=True
-    cpf = fields.CharField(max_length=11, null=True, index=True)   # Removido unique=True
-    
+    cpf = fields.CharField(max_length=11, null=True, index=True)  # Removido unique=True
+
     ie_status = fields.CharEnumField(IEStatus, default=IEStatus.CONTRIBUINTE)
     inscricao_estadual = fields.CharField(max_length=20, null=True)
     inscricao_municipal = fields.CharField(max_length=20, null=True)
     regime_tributario = fields.CharEnumField(TaxRegime, default=TaxRegime.SIMPLES_NACIONAL)
     email = fields.CharField(max_length=200, null=True)
-    
+
     # Campos JSON com valores padrão
     telefones = fields.JSONField(default=list)
     site = fields.CharField(max_length=200, null=True)
@@ -93,6 +93,6 @@ class Fornecedor(models.Model):
 
     class Meta:
         table = "fornecedores"
-        
+
     def __str__(self):
         return f"{self.razao_social} ({self.tipo})"

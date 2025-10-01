@@ -8,7 +8,6 @@ from src.schemas.funcs.registre_funcs import OutputFormat
 from src.controllers.employees.get_employee import getEmployees
 
 
-
 @employees_router.get('/employee_list', response_model=List[OutputFormat])
 async def alluserEmployee(current_user: Usuario = Depends(get_current_user, use_cache=True)):
     """

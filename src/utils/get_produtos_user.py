@@ -3,6 +3,7 @@ from typing import Optional
 from src.model.product import Produto
 from src.core.cache import client
 
+
 async def get_product_by_user(user_id: int, code: Optional[str] = None, name: Optional[str] = None):
     """Busca produto pelo usuário, código ou nome."""
 

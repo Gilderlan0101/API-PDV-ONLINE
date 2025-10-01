@@ -1,6 +1,9 @@
 from datetime import datetime
 from typing import Optional
 from fastapi import HTTPException
+from tortoise.transactions import atomic
+from tortoise.expressions import Q
+
 
 # Certifique-se de que os imports estão corretos
 from src.controllers.sales.sales import Checkout
@@ -8,9 +11,6 @@ from src.controllers.car.cart_control import CartManagerDB
 from src.model.user import Usuario
 from src.model.product import Produto
 from src.model.sale import Sales
-from tortoise.transactions import atomic
-from tortoise.expressions import Q
-
 
 cart = CartManagerDB()
 
@@ -121,6 +121,7 @@ async def processar_venda_carrinho(
         return {"success": False, "error": f"Erro interno ao processar itens do carrinho: {str(e)}"}
 
     if not itens_processados:
+        await cart.limpar_carrinho(user_id=user_id)
         return {"success": False, "error": f"Nenhum dos {len(cart_items)} itens pôde ser processado."}
 
     # 🔹 Criar checkout instance
@@ -151,7 +152,7 @@ async def processar_venda_carrinho(
     checkout_instance.sale_code = f"V{venda.id:06d}"
 
     # Limpar carrinho
-    cart.limpar_carrinho(user_id=user_id)
+    await cart.limpar_carrinho(user_id=user_id)
 
     return {
         "success": True,

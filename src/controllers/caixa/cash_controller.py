@@ -1,5 +1,6 @@
 # src/controllers/cash_controller.py
 from tortoise.transactions import in_transaction
+from tortoise.expressions import F
 from datetime import datetime
 from zoneinfo import ZoneInfo
 from src.model.cashmovement import CashMovement
@@ -282,6 +283,11 @@ class FinalizationObjcts:
             # Adiciona funcionário se existir
             if caixa.funcionario:
                 movimento_data["funcionario_id"] = caixa.funcionario.id
+
+            # Salva o total em reais das vendas feitas pelo funcionário
+            await Employees.filter(usuario_id=movimento_data['usuario_id'], id=movimento_data["funcionario_id"]).update(
+                result_of_all_sales=F("result_of_all_sales") + movimento_data['valor']
+            )
 
             await CashMovement.create(**movimento_data)
 

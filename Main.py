@@ -28,7 +28,6 @@ from fastapi.middleware.cors import CORSMiddleware
 # from src.controllers.payments.partial import PartialPayment, Person
 # from src.controllers.products.products_infors import Products
 
-
 ######################################################################
 
 

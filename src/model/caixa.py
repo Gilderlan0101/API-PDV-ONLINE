@@ -15,6 +15,8 @@ class Caixa(models.Model):
     saldo_atual = fields.FloatField(default=0.0)  # Atualizado com vendas
     valor_fechamento = fields.FloatField(null=True)  # Valor informado ao fechar
     valor_sistema = fields.FloatField(null=True)  # Total do sistema calculado
+    # value_received = fields.FloatField(null=True)
+    change = fields.FloatField(null=True)
     # Diferença entre valor_fechamento e valor_sistema
     diferenca = fields.FloatField(null=True)
     aberto = fields.BooleanField(default=False)
