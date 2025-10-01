@@ -16,8 +16,8 @@ async def sales_of_the_day(user_id: int) -> int:
         # 1. Busca todas as vendas do usuário no DIA ATUAL
         sales = await Sales.filter(
             usuario_id=user_id,
-            criado_em__gte=start_of_day, # Filtra por data: maior ou igual ao início do dia
-            criado_em__lte=end_of_day,   # Filtra por data: menor ou igual ao fim do dia
+            criado_em__gte=start_of_day,  # Filtra por data: maior ou igual ao início do dia
+            criado_em__lte=end_of_day,  # Filtra por data: menor ou igual ao fim do dia
         ).all()
 
         # 2. Extrai os códigos de venda (sale_code)
@@ -25,8 +25,8 @@ async def sales_of_the_day(user_id: int) -> int:
         codes = [sale.sale_code for sale in sales if sale.sale_code is not None]
 
         # 3. Conta a quantidade de códigos de venda ÚNICOS
-        sales_quantity = len(set(codes)) 
-        
+        sales_quantity = len(set(codes))
+
         # Retonando quantidade de vendas
         return sales_quantity
 

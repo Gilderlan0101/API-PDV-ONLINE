@@ -26,7 +26,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 # from src.controllers.products.monitoring_products import ProductInfo
 # from src.controllers.payments.partial import PartialPayment, Person
-# from src.controllers.products.products_infors import Products
+from src.controllers.products.products_infors import Products
 
 ######################################################################
 
@@ -45,6 +45,11 @@ async def lifespan(app: FastAPI):
     await create_mock_data_and_sell_all_stock()
 
     yield  # ← Aqui a aplicação roda
+
+    teste = Products(user_id=1)
+
+    r = await teste.calculate_average_ticket()
+    print(r)
 
     # Fecha conexões
     await Tortoise.close_connections()

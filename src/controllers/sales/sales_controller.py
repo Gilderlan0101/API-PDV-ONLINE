@@ -73,7 +73,7 @@ async def information_about_sales_and_products_and_employees(user_id: int) -> Di
                     ),
                 },
                 "products": {
-                    "name": return_products.produto.name, # Assumindo que o campo é 'name' e não 'product_name'
+                    "name": return_products.produto.name,  # Assumindo que o campo é 'name' e não 'product_name'
                     "lot_bar_code": (
                         return_products.produto.lot_bar_code
                         if return_products.produto and return_products.produto.lot_bar_code is not None
@@ -87,7 +87,9 @@ async def information_about_sales_and_products_and_employees(user_id: int) -> Di
                     "id": return_products.caixa.id if return_products.caixa else None,
                     "name": return_products.caixa.nome if return_products.caixa else None,
                     "valor_fechamento": (
-                        return_products.caixa.valor_fechamento if return_products.caixa and return_products.caixa.valor_fechamento is not None else "Não definido ainda."
+                        return_products.caixa.valor_fechamento
+                        if return_products.caixa and return_products.caixa.valor_fechamento is not None
+                        else "Não definido ainda."
                     ),
                     "saldo_atual": (return_products.caixa.saldo_atual if return_products.caixa else "Não definido ainda."),
                     "change": (return_products.caixa.change if return_products.caixa and return_products.caixa.change else "Sem troco"),
@@ -97,18 +99,14 @@ async def information_about_sales_and_products_and_employees(user_id: int) -> Di
             # Agrupar a venda na lista do caixa correspondente
             if caixa_id not in sales_by_caixa:
                 sales_by_caixa[caixa_id] = []
-            
-            sales_by_caixa[caixa_id].append(sale_data)
 
+            sales_by_caixa[caixa_id].append(sale_data)
 
         # 🔹 Armazenando no cache por 60s
         client.setex(cache_key, 60, json.dumps(sales_by_caixa, default=str))
-        
+
         return sales_by_caixa
 
     except Exception as e:
         # Logar o erro 'e' para fins de debug é essencial em ambientes de produção
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Erro interno ao processar vendas: {e}"
-        )
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Erro interno ao processar vendas: {e}")

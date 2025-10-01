@@ -1,8 +1,11 @@
 from fastapi import HTTPException, status
 from fastapi.encoders import jsonable_encoder
 from typing import Dict, Any
+from tortoise.functions import Sum, Count
+
 from src.utils.get_produtos_user import get_product_by_user
 from src.model.product import Produto
+from src.model.sale import Sales
 from src.core.cache import client
 import json
 
@@ -96,3 +99,40 @@ class Products:
 
         except Exception as e:
             raise e
+
+    async def calculate_average_ticket(self) -> float:
+        """
+        Calcula o Ticket Médio (Receita Total / Número de Transações Únicas)
+        para todas as vendas do usuário.
+        """
+
+        try:
+            # 1. Agrega a Receita Total e Conta o número de códigos de venda únicos (transações)
+            aggregation = (
+                await Sales.filter(usuario_id=self.user_id)
+                .annotate(
+                    # Soma de todos os total_price (Receita Bruta)
+                    total_revenue=Sum('total_price'),
+                    # Conta o número de códigos de vendas únicos (transações).
+                    # Se 'sale_code' puder ser NULL, o COUNT(DISTINCT) é a forma mais segura.
+                    num_transactions=Count('id', distinct=True),
+                )
+                .first()
+            )
+
+            # 2. Verifica e calcula
+            if aggregation and aggregation.total_revenue is not None and aggregation.num_transactions > 0:
+
+                total_revenue = aggregation.total_revenue
+                num_transactions = aggregation.num_transactions
+
+                # TICKET MÉDIO = Receita Total / Número de Transações
+                ticket_medio = total_revenue / num_transactions
+
+                return round(ticket_medio, 2)
+
+            return 0.0  # Retorna zero se não houver vendas ou transações
+
+        except Exception as e:
+            print(f"Erro ao calcular o ticket médio: {e}")
+            return 0.0

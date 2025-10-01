@@ -24,6 +24,7 @@ from tortoise.expressions import F
 
 __PAYMENT_METHODS = ['PIX', 'CARTAO', 'DINHEIRO', 'NOTA', 'FIADO']
 
+
 async def create_mock_data_and_sell_all_stock():
     """Cria dados mockados e realiza vendas de todo o estoque com diferentes métodos de pagamento"""
     fake = Faker("pt_BR")
@@ -54,7 +55,7 @@ async def create_mock_data_and_sell_all_stock():
         # ========================
         funcionarios_emails = ["gilderlan@teste.com", "maria@teste.com", "gilvan@teste.com"]
         funcionarios_criados = []
-        
+
         for email in funcionarios_emails:
             funcionario = await Employees.filter(email=email, usuario_id=admin.id).first()
             if not funcionario:
@@ -82,26 +83,22 @@ async def create_mock_data_and_sell_all_stock():
             {"code": "BEB003", "name": "Água Mineral 500ml", "cost": 1.00, "sale": 2.50, "supplier": "Crystal", "group": "Bebidas"},
             {"code": "BEB004", "name": "Cerveja Heineken 600ml", "cost": 6.00, "sale": 9.00, "supplier": "Heineken", "group": "Bebidas"},
             {"code": "BEB005", "name": "Energético Red Bull", "cost": 7.50, "sale": 12.00, "supplier": "Red Bull", "group": "Bebidas"},
-            
             # Alimentos
             {"code": "ALI001", "name": "Arroz 5kg", "cost": 18.00, "sale": 25.00, "supplier": "Tio João", "group": "Alimentos"},
             {"code": "ALI002", "name": "Feijão 1kg", "cost": 8.00, "sale": 12.00, "supplier": "Camil", "group": "Alimentos"},
             {"code": "ALI003", "name": "Óleo de Soja 900ml", "cost": 5.00, "sale": 8.00, "supplier": "Liza", "group": "Alimentos"},
             {"code": "ALI004", "name": "Macarrão Espaguete 500g", "cost": 3.50, "sale": 6.00, "supplier": "Renata", "group": "Alimentos"},
             {"code": "ALI005", "name": "Açúcar 1kg", "cost": 3.00, "sale": 5.00, "supplier": "União", "group": "Alimentos"},
-            
             # Limpeza
             {"code": "LIM001", "name": "Detergente 500ml", "cost": 1.50, "sale": 3.00, "supplier": "Ypê", "group": "Limpeza"},
             {"code": "LIM002", "name": "Sabão em Pó 1kg", "cost": 8.50, "sale": 12.00, "supplier": "Omo", "group": "Limpeza"},
             {"code": "LIM003", "name": "Amaciante 2L", "cost": 7.00, "sale": 10.00, "supplier": "Comfort", "group": "Limpeza"},
             {"code": "LIM004", "name": "Desinfetante 1L", "cost": 4.00, "sale": 6.50, "supplier": "Pinho Sol", "group": "Limpeza"},
-            
             # Higiene
             {"code": "HIG001", "name": "Sabonete", "cost": 1.20, "sale": 2.50, "supplier": "Dove", "group": "Higiene"},
             {"code": "HIG002", "name": "Pasta de Dente", "cost": 2.50, "sale": 4.50, "supplier": "Colgate", "group": "Higiene"},
             {"code": "HIG003", "name": "Shampoo 300ml", "cost": 6.00, "sale": 9.00, "supplier": "Head & Shoulders", "group": "Higiene"},
             {"code": "HIG004", "name": "Condicionador 300ml", "cost": 6.00, "sale": 9.00, "supplier": "Seda", "group": "Higiene"},
-            
             # Diversos
             {"code": "DIV001", "name": "Pilhas AA", "cost": 4.00, "sale": 7.00, "supplier": "Duracell", "group": "Diversos"},
             {"code": "DIV002", "name": "Fita Adesiva", "cost": 2.00, "sale": 4.00, "supplier": "Scotch", "group": "Diversos"},
@@ -132,7 +129,7 @@ async def create_mock_data_and_sell_all_stock():
                 print(f"✅ Produto criado: {p['name']} - Estoque: {stock_inicial}")
             else:
                 print(f"📦 Produto existente: {p['name']} - Estoque: {produto.stock}")
-            
+
             produtos_criados.append(produto)
 
         # ========================
@@ -140,7 +137,7 @@ async def create_mock_data_and_sell_all_stock():
         # ========================
         clientes_nomes = ["João Silva", "Maria Souza", "Carlos Pereira", "Ana Santos", "Pedro Costa"]
         clientes_criados = []
-        
+
         for nome in clientes_nomes:
             cliente = await Customer.filter(full_name=nome, usuario_id=admin.id).first()
             if not cliente:
@@ -169,7 +166,7 @@ async def create_mock_data_and_sell_all_stock():
         # ABRIR CAIXA PARA VENDAS
         # ========================
         print("\n💰 Abrindo caixa para processar vendas...")
-        
+
         caixa_aberto = await Caixa.filter(usuario_id=admin.id, aberto=True).first()
         if not caixa_aberto:
             caixa_aberto = await Caixa.create(
@@ -178,7 +175,7 @@ async def create_mock_data_and_sell_all_stock():
                 aberto=True,
                 data_abertura=datetime.now(),
                 usuario_id=admin.id,
-                funcionario_id=funcionario_venda.id if funcionario_venda else None
+                funcionario_id=funcionario_venda.id if funcionario_venda else None,
             )
             print(f"✅ Caixa aberto: ID {caixa_aberto.id} - Saldo: R$ {caixa_aberto.saldo_atual:.2f}")
         else:
@@ -187,9 +184,9 @@ async def create_mock_data_and_sell_all_stock():
         # ========================
         # 🎯 PROCESSAR VENDAS DE TODO O ESTOQUE
         # ========================
-        print("\n" + "="*60)
+        print("\n" + "=" * 60)
         print("🛒 INICIANDO VENDAS DE TODO O ESTOQUE")
-        print("="*60)
+        print("=" * 60)
 
         cart_manager = CartManagerDB()
         vendas_realizadas = 0
@@ -197,10 +194,10 @@ async def create_mock_data_and_sell_all_stock():
 
         # Agrupar produtos por método de pagamento
         grupos_pagamento = {
-            'DINHEIRO': produtos_criados[0:5],      # Primeiros 5 produtos para DINHEIRO
-            'PIX': produtos_criados[5:10],          # Próximos 5 para PIX
-            'CARTAO': produtos_criados[10:15],      # Próximos 5 para CARTAO
-            'NOTA': produtos_criados[15:20]         # Últimos 5 para NOTA
+            'DINHEIRO': produtos_criados[0:5],  # Primeiros 5 produtos para DINHEIRO
+            'PIX': produtos_criados[5:10],  # Próximos 5 para PIX
+            'CARTAO': produtos_criados[10:15],  # Próximos 5 para CARTAO
+            'NOTA': produtos_criados[15:20],  # Últimos 5 para NOTA
         }
 
         for metodo_pagamento, produtos in grupos_pagamento.items():
@@ -211,7 +208,7 @@ async def create_mock_data_and_sell_all_stock():
                 if produto.stock > 0:
                     try:
                         quantidade_venda = produto.stock  # Vender todo o estoque
-                        
+
                         print(f"📦 Vendendo {quantidade_venda} unidades de {produto.name}")
 
                         # Configurar valores para diferentes métodos de pagamento
@@ -231,7 +228,7 @@ async def create_mock_data_and_sell_all_stock():
 
                         # Processar venda individual usando Checkout
                         checkout_processor = Checkout()
-                        
+
                         receipt, status_ok = await checkout_processor.process_sale(
                             current_user=admin,
                             product_code=produto.product_code,
@@ -248,21 +245,21 @@ async def create_mock_data_and_sell_all_stock():
                             # Atualizar caixa usando FinalizationObjcts
                             finalizador = FinalizationObjcts(checkout_processor)
                             await finalizador.Updating_cash_values(caixa_aberto.id)
-                            
+
                             vendas_realizadas += 1
                             valor_total_vendas += valor_total
-                            
+
                             print(f"✅ Venda realizada: {produto.name}")
                             print(f"   Quantidade: {quantidade_venda}")
                             print(f"   Total: R$ {valor_total:.2f}")
                             print(f"   Método: {metodo_pagamento}")
                             if checkout_processor.sale_code:
                                 print(f"   Código: {checkout_processor.sale_code}")
-                            
+
                             # Atualizar produto após venda
                             produto_apos_venda = await Produto.get(id=produto.id)
                             print(f"   Estoque atual: {produto_apos_venda.stock}")
-                            
+
                         else:
                             print(f"❌ Falha na venda: {produto.name}")
 
@@ -271,6 +268,7 @@ async def create_mock_data_and_sell_all_stock():
                     except Exception as e:
                         print(f"❌ Erro inesperado na venda de {produto.name}: {str(e)}")
                         import traceback
+
                         print(f"Traceback: {traceback.format_exc()}")
 
                 else:
@@ -284,29 +282,33 @@ async def create_mock_data_and_sell_all_stock():
 
         # Buscar produtos que ainda têm estoque
         produtos_com_estoque = await Produto.filter(usuario_id=admin.id, stock__gt=0).all()
-        
+
         if produtos_com_estoque:
             # Criar grupos de produtos para vendas em lote
             grupos_carrinho = []
             grupo_atual = []
-            
+
             for produto in produtos_com_estoque:
                 if len(grupo_atual) < 3:  # Grupos de 3 produtos
-                    grupo_atual.append({
-                        "product_code": produto.product_code,
-                        "product_name": produto.name,
-                        "quantity": min(produto.stock, 30),  # Vender no máximo 2 de cada para teste
-                        "unit_price": float(produto.sale_price)
-                    })
+                    grupo_atual.append(
+                        {
+                            "product_code": produto.product_code,
+                            "product_name": produto.name,
+                            "quantity": min(produto.stock, 30),  # Vender no máximo 2 de cada para teste
+                            "unit_price": float(produto.sale_price),
+                        }
+                    )
                 else:
                     grupos_carrinho.append(grupo_atual)
-                    grupo_atual = [{
-                        "product_code": produto.product_code,
-                        "product_name": produto.name,
-                        "quantity": min(produto.stock, 30),
-                        "unit_price": float(produto.sale_price)
-                    }]
-            
+                    grupo_atual = [
+                        {
+                            "product_code": produto.product_code,
+                            "product_name": produto.name,
+                            "quantity": min(produto.stock, 30),
+                            "unit_price": float(produto.sale_price),
+                        }
+                    ]
+
             if grupo_atual:
                 grupos_carrinho.append(grupo_atual)
 
@@ -314,7 +316,7 @@ async def create_mock_data_and_sell_all_stock():
             for i, grupo in enumerate(grupos_carrinho):
                 metodo_carrinho = random.choice(__PAYMENT_METHODS)
                 print(f"\n🛍️  Processando lote {i+1} com {len(grupo)} produtos ({metodo_carrinho})")
-                
+
                 try:
                     resultado = await processar_venda_carrinho(
                         user_id=admin.id,
@@ -323,7 +325,9 @@ async def create_mock_data_and_sell_all_stock():
                         employee_operator_id=funcionario_venda.id if funcionario_venda else None,
                         customer_id=random.choice(clientes_criados).id if clientes_criados else None,
                         installments=random.choice([1, 2]) if metodo_carrinho == 'CARTAO' else None,
-                        valor_recebido=sum(item['unit_price'] * item['quantity'] for item in grupo) + 10.00 if metodo_carrinho == 'DINHEIRO' else None,
+                        valor_recebido=(
+                            sum(item['unit_price'] * item['quantity'] for item in grupo) + 10.00 if metodo_carrinho == 'DINHEIRO' else None
+                        ),
                         troco=10.00 if metodo_carrinho == 'DINHEIRO' else None,
                     )
 
@@ -333,7 +337,7 @@ async def create_mock_data_and_sell_all_stock():
                         valor_total_vendas += valor_lote
                         print(f"✅ Lote {i+1} vendido com sucesso!")
                         print(f"   Valor do lote: R$ {valor_lote:.2f}")
-                        
+
                         # Atualizar caixa
                         if 'data' in resultado and 'checkout_instance' in resultado['data']:
                             finalizador = FinalizationObjcts(resultado['data']['checkout_instance'])
@@ -347,18 +351,18 @@ async def create_mock_data_and_sell_all_stock():
         # ========================
         # RELATÓRIO FINAL
         # ========================
-        print("\n" + "="*60)
+        print("\n" + "=" * 60)
         print("📊 RELATÓRIO FINAL DE VENDAS")
-        print("="*60)
-        
+        print("=" * 60)
+
         # Verificar estoque final
         produtos_finais = await Produto.filter(usuario_id=admin.id).all()
         estoque_final = sum(prod.stock for prod in produtos_finais)
         produtos_zerados = sum(1 for prod in produtos_finais if prod.stock == 0)
-        
+
         # Verificar saldo final do caixa
         caixa_final = await Caixa.get(id=caixa_aberto.id)
-        
+
         print(f"✅ Vendas realizadas: {vendas_realizadas}")
         print(f"💰 Valor total em vendas: R$ {valor_total_vendas:.2f}")
         print(f"📦 Estoque final: {estoque_final} unidades")
@@ -366,7 +370,7 @@ async def create_mock_data_and_sell_all_stock():
         print(f"💵 Saldo inicial do caixa: R$ 1000.00")
         print(f"💵 Saldo final do caixa: R$ {caixa_final.saldo_atual:.2f}")
         print(f"📈 Lucro no caixa: R$ {caixa_final.saldo_atual - 1000.00:.2f}")
-        
+
         # Fechar o caixa
         caixa_final.aberto = False
         caixa_final.data_fechamento = datetime.now()
@@ -374,4 +378,3 @@ async def create_mock_data_and_sell_all_stock():
         print(f"🔒 Caixa fechado: ID {caixa_final.id}")
 
         print("\n🎉 Processo de vendas concluído com sucesso!")
-

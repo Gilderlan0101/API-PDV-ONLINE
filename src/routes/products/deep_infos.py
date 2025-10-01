@@ -30,3 +30,13 @@ async def search_products_by_tickets(
     result = await product_service.observe_products_by_tickets(type_ticket)
 
     return result
+
+
+@product_deep_infos.get('/ticket-medio')
+async def average_ticket(current_user: SystemUser = Depends(get_current_user)):
+    """
+    Retorna valor medio do ticket de venda da empresa
+    """
+
+    product_service = Products(current_user.empresa_id)
+    return await product_service.calculate_average_ticket()

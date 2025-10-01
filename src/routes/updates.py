@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from datetime import datetime, time
 from zoneinfo import ZoneInfo
-from tortoise.functions import Sum # Import necessário para agregar
+from tortoise.functions import Sum  # Import necessário para agregar
 from src.model.sale import Sales
 from src.model.user import Usuario
 from src.auth.deps import get_current_user
@@ -26,35 +26,36 @@ async def profit(current_user: Usuario = Depends(get_current_user)) -> Dict[str,
         end_of_day = datetime.combine(today, time.max, tzinfo=ZoneInfo("America/Sao_Paulo"))
 
         # --- 2. CONSULTAS ---
-        
+
         # A. Busca todas as vendas do usuário no dia atual (para iteração e lista)
         sales_of_the_day_list = await Sales.filter(
             usuario_id=current_user.id,
             criado_em__gte=start_of_day,
             criado_em__lte=end_of_day,
         ).all()
-        
+
         # B. Consulta de Agregação (para total de itens vendidos no dia)
-        daily_aggregation = await Sales.filter(
-            usuario_id=current_user.id,
-            criado_em__gte=start_of_day,
-            criado_em__lte=end_of_day,
-        ).annotate(
-            total_items_sold=Sum('quantity')
-        ).first()
+        daily_aggregation = (
+            await Sales.filter(
+                usuario_id=current_user.id,
+                criado_em__gte=start_of_day,
+                criado_em__lte=end_of_day,
+            )
+            .annotate(total_items_sold=Sum('quantity'))
+            .first()
+        )
 
         # C. Contagem de Vendas Únicas (usando a função corrigida)
         qtd_sales_day = await sales_of_the_day(current_user.id)
-        
+
         # D. Contagem de Vendas (Histórico Total)
         total_sales_count = await Sales.filter(usuario_id=current_user.id).count()
 
-
         # --- 3. PROCESSAMENTO DE DADOS ---
         total_user_profit = 0.0  # Receita bruta total do dia
-        total_lucro = 0.0        # Lucro líquido total do dia
+        total_lucro = 0.0  # Lucro líquido total do dia
         sales_list: List[Dict] = []
-        
+
         for sale in sales_of_the_day_list:
             total_user_profit += sale.total_price
             total_lucro += sale.lucro_total
@@ -75,20 +76,17 @@ async def profit(current_user: Usuario = Depends(get_current_user)) -> Dict[str,
         # Total de itens vendidos hoje
         total_items_sold_today = daily_aggregation.total_items_sold if daily_aggregation and daily_aggregation.total_items_sold is not None else 0
 
-
         # --- 4. RETORNO OTIMIZADO ---
         return {
             # 🎯 MÉTRICAS DO DIA
-            'total_user_profit': f'{total_user_profit:.2f}', # Receita bruta do dia
-            'total_lucro': f'{total_lucro:.2f}',             # Lucro líquido real do dia
-            'sales_of_the_day': qtd_sales_day,               # Quantidade de Vendas Únicas (Transações) do dia
-            'total_items_sold_today': total_items_sold_today, # Quantidade total de itens vendidos hoje
-            
+            'total_user_profit': f'{total_user_profit:.2f}',  # Receita bruta do dia
+            'total_lucro': f'{total_lucro:.2f}',  # Lucro líquido real do dia
+            'sales_of_the_day': qtd_sales_day,  # Quantidade de Vendas Únicas (Transações) do dia
+            'total_items_sold_today': total_items_sold_today,  # Quantidade total de itens vendidos hoje
             # 🎯 MÉTRICAS GERAIS
             'total_sales_count_history': total_sales_count,  # Quantidade TOTAL de registros de vendas (linhas na tabela)
-            
             # 🎯 DADOS DETALHADOS
-            'sales': sales_list, # Lista de todas as vendas do dia
+            'sales': sales_list,  # Lista de todas as vendas do dia
         }
 
     except Exception as error:

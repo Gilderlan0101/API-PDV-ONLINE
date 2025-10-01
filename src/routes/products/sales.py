@@ -45,7 +45,6 @@ async def finalizar_venda(
         print(cart_items)
         print(cart_items)
         print(cart_items)
-        
 
         if not cart_items:
             raise HTTPException(status_code=400, detail="Carrinho vazio. Adicione produtos antes de finalizar a venda.")
