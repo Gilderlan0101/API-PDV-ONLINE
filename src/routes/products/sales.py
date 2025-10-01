@@ -42,6 +42,10 @@ async def finalizar_venda(
 
         # 🔹 Verifica itens no carrinho
         cart_items = await cart.listar_produtos(cart_owner_id)
+        print(cart_items)
+        print(cart_items)
+        print(cart_items)
+        
 
         if not cart_items:
             raise HTTPException(status_code=400, detail="Carrinho vazio. Adicione produtos antes de finalizar a venda.")

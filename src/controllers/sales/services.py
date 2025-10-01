@@ -121,7 +121,7 @@ async def processar_venda_carrinho(
         return {"success": False, "error": f"Erro interno ao processar itens do carrinho: {str(e)}"}
 
     if not itens_processados:
-        await cart.limpar_carrinho(user_id=user_id)
+        #await cart.limpar_carrinho(user_id=user_id)
         return {"success": False, "error": f"Nenhum dos {len(cart_items)} itens pôde ser processado."}
 
     # 🔹 Criar checkout instance
@@ -152,7 +152,7 @@ async def processar_venda_carrinho(
     checkout_instance.sale_code = f"V{venda.id:06d}"
 
     # Limpar carrinho
-    await cart.limpar_carrinho(user_id=user_id)
+    #await cart.limpar_carrinho(user_id=user_id)
 
     return {
         "success": True,
