@@ -40,6 +40,7 @@ async def finalizar_venda(
             employee_operator_id = current_user.id
             cart_owner_id = current_user.id
 
+
         # 🔹 Verifica itens no carrinho
         cart_items = await cart.listar_produtos(cart_owner_id)
         print(cart_items)

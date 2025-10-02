@@ -10,6 +10,9 @@ from src.model.employee import Employees
 from src.utils.status_code import *
 from src.utils.payments_config import *
 
+# Cahe Redis
+from src.core.cache import client
+import json
 
 from datetime import datetime
 from typing import Optional
@@ -20,7 +23,6 @@ from tortoise.expressions import Q
 
 class CashReportController:
     # 🔹 Cache de classe: Armazena dados já carregados
-    _cached_reports = {}
 
     async def get_cash_reports(self, user_id: int, filter_data: Optional[datetime] = None, employee_name: Optional[str] = None) -> list[dict]:
         """
@@ -32,19 +34,16 @@ class CashReportController:
 
         # 🔹 Lógica da Cache
         # Chave da cache: Combina a data e o nome do funcionário para unicidade
-        cache_key = (
-            ('default', employee_name.strip().upper() if employee_name else '')
-            if not filter_data
-            else (filter_data.strftime('%Y-%m-%d'), employee_name.strip().upper() if employee_name else '')
-        )
+        cache_key = f"cash_reports:{filter_data}" or f"cash_reports:{employee_name}"
+        cache = client.get(cache_key)
+        
 
         # 🔹 Tenta retornar do cache se a chave existir
-        if cache_key in self._cached_reports:
-            print(f"✅ Retornando dados do cache para a chave: {cache_key}")
-            return self._cached_reports[cache_key]
+        if cache:
+            print(f"✅ Retornando dados do cache para a chave: {cache}")
+            return json.loads(cache)
 
-        # 🔹 Se não estiver na cache, faz a busca no banco de dados
-        print(f"❌ Cache não encontrada. Buscando dados no banco...")
+    
 
         current_user = await Usuario.get_or_none(id=user_id)
         if not current_user:
@@ -63,7 +62,7 @@ class CashReportController:
             # Busca todos os movimentos do usuário se nenhum nome for fornecido
             cash_movement_query = CashMovement.filter(usuario_id=user_id)
 
-        # 🔹 CORREÇÃO: Filtra pela data fornecida, se existir
+        # 🔹 Filtra pela data fornecida, se existir
         if filter_data:
             cash_movement_query = cash_movement_query.filter(criado_em__date=filter_data.date())
 
@@ -87,21 +86,5 @@ class CashReportController:
                 }
             )
 
-        self._cached_reports[cache_key] = movement_data
-
-        # Lógica para popular a cache padrão
-        if filter_data and ('default', '') not in self._cached_reports:
-            default_query = await CashMovement.filter(usuario_id=user_id).order_by("-criado_em")
-            default_data = [
-                {
-                    "Abertura": m.criado_em.date().strftime('%d/%m/%Y'),
-                    "Tipo_movimento": m.tipo,
-                    "Valor_entrada": round(m.valor, 2),
-                    "Descricao": m.descricao if m.descricao == "FECHAMENTO" else 'ABERTO',
-                    "caixa": m.caixa_id,
-                }
-                for m in default_query
-            ]
-            self._cached_reports[('default', '')] = default_data
-
+        client.setex(cache_key, 60, json.dumps(movement_data))        
         return movement_data

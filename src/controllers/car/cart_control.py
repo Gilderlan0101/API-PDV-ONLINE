@@ -66,7 +66,7 @@ class CartManagerDB:
             return {"aviso": "Caixa não encontrado ou fechado"}
 
         # Adicionar ou atualizar item no carrinho - AGORA USA caixa_id
-        cart_item = await CartItem.get_or_none(caixa_id=user_id, product_id=product_id)  # ✅ Corrigido: usa caixa_id em vez de user_id
+        cart_item = await CartItem.get_or_none(caixa_id=caixa_id, product_id=product_id)  # ✅ Corrigido: usa caixa_id em vez de user_id
 
         if cart_item:
             # Atualiza item existente
@@ -86,7 +86,7 @@ class CartManagerDB:
                 return {"aviso": "Produto não encontrado"}
 
             cart_item = await CartItem.create(
-                caixa_id=user_id,  # ✅ Corrigido: usa caixa_id
+                caixa_id=caixa_id,  # ✅ Corrigido: usa caixa_id
                 product_id=product_id,
                 product_name=produto.name,
                 quantity=quantity,
