@@ -22,6 +22,7 @@ import json
 from fastapi import HTTPException
 from tortoise.expressions import F
 
+import time
 __PAYMENT_METHODS = ['PIX', 'CARTAO', 'DINHEIRO', 'NOTA', 'FIADO']
 
 
@@ -48,12 +49,37 @@ async def create_mock_data_and_sell_all_stock():
                 state="SP",
                 pending=True,
             )
+
+            
             print(f"✅ Usuário admin criado: {admin.email}")
+            
+            time.sleep(2)
+
+        admin_2 = await Usuario.filter(email="gilderlan@gmail.com").first()
+        if not admin_2:
+            print('Criando um novo usuário')
+            admin_2 =  await Usuario.create(
+
+                username="Gilderlan",
+                email="gilderlan@gmail.com",
+                password=get_hashed_password("123456"),
+                company_name="Games 3D",
+                trade_name="Loja Central",
+                membros=0,
+                cnpj="12445638000199",
+                city="São Paulo",
+                state="SP",
+                pending=True,
+                )
+
+            print(f"Usuario admin_2 criado {admin_2.email}")
 
         # ========================
         # Criar funcionários
         # ========================
         funcionarios_emails = ["gilderlan@teste.com", "maria@teste.com", "gilvan@teste.com"]
+        funcionarios_emails_admin_2 = ["otavio@teste.com", "santos@teste.com", "maicon@teste.com"]
+
         funcionarios_criados = []
 
         for email in funcionarios_emails:
@@ -68,8 +94,26 @@ async def create_mock_data_and_sell_all_stock():
                     ativo=True,
                     usuario_id=admin.id,
                 )
+
+                
                 print(f"✅ Funcionário criado: {funcionario.nome}")
             funcionarios_criados.append(funcionario)
+
+        for email in funcionarios_emails_admin_2:
+            funcionario_admin_2 = await Employees.filter(email=email, usuario_id=admin_2.id).first()
+            if not funcionario_admin_2:
+                funcionario_admin_2 = await Employees.create(
+                    nome=email.split("@")[0].capitalize(),
+                    cargo="Funcionário",
+                    email=email,
+                    senha=get_hashed_password("1234"),
+                    telefone=lot_bar_code_size(),
+                    ativo=True,
+                    usuario_id=admin_2.id,
+                )
+
+                print(f"✅ Funcionário criado: {funcionario_admin_2.nome}")
+
 
         funcionario_venda = funcionarios_criados[0] if funcionarios_criados else None
 
