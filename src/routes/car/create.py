@@ -22,6 +22,6 @@ async def adicionar_produto(
     Adiciona um produto ao carrinho do usuário ou funcionário.
     """
     # sempre usar empresa_id para amarrar ao dono
-    user_id_carrinho = current_user.id
+    user_id_carrinho = current_user.empresa_id
 
     return await cart.add_produto(product_id, quantity, user_id_carrinho)

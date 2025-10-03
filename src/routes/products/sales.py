@@ -24,7 +24,7 @@ async def finalizar_venda(
     cpf: Optional[str] = Query(None, description='CPF passado dinamicamente em vendas parcias'),
     valor_recebido: Optional[float] = Query(None, description="Valor recebido em dinheiro"),
     troco: Optional[float] = Query(None, description="Troco para pagamento em dinheiro"),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: SystemUser = Depends(get_current_user),
 ):
     """
     Finaliza venda - para admin e funcionários.
@@ -35,7 +35,7 @@ async def finalizar_venda(
 
         if funcionario:
             employee_operator_id = current_user.id
-            cart_owner_id = funcionario.usuario_id
+            cart_owner_id = funcionario.id
         else:
             employee_operator_id = current_user.id
             cart_owner_id = current_user.id
@@ -52,7 +52,7 @@ async def finalizar_venda(
 
         # 🔹 CORREÇÃO: Processar TODOS os itens do carrinho
         validation_process = await processar_venda_carrinho(
-            user_id=current_user.id,
+            user_id=current_user.empresa_id,
             cart_items=cart_items,
             payment_method=payment_method.upper(),
             employee_operator_id=employee_operator_id,

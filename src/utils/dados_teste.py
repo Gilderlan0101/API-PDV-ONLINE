@@ -113,6 +113,7 @@ async def create_mock_data_and_sell_all_stock():
                 )
 
                 print(f"✅ Funcionário criado: {funcionario_admin_2.nome}")
+                print("Funcionarios de admin 2")
 
 
         funcionario_venda = funcionarios_criados[0] if funcionarios_criados else None

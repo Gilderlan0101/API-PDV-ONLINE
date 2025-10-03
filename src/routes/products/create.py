@@ -1,7 +1,7 @@
 from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from src.auth.deps import get_current_user
+from src.auth.deps import get_current_user, SystemUser
 from src.model.product import Produto
 from src.model.user import Usuario
 from src.schemas.schema_product import ProductRegisterSchema
@@ -13,7 +13,7 @@ router = APIRouter(prefix="/produtos", tags=["Produtos"])
 @router.post("/criar", status_code=status.HTTP_201_CREATED)
 async def create_product(
     prod: ProductRegisterSchema,
-    current_user: Usuario = Depends(get_current_user),
+    current_user: SystemUser = Depends(get_current_user),
 ):
     if not current_user or not current_user.id:
         raise HTTPException(status_code=400, detail="Usuário inválido")
@@ -40,7 +40,7 @@ async def create_product(
             supplier=prod.supplier,
             lot_bar_code=barcode,
             image_url=image_url,
-            usuario_id=current_user.id,  # 🔹 FK para usuário
+            usuario_id=current_user.empresa_id,  # 🔹 FK para usuário
             product_type=prod.product_type,
             active=prod.active,
             group=prod.group,
