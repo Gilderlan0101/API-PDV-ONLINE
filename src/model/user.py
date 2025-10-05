@@ -52,3 +52,5 @@ class Usuario(models.Model):
     customers = fields.ReverseRelation["Customer"]
     patials = fields.ReverseRelation["Partial"]
     patials_finished_debts = fields.ReverseRelation["finished_debts"]
+    pix = fields.ReverseRelation["pix"]
+

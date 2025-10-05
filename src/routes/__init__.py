@@ -18,6 +18,7 @@ from src.routes.customer.registre_customer_partial import customers as registre_
 
 # Metodos de pagamentos
 from src.routes.payments.partial import partial as payment_partial
+from src.routes.payments.pix import router as payment_pix
 
 from src.routes.caixa.operador_caixa import operador
 from src.routes.caixa.box_closing import operador
@@ -149,3 +150,4 @@ paymente = APIRouter(
 )
 
 paymente.include_router(payment_partial)
+paymente.include_router(payment_pix)

@@ -31,6 +31,8 @@ TORTOISE_ORM = {
                 "src.model.membros",
                 "src.model.cnpjCache",
                 "src.model.tickets",  # corrigido para plural
+                "src.model.pix",
+
                 # "aerich.models",       # obrigatório se for usar migrações com Aerich
             ],
             "default_connection": "default",

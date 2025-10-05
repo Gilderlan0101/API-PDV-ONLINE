@@ -109,6 +109,7 @@ class Server:
             "http://127.0.0.1:8000",  # FastAPI itself
             "https://front-end-pdv.onrender.com",  # Frontend Flask
             "https://api-pdv-online.onrender.com",  # Backend FastAPI
+            "https://nahtec.com.br", # Rota princial onde vamos subir o app e api
         ]
 
         self.api.add_middleware(
