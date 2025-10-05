@@ -110,6 +110,7 @@ class Server:
             "https://front-end-pdv.onrender.com",  # Frontend Flask
             "https://api-pdv-online.onrender.com",  # Backend FastAPI
             "https://nahtec.com.br", # Rota princial onde vamos subir o app e api
+            "https://nahtec.com.br/pdv" # Apenas para teste
         ]
 
         self.api.add_middleware(
@@ -134,7 +135,7 @@ class Server:
         self.api.include_router(dashboard)
         self.api.include_router(paymente)
 
-    def run(self, host: str = '127.0.0.1', port: int = 8000):
+    def run(self, host: str = '0.0.0.0', port: int = 8000):
         """Inicia o sevidor Uvicorn."""
         uvicorn.run('Main:app', host=host, port=port, reload=True, log_level="debug")
 
