@@ -8,8 +8,20 @@ from typing import Optional
 class RegisterUserForPartialMode(BaseModel):
     full_name: str
     cpf: str
-    tel: int
-    user_id: int
+    tel: str
+    produto: str
+
+class VendaParcialData(BaseModel):
+    cpf: str
+    valor_recebido: float
+    metodo_pagamento: str
+    produto: str
+    valor_total: float
+
+class AtualizaDividaData(BaseModel):
+    cpf: str
+    value_received: float
+    type_meyhod_payment: str
 
 
 class InputData(BaseModel):
