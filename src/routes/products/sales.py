@@ -165,13 +165,15 @@ async def payment_partial(data: InputData, current_user: SystemUser = Depends(ge
         if not current_user.id:
             raise HTTPException(status_code=400, detail='Usuario não encontrado.')
 
-        data.user_id = current_user.id
 
         partial = PartialPayment(
-            product=data.product_name, total_price=data.total_price, valor_recebido=data.valor_recebido, cpf=data.cpf, user_id=data.user_id
+            payment_method=data.product_name, 
+            value_received=data.value_received, 
+            cpf=data.cpf, 
+            user_id=current_user.empresa_id # User .id ou empresa_id
         )
 
-        result = await partial.process_partial_sale()
+        result = await partial.update_value()
         return result
 
     except Exception as e:

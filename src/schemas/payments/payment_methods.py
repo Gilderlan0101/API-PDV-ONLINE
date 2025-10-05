@@ -16,7 +16,6 @@ class InputData(BaseModel):
     product_name: str
     total_price: int
     cpf: str
-    user_id: int
 
 
 class PartialDataOutput(BaseModel):

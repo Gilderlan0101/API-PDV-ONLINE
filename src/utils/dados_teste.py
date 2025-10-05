@@ -393,6 +393,10 @@ async def create_mock_data_and_sell_all_stock():
                 except Exception as e:
                     print(f"❌ Erro no lote {i+1}: {str(e)}")
 
+
+
+
+
         # ========================
         # RELATÓRIO FINAL
         # ========================
@@ -423,3 +427,34 @@ async def create_mock_data_and_sell_all_stock():
         print(f"🔒 Caixa fechado: ID {caixa_final.id}")
 
         print("\n🎉 Processo de vendas concluído com sucesso!")
+
+
+        pagamnto_partial = {
+            "nome": "Gilderlan silva da cruz",
+            "cpf": "12704097518",
+            "tel": "73999320283",
+            "produto": "Energético Red Bull",
+            "value": 7.25,  # Corrigido
+            "metodo_pagamento": "PIX"
+        }
+
+        partial = await Partial.filter(usuario_id=1, cpf=pagamnto_partial.get('cpf')).first()
+
+        if not partial:
+            await Partial.create(
+                customers_name=pagamnto_partial.get('nome'),
+                cpf=pagamnto_partial.get('cpf'),
+                tel=pagamnto_partial.get('tel'),
+                product_name=pagamnto_partial.get('produto'),
+                value=pagamnto_partial.get('value'),
+                payment_method=pagamnto_partial.get('metodo_pagamento'),
+                usuario_id=1
+        )
+            print("Dívida criada com sucesso")
+            print("Dívida criada com sucesso")
+            print("Dívida criada com sucesso")
+            print("Dívida criada com sucesso")
+            
+        else:
+            print("Já existe um cliente com essa conta")
+
