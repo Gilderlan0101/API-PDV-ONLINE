@@ -85,12 +85,7 @@ async def registra_venda_parcial(data: VendaParcialData, current_user: SystemUse
                 detail="CPF inválido"
             )
 
-        # Validação dos valores
-        if data.valor_recebido <= 0:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, 
-                detail="Valor recebido deve ser maior que zero"
-            )
+        
 
         if data.valor_recebido > data.valor_total:
             raise HTTPException(
