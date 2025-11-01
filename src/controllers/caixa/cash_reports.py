@@ -36,14 +36,11 @@ class CashReportController:
         # Chave da cache: Combina a data e o nome do funcionário para unicidade
         cache_key = f"cash_reports:{filter_data}" or f"cash_reports:{employee_name}"
         cache = client.get(cache_key)
-        
 
         # 🔹 Tenta retornar do cache se a chave existir
         if cache:
             print(f"✅ Retornando dados do cache para a chave: {cache}")
             return json.loads(cache)
-
-    
 
         current_user = await Usuario.get_or_none(id=user_id)
         if not current_user:
@@ -86,5 +83,5 @@ class CashReportController:
                 }
             )
 
-        client.setex(cache_key, 60, json.dumps(movement_data))        
+        client.setex(cache_key, 60, json.dumps(movement_data))
         return movement_data

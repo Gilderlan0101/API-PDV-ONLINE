@@ -1,3 +1,5 @@
+# auth_jwt.py
+
 import os
 from datetime import datetime, timedelta
 from typing import Any, Optional, Union
@@ -10,9 +12,12 @@ from passlib.context import CryptContext
 load_dotenv()
 
 # Chamando as variaves de ambiete que vmos usar neste arquivo
-ALGORITHM = os.getenv('ALGORITHM')
-JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
-JWT_REFRESH_SECRET_KEY = os.getenv('JWT_REFRESH_SECRET_KEY')
+import os
+
+ALGORITHM = os.getenv('ALGORITHM', 'HS256')
+JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'default_jwt_secret_key')
+JWT_REFRESH_SECRET_KEY = os.getenv('JWT_REFRESH_SECRET_KEY', 'default_jwt_refresh_secret_key')
+
 ACCESS_TOKEN_EXPIRE_MINUTES = 480  # 30 minutes
 REFRESH_TOKEN_EXPIRE_MINUTES = 60 * 24 * 1  # 1 day
 

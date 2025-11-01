@@ -87,6 +87,7 @@ async def profit(current_user: Usuario = Depends(get_current_user)) -> Dict[str,
             'total_sales_count_history': total_sales_count,  # Quantidade TOTAL de registros de vendas (linhas na tabela)
             # 🎯 DADOS DETALHADOS
             'sales': sales_list,  # Lista de todas as vendas do dia
+            # Codigo de venda
         }
 
     except Exception as error:

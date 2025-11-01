@@ -28,7 +28,7 @@ async def abertura_caixa(
     request: AberturaCaixaRequest,
     current_user: SystemUser = Depends(get_current_user),
 ):
-    funcionario = await Employees.filter(id=request.funcionario_id).first()
+    funcionario = await Employees.filter(usuario_id=current_user.id, id=request.funcionario_id).first()
     if not funcionario:
         raise HTTPException(status_code=400, detail="Funcionário não encontrado.")
 

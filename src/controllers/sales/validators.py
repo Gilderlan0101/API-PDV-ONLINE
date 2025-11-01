@@ -39,16 +39,16 @@ async def verify_datas(
 
     # 🔹 Valida usuário
     if not user_id:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuário inválido")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuário inválido (verify_datas)")
 
     # 🔹 Valida produto e quantidade
     if not product_name or not quantity:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Informe todos os dados")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Informe todos os dados (verify_datas)")
 
     # 🔹 Validações por forma de pagamento
     if payment_method.upper() == 'DINHEIRO':
         if valor_recebido is None or valor_recebido <= 0:
-            raise HTTPException(status_code=400, detail="Valor recebido é obrigatório para pagamento em dinheiro")
+            raise HTTPException(status_code=400, detail="Valor recebido é obrigatório para pagamento em dinheiro (verify_datas)")
         if troco is None:
             troco = 0.0
 
@@ -58,11 +58,11 @@ async def verify_datas(
 
     if payment_method.upper() == 'PARCIAL':
         if not cpf:
-            raise HTTPException(status_code=400, detail="CPF é obrigatório para pagamento Parcial")
+            raise HTTPException(status_code=400, detail="CPF é obrigatório para pagamento Parcial (verify_datas)")
         if valor_recebido is None or valor_recebido <= 0:
-            raise HTTPException(status_code=400, detail="Valor recebido é obrigatório para pagamento parcial")
+            raise HTTPException(status_code=400, detail="Valor recebido é obrigatório para pagamento parcial (verify_datas)")
         if total_price and valor_recebido > total_price:
-            raise HTTPException(status_code=400, detail="Valor recebido não pode ser maior que o total")
+            raise HTTPException(status_code=400, detail="Valor recebido não pode ser maior que o total (verify_datas)")
 
     return True, troco, installments, valor_recebido
 

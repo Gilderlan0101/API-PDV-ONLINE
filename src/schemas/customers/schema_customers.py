@@ -81,6 +81,7 @@ class GetCustomers(BaseModel):
     credit: float
     current_balance: float
     total_spent: float
+    tel: str
     due_date: datetime
     status: str
 

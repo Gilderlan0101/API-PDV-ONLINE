@@ -184,6 +184,4 @@ class PartialPayment:
             for parcial in paid
         ]
 
-
-
     # async def create_account_partial(self, user_id: int, full_name: str, )

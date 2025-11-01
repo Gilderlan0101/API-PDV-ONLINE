@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 from tortoise import Tortoise
 import uvicorn
 from dotenv import load_dotenv
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 
 # Importa o modelo para registrar na metadata do SQLModel
 from src.conf.database import TORTOISE_ORM
@@ -26,8 +26,16 @@ from fastapi.middleware.cors import CORSMiddleware
 
 # from src.controllers.products.monitoring_products import ProductInfo
 # from src.controllers.payments.partial import PartialPayment, Person
-#from src.controllers.products.products_infors import Products
+# from src.controllers.products.products_infors import Products
 from src.controllers.caixa.cash_reports import CashReportController
+
+from src.controllers.delivery.delivery_controller import CreateDelivery
+from src.controllers.delivery.delivery_reports import gerenciagelivery
+from src.controllers.payments.pix import PixService
+from src.utils.get_produtos_user import deep_search
+from src.controllers.marketplace.product_search_service import CustomerMarketplace
+from src.utils.load_images import load_imgs
+from src.core.cache import check_redis_connection
 
 ######################################################################
 
@@ -45,12 +53,7 @@ async def lifespan(app: FastAPI):
     # Cria dados mock
     await create_mock_data_and_sell_all_stock()
 
-    yield  # ← Aqui a aplicação roda
-    teste = CashReportController()
-    result = await teste.get_cash_reports(1, filter_data=None, employee_name='Gilderlan')
-    print(result)
-
- 
+    yield
 
     # Fecha conexões
     await Tortoise.close_connections()
@@ -65,7 +68,7 @@ class Server:
             generate_schemas=True,
             add_exception_handlers=True,
             description="""
-            API para gerenciamento de um sistema PDV (Ponto de Venda).
+            API para gerenciamento de um sistema PDV (Ponto de Venda) teste.
 
             ### Funcionalidades:
             - Autenticação e cadastro de usuários
@@ -94,6 +97,7 @@ class Server:
             },
         )
         self.start_routes()
+        self.teste()
 
         # CONFIGURAÇÃO CORS ATUALIZADA
         origins = [
@@ -109,8 +113,8 @@ class Server:
             "http://127.0.0.1:8000",  # FastAPI itself
             "https://front-end-pdv.onrender.com",  # Frontend Flask
             "https://api-pdv-online.onrender.com",  # Backend FastAPI
-            "https://nahtec.com.br", # Rota princial onde vamos subir o app e api
-            "https://nahtec.com.br/pdv" # Apenas para teste
+            "https://nahtec.com.br",  # Rota princial onde vamos subir o app e api
+            "https://nahtec.com.br/pdv",  # Apenas para teste
         ]
 
         self.api.add_middleware(
@@ -134,11 +138,15 @@ class Server:
         self.api.include_router(caixa)
         self.api.include_router(dashboard)
         self.api.include_router(paymente)
+        self.api.include_router(delivery)
+        self.api.include_router(marketplace)
 
     def run(self, host: str = '0.0.0.0', port: int = 8000):
         """Inicia o sevidor Uvicorn."""
         uvicorn.run('Main:app', host=host, port=port, reload=True, log_level="debug")
 
+    async def teste(self):
+        return await check_redis_connection()
 
 # Variavel global para o Uvicorn
 app = Server().api

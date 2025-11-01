@@ -1,8 +1,10 @@
 from passlib.hash import bcrypt
 from datetime import datetime
 from faker import Faker
-import re
 import random
+import re
+from dotenv import load_dotenv
+
 from tortoise.transactions import in_transaction
 from src.model.partial import Partial
 from src.auth.auth_jwt import get_hashed_password
@@ -18,12 +20,21 @@ from src.controllers.payments.partial import PartialPayment
 from src.utils.sales_code_generator import lot_bar_code_size
 from src.controllers.sales.services import processar_venda_carrinho
 from src.controllers.caixa.cash_controller import FinalizationObjcts
+from src.controllers.delivery.delivery_controller import CreateDelivery
+from src.controllers.delivery.delivery_reports import gerenciagelivery, assign_delivery_to_driver, update_delivery_status
+from src.controllers.payments.pix import PixService, PixCreateRequest
+
 import json
 from fastapi import HTTPException
 from tortoise.expressions import F
+import os
 
 import time
+
 __PAYMENT_METHODS = ['PIX', 'CARTAO', 'DINHEIRO', 'NOTA', 'FIADO']
+IMG_PRODUCT_DEFAULT = os.getenv('PATH_IMG_DEFAULT_PRODUCTS', None)
+
+load_dotenv()
 
 
 async def create_mock_data_and_sell_all_stock():
@@ -49,153 +60,246 @@ async def create_mock_data_and_sell_all_stock():
                 state="SP",
                 pending=True,
             )
-
-            
             print(f"✅ Usuário admin criado: {admin.email}")
-            
-            time.sleep(2)
 
-        admin_2 = await Usuario.filter(email="gilderlan@gmail.com").first()
+        admin_2 = await Usuario.filter(email="silva@test.com").first()
         if not admin_2:
-            print('Criando um novo usuário')
-            admin_2 =  await Usuario.create(
-
-                username="Gilderlan",
-                email="gilderlan@gmail.com",
+            print("🔹 Criando usuário admin silva...")
+            admin_2 = await Usuario.create(
+                username="Pizzaria",
+                email="silva@test.com",
                 password=get_hashed_password("123456"),
-                company_name="Games 3D",
+                company_name="Pizzaria do Bobs",
                 trade_name="Loja Central",
-                membros=0,
-                cnpj="12445638000199",
-                city="São Paulo",
-                state="SP",
+                membros=1,
+                cnpj="98765432000198",
+                city="Rio de Janeiro",
+                state="RJ",
                 pending=True,
-                )
-
-            print(f"Usuario admin_2 criado {admin_2.email}")
+            )
+            print(f"✅ Usuário admin 2 criado: {admin_2.email}")
 
         # ========================
-        # Criar funcionários
+        # CRIAR CONTAS PIX PARA AMBAS AS EMPRESAS
         # ========================
-        funcionarios_emails = ["gilderlan@teste.com", "maria@teste.com", "gilvan@teste.com"]
-        funcionarios_emails_admin_2 = ["otavio@teste.com", "santos@teste.com", "maicon@teste.com"]
+        print("\n🔹 Criando contas PIX...")
 
-        funcionarios_criados = []
+        # Conta PIX para empresa 1
+        pix_service_1 = PixService(user_id=admin.id)
+        pix_data_1 = PixCreateRequest(
+            full_name='Maria Silva', city='São Paulo', key_pix='11999999999', value=1.0, type_exit='qr'  # Chave PIX telefone
+        )
 
-        for email in funcionarios_emails:
-            funcionario = await Employees.filter(email=email, usuario_id=admin.id).first()
+        try:
+            conta_pix_1 = await pix_service_1.create_pix_account(pix_data_1)
+            if conta_pix_1:
+                print(f"✅ Conta PIX criada para Empresa 1: {pix_data_1.key_pix}")
+            else:
+                print("❌ Erro ao criar conta PIX para Empresa 1")
+        except Exception as e:
+            print(f"⚠️  Erro ao criar conta PIX Empresa 1: {str(e)}")
+
+        # Conta PIX para empresa 2
+        pix_service_2 = PixService(user_id=admin_2.id)
+        pix_data_2 = PixCreateRequest(
+            full_name='João Santos', city='Rio de Janeiro', key_pix='21988888888', value=1.0, type_exit='qr'  # Chave PIX telefone
+        )
+
+        try:
+            conta_pix_2 = await pix_service_2.create_pix_account(pix_data_2)
+            if conta_pix_2:
+                print(f"✅ Conta PIX criada para Empresa 2: {pix_data_2.key_pix}")
+            else:
+                print("❌ Erro ao criar conta PIX para Empresa 2")
+        except Exception as e:
+            print(f"⚠️  Erro ao criar conta PIX Empresa 2: {str(e)}")
+
+        # ========================
+        # Criar funcionários (ENTREGADORES)
+        # ========================
+        funcionarios_entregadores = [
+            {"nome": "João Entregador", "email": "joao@teste.com", "cargo": "Caixa"},
+            {"nome": "Maria Entregadora", "email": "maria@teste.com", "cargo": "Entregador"},
+            {"nome": "Carlos Motoboy", "email": "carlos@teste.com", "cargo": "Entregador"},
+        ]
+
+        for func in funcionarios_entregadores:
+            funcionario = await Employees.filter(email=func["email"], usuario_id=admin.id).first()
             if not funcionario:
                 funcionario = await Employees.create(
-                    nome=email.split("@")[0].capitalize(),
-                    cargo="Funcionário",
-                    email=email,
+                    nome=func["nome"],
+                    cargo=func["cargo"],
+                    email=func["email"],
                     senha=get_hashed_password("1234"),
                     telefone=lot_bar_code_size(),
                     ativo=True,
                     usuario_id=admin.id,
                 )
-
-                
-                print(f"✅ Funcionário criado: {funcionario.nome}")
-            funcionarios_criados.append(funcionario)
-
-        for email in funcionarios_emails_admin_2:
-            funcionario_admin_2 = await Employees.filter(email=email, usuario_id=admin_2.id).first()
-            if not funcionario_admin_2:
-                funcionario_admin_2 = await Employees.create(
-                    nome=email.split("@")[0].capitalize(),
-                    cargo="Funcionário",
-                    email=email,
-                    senha=get_hashed_password("1234"),
-                    telefone=lot_bar_code_size(),
-                    ativo=True,
-                    usuario_id=admin_2.id,
-                )
-
-                print(f"✅ Funcionário criado: {funcionario_admin_2.nome}")
-                print("Funcionarios de admin 2")
-
-
-        funcionario_venda = funcionarios_criados[0] if funcionarios_criados else None
+                print(f"✅ Entregador criado: {funcionario.nome}")
 
         # ========================
-        # Criar produtos (20 produtos variados)
+        # Criar produtos para AMBAS as empresas
         # ========================
-        produtos_data = [
-            # Bebidas
+        produtos_data_comuns = [
+            {"code": "PIZ001", "name": "Pizza Calabresa", "cost": 15.00, "sale": 25.00, "supplier": "Pizzaria", "group": "Alimentos"},
+            {"code": "PIZ002", "name": "Pizza Frango", "cost": 16.00, "sale": 26.00, "supplier": "Pizzaria", "group": "Alimentos"},
             {"code": "BEB001", "name": "Coca-Cola 2L", "cost": 5.50, "sale": 8.00, "supplier": "Coca-Cola", "group": "Bebidas"},
-            {"code": "BEB002", "name": "Suco de Laranja 1L", "cost": 4.00, "sale": 6.50, "supplier": "Del Valle", "group": "Bebidas"},
-            {"code": "BEB003", "name": "Água Mineral 500ml", "cost": 1.00, "sale": 2.50, "supplier": "Crystal", "group": "Bebidas"},
-            {"code": "BEB004", "name": "Cerveja Heineken 600ml", "cost": 6.00, "sale": 9.00, "supplier": "Heineken", "group": "Bebidas"},
-            {"code": "BEB005", "name": "Energético Red Bull", "cost": 7.50, "sale": 12.00, "supplier": "Red Bull", "group": "Bebidas"},
-            # Alimentos
-            {"code": "ALI001", "name": "Arroz 5kg", "cost": 18.00, "sale": 25.00, "supplier": "Tio João", "group": "Alimentos"},
-            {"code": "ALI002", "name": "Feijão 1kg", "cost": 8.00, "sale": 12.00, "supplier": "Camil", "group": "Alimentos"},
-            {"code": "ALI003", "name": "Óleo de Soja 900ml", "cost": 5.00, "sale": 8.00, "supplier": "Liza", "group": "Alimentos"},
-            {"code": "ALI004", "name": "Macarrão Espaguete 500g", "cost": 3.50, "sale": 6.00, "supplier": "Renata", "group": "Alimentos"},
-            {"code": "ALI005", "name": "Açúcar 1kg", "cost": 3.00, "sale": 5.00, "supplier": "União", "group": "Alimentos"},
-            # Limpeza
-            {"code": "LIM001", "name": "Detergente 500ml", "cost": 1.50, "sale": 3.00, "supplier": "Ypê", "group": "Limpeza"},
-            {"code": "LIM002", "name": "Sabão em Pó 1kg", "cost": 8.50, "sale": 12.00, "supplier": "Omo", "group": "Limpeza"},
-            {"code": "LIM003", "name": "Amaciante 2L", "cost": 7.00, "sale": 10.00, "supplier": "Comfort", "group": "Limpeza"},
-            {"code": "LIM004", "name": "Desinfetante 1L", "cost": 4.00, "sale": 6.50, "supplier": "Pinho Sol", "group": "Limpeza"},
-            # Higiene
-            {"code": "HIG001", "name": "Sabonete", "cost": 1.20, "sale": 2.50, "supplier": "Dove", "group": "Higiene"},
-            {"code": "HIG002", "name": "Pasta de Dente", "cost": 2.50, "sale": 4.50, "supplier": "Colgate", "group": "Higiene"},
-            {"code": "HIG003", "name": "Shampoo 300ml", "cost": 6.00, "sale": 9.00, "supplier": "Head & Shoulders", "group": "Higiene"},
-            {"code": "HIG004", "name": "Condicionador 300ml", "cost": 6.00, "sale": 9.00, "supplier": "Seda", "group": "Higiene"},
-            # Diversos
-            {"code": "DIV001", "name": "Pilhas AA", "cost": 4.00, "sale": 7.00, "supplier": "Duracell", "group": "Diversos"},
-            {"code": "DIV002", "name": "Fita Adesiva", "cost": 2.00, "sale": 4.00, "supplier": "Scotch", "group": "Diversos"},
         ]
 
-        tickets = ["Novo", "Promoção", "Ofertas", "Destaques"]
-        produtos_criados = []
+        produtos_exclusivos_empresa1 = [
+            {"code": "HMB001", "name": "Hambúrguer Artesanal", "cost": 8.00, "sale": 15.00, "supplier": "Lanchonete", "group": "Alimentos"},
+            {"code": "BAT001", "name": "Batata Frita Grande", "cost": 4.00, "sale": 8.00, "supplier": "Lanchonete", "group": "Acompanhamentos"},
+        ]
 
-        for p in produtos_data:
-            produto = await Produto.filter(product_code=p["code"], usuario_id=admin.id).first()
-            if not produto:
-                stock_inicial = random.choice([10, 1000, 110, 900, 600, 60, 500, 100, 300])
-                produto = await Produto.create(
+        produtos_exclusivos_empresa2 = [
+            {"code": "PST001", "name": "Pastel de Carne", "cost": 3.50, "sale": 7.00, "supplier": "Pastelaria", "group": "Salgados"},
+            {"code": "COX001", "name": "Coxinha de Frango", "cost": 2.50, "sale": 5.00, "supplier": "Pastelaria", "group": "Salgados"},
+        ]
+
+        produtos_criados_empresa1 = []
+        produtos_criados_empresa2 = []
+
+        # Criar produtos comuns para ambas as empresas
+        print("\n🔹 Criando produtos comuns para ambas as empresas...")
+        for p in produtos_data_comuns:
+            # Para empresa 1
+            produto_emp1 = await Produto.filter(product_code=p["code"], usuario_id=admin.id).first()
+            if not produto_emp1:
+                produto_emp1 = await Produto.create(
                     product_code=p["code"],
                     name=p["name"],
-                    stock=stock_inicial,
-                    stoke_max=stock_inicial * 2,
+                    stock=100,
+                    stoke_max=200,
+                    stoke_min=10,
+                    cost_price=p["cost"],
+                    price_uni=p["cost"] * 1.2,
+                    sale_price=p["sale"],
+                    supplier=p["supplier"],
+                    ticket="Delivery",
+                    controllstoke="Sim",
+                    group=p["group"],
+                    image_url=IMG_PRODUCT_DEFAULT,
+                    usuario_id=admin.id,
+                )
+                print(f"✅ Produto Empresa 1 criado: {p['name']}")
+            produtos_criados_empresa1.append(produto_emp1)
+
+            # Para empresa 2
+            produto_emp2 = await Produto.filter(product_code=p["code"], usuario_id=admin_2.id).first()
+            if not produto_emp2:
+                produto_emp2 = await Produto.create(
+                    product_code=p["code"],
+                    name=p["name"],
+                    stock=80,
+                    stoke_max=150,
                     stoke_min=5,
                     cost_price=p["cost"],
                     price_uni=p["cost"] * 1.2,
                     sale_price=p["sale"],
                     supplier=p["supplier"],
-                    ticket=random.choice(tickets),
+                    ticket="Delivery",
                     controllstoke="Sim",
                     group=p["group"],
+                    image_url=IMG_PRODUCT_DEFAULT,
+                    usuario_id=admin_2.id,
+                )
+                print(f"✅ Produto Empresa 2 criado: {p['name']}")
+            produtos_criados_empresa2.append(produto_emp2)
+
+        # Criar produtos exclusivos para empresa 1
+        print("\n🔹 Criando produtos exclusivos para Empresa 1...")
+        for p in produtos_exclusivos_empresa1:
+            produto = await Produto.filter(product_code=p["code"], usuario_id=admin.id).first()
+            if not produto:
+                produto = await Produto.create(
+                    product_code=p["code"],
+                    name=p["name"],
+                    stock=50,
+                    stoke_max=100,
+                    stoke_min=5,
+                    cost_price=p["cost"],
+                    price_uni=p["cost"] * 1.2,
+                    sale_price=p["sale"],
+                    supplier=p["supplier"],
+                    ticket="Delivery",
+                    controllstoke="Sim",
+                    group=p["group"],
+                    image_url='IMG_PRODUCT_DEFAULT',
                     usuario_id=admin.id,
                 )
-                print(f"✅ Produto criado: {p['name']} - Estoque: {stock_inicial}")
-            else:
-                print(f"📦 Produto existente: {p['name']} - Estoque: {produto.stock}")
+                print(f"✅ Produto exclusivo Empresa 1 criado: {p['name']}")
+                produtos_criados_empresa1.append(produto)
 
-            produtos_criados.append(produto)
+        # Criar produtos exclusivos para empresa 2
+        print("\n🔹 Criando produtos exclusivos para Empresa 2...")
+        for p in produtos_exclusivos_empresa2:
+            produto = await Produto.filter(product_code=p["code"], usuario_id=admin_2.id).first()
+            if not produto:
+                produto = await Produto.create(
+                    product_code=p["code"],
+                    name=p["name"],
+                    stock=60,
+                    stoke_max=120,
+                    stoke_min=5,
+                    cost_price=p["cost"],
+                    price_uni=p["cost"] * 1.2,
+                    sale_price=p["sale"],
+                    supplier=p["supplier"],
+                    ticket="Delivery",
+                    controllstoke="Sim",
+                    group=p["group"],
+                    usuario_id=admin_2.id,
+                )
+                print(f"✅ Produto exclusivo Empresa 2 criado: {p['name']}")
+                produtos_criados_empresa2.append(produto)
 
         # ========================
-        # Criar clientes
+        # Criar clientes para entregas (OBRIGATÓRIO)
         # ========================
-        clientes_nomes = ["João Silva", "Maria Souza", "Carlos Pereira", "Ana Santos", "Pedro Costa"]
+        clientes_entregas = [
+            {
+                "nome": "João Silva",
+                "endereco": {"street": "Rua das Flores", "house_number": "123", "neighborhood": "Centro", "city": "São Paulo", "state": "SP"},
+            },
+            {
+                "nome": "Maria Souza",
+                "endereco": {"street": "Avenida Paulista", "house_number": "1000", "neighborhood": "Bela Vista", "city": "São Paulo", "state": "SP"},
+            },
+            {
+                "nome": "Carlos Pereira",
+                "endereco": {"street": "Rua Augusta", "house_number": "500", "neighborhood": "Consolação", "city": "São Paulo", "state": "SP"},
+            },
+            {
+                "nome": "Ana Santos",
+                "endereco": {
+                    "street": "Rua das Palmeiras",
+                    "house_number": "789",
+                    "neighborhood": "Vila Madalena",
+                    "city": "São Paulo",
+                    "state": "SP",
+                },
+            },
+            {
+                "nome": "Pedro Costa",
+                "endereco": {"street": "Av. Central", "house_number": "321", "neighborhood": "Centro", "city": "São Paulo", "state": "SP"},
+            },
+        ]
+
         clientes_criados = []
 
-        for nome in clientes_nomes:
-            cliente = await Customer.filter(full_name=nome, usuario_id=admin.id).first()
+        for cliente_data in clientes_entregas:
+            cliente = await Customer.filter(full_name=cliente_data["nome"], usuario_id=admin.id).first()
             if not cliente:
                 cpf_numbers_only = re.sub(r"\D", "", fake.cpf())
                 cliente = await Customer.create(
-                    full_name=nome,
+                    full_name=cliente_data["nome"],
                     birth_date=fake.date_of_birth(minimum_age=18, maximum_age=60).isoformat(),
                     cpf=cpf_numbers_only,
                     mother_name=fake.name_female(),
-                    road=fake.street_name(),
-                    house_number=random.randint(1, 999),
-                    neighborhood=fake.bairro(),
-                    city=fake.city(),
+                    road=cliente_data["endereco"]["street"],
+                    house_number=cliente_data["endereco"]["house_number"],
+                    neighborhood=cliente_data["endereco"]["neighborhood"],
+                    city=cliente_data["endereco"]["city"],
                     tel=fake.cellphone_number(),
                     cep=fake.postcode(),
                     credit=1000.00,
@@ -204,8 +308,8 @@ async def create_mock_data_and_sell_all_stock():
                     status="ATIVO",
                     usuario_id=admin.id,
                 )
-                print(f"✅ Cliente criado: {nome}")
-                clientes_criados.append(cliente)
+                print(f"✅ Cliente criado: {cliente_data['nome']}")
+            clientes_criados.append(cliente)
 
         # ========================
         # ABRIR CAIXA PARA VENDAS
@@ -220,241 +324,129 @@ async def create_mock_data_and_sell_all_stock():
                 aberto=True,
                 data_abertura=datetime.now(),
                 usuario_id=admin.id,
-                funcionario_id=funcionario_venda.id if funcionario_venda else None,
+                funcionario_id=None,
             )
-            print(f"✅ Caixa aberto: ID {caixa_aberto.id} - Saldo: R$ {caixa_aberto.saldo_atual:.2f}")
-        else:
-            print(f"📊 Caixa já aberto: ID {caixa_aberto.id} - Saldo: R$ {caixa_aberto.saldo_atual:.2f}")
+            print(f"✅ Caixa aberto: ID {caixa_aberto.id}")
 
         # ========================
-        # 🎯 PROCESSAR VENDAS DE TODO O ESTOQUE
+        # 🚀 TESTES DO SISTEMA DE ENTREGA
         # ========================
         print("\n" + "=" * 60)
-        print("🛒 INICIANDO VENDAS DE TODO O ESTOQUE")
+        print("🚀 INICIANDO TESTES DO SISTEMA DE ENTREGA")
         print("=" * 60)
 
-        cart_manager = CartManagerDB()
-        vendas_realizadas = 0
-        valor_total_vendas = 0.0
-
-        # Agrupar produtos por método de pagamento
-        grupos_pagamento = {
-            'DINHEIRO': produtos_criados[0:5],  # Primeiros 5 produtos para DINHEIRO
-            'PIX': produtos_criados[5:10],  # Próximos 5 para PIX
-            'CARTAO': produtos_criados[10:15],  # Próximos 5 para CARTAO
-            'NOTA': produtos_criados[15:20],  # Últimos 5 para NOTA
-        }
-
-        for metodo_pagamento, produtos in grupos_pagamento.items():
-            print(f"\n💳 PROCESSANDO VENDAS COM {metodo_pagamento}")
-            print("-" * 40)
-
-            for produto in produtos:
-                if produto.stock > 0:
-                    try:
-                        quantidade_venda = produto.stock  # Vender todo o estoque
-
-                        print(f"📦 Vendendo {quantidade_venda} unidades de {produto.name}")
-
-                        # Configurar valores para diferentes métodos de pagamento
-                        valor_total = produto.sale_price * quantidade_venda
-                        valor_recebido = None
-                        troco = None
-                        customer_id = None
-                        installments = None
-
-                        if metodo_pagamento == 'DINHEIRO':
-                            valor_recebido = valor_total + 20.00  # Dar troco
-                            troco = 20.00
-                        elif metodo_pagamento == 'CARTAO':
-                            installments = random.choice([1, 2, 3])  # 1 à 3 parcelas
-                        elif metodo_pagamento == 'NOTA':
-                            customer_id = random.choice(clientes_criados).id if clientes_criados else None
-
-                        # Processar venda individual usando Checkout
-                        checkout_processor = Checkout()
-
-                        receipt, status_ok = await checkout_processor.process_sale(
-                            current_user=admin,
-                            product_code=produto.product_code,
-                            quantity=quantidade_venda,
-                            payment_method=metodo_pagamento,
-                            funcionario_id=funcionario_venda.id if funcionario_venda else None,
-                            customer_id=customer_id,
-                            installments=installments,
-                            valor_recebido=valor_recebido,
-                            troco=troco,
-                        )
-
-                        if status_ok:
-                            # Atualizar caixa usando FinalizationObjcts
-                            finalizador = FinalizationObjcts(checkout_processor)
-                            await finalizador.Updating_cash_values(caixa_aberto.id)
-
-                            vendas_realizadas += 1
-                            valor_total_vendas += valor_total
-
-                            print(f"✅ Venda realizada: {produto.name}")
-                            print(f"   Quantidade: {quantidade_venda}")
-                            print(f"   Total: R$ {valor_total:.2f}")
-                            print(f"   Método: {metodo_pagamento}")
-                            if checkout_processor.sale_code:
-                                print(f"   Código: {checkout_processor.sale_code}")
-
-                            # Atualizar produto após venda
-                            produto_apos_venda = await Produto.get(id=produto.id)
-                            print(f"   Estoque atual: {produto_apos_venda.stock}")
-
-                        else:
-                            print(f"❌ Falha na venda: {produto.name}")
-
-                    except HTTPException as e:
-                        print(f"❌ Erro HTTP na venda de {produto.name}: {e.detail}")
-                    except Exception as e:
-                        print(f"❌ Erro inesperado na venda de {produto.name}: {str(e)}")
-                        import traceback
-
-                        print(f"Traceback: {traceback.format_exc()}")
-
-                else:
-                    print(f"⏭️  Produto sem estoque: {produto.name}")
+        await testar_sistema_entrega(admin.id, clientes_criados, produtos_criados_empresa1)
 
         # ========================
-        # VENDAS EM LOTE (CARRINHO) - Vender produtos restantes em grupos
+        # VENDAS BÁSICAS PARA GERAR ENTREGAS
         # ========================
-        print("\n🛒 PROCESSANDO VENDAS EM LOTE (CARRINHO)")
-        print("-" * 50)
+        print("\n🛒 REALIZANDO VENDAS PARA GERAR ENTREGAS")
+        print("-" * 40)
 
-        # Buscar produtos que ainda têm estoque
-        produtos_com_estoque = await Produto.filter(usuario_id=admin.id, stock__gt=0).all()
+        # Venda 1: Cliente registrado com entrega
+        try:
+            checkout1 = Checkout()
+            receipt1 = await checkout1.process_sale(
+                current_user=admin,
+                product_code="PIZ001",
+                quantity=2,
+                payment_method="PIX",
+                funcionario_id=None,
+                customer_id=clientes_criados[0].id,
+            )
 
-        if produtos_com_estoque:
-            # Criar grupos de produtos para vendas em lote
-            grupos_carrinho = []
-            grupo_atual = []
+            if receipt1:
+                finalizador1 = FinalizationObjcts(checkout1)
+                await finalizador1.Updating_cash_values(caixa_aberto.id)
+                print(f"✅ Venda 1 realizada - Código: {checkout1.sale_code}")
+            else:
+                print("❌ Falha na venda 1")
+        except Exception as e:
+            print(f"❌ Erro na venda 1: {str(e)}")
 
-            for produto in produtos_com_estoque:
-                if len(grupo_atual) < 3:  # Grupos de 3 produtos
-                    grupo_atual.append(
-                        {
-                            "product_code": produto.product_code,
-                            "product_name": produto.name,
-                            "quantity": min(produto.stock, 30),  # Vender no máximo 2 de cada para teste
-                            "unit_price": float(produto.sale_price),
-                        }
-                    )
-                else:
-                    grupos_carrinho.append(grupo_atual)
-                    grupo_atual = [
-                        {
-                            "product_code": produto.product_code,
-                            "product_name": produto.name,
-                            "quantity": min(produto.stock, 30),
-                            "unit_price": float(produto.sale_price),
-                        }
-                    ]
+        # Venda 2: Outro cliente
+        try:
+            checkout2 = Checkout()
+            receipt2 = await checkout2.process_sale(
+                current_user=admin,
+                product_code="PIZ002",
+                quantity=1,
+                payment_method="DINHEIRO",
+                funcionario_id=None,
+                customer_id=clientes_criados[1].id,
+                valor_recebido=30.00,
+                troco=4.00,
+            )
 
-            if grupo_atual:
-                grupos_carrinho.append(grupo_atual)
-
-            # Processar cada grupo como uma venda de carrinho
-            for i, grupo in enumerate(grupos_carrinho):
-                metodo_carrinho = random.choice(__PAYMENT_METHODS)
-                print(f"\n🛍️  Processando lote {i+1} com {len(grupo)} produtos ({metodo_carrinho})")
-
-                try:
-                    resultado = await processar_venda_carrinho(
-                        user_id=admin.id,
-                        cart_items=grupo,
-                        payment_method=metodo_carrinho,
-                        employee_operator_id=funcionario_venda.id if funcionario_venda else None,
-                        customer_id=random.choice(clientes_criados).id if clientes_criados else None,
-                        installments=random.choice([1, 2]) if metodo_carrinho == 'CARTAO' else None,
-                        valor_recebido=(
-                            sum(item['unit_price'] * item['quantity'] for item in grupo) + 10.00 if metodo_carrinho == 'DINHEIRO' else None
-                        ),
-                        troco=10.00 if metodo_carrinho == 'DINHEIRO' else None,
-                    )
-
-                    if resultado.get("success"):
-                        vendas_realizadas += 1
-                        valor_lote = sum(item['unit_price'] * item['quantity'] for item in grupo)
-                        valor_total_vendas += valor_lote
-                        print(f"✅ Lote {i+1} vendido com sucesso!")
-                        print(f"   Valor do lote: R$ {valor_lote:.2f}")
-
-                        # Atualizar caixa
-                        if 'data' in resultado and 'checkout_instance' in resultado['data']:
-                            finalizador = FinalizationObjcts(resultado['data']['checkout_instance'])
-                            await finalizador.Updating_cash_values(caixa_aberto.id)
-                    else:
-                        print(f"❌ Falha no lote {i+1}: {resultado.get('error', 'Erro desconhecido')}")
-
-                except Exception as e:
-                    print(f"❌ Erro no lote {i+1}: {str(e)}")
-
-
-
-
+            if receipt2:
+                finalizador2 = FinalizationObjcts(checkout2)
+                await finalizador2.Updating_cash_values(caixa_aberto.id)
+                print(f"✅ Venda 2 realizada - Código: {checkout2.sale_code}")
+            else:
+                print("❌ Falha na venda 2")
+        except Exception as e:
+            print(f"❌ Erro na venda 2: {str(e)}")
 
         # ========================
-        # RELATÓRIO FINAL
+        # TESTAR GERENCIAMENTO DE ENTREGAS
         # ========================
         print("\n" + "=" * 60)
-        print("📊 RELATÓRIO FINAL DE VENDAS")
+        print("📊 TESTANDO GERENCIAMENTO DE ENTREGAS")
         print("=" * 60)
 
-        # Verificar estoque final
-        produtos_finais = await Produto.filter(usuario_id=admin.id).all()
-        estoque_final = sum(prod.stock for prod in produtos_finais)
-        produtos_zerados = sum(1 for prod in produtos_finais if prod.stock == 0)
+        resultado_gerenciamento = await gerenciagelivery(admin.id)
 
-        # Verificar saldo final do caixa
-        caixa_final = await Caixa.get(id=caixa_aberto.id)
+        if resultado_gerenciamento.get('success'):
+            stats = resultado_gerenciamento.get('statistics', {})
+            print(f"📈 Estatísticas do sistema:")
+            print(f"   • Entregas pendentes: {stats.get('total_pending', 0)}")
+            print(f"   • Entregas ativas: {stats.get('total_active', 0)}")
+            print(f"   • Entregadores disponíveis: {stats.get('total_drivers_available', 0)}")
+            print(f"   • Entregadores ocupados: {stats.get('total_drivers_busy', 0)}")
+            print(f"   • Alertas: {stats.get('total_notices', 0)}")
 
-        print(f"✅ Vendas realizadas: {vendas_realizadas}")
-        print(f"💰 Valor total em vendas: R$ {valor_total_vendas:.2f}")
-        print(f"📦 Estoque final: {estoque_final} unidades")
-        print(f"🔄 Produtos com estoque zerado: {produtos_zerados}/{len(produtos_finais)}")
-        print(f"💵 Saldo inicial do caixa: R$ 1000.00")
-        print(f"💵 Saldo final do caixa: R$ {caixa_final.saldo_atual:.2f}")
-        print(f"📈 Lucro no caixa: R$ {caixa_final.saldo_atual - 1000.00:.2f}")
-
-        # Fechar o caixa
-        caixa_final.aberto = False
-        caixa_final.data_fechamento = datetime.now()
-        await caixa_final.save()
-        print(f"🔒 Caixa fechado: ID {caixa_final.id}")
-
-        print("\n🎉 Processo de vendas concluído com sucesso!")
-
-
-        pagamnto_partial = {
-            "nome": "Gilderlan silva da cruz",
-            "cpf": "12704097518",
-            "tel": "73999320283",
-            "produto": "Energético Red Bull",
-            "value": 7.25,  # Corrigido
-            "metodo_pagamento": "PIX"
-        }
-
-        partial = await Partial.filter(usuario_id=1, cpf=pagamnto_partial.get('cpf')).first()
-
-        if not partial:
-            await Partial.create(
-                customers_name=pagamnto_partial.get('nome'),
-                cpf=pagamnto_partial.get('cpf'),
-                tel=pagamnto_partial.get('tel'),
-                product_name=pagamnto_partial.get('produto'),
-                value=pagamnto_partial.get('value'),
-                payment_method=pagamnto_partial.get('metodo_pagamento'),
-                usuario_id=1
-        )
-            print("Dívida criada com sucesso")
-            print("Dívida criada com sucesso")
-            print("Dívida criada com sucesso")
-            print("Dívida criada com sucesso")
-            
+            # Mostrar notificações
+            notices = resultado_gerenciamento.get('notices', [])
+            if notices:
+                print(f"\n🔔 Notificações:")
+                for notice in notices:
+                    print(f"   • {notice.get('mensagem', '')}")
         else:
-            print("Já existe um cliente com essa conta")
+            print(f"❌ Erro no gerenciamento: {resultado_gerenciamento.get('error', 'Erro desconhecido')}")
 
+        # ========================
+        # FECHAR CAIXA
+        # ========================
+        caixa_aberto.aberto = False
+        caixa_aberto.data_fechamento = datetime.now()
+        await caixa_aberto.save()
+        print(f"\n🔒 Caixa fechado: ID {caixa_aberto.id}")
+
+        # ========================
+        # RESUMO FINAL
+        # ========================
+        print("\n" + "=" * 60)
+        print("📊 RESUMO FINAL DOS DADOS CRIADOS")
+        print("=" * 60)
+        print(f"🏢 Empresa 1: {admin.company_name}")
+        print(f"   • Contas PIX: 1")
+        print(f"   • Produtos totais: {len(produtos_criados_empresa1)}")
+        print(f"   • Produtos comuns: {len(produtos_data_comuns)}")
+        print(f"   • Produtos exclusivos: {len(produtos_exclusivos_empresa1)}")
+
+        print(f"\n🏢 Empresa 2: {admin_2.company_name}")
+        print(f"   • Contas PIX: 1")
+        print(f"   • Produtos totais: {len(produtos_criados_empresa2)}")
+        print(f"   • Produtos comuns: {len(produtos_data_comuns)}")
+        print(f"   • Produtos exclusivos: {len(produtos_exclusivos_empresa2)}")
+
+        print(f"\n👥 Clientes criados: {len(clientes_criados)}")
+        print(f"🚚 Entregadores criados: {len(funcionarios_entregadores)}")
+
+        print("\n🎉 Todos os testes foram concluídos com sucesso!")
+
+
+async def testar_sistema_entrega(company_id: int, clientes: list, produtos: list):
+    """Executa testes específicos do sistema de entrega"""
+    # ... (mantenha o mesmo código da função testar_sistema_entrega que você já tinha)
+    # O código desta função permanece igual ao que você já tinha

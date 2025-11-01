@@ -11,7 +11,7 @@ from src.model.user import Usuario
 from src.model.employee import Employees  # ← Funcionários
 from src.schemas.schema_user import TokenSchema
 
-from src.model.user import Membro
+from src.model.membros import Membro
 
 
 class Login:

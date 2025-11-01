@@ -18,10 +18,10 @@ async def build_receipt(
 
     try:
         if not itens or not usuario:
-            raise HTTPException(status_code=400, detail="Informações da venda incompletas")
+            raise HTTPException(status_code=400, detail="Informações da venda incompletas (build_receipt)")
 
         # 🔹 CORREÇÃO: Acessar atributos de forma segura, seja objeto ou dict
-        def get_usuario_attr(attr, default="Não informado"):
+        def get_usuario_attr(attr, default="Não informado (build_receipt)"):
             if hasattr(usuario, attr):
                 return getattr(usuario, attr, default)
             elif isinstance(usuario, dict) and attr in usuario:
@@ -68,7 +68,7 @@ async def build_receipt(
 
         # 🔹 CORREÇÃO: Montar endereço de forma segura
         endereco_parts = []
-        for attr in ["street", "home_number", "city", "state"]:
+        for attr in ["street", "home_number", "city", "state", "state_registration"]:
             value = get_usuario_attr(attr, "").strip()
             if value:
                 endereco_parts.append(value)
@@ -147,5 +147,5 @@ async def build_receipt(
     except HTTPException:
         raise
     except Exception as e:
-        print(f"Erro detalhado ao construir recibo: {str(e)}")
-        raise HTTPException(status_code=500, detail=f'Erro interno ao gerar recibo: {str(e)}')
+        print(f"Erro detalhado ao construir recibo build_receipt: {str(e)}")
+        raise HTTPException(status_code=500, detail=f'Erro interno ao gerar recibo build_receipt: {str(e)}')

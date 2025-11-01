@@ -1,3 +1,4 @@
+# __init__.py inicia as rotas
 from fastapi import APIRouter
 from src.routes.cliente_cnpj import ConsultaRoute
 from src.routes.login import Login
@@ -40,6 +41,11 @@ from src.routes.products.deep_infos import product_deep_infos
 
 from src.routes.user.clientes import router as system_user
 
+# Delivery
+from src.routes.delivery.create_delivery import delivery_router
+
+# marketplace
+from src.routes.marketplace.marketplace_between_customers import marketplace
 
 auth = APIRouter(
     tags=["Autenticação"],
@@ -151,3 +157,14 @@ paymente = APIRouter(
 
 paymente.include_router(payment_partial)
 paymente.include_router(payment_pix)
+paymente.include_router(delivery_router)
+
+
+delivery = APIRouter(
+    tags=['Delivery'],
+)
+
+delivery.include_router(delivery_router)
+
+marketplace_prods = APIRouter(tags=['marketplace'])
+marketplace_prods.include_router(marketplace)

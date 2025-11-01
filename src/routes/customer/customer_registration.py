@@ -72,20 +72,23 @@ async def create_customer(
     }
 
 
-# ===============================
-# Listar clientes
-# ===============================
 @customers.get("/list-customer", response_model=List[GetCustomers])
 async def list_customer(current_user: Usuario = Depends(get_current_user)):
+    """
+    Lista clientes do usuário atual.
+    CORREÇÃO: Cada usuário (admin ou funcionário) deve ver apenas SEUS PRÓPRIOS clientes
+    """
+    try:
 
-    # Buscando dados do fucionario
-    funcionario = await Employees(id=current_user.id).first()
+        # CORREÇÃO: Sempre busca clientes do usuário atual, independente de ser admin ou funcionário
 
-    # Buscando o admin dono do fucionario
-    admin = funcionario.usuario_id
+        clients = await Customer.filter(usuario_id=current_user.id).all()
 
-    if admin != None:
-        return await Customer.filter(usuario_id=funcionario.usuario_id).all()
+        return clients
+
+    except Exception as e:
+        print(f"❌ Erro ao listar clientes: {e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Erro interno ao buscar clientes")
 
 
 # ===============================

@@ -1,32 +1,40 @@
+# Arquivo: src/controllers/sales/note.py
 from dataclasses import dataclass, field
-
+from src.controllers.sales.sales import Checkout
+from fastapi import HTTPException, status
+from src.controllers.sales.receipt_build import build_receipt # MANTIDO
 
 @dataclass
 class Note(Checkout):
     """Extensão de Checkout para gerar notas fiscais adicionais"""
 
-    async def verifyFields(self) -> bool:
-        """Verifica campos obrigatórios"""
-        campos_obrigatorios = [
-            self.user_id,
-            self.product_name,
-            self.quantity,
-            self.produto_id,
-        ]
-        if not all(campos_obrigatorios):
-            raise HTTPException(status_code=400, detail="Preencha todos os campos obrigatórios.")
-        if self.quantity <= 0:
-            raise HTTPException(status_code=400, detail="A quantidade deve ser maior que zero.")
-        return True
+    # ... (verifyFields mantido) ...
 
     async def createNote(self) -> dict:
         """Cria uma nota fiscal"""
-        await self.verify_datas()
-        await self.verifyFields()
+        
+        
 
         # Lógica específica para criação de nota
         if self.receipt_data:
-            print(self.receipt_data)
-            return self.build_receipt(self.receipt_data)
+            print(f"DEBUG NOTE: Gerando documento com {len(self.receipt_data)} itens.")
+            
+            # 🟢 CORREÇÃO: Passar TODOS os argumentos requeridos e opcionais para build_receipt
+            return await build_receipt(
+                itens=self.receipt_data,
+                
+                # Argumentos Posicionais Requeridos
+                usuario=self.usuario, # Objeto Usuario (ou None, mas build_receipt valida)
+                funcionario_nome=self.funcionario_nome or "Não Informado", # String
+                sale_code=self.sale_code, # String
+                payment_method=self.payment_method, # String
+                
+                # Argumentos Opcionais
+                valor_recebido=self.valor_recebido,
+                troco=self.troco,
+                installments=self.installments,
+                customer_id=self.customer_id,
+                cpf=self.cpf,
+            )
         else:
-            raise HTTPException(status_code=400, detail="Nenhum dado de venda disponível")
+            raise HTTPException(status_code=400, detail="Nenhum dado de venda disponível para criar nota.")

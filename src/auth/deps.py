@@ -1,3 +1,5 @@
+# deps.py
+
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 from datetime import datetime
@@ -11,7 +13,7 @@ from pydantic import BaseModel, EmailStr, ValidationError
 from src.auth.auth_jwt import ALGORITHM, JWT_SECRET_KEY
 from src.model.user import Usuario
 from src.model.employee import Employees
-from src.model.user import Membro
+from src.model.membros import Membro
 from src.schemas.schema_user import TokenPayload
 
 reuseable_oauth = OAuth2PasswordBearer(tokenUrl="/auth/login", scheme_name="JWT")
@@ -51,24 +53,32 @@ async def get_current_user(token: str = Depends(reuseable_oauth)) -> "SystemUser
         return SystemUser.model_validate(user_db).model_copy(update={"empresa_id": user_db.id})
 
     # 🔹 2) Tenta buscar como Funcionário
+    # 🔹 2) Tenta buscar como Funcionário
     employee_db = await Employees.get_or_none(id=user_id).select_related("usuario")
     if employee_db:
         if not employee_db.ativo:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Funcionário inativo.",
+                )
+
+        # 🚨 CORREÇÃO: Garante que o funcionário tem uma empresa/usuário principal
+        usuario = employee_db.usuario
+        if not usuario:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Funcionário não vinculado a uma empresa principal.",
             )
 
-        usuario = employee_db.usuario
         return SystemUser(
             id=employee_db.id,
             username=usuario.username if usuario else employee_db.nome,
             email=employee_db.email or (usuario.email if usuario else "sem_email@empresa.com"),
-            company_name=usuario.company_name if usuario else "Empresa não definida",
-            cnpj=usuario.cnpj if usuario else None,
+            company_name=usuario.company_name, # Agora 'usuario' não é None
+            cnpj=usuario.cnpj, # Agora 'usuario' não é None
             cpf=None,
             is_active=employee_db.ativo,
-            empresa_id=usuario.id if usuario else None,  # 🔹 aqui
+            empresa_id=usuario.id, # Agora 'usuario' não é None
         )
 
     raise HTTPException(

@@ -34,7 +34,7 @@ async def information_about_sales_and_products_and_employees(user_id: int) -> Di
 
     # 🔹 Gerando chave de cache
     cache_key = f"product_utils:{user_id}"
-    cache = client.get(cache_key)
+    cache = await client.get(cache_key)
 
     if cache:
         return json.loads(cache)
@@ -103,7 +103,7 @@ async def information_about_sales_and_products_and_employees(user_id: int) -> Di
             sales_by_caixa[caixa_id].append(sale_data)
 
         # 🔹 Armazenando no cache por 60s
-        client.setex(cache_key, 60, json.dumps(sales_by_caixa, default=str))
+        await client.setex(cache_key, 60, json.dumps(sales_by_caixa, default=str))
 
         return sales_by_caixa
 

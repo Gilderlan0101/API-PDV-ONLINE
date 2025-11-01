@@ -50,9 +50,9 @@ async def registre_sale_in_partial(data: InputData, current_user: SystemUser = D
 
         # 🔹 3. Se cliente existe mas não tem dívida (value == 0 ou None), registrar nova dívida
         if not checking_client.value or checking_client.value == 0:
-            await Partial.filter(
-                usuario_id=current_user.empresa_id, # Sempre user empresa_id 
-                cpf=data.cpf).update(value=data.total_price, product_name=data.product_name)
+            await Partial.filter(usuario_id=current_user.empresa_id, cpf=data.cpf).update(  # Sempre user empresa_id
+                value=data.total_price, product_name=data.product_name
+            )
 
             # Buscar cliente atualizado
             updated_client = await Partial.filter(usuario_id=current_user.empresa_id, cpf=data.cpf).first()
@@ -73,11 +73,7 @@ async def registre_sale_in_partial(data: InputData, current_user: SystemUser = D
         raise  # re-levanta exceções HTTP sem alterar
     except Exception as e:
         # Captura erros inesperados
-        raise HTTPException(
-
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
-            detail=f"Erro interno ao tentar registrar venda em parcial: {e}"
-        )
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Erro interno ao tentar registrar venda em parcial: {e}")
 
 
 @partial.get('/dividas-atual')

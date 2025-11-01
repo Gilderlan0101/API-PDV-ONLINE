@@ -18,6 +18,7 @@ class OutputFormat(BaseModel):
     valor_venda: Optional[int] = None
     telefone: Optional[str] = None
     ativo: bool
+    user_id: Optional[int] = None
 
 
 class UpdateEmployee(BaseModel):

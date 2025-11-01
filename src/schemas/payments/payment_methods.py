@@ -11,12 +11,14 @@ class RegisterUserForPartialMode(BaseModel):
     tel: str
     produto: str
 
+
 class VendaParcialData(BaseModel):
     cpf: str
     valor_recebido: float
     metodo_pagamento: str
     produto: str
     valor_total: float
+
 
 class AtualizaDividaData(BaseModel):
     cpf: str

@@ -9,6 +9,7 @@ class Pix(models.Model):
     """
     Modelo para armazenamento de dados PIX
     """
+
     id = fields.IntField(pk=True)
     full_name = fields.CharField(max_length=90, null=False)
     city = fields.CharField(max_length=90, null=False)
@@ -20,10 +21,7 @@ class Pix(models.Model):
 
     class Meta:
         table = "pix"
-        indexes = [
-            ("usuario_id", "is_active"),
-            ("key_pix",)
-        ]
+        indexes = [("usuario_id", "is_active"), ("key_pix",)]
 
     def __str__(self):
         return f"PIX {self.key_pix} - {self.full_name}"

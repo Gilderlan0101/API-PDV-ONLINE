@@ -37,13 +37,14 @@ async def getEmployees(user_id: int):
                         cargo=date.cargo,
                         email=date.email,
                         telefone=date.telefone,
+                        user_id=date.id,
                         ativo=date.ativo,
                     )
 
                     if date.ativo is True:
                         employee_information.append(
                             {
-                                "id": date.id,
+                                "user_id": date.id,
                                 'nome': formate_data.nome,
                                 "valor_venda": formate_data.valor_venda,
                                 'cargo': formate_data.cargo,

@@ -111,6 +111,7 @@ class Checkout:
         customer_id: Optional[int] = None,
         installments: Optional[int] = None,
         valor_recebido: Optional[float] = None,
+        sale_code: Optional[str] = None,
         troco: Optional[float] = None,
     ) -> Tuple[dict, bool]:
         """Processa uma venda completa"""
@@ -149,6 +150,7 @@ class Checkout:
             self.installments = installments
             self.valor_recebido = valor_recebido
             self.troco = troco
+            self.sale_code = sale_code
 
             if not product_code or not quantity or not payment_method:
                 raise HTTPException(status_code=400, detail="Código do produto, quantidade e forma de pagamento são obrigatórios")
@@ -262,3 +264,5 @@ class Checkout:
 
             print(f"Traceback: {traceback.format_exc()}")
             raise HTTPException(status_code=400, detail=f"Erro ao processar venda: {str(e)}")
+
+

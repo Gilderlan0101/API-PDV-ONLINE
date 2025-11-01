@@ -50,6 +50,7 @@ class CartManagerDB:
         quantity: int,
         user_id: int,
     ) -> Dict[str, Any]:
+
         produto = await Produto.get_or_none(id=product_id)
         if not produto:
             return {"aviso": "Produto não encontrado"}
@@ -90,8 +91,8 @@ class CartManagerDB:
                 product_id=product_id,
                 product_name=produto.name,
                 quantity=quantity,
-                price=produto.cost_price,
-                total_price=produto.cost_price * quantity,
+                price=produto.sale_price,
+                total_price=produto.sale_price * quantity,
                 product_code=get_code_prodct.product_code,  # pega do primeiro item da lista
             )
 

@@ -1,13 +1,25 @@
 from src.model.sale import Sales
 from datetime import datetime, time
 from zoneinfo import ZoneInfo
+from src.core.cache import client
+import json
 
 
 async def sales_of_the_day(user_id: int) -> int:
     """
     sales_of_the_day: Retorna a quantidade de VENDAS (códigos únicos) concluídas no dia atual.
     """
+
+    cache_key = None
+
     try:
+
+        cache_key = f"sales:{user_id}"
+        cache = await client.get(cache_key)
+
+        if cache:
+            return json.loads(cache)
+
         # Data atual e definição de início/fim do dia
         today = datetime.now(ZoneInfo("America/Sao_Paulo")).date()
         start_of_day = datetime.combine(today, time.min, tzinfo=ZoneInfo("America/Sao_Paulo"))
@@ -26,6 +38,10 @@ async def sales_of_the_day(user_id: int) -> int:
 
         # 3. Conta a quantidade de códigos de venda ÚNICOS
         sales_quantity = len(set(codes))
+
+        if cache_key:
+            await client.setex(cache_key, 180, json.dumps(sales_quantity, default=str)) 
+
 
         # Retonando quantidade de vendas
         return sales_quantity

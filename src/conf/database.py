@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 # Carregar variáveis de ambiente
 load_dotenv()
-sqlite_file_name = os.getenv("DATABASE_URL") or "app.db"
+sqlite_file_name = os.getenv("DATABASE_URL") or "usuarios.db"
 
 # Se não vier no formato correto, monta
 if not sqlite_file_name.startswith("sqlite://"):
@@ -31,8 +31,8 @@ TORTOISE_ORM = {
                 "src.model.membros",
                 "src.model.cnpjCache",
                 "src.model.tickets",  # corrigido para plural
+                "src.model.delivery",
                 "src.model.pix",
-
                 # "aerich.models",       # obrigatório se for usar migrações com Aerich
             ],
             "default_connection": "default",
