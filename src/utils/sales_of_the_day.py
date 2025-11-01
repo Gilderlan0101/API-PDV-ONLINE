@@ -40,8 +40,7 @@ async def sales_of_the_day(user_id: int) -> int:
         sales_quantity = len(set(codes))
 
         if cache_key:
-            await client.setex(cache_key, 180, json.dumps(sales_quantity, default=str)) 
-
+            await client.setex(cache_key, 180, json.dumps(sales_quantity, default=str))
 
         # Retonando quantidade de vendas
         return sales_quantity

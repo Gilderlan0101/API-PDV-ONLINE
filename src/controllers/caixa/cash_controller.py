@@ -14,7 +14,6 @@ from src.model.sale import Sales
 from src.controllers.sales.note import Note
 
 
-
 from src.controllers.sales.sales import Checkout
 
 
@@ -223,14 +222,13 @@ class CashController:
         """
         return await CashMovement.filter(caixa_id=caixa_id).order_by('-criado_em')
 
+
 class FinalizationObjcts:
     def __init__(self, checkout_instance: Checkout = None) -> None:
         self.checkout = checkout_instance
         self.dados_recibo = checkout_instance.receipt_data if checkout_instance else None
         # Adicione uma variável para a nota fiscal
-        self.nota_fiscal = None 
-
-
+        self.nota_fiscal = None
 
     async def Updating_cash_values(self, caixa_id: int):
         """
@@ -255,7 +253,7 @@ class FinalizationObjcts:
                 valor_total = getattr(self.checkout, 'total_price', getattr(venda_obj, 'total_price', 0))
 
             forma_pagamento = getattr(self.checkout, 'payment_method', getattr(venda_obj, 'payment_method', 'PIX'))
-            
+
             # Obtenção de caixa e validação de abertura (Mantido)
             caixa = await Caixa.get_or_none(id=caixa_id).prefetch_related('usuario', 'funcionario')
             if not caixa:
@@ -277,7 +275,7 @@ class FinalizationObjcts:
                 "usuario_id": caixa.usuario.id if caixa.usuario else None,
                 "funcionario_id": caixa.funcionario.id if caixa.funcionario else None,
             }
-            
+
             # Salva total de vendas do funcionário (Mantido)
             if movimento_data["funcionario_id"] and movimento_data["usuario_id"]:
                 await Employees.filter(usuario_id=movimento_data['usuario_id'], id=movimento_data["funcionario_id"]).update(
@@ -285,23 +283,23 @@ class FinalizationObjcts:
                 )
 
             # 3. GERAÇÃO DA NOTA FISCAL
-            
+
             # 🟢 CORREÇÃO CRÍTICA: Priorizar o usuario_id da venda_obj, que deve ser o valor correto (ID da empresa)
-            checkout_user_id = self.checkout.user_id # Valor original (provavelmente 0)
-            
+            checkout_user_id = self.checkout.user_id  # Valor original (provavelmente 0)
+
             # Se o user_id do checkout for o valor default (0) ou None, use o valor persistido na Venda
             if not checkout_user_id and venda_obj.usuario_id:
                 final_user_id = venda_obj.usuario_id
             else:
-                final_user_id = checkout_user_id # Se não for 0/None, usa o que veio do checkout
+                final_user_id = checkout_user_id  # Se não for 0/None, usa o que veio do checkout
 
             print(f"DEBUG FINALIZATION: user_id lido do Checkout: {self.checkout.user_id}")
             print(f"DEBUG FINALIZATION: usuario_id lido da Venda_obj: {venda_obj.usuario_id}")
             print(f"DEBUG FINALIZATION: user_id corrigido para Note: {final_user_id}")
-            
+
             # Instanciar Note usando os dados do Checkout (mantendo a lógica de herança)
             note_generator = Note(
-                user_id=final_user_id, # <--- USA O VALOR CORRIGIDO
+                user_id=final_user_id,  # <--- USA O VALOR CORRIGIDO
                 product_name=self.checkout.product_name,
                 produto_id=self.checkout.produto_id,
                 quantity=self.checkout.quantity,
@@ -317,15 +315,15 @@ class FinalizationObjcts:
                 troco=self.checkout.troco,
                 usuario=caixa.usuario,
             )
-            
+
             # Transferir dados do recibo
             note_generator._set_receipt_data(self.checkout.receipt_data)
-            
+
             # Chamar a função de criação da nota
             self.nota_fiscal = await note_generator.createNote()
 
             # 4. FINALIZAÇÃO E REGISTRO
-            
+
             # Registra movimentação no CashMovement
             await CashMovement.create(**movimento_data)
 
@@ -334,12 +332,13 @@ class FinalizationObjcts:
             await venda_obj.save()
 
             print(f"✅ Finalização concluída. Venda #{venda_obj.id}, Caixa atualizado, Nota gerada.")
-            
+
             # Retorna o caixa e a nota fiscal gerada
-            return {"caixa": caixa, "nota_fiscal": self.nota_fiscal} 
+            return {"caixa": caixa, "nota_fiscal": self.nota_fiscal}
 
         except Exception as e:
             import traceback
+
             print(f"❌ Erro detalhado ao atualizar caixa/gerar nota: {str(e)}")
             print(f"📋 Traceback: {traceback.format_exc()}")
             raise Exception(f"Erro ao finalizar venda (Caixa/Nota): {str(e)}")

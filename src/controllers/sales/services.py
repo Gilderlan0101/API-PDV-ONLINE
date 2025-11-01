@@ -56,7 +56,6 @@ async def processar_venda_carrinho(
             raise Exception("Usuário não encontrado. processar_venda_carrinho")
         print(f"DEBUG: Usuário encontrado: {current_user.id}")
 
-
         # 🔹 CORREÇÃO: Gerar sale_code se não foi fornecido
         if not sale_code:
             sale_code = gerar_codigo_venda()  # len(6)
@@ -67,7 +66,7 @@ async def processar_venda_carrinho(
         # 🔹 Itera sobre cada item do carrinho
         for i, item in enumerate(cart_items):
             print(f"--- DEBUG: Iniciando processamento do Item {i+1} ---")
-            
+
             # 1. Tentativa de obter dados do item
             is_dict = isinstance(item, dict)
             product_code = item.get("product_code") if is_dict else getattr(item, "product_code", None)
@@ -75,7 +74,7 @@ async def processar_venda_carrinho(
             products_name = item.get("product_name") if is_dict else getattr(item, "product_name")
 
             print(f"DEBUG Item {i+1}: Tipo={type(item)}, Code={product_code}, Qty={quantity}, Name={products_name}")
-            
+
             __saving_product_name.append({products_name})
 
             if not product_code:
@@ -85,7 +84,7 @@ async def processar_venda_carrinho(
             # 2. Busca do Produto no DB
             cleaned_code = product_code.strip().upper()
             print(f"DEBUG Item {i+1}: Buscando produto com Code='{cleaned_code}' e user_id={current_user.id}")
-            
+
             busca_produto = Q(usuario_id=current_user.id) & Q(product_code=cleaned_code)
             produto = await Produto.filter(busca_produto).first()
 
@@ -96,7 +95,7 @@ async def processar_venda_carrinho(
             # 3. Verificar estoque
             stock_available = produto.stock or 0
             print(f"DEBUG Item {i+1}: Produto Encontrado. Estoque: {stock_available}, Solicitado: {quantity}")
-            
+
             if stock_available < quantity:
                 print(f"DEBUG Item {i+1}: Pulando. Estoque insuficiente.")
                 continue
@@ -131,18 +130,18 @@ async def processar_venda_carrinho(
             total_geral += total_price
             lucro_geral += lucro_total
             cost_total_geral += cost_total
-            
-            print(f"DEBUG Item {i+1}: Item adicionado a itens_processados. Total parcial: {total_geral}")
 
+            print(f"DEBUG Item {i+1}: Item adicionado a itens_processados. Total parcial: {total_geral}")
 
     except Exception as e:
         import traceback
+
         print(f"DEBUG ERRO FATAL NO LOOP: {str(e)}")
         print(traceback.format_exc())
         return {"success": False, "error": f"Erro interno ao processar itens do carrinho: processar_venda_carrinho {str(e)}"}
 
     print(f"DEBUG: Loop de processamento finalizado. Itens processados: {len(itens_processados)}")
-    
+
     if not itens_processados:
         print("DEBUG: Falha na validação final. Nenhum item processado.")
         return {"success": False, "error": f"Nenhum dos {len(cart_items)} itens pôde ser processado. processar_venda_carrinho"}
@@ -169,7 +168,6 @@ async def processar_venda_carrinho(
     # 🔹 8. Criar a venda no DB
     venda = await Sales.create(**venda_data)
     print(f"DEBUG: Venda (Sales) criada com ID: {venda.id}")
-
 
     # 🔹 9. Criar checkout instance
     checkout_instance = Checkout()

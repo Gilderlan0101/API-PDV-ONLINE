@@ -30,27 +30,28 @@ async def get_product_by_user(user_id: int, code: Optional[str] = None, name: Op
         await client.setex(cache_key, 90, json.dumps(product, default=str))  # salva no Redis
     return product
 
+
 async def deep_search(user_id: int, product_name: str, target_company: Optional[str] = None):
     """
     Realiza uma busca aprofundada por um produto...
     """
-    
+
     # --- 1. Lógica de Cache (Início) ---
-    cache_key = None # Definir fora para usar no 'setex'
+    cache_key = None  # Definir fora para usar no 'setex'
     try:
         # Normaliza a chave para evitar duplicatas (ex: "Ham" vs "ham")
         prod_name_key = product_name.lower().strip() if product_name else ""
         company_key = target_company.lower().strip() if target_company else ""
-        
+
         cache_key = f"product:{user_id}:{prod_name_key}:{company_key}"
-        
+
         # FIX 1: Adicionar 'await' para realmente buscar no Redis
-        cache = await client.get(cache_key) 
+        cache = await client.get(cache_key)
 
         if cache:
             print(f"Cache HIT na função: {cache_key}")
-            return json.loads(cache) # Agora 'cache' é uma string JSON
-        
+            return json.loads(cache)  # Agora 'cache' é uma string JSON
+
         print(f"Cache MISS na função: {cache_key}")
 
     except Exception as e:
@@ -113,13 +114,13 @@ async def deep_search(user_id: int, product_name: str, target_company: Optional[
             if cache_key:
                 # FIX 2: Salvar o resultado (mesmo que seja uma lista vazia [])
                 # FIX 1: Adicionar 'await' para realmente salvar no Redis
-                await client.setex(cache_key, 90, json.dumps(data, default=str)) 
+                await client.setex(cache_key, 90, json.dumps(data, default=str))
                 print(f"Cache SET na função: {cache_key}")
         except Exception as e:
             print(f"AVISO: Erro no cache (setex): {e}")
         # --- Fim da Lógica de Cache (Final) ---
 
-        return data # Retorna os dados (sejam eles [] ou cheios)
+        return data  # Retorna os dados (sejam eles [] ou cheios)
 
     except HTTPException:
         raise

@@ -11,6 +11,7 @@ except ImportError:
     # Se falhar, tenta importar do mesmo nível (ex: redis_client.py)
     print("Aviso: Importando 'client' do diretório raiz. Ajuste se necessário.")
 
+
 class CustomerMarketplace:
 
     def __init__(self, user_id: int, product_name: str, target_company: Optional[str] = None):
@@ -39,16 +40,16 @@ class CustomerMarketplace:
             except Exception as e:
                 # Se o Redis falhar, apenas loga e segue para a busca no DB
                 print(f"Erro ao buscar do cache: {e}")
-        
+
         print(f"CACHE MISS para a chave: {cache_key}")
-        
+
         # 5. CACHE MISS: Buscar no banco (sua lógica original)
         products = None
         if self.product_name and self.target_company:
             products = await deep_search(user_id=self.user_id, product_name=self.product_name, target_company=self.target_company)
         elif self.product_name:
             products = await deep_search(user_id=self.user_id, product_name=self.product_name)
-        
+
         # 6. Salvar o resultado no Cache ANTES de retornar
         #    (Apenas se a busca no banco retornar algo)
         if client and products is not None:

@@ -12,7 +12,7 @@ from src.schemas.payments.payment_methods import InputData
 from src.controllers.payments.partial import PartialPayment
 from src.controllers.sales.services import processar_venda_carrinho
 from src.controllers.sales.note import Note
-import traceback # Importado para o tratamento de erro final
+import traceback  # Importado para o tratamento de erro final
 
 router = APIRouter()
 cart = CartManagerDB()
@@ -32,13 +32,13 @@ async def finalizar_venda(
     Finaliza venda - para admin e funcionários.
     """
     # 1. Definição de IDs com base no usuário logado
-    
+
     # employee_operator_id: ID de quem está logado (seja dono ou funcionário)
     employee_operator_id = current_user.id
-    
+
     # cart_owner_id: ID do usuário que possui o carrinho no Redis (geralmente o ID de quem está logado)
     cart_owner_id = current_user.id
-    
+
     # company_sale_id: ID da empresa para a qual a venda deve ser registrada
     # Se for funcionário, usa current_user.empresa_id. Se for o dono, usa current_user.id.
     company_sale_id = current_user.empresa_id if current_user.empresa_id else current_user.id
@@ -51,10 +51,10 @@ async def finalizar_venda(
 
         # 🔹 1. Processa a Venda (Cria a instância de Checkout e a Venda no DB)
         validation_process = await processar_venda_carrinho(
-            user_id=company_sale_id, # ID da Empresa/Dono (fundamental para a venda)
+            user_id=company_sale_id,  # ID da Empresa/Dono (fundamental para a venda)
             cart_items=cart_items,
             payment_method=payment_method.upper(),
-            employee_operator_id=employee_operator_id, # ID de quem operou
+            employee_operator_id=employee_operator_id,  # ID de quem operou
             customer_id=customer_id,
             installments=installments,
             cpf=cpf,
@@ -72,24 +72,23 @@ async def finalizar_venda(
         if not checkout_instance or not hasattr(checkout_instance, 'venda') or not checkout_instance.venda:
             raise HTTPException(status_code=500, detail="Instância do checkout inválida ou venda não processada")
 
-
         # 🔹 2. Atualiza valores do caixa (Pré-requisito para documentos fiscais)
         caixa_aberto = await CashController.get_caixa_aberto_funcionario(employee_operator_id)
         if not caixa_aberto:
             raise HTTPException(status_code=404, detail=f"Atenção: Nenhum caixa aberto encontrado para o funcionário {employee_operator_id}")
 
         nota_fiscal = None
-        
+
         # 🚨 BLOCO TRY/EXCEPT: Trata erros APENAS na atualização pós-venda (Caixa/Nota)
         try:
             # Atualiza caixa E GERA NOTA usando a instância de Checkout
             finalizacao = FinalizationObjcts(checkout_instance)
-            
+
             # O método Updating_cash_values agora retorna um dicionário com o caixa e a nota_fiscal
-            resultado_final = await finalizacao.Updating_cash_values(caixa_aberto.id) 
-            
-            nota_fiscal = resultado_final.get("nota_fiscal") # Extrai a nota do retorno
-            
+            resultado_final = await finalizacao.Updating_cash_values(caixa_aberto.id)
+
+            nota_fiscal = resultado_final.get("nota_fiscal")  # Extrai a nota do retorno
+
             # Prepara resumo_venda
             sale_code = getattr(checkout_instance, 'sale_code', 'N/A')
             payment_method_final = getattr(checkout_instance, 'payment_method', payment_method.upper())
@@ -109,7 +108,7 @@ async def finalizar_venda(
 
             # Limpa o carrinho
             await cart.limpar_carrinho(user_id=current_user.id)
-            
+
             # Se tudo ocorreu, retorna sucesso
             return {"success": True, "message": "Venda, caixa e nota fiscal finalizados com sucesso! 🚀", "data": resumo_venda}
 
@@ -120,7 +119,7 @@ async def finalizar_venda(
         except Exception as e:
             # Tratamento de erro específico para falha na PÓS-VENDA (Caixa ou Nota)
             print(f"Erro ao atualizar caixa ou gerar nota: {e}")
-            
+
             # Recalcula dados para resumo (Venda foi salva, mas pós-venda falhou)
             total_venda = validation_data.get("total_venda", 0)
             resumo_venda = {
@@ -129,14 +128,18 @@ async def finalizar_venda(
                 "payment_method": getattr(checkout_instance, 'payment_method', payment_method.upper()),
                 "funcionario_operador_id": employee_operator_id,
                 "caixa_atualizado": False,
-                "finalizacao_erro": str(e), # Erro genérico de finalização
+                "finalizacao_erro": str(e),  # Erro genérico de finalização
                 "customer_id": customer_id,
                 "venda_id": checkout_instance.venda.id if checkout_instance.venda else None,
                 "quantidade_itens": len(cart_items),
                 "nota_fiscal": nota_fiscal,
             }
             # Retorna 200 indicando que a VENDA foi salva, mas houve falha na PÓS-VENDA
-            return {"success": True, "message": f"Venda finalizada, mas houve falha na atualização do caixa/geração de documento: {str(e)}", "data": resumo_venda}
+            return {
+                "success": True,
+                "message": f"Venda finalizada, mas houve falha na atualização do caixa/geração de documento: {str(e)}",
+                "data": resumo_venda,
+            }
 
     except HTTPException as e:
         # Erros que ocorrem ANTES do bloco de finalização (ex: carrinho vazio, 403)
@@ -144,6 +147,7 @@ async def finalizar_venda(
     except Exception as e:
         print(f"Erro interno ao processar venda: {str(e)}")
         import traceback
+
         print(f"Traceback completo: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=f"Erro interno ao processar venda: {str(e)}")
 

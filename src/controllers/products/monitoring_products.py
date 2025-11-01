@@ -9,6 +9,7 @@ except ImportError:
     print("AVISO: Cliente Redis não encontrado. O cache não funcionará.")
     client = None
 
+
 class ProductInfo:
     """
     Retrieve stock information for a given user.
@@ -16,7 +17,7 @@ class ProductInfo:
 
     def __init__(self, user_id: int) -> None:
         """Initialize empty values and store user_id."""
-        self.products: list = [] # Para o cache de instância
+        self.products: list = []  # Para o cache de instância
         self.quantity: int = 0
         self.total_stock_price: float = 0.0
         self.user_id: int = user_id
@@ -47,7 +48,7 @@ class ProductInfo:
         Count how many products exist in the user's stock.
         """
         cache_key = f"stock:count:{self.user_id}"
-        
+
         # 1. Tenta buscar do Cache Redis
         if client:
             try:
@@ -89,7 +90,7 @@ class ProductInfo:
                     return round(self.total_stock_price, 2)
             except Exception as e:
                 print(f"AVISO: Erro ao buscar do cache (price): {e}")
-        
+
         print(f"CACHE MISS: {cache_key}")
         # 2. Cache Miss
         products = await self._get_products()
@@ -109,7 +110,7 @@ class ProductInfo:
         Separate products by category and return their details.
         """
         cache_key = f"stock:by_category:{self.user_id}"
-        
+
         # 1. Tenta buscar do Cache Redis
         if client:
             try:
@@ -122,11 +123,11 @@ class ProductInfo:
                     return self.products
             except Exception as e:
                 print(f"AVISO: Erro ao buscar do cache (category): {e}")
-        
+
         print(f"CACHE MISS: {cache_key}")
         # 2. Cache Miss
         products = await self._get_products()
-        
+
         # Formata os dados
         formatted_products = [
             {
@@ -138,7 +139,7 @@ class ProductInfo:
             }
             for prod in products
         ]
-        self.products = formatted_products # Atualiza a variável de instância
+        self.products = formatted_products  # Atualiza a variável de instância
 
         # 3. Salva no Cache Redis
         if client:
@@ -146,7 +147,7 @@ class ProductInfo:
                 await client.setex(cache_key, self.cache_ttl, json.dumps(formatted_products, default=str))
             except Exception as e:
                 print(f"AVISO: Erro ao salvar no cache (category): {e}")
-                
+
         return self.products
 
     @property
@@ -165,7 +166,7 @@ class ProductInfo:
         Calcula o número de produtos com estoque baixo.
         """
         cache_key = f"stock:low_count:{self.user_id}"
-        
+
         # 1. Tenta buscar do Cache Redis
         if client:
             try:
@@ -179,11 +180,9 @@ class ProductInfo:
         print(f"CACHE MISS: {cache_key}")
         # 2. Cache Miss
         products = await self._get_products()
-        
+
         # (Simplifiquei sua lógica de contagem)
-        all_products_with_low_stock = sum(
-            1 for prod in products if prod.id and prod.stock < prod.stoke_min
-        )
+        all_products_with_low_stock = sum(1 for prod in products if prod.id and prod.stock < prod.stoke_min)
 
         # 3. Salva no Cache Redis
         if client:

@@ -60,7 +60,7 @@ async def get_current_user(token: str = Depends(reuseable_oauth)) -> "SystemUser
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Funcionário inativo.",
-                )
+            )
 
         # 🚨 CORREÇÃO: Garante que o funcionário tem uma empresa/usuário principal
         usuario = employee_db.usuario
@@ -74,11 +74,11 @@ async def get_current_user(token: str = Depends(reuseable_oauth)) -> "SystemUser
             id=employee_db.id,
             username=usuario.username if usuario else employee_db.nome,
             email=employee_db.email or (usuario.email if usuario else "sem_email@empresa.com"),
-            company_name=usuario.company_name, # Agora 'usuario' não é None
-            cnpj=usuario.cnpj, # Agora 'usuario' não é None
+            company_name=usuario.company_name,  # Agora 'usuario' não é None
+            cnpj=usuario.cnpj,  # Agora 'usuario' não é None
             cpf=None,
             is_active=employee_db.ativo,
-            empresa_id=usuario.id, # Agora 'usuario' não é None
+            empresa_id=usuario.id,  # Agora 'usuario' não é None
         )
 
     raise HTTPException(

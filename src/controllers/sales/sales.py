@@ -264,5 +264,3 @@ class Checkout:
 
             print(f"Traceback: {traceback.format_exc()}")
             raise HTTPException(status_code=400, detail=f"Erro ao processar venda: {str(e)}")
-
-
