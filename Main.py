@@ -140,6 +140,7 @@ class Server:
         self.api.include_router(paymente)
         self.api.include_router(delivery)
         self.api.include_router(marketplace)
+        self.api.include_router(my_inventario)
 
     def run(self, host: str = '0.0.0.0', port: int = 8000):
         """Inicia o sevidor Uvicorn."""
@@ -147,6 +148,7 @@ class Server:
 
     async def teste(self):
         return await check_redis_connection()
+
 
 # Variavel global para o Uvicorn
 app = Server().api
