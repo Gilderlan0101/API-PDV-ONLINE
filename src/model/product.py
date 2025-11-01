@@ -36,6 +36,7 @@ class Produto(models.Model):
     controllstoke = fields.CharField(max_length=50, null=True)
     sales_config = fields.CharField(max_length=150, null=True)
     detail = fields.TextField(null=True)
+    label = fields.TextField(null=True)
 
     criado_em = fields.DatetimeField(default=datetime.now(ZoneInfo("America/Sao_Paulo")))
     atualizado_em = fields.DatetimeField(default=datetime.now(ZoneInfo("America/Sao_Paulo")))
