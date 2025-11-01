@@ -50,6 +50,7 @@ from src.routes.marketplace.marketplace_between_customers import marketplace
 # Inventario
 from src.routes.products.inventario.stock_entry_controller import inventory_router as stoke
 from src.routes.products.inventario.label_generator import inventory_router as label
+from src.routes.products.inventario.stock_exit_controller import inventory_router as exit
 
 auth = APIRouter(
     tags=["Autenticação"],
@@ -176,3 +177,4 @@ marketplace_prods.include_router(marketplace)
 my_inventario = APIRouter()
 my_inventario.include_router(stoke)
 my_inventario.include_router(label)
+my_inventario.include_router(exit)
