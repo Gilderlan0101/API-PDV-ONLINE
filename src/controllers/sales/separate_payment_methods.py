@@ -26,7 +26,7 @@ async def separating_sales_by_payments(user_id: int) -> Dict[str, Dict[str, Any]
 
     try:
         cache_key = f"payments:{user_id}"
-        cache = client.get(cache_key)
+        cache = await client.get(cache_key)
 
         if cache:
             return json.loads(cache)
@@ -76,7 +76,7 @@ async def separating_sales_by_payments(user_id: int) -> Dict[str, Dict[str, Any]
                 'sales_list': value['sales_list'],
             }
 
-        client.setex(cache_key, 60, json.dumps(final_result, default=str))
+        await client.setex(cache_key, 60, json.dumps(final_result, default=str))
         return final_result
 
     except Exception as e:

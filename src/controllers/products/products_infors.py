@@ -30,7 +30,7 @@ class Products:
             cache_key = f"product:{self.user_id}:{product_name.lower()}"
 
             # 🔹 Verifica se já tem cache
-            cache = client.get(cache_key)
+            cache = await client.get(cache_key)
             if cache:
                 print("[CACHE] Produto encontrado no cache")
                 return {"data": json.loads(cache)}
@@ -46,7 +46,7 @@ class Products:
                 }
 
                 # 🔹 Salva no cache por 60 segundos
-                client.setex(cache_key, 60, json.dumps(product_data))
+                await client.setex(cache_key, 60, json.dumps(product_data))
 
                 return [product_data]
 
@@ -72,7 +72,7 @@ class Products:
         try:
 
             cache_key = f"product:{self.user_id}:{type_ticket.lower()}"
-            cache = client.get(cache_key)
+            cache = await client.get(cache_key)
             if cache:
                 print('Produto encontrado em cache')
                 return json.loads(cache)
@@ -91,7 +91,7 @@ class Products:
                         }
                     )
 
-                client.setex(cache_key, 60, json.dumps(products_data))
+                await client.setex(cache_key, 60, json.dumps(products_data))
                 return products_data
 
             else:

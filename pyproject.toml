@@ -33,6 +33,7 @@ tortoise-orm = "^0.25.1"
 qrcode = "^8.2"
 crcmod = "^1.7"
 redis = "^6.4.0"
+aiomysql = "^0.3.2"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

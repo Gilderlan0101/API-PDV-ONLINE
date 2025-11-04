@@ -35,7 +35,7 @@ class CashReportController:
         # 🔹 Lógica da Cache
         # Chave da cache: Combina a data e o nome do funcionário para unicidade
         cache_key = f"cash_reports:{filter_data}" or f"cash_reports:{employee_name}"
-        cache = client.get(cache_key)
+        cache = await client.get(cache_key)
 
         # 🔹 Tenta retornar do cache se a chave existir
         if cache:
@@ -83,5 +83,5 @@ class CashReportController:
                 }
             )
 
-        client.setex(cache_key, 60, json.dumps(movement_data))
+        await client.setex(cache_key, 60, json.dumps(movement_data))
         return movement_data

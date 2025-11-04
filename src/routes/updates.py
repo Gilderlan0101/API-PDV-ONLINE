@@ -5,7 +5,7 @@ from tortoise.functions import Sum  # Import necessário para agregar
 from src.model.sale import Sales
 from src.model.user import Usuario
 from src.auth.deps import get_current_user
-from src.utils.sales_of_the_day import sales_of_the_day
+from src.utils.sales_of_the_day import sales_of_the_day, total_in_sales
 from typing import Dict, Any, List
 
 allDatas = APIRouter()
@@ -48,6 +48,11 @@ async def profit(current_user: Usuario = Depends(get_current_user)) -> Dict[str,
         # C. Contagem de Vendas Únicas (usando a função corrigida)
         qtd_sales_day = await sales_of_the_day(current_user.id)
 
+        # A única informação que é persistida no banco de dados,
+        # não sendo recalculada ou zerada automaticamente pelo sistema ou rotinas diárias.
+        __valor__no__update__ = await total_in_sales(current_user.id)
+
+
         # D. Contagem de Vendas (Histórico Total)
         total_sales_count = await Sales.filter(usuario_id=current_user.id).count()
 
@@ -59,6 +64,7 @@ async def profit(current_user: Usuario = Depends(get_current_user)) -> Dict[str,
         for sale in sales_of_the_day_list:
             total_user_profit += sale.total_price
             total_lucro += sale.lucro_total
+
 
             sales_list.append(
                 {
@@ -73,6 +79,9 @@ async def profit(current_user: Usuario = Depends(get_current_user)) -> Dict[str,
                 }
             )
 
+
+
+
         # Total de itens vendidos hoje
         total_items_sold_today = daily_aggregation.total_items_sold if daily_aggregation and daily_aggregation.total_items_sold is not None else 0
 
@@ -80,7 +89,7 @@ async def profit(current_user: Usuario = Depends(get_current_user)) -> Dict[str,
         return {
             # 🎯 MÉTRICAS DO DIA
             'total_user_profit': f'{total_user_profit:.2f}',  # Receita bruta do dia
-            'total_lucro': f'{total_lucro:.2f}',  # Lucro líquido real do dia
+            'total_lucro': f'{__valor__no__update__:.2f}',  # Lucro líquido real
             'sales_of_the_day': qtd_sales_day,  # Quantidade de Vendas Únicas (Transações) do dia
             'total_items_sold_today': total_items_sold_today,  # Quantidade total de itens vendidos hoje
             # 🎯 MÉTRICAS GERAIS

@@ -96,12 +96,12 @@ async def processar_venda_carrinho(
             stock_available = produto.stock or 0
             print(f"DEBUG Item {i+1}: Produto Encontrado. Estoque: {stock_available}, Solicitado: {quantity}")
 
-            if stock_available < quantity:
+            if stock_available < int(quantity):
                 print(f"DEBUG Item {i+1}: Pulando. Estoque insuficiente.")
                 continue
 
             # 4. Atualizar estoque
-            produto.stock -= quantity
+            produto.stock -= int(quantity)
             produto.atualizado_em = datetime.now()
             await produto.save()
             print(f"DEBUG Item {i+1}: Estoque atualizado. Novo estoque: {produto.stock}")
@@ -111,14 +111,14 @@ async def processar_venda_carrinho(
             cost_price = float(produto.cost_price or 0.0)
             produto_id = produto.id
 
-            total_price = quantity * sale_price
-            lucro_total = (sale_price - cost_price) * quantity
-            cost_total = quantity * cost_price
+            total_price = int(quantity) * sale_price
+            lucro_total = (sale_price - cost_price) * int(quantity)
+            cost_total = int(quantity) * cost_price
 
             # 6. Montar e adicionar item processado
             item_venda = {
                 "product_name": produto.name,
-                "quantity": quantity,
+                "quantity": int(quantity),
                 "unit_price": sale_price,
                 "total_price": total_price,
                 "lucro_total": lucro_total,

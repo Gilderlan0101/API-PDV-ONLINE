@@ -4,6 +4,10 @@ from zoneinfo import ZoneInfo
 from src.core.cache import client
 import json
 
+from tortoise.functions import Sum
+from tortoise.models import Q 
+
+
 
 async def sales_of_the_day(user_id: int) -> int:
     """
@@ -48,3 +52,27 @@ async def sales_of_the_day(user_id: int) -> int:
     except Exception as e:
         print(f"Erro em sales_of_the_day: {e}")
         return 0
+
+from tortoise.functions import Sum
+# Certifique-se de que a classe Sales, etc., está definida/importada
+# ...
+
+async def total_in_sales(user_id: int) -> float:
+    """
+    Calcula e retorna o valor total de todas as vendas (soma de total_price)
+    para um usuário (empresa) específico.
+    """
+    try:
+        from tortoise.functions import Sum
+        
+        result = await Sales.filter(usuario_id=user_id).annotate(
+            total_vendas=Sum("total_price")
+        ).first()
+
+        if result and hasattr(result, 'total_vendas'):
+            return float(result.total_vendas) if result.total_vendas else 0.0
+        return 0.0
+
+    except Exception as e:
+        print(f"Erro ao calcular o total de vendas para o usuário {user_id}: {e}")
+        raise

@@ -87,6 +87,10 @@ class CashController:
 
         caixa.saldo_atual += valor_venda
 
+        if isinstance(valor_venda, str):
+            valor_venda = float(valor_venda.replace('R$', '').replace('.', '').replace(',', '.').strip())
+
+
         # Registra movimentação - CORRIGIDO: passar a instância completa de Sales
         await CashMovement.create(
             tipo="ENTRADA",
@@ -98,6 +102,8 @@ class CashController:
             funcionario=caixa.funcionario,
             venda=venda_obj,  # CORREÇÃO: passar a instância completa de Sales
         )
+
+        caixa.saldo_atual += float(valor_venda)
 
         await caixa.save()
         return caixa
@@ -232,7 +238,7 @@ class FinalizationObjcts:
 
     async def Updating_cash_values(self, caixa_id: int):
         """
-        Passando os campos necessários para atualizar o caixa E gerar a nota fiscal.
+        Passando os campos necessários para atualizar o caixo E gerar a nota fiscal.
         """
         try:
             # 1. VALIDAÇÕES E OBTENÇÃO DE DADOS
@@ -246,29 +252,42 @@ class FinalizationObjcts:
             if not isinstance(venda_obj, Sales):
                 raise Exception(f"Tipo inválido para venda: {type(venda_obj)}. Esperado: Sales")
 
-            # Cálculo de valor_total (Mantido)
+            # 🔴 CORREÇÃO: Garantir que valor_total seja sempre float
+            valor_total = 0.0
+            
             if self.checkout.receipt_data and isinstance(self.checkout.receipt_data, list):
-                valor_total = sum(item.get('total_price', 0) for item in self.checkout.receipt_data)
+                # Garantir conversão para float de cada item
+                for item in self.checkout.receipt_data:
+                    item_total = item.get('total_price', 0)
+                    # Converter para float, removendo possíveis formatações de string
+                    if isinstance(item_total, str):
+                        # Remover formatação de moeda se existir
+                        item_total = item_total.replace('R$', '').replace('.', '').replace(',', '.').strip()
+                    valor_total += float(item_total)
             else:
-                valor_total = getattr(self.checkout, 'total_price', getattr(venda_obj, 'total_price', 0))
+                # Usar fallbacks com conversão segura
+                fallback_value = getattr(self.checkout, 'total_price', getattr(venda_obj, 'total_price', 0))
+                if isinstance(fallback_value, str):
+                    fallback_value = fallback_value.replace('R$', '').replace('.', '').replace(',', '.').strip()
+                valor_total = float(fallback_value)
 
             forma_pagamento = getattr(self.checkout, 'payment_method', getattr(venda_obj, 'payment_method', 'PIX'))
 
-            # Obtenção de caixa e validação de abertura (Mantido)
+            # Obtenção de caixa e validação de abertura
             caixa = await Caixa.get_or_none(id=caixa_id).prefetch_related('usuario', 'funcionario')
             if not caixa:
                 raise Exception(f"Caixa com ID {caixa_id} não encontrado")
             if not caixa.aberto:
                 raise Exception("Caixa está fechado")
 
-            # 2. ATUALIZAÇÃO DO CAIXA
+            # 2. ATUALIZAÇÃO DO CAIXA - AGORA COM VALOR TOTAL CONVERTIDO
             caixa.saldo_atual += valor_total
             await caixa.save()
 
-            # Preparação de movimento_data (Mantido)
+            # Preparação de movimento_data - GARANTIR QUE VALOR É FLOAT
             movimento_data = {
                 "tipo": "ENTRADA",
-                "valor": valor_total,
+                "valor": float(valor_total),  # 🔴 GARANTIR FLOAT AQUI TAMBÉM
                 "descricao": f"Venda #{venda_obj.id} - {forma_pagamento}",
                 "caixa_id": caixa.id,
                 "venda_id": venda_obj.id,
@@ -276,35 +295,34 @@ class FinalizationObjcts:
                 "funcionario_id": caixa.funcionario.id if caixa.funcionario else None,
             }
 
-            # Salva total de vendas do funcionário (Mantido)
+            # Salva total de vendas do funcionário - GARANTIR FLOAT
             if movimento_data["funcionario_id"] and movimento_data["usuario_id"]:
                 await Employees.filter(usuario_id=movimento_data['usuario_id'], id=movimento_data["funcionario_id"]).update(
-                    result_of_all_sales=F("result_of_all_sales") + movimento_data['valor']
+                    result_of_all_sales=F("result_of_all_sales") + float(movimento_data['valor'])
                 )
 
-            # 3. GERAÇÃO DA NOTA FISCAL
+            # 3. GERAÇÃO DA NOTA FISCAL (mantido igual)
 
-            # 🟢 CORREÇÃO CRÍTICA: Priorizar o usuario_id da venda_obj, que deve ser o valor correto (ID da empresa)
-            checkout_user_id = self.checkout.user_id  # Valor original (provavelmente 0)
+            # 🟢 CORREÇÃO CRÍTICA: Priorizar o usuario_id da venda_obj
+            checkout_user_id = self.checkout.user_id
 
-            # Se o user_id do checkout for o valor default (0) ou None, use o valor persistido na Venda
             if not checkout_user_id and venda_obj.usuario_id:
                 final_user_id = venda_obj.usuario_id
             else:
-                final_user_id = checkout_user_id  # Se não for 0/None, usa o que veio do checkout
+                final_user_id = checkout_user_id
 
             print(f"DEBUG FINALIZATION: user_id lido do Checkout: {self.checkout.user_id}")
             print(f"DEBUG FINALIZATION: usuario_id lido da Venda_obj: {venda_obj.usuario_id}")
             print(f"DEBUG FINALIZATION: user_id corrigido para Note: {final_user_id}")
 
-            # Instanciar Note usando os dados do Checkout (mantendo a lógica de herança)
+            # Instanciar Note usando os dados do Checkout
             note_generator = Note(
-                user_id=final_user_id,  # <--- USA O VALOR CORRIGIDO
+                user_id=final_user_id,
                 product_name=self.checkout.product_name,
                 produto_id=self.checkout.produto_id,
                 quantity=self.checkout.quantity,
                 payment_method=self.checkout.payment_method,
-                total_price=self.checkout.total_price,
+                total_price=valor_total,  # 🔴 USAR O VALOR TOTAL JÁ CONVERTIDO
                 lucro_total=self.checkout.lucro_total,
                 funcionario_id=self.checkout.funcionario_id,
                 funcionario_nome=self.checkout.funcionario_nome,
@@ -327,7 +345,7 @@ class FinalizationObjcts:
             # Registra movimentação no CashMovement
             await CashMovement.create(**movimento_data)
 
-            # 🔹 CORREÇÃO: Atualiza a venda com o caixa_id
+            # Atualiza a venda com o caixa_id
             venda_obj.caixa_id = caixa.id
             await venda_obj.save()
 
@@ -338,7 +356,6 @@ class FinalizationObjcts:
 
         except Exception as e:
             import traceback
-
-            print(f"❌ Erro detalhado ao atualizar caixa/gerar nota: {str(e)}")
+            print(f"❌ Erro detalhado ao atualizar caixo/gerar nota: {str(e)}")
             print(f"📋 Traceback: {traceback.format_exc()}")
             raise Exception(f"Erro ao finalizar venda (Caixa/Nota): {str(e)}")

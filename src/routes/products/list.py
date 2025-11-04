@@ -33,7 +33,7 @@ async def list_all_products(current_user: SystemUser = Depends(get_current_user)
         cache_key = f"products:{usuario_id}"  # chave única por empresa
 
         # 🔹 Verifica cache
-        cache = client.get(cache_key)
+        cache = await client.get(cache_key)
         if cache:
             print("Cache hit")
             return {"success": True, "data": json.loads(cache), "error": None}
@@ -43,7 +43,7 @@ async def list_all_products(current_user: SystemUser = Depends(get_current_user)
         products_data = jsonable_encoder(products)
 
         # Salva no Redis (com expiração de 60s, por exemplo)
-        client.setex(cache_key, 60, json.dumps(products_data))
+        await client.setex(cache_key, 60, json.dumps(products_data))
 
         return {"success": True, "data": products_data, "error": None}
 

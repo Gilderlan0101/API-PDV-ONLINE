@@ -1,7 +1,12 @@
-def funcao(a, b, c):
+class Car:
+    def __init__(self, car_name):
 
-    return a, b, c
+        self.name = car_name
+
+    def createcar(self):
+
+        return f'Carro {self.name} foi criado'
 
 
-var = funcao(c='Ola', b='Gilderlan', a='Seja bem vido')
-print(var)
+car = Car('Honda')
+print(car.createcar())

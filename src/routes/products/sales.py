@@ -92,7 +92,7 @@ async def finalizar_venda(
             # Prepara resumo_venda
             sale_code = getattr(checkout_instance, 'sale_code', 'N/A')
             payment_method_final = getattr(checkout_instance, 'payment_method', payment_method.upper())
-            total_venda = validation_data.get("total_venda", 0)
+            total_venda = int(validation_data.get("total_venda", 0))
 
             resumo_venda = {
                 "sale_code": sale_code,
@@ -116,19 +116,19 @@ async def finalizar_venda(
             # Tratamento Crucial: Propaga o erro HTTP se ele veio da finalização (ex: 404/400)
             raise http_exc
 
-        except Exception as e:
+        except (ValueError, TypeError) as e:
             # Tratamento de erro específico para falha na PÓS-VENDA (Caixa ou Nota)
             print(f"Erro ao atualizar caixa ou gerar nota: {e}")
 
             # Recalcula dados para resumo (Venda foi salva, mas pós-venda falhou)
-            total_venda = validation_data.get("total_venda", 0)
+            total_venda = int(validation_data.get("total_venda", 0))
             resumo_venda = {
                 "sale_code": getattr(checkout_instance, 'sale_code', 'N/A'),
                 "total_venda": total_venda,
                 "payment_method": getattr(checkout_instance, 'payment_method', payment_method.upper()),
                 "funcionario_operador_id": employee_operator_id,
                 "caixa_atualizado": False,
-                "finalizacao_erro": str(e),  # Erro genérico de finalização
+                "finalizacao_erro": str(e.__class__.__name__),  # Erro genérico de finalização
                 "customer_id": customer_id,
                 "venda_id": checkout_instance.venda.id if checkout_instance.venda else None,
                 "quantidade_itens": len(cart_items),

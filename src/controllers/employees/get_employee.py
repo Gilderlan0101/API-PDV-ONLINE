@@ -22,7 +22,7 @@ async def getEmployees(user_id: int):
 
         cache_key = f"employee:{user_id}"
         # Verifica se já tem cache
-        cache = client.get(cache_key)
+        cache = await client.get(cache_key)
         if cache:
             return json.loads(cache)
 
@@ -55,7 +55,7 @@ async def getEmployees(user_id: int):
                         )
 
                 # Salvando obj em cache
-                client.setex(cache_key, 60, json.dumps(employee_information))
+                await client.setex(cache_key, 60, json.dumps(employee_information))
                 return employee_information
 
             case _:
