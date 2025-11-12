@@ -20,5 +20,5 @@ class CaixaFuncionarioUpdate(SQLModel):
 
 class AberturaCaixaRequest(BaseModel):
     funcionario_id: int
-    saldo_inicial: float
+    saldo_inicial: Optional[float] = 0.0
     nome: Optional[str] = "Caixa Principal"

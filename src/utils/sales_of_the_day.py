@@ -5,8 +5,7 @@ from src.core.cache import client
 import json
 
 from tortoise.functions import Sum
-from tortoise.models import Q 
-
+from tortoise.models import Q
 
 
 async def sales_of_the_day(user_id: int) -> int:
@@ -53,9 +52,12 @@ async def sales_of_the_day(user_id: int) -> int:
         print(f"Erro em sales_of_the_day: {e}")
         return 0
 
+
 from tortoise.functions import Sum
+
 # Certifique-se de que a classe Sales, etc., está definida/importada
 # ...
+
 
 async def total_in_sales(user_id: int) -> float:
     """
@@ -64,10 +66,8 @@ async def total_in_sales(user_id: int) -> float:
     """
     try:
         from tortoise.functions import Sum
-        
-        result = await Sales.filter(usuario_id=user_id).annotate(
-            total_vendas=Sum("total_price")
-        ).first()
+
+        result = await Sales.filter(usuario_id=user_id).annotate(total_vendas=Sum("total_price")).first()
 
         if result and hasattr(result, 'total_vendas'):
             return float(result.total_vendas) if result.total_vendas else 0.0

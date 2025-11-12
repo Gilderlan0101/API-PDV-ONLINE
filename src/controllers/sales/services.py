@@ -13,8 +13,6 @@ from src.model.product import Produto
 from src.model.sale import Sales
 from src.utils.sales_code_generator import gerar_codigo_venda
 
-cart = CartManagerDB()
-
 
 @atomic()
 async def processar_venda_carrinho(

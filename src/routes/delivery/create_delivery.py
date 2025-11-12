@@ -15,6 +15,9 @@ from datetime import datetime
 from typing import List, Optional, Dict, Any
 import logging
 
+# TESTE REMOVE QUANDO ESTIVE TUDO OK
+from src.utils.user_or_functional import i_request
+
 # Configurar logging
 logger = logging.getLogger(__name__)
 
@@ -23,6 +26,7 @@ delivery_router = APIRouter()
 
 
 @delivery_router.get('/management')
+@i_request
 async def get_delivery_management(current_user: SystemUser = Depends(get_current_user)):
     """
     Endpoint para gerenciamento geral de delivery.
@@ -77,6 +81,7 @@ async def create_delivery(data: DeliveryCreate, current_user: SystemUser = Depen
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Erro interno: {str(e)}")
 
 
+@i_request
 @delivery_router.post('/auto-assign')
 async def auto_assign_deliveries(current_user: SystemUser = Depends(get_current_user)):
     """

@@ -1,206 +1,224 @@
-from typing import Any, Dict, Optional
-from fastapi import HTTPException
+from typing import Any, Dict, List
+from fastapi import HTTPException, status
 from src.model.product import Produto
 from src.model.carItems import CartItem
-from src.model.employee import Employees
 from src.model.caixa import Caixa
-from src.model.user import Usuario
-
-from src.utils.sales_code_generator import gerar_codigo_venda
-
-
-def format_brl(value: float) -> str:
-    return f"R$ {value:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
 
 
 class CartManagerDB:
-    """Carrinho persistido no banco de dados usando Tortoise ORM"""
+    """
+    Gerencia o carrinho de um funcionário dentro de um caixa ativo.
+    Implementa controle multi-tenant (empresa + funcionário).
+    """
 
-    async def _get_caixa_id(self, user_id: int) -> int:
+    def __init__(self, company_id: int, employee_id: int):
+        self.company_id = company_id  # ID da empresa (usuario_id)
+        self.employee_id = employee_id  # ID do funcionário (funcionario_id)
+
+    async def _get_caixa_ativo(self) -> Caixa:
         """
-        Função para obter o ID do caixa ativo do usuário/funcionário.
+        Busca o caixa ativo vinculado ao funcionário e à empresa.
         """
-        # Verifica se é um funcionário
         try:
+            # 🎯 Busca usando as duas chaves: usuario_id (empresa) e funcionario_id
+            caixa = await Caixa.filter(usuario_id=self.company_id, funcionario_id=self.employee_id, aberto=True).first()
 
-            funcionario = await Employees.get_or_none(id=user_id)
+            if not caixa:
+                # 🛑 Erro 400 se o caixa não estiver aberto.
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Nenhum caixa aberto encontrado para este funcionário/empresa.")
 
-            if funcionario:
-                # Busca o caixa ativo deste funcionário
-                caixa_ativo = await Caixa.filter(funcionario_id=funcionario.id, aberto=True).first()
+            return caixa
 
-                if caixa_ativo:
-                    return caixa_ativo.id
-
-            # Se não for funcionário, busca caixa do admin
-            caixa_admin = await Caixa.filter(usuario_id=user_id, aberto=True).first()
-
-            if caixa_admin:
-                return caixa_admin.id
-
-            # Se não encontrar caixa, retorna o user_id (fallback)
-            return user_id
-
+        except HTTPException:
+            raise
         except Exception as e:
-            raise HTTPException(status_code=404, deital=f'Erro ao buscar caixa: {e}')
+            # 🛑 Erro 500 para falhas inesperadas de banco
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Erro ao buscar caixa: {str(e)}")
 
-    async def add_produto(
-        self,
-        product_id: int,
-        quantity: int,
-        user_id: int,
-    ) -> Dict[str, Any]:
+    async def add_produto(self, product_id: int, quantity: int, empresa_id: int, employee_id: int) -> Dict[str, Any]:
+        """
+        Adiciona um produto ao carrinho (caixa ativo do funcionário).
+        """
+        caixa = await self._get_caixa_ativo()
 
-        produto = await Produto.get_or_none(id=product_id)
+        # Busca produto pertencente à empresa
+        produto = await Produto.get_or_none(id=product_id, usuario_id=empresa_id)
+
         if not produto:
-            return {"aviso": "Produto não encontrado"}
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado nesta empresa.")
 
         if produto.stock < quantity:
-            return {"aviso": "Estoque insuficiente"}
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Estoque insuficiente.")
 
-        # Obtém o ID do caixa ativo
-        caixa_id = await self._get_caixa_id(user_id)
-
-        # Verifica se o caixa existe e está aberto
-        caixa = await Caixa.get_or_none(id=caixa_id, aberto=True)
-        if not caixa:
-            return {"aviso": "Caixa não encontrado ou fechado"}
-
-        # Adicionar ou atualizar item no carrinho - AGORA USA caixa_id
-        cart_item = await CartItem.get_or_none(caixa_id=caixa_id, product_id=product_id)  # ✅ Corrigido: usa caixa_id em vez de user_id
+        # 🎯 CORREÇÃO: Usar .filter().first() em vez de .get_or_none() para evitar MultipleObjectsReturned
+        cart_item = await CartItem.filter(caixa_id=caixa.caixa_id, product_id=product_id).first()
 
         if cart_item:
-            # Atualiza item existente
-            cart_item.quantity += quantity
-            cart_item.total_price = cart_item.price * cart_item.quantity
-            await cart_item.save()
+            # Se o item existe, delega a lógica de estoque e atualização para update_produto
+            return await self.update_produto(product_id, int(cart_item.quantity) + int(quantity), empresa_id)
 
-            # Atualiza o estoque do produto
-            produto.stock -= quantity
-            await produto.save()
-        else:
-            # Cria novo item no carrinho
+        # Cria item de carrinho
+        cart_item = await CartItem.create(
+            caixa_id=caixa.caixa_id,
+            product_id=product_id,
+            product_name=produto.name,
+            quantity=quantity,
+            price=produto.sale_price,
+            total_price=produto.sale_price * quantity,
+            product_code=produto.product_code,
+        )
 
-            # Busncando codigo do produto
-            get_code_prodct = await Produto.get_or_none(usuario_id=user_id, id=product_id)
-            if not get_code_prodct:
-                return {"aviso": "Produto não encontrado"}
-
-            cart_item = await CartItem.create(
-                caixa_id=caixa_id,  # ✅ Corrigido: usa caixa_id
-                product_id=product_id,
-                product_name=produto.name,
-                quantity=quantity,
-                price=produto.sale_price,
-                total_price=produto.sale_price * quantity,
-                product_code=get_code_prodct.product_code,  # pega do primeiro item da lista
-            )
-
-            # Atualiza o estoque do produto
-            produto.stock -= quantity
-            await produto.save()
+        # Atualiza estoque do produto (subtrai)
+        produto.stock -= quantity
+        await produto.save()
 
         return {
             "success": True,
             "item_adicionado": {
-                "id": cart_item.id,
+                "id": product_id,
                 "product_id": cart_item.product_id,
                 "product_name": cart_item.product_name,
-                "product_code": cart_item.product_code,
                 "quantity": cart_item.quantity,
                 "price": float(cart_item.price),
                 "total_price": float(cart_item.total_price),
-                "caixa_id": user_id,
+                "caixa_id": caixa.caixa_id,
+                "empresa_id": empresa_id,
+                "employee_id": employee_id,
             },
-            "admin_produto_id": produto.id,
-            "nome": produto.name,
         }
 
-    async def listar_produtos(self, user_id: int):
-        caixa_id = await self._get_caixa_id(user_id)
+        
+    async def update_produto(self, product_id: int, new_quantity: int, empresa_id: int) -> Dict[str, Any]:
+        """
+        Atualiza a quantidade de um item no carrinho e ajusta o estoque.
+        """
+        caixa = await self._get_caixa_ativo()
 
-        # Remove itens com quantity == 0 - ✅ Corrigido: usa caixa_id
-        zero_items = await CartItem.filter(caixa_id=caixa_id, quantity=0).all()
-        for item in zero_items:
-            await item.delete()
+        # 🎯 CORREÇÃO: Usar .filter().first() em vez de .get_or_none() para evitar MultipleObjectsReturned
+        cart_item = await CartItem.filter(caixa_id=caixa.caixa_id, product_id=product_id).first()
+        if not cart_item:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado no carrinho.")
 
-        # Retorna todos os itens do carrinho - ✅ Corrigido: usa caixa_id
-        produtos = await CartItem.filter(caixa_id=caixa_id).all()
-        return produtos
+        produto = await Produto.get_or_none(id=product_id, usuario_id=empresa_id)
+        if not produto:
+            # Caso o produto tenha sido deletado do inventário, apenas atualiza o carrinho (sem ajuste de estoque).
+            pass
 
-    async def remove_produto(self, product_id: int, user_id: int):
-        caixa_id = await self._get_caixa_id(user_id)
+        old_quantity = cart_item.quantity
+        quantity_difference = int(new_quantity) - int(old_quantity)
 
-        # ✅ Corrigido: usa caixa_id em vez de user_id
-        cart_item = await CartItem.filter(caixa_id=caixa_id, product_id=product_id).first()
-
-        if cart_item:
-            # Restaura o estoque do produto antes de remover
-            produto = await Produto.get_or_none(id=product_id)
+        if new_quantity <= 0:
+            # Se a nova quantidade for zero ou menor, remove o item
             if produto:
-                produto.stock += cart_item.quantity
+                produto.stock += old_quantity  # Restaura o estoque antigo
                 await produto.save()
-
             await cart_item.delete()
-            return {"success": True, "aviso": "Produto removido"}
+            return {"success": True, "aviso": "Produto removido do carrinho por quantidade zero."}
 
-        return {"success": False, "aviso": "Produto não encontrado no carrinho"}
+        if produto:
+            # Verifica o estoque para aumentos
+            if quantity_difference > 0 and produto.stock < quantity_difference:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Estoque insuficiente para aumentar a quantidade.")
 
-    async def update_produto(
-        self,
-        product_id: int,
-        user_id: int,
-        quantity: Optional[int] = None,
-        discount: Optional[float] = None,
-        addition: Optional[float] = None,
-        replace_quantity: bool = False,
-        replace_discount: bool = False,
-        replace_addition: bool = False,
-    ) -> Dict[str, Any]:
-        caixa_id = await self._get_caixa_id(user_id)
+            # Ajusta o estoque: subtrai se aumentou, adiciona se diminuiu
+            produto.stock -= quantity_difference
+            await produto.save()
 
-        # Corrigido: usa caixa_id em vez de user_id
-        cart_item = await CartItem.filter(caixa_id=caixa_id, product_id=product_id).first()
+        # Atualiza o item do carrinho
+        cart_item.quantity = new_quantity
+        cart_item.total_price = cart_item.price * new_quantity
+        await cart_item.save()
+
+        return {
+            "success": True,
+            "item_atualizado": {
+                "id": product_id,
+                "product_name": cart_item.product_name,
+                "quantity": cart_item.quantity,
+                "total_price": float(cart_item.total_price),
+            },
+        }
+
+    async def listar_produtos(self, empresa_id: int, employee_id: int) -> List[Dict[str, Any]]:
+        """
+        Lista os produtos ATUALMENTE NO CARRINHO (itens do caixa ativo).
+        Esta rota NÃO lista o inventário COMPLETO de produtos da empresa.
+        """
+        caixa = await self._get_caixa_ativo()
+
+        # Remove itens inválidos (quantity == 0)
+        await CartItem.filter(caixa_id=caixa.caixa_id, quantity=0).delete()
+
+        produtos = await CartItem.filter(caixa_id=caixa.caixa_id).all()
+
+        return [
+            {
+                "id": item.id,
+                "product_id": item.product_id,
+                "product_name": item.product_name,
+                "quantity": item.quantity,
+                "price": float(item.price),
+                "total_price": float(item.total_price),
+                "product_code": item.product_code,
+            }
+            for item in produtos
+        ]
+
+    async def remove_produto(self, product_id: int, empresa_id: int, employee_id: int) -> Dict[str, Any]:
+        """
+        Remove um produto do carrinho e restaura o estoque.
+        """
+        caixa = await self._get_caixa_ativo()
+
+        # 🎯 CORREÇÃO: Usar .filter().first() em vez de .get_or_none() para evitar MultipleObjectsReturned
+        cart_item = await CartItem.filter(caixa_id=caixa.caixa_id, product_id=product_id).first()
 
         if not cart_item:
-            return {"success": False, "message": "Produto não encontrado no carrinho"}
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado no carrinho.")
 
-        produto = await Produto.get_or_none(id=product_id)
-        if not produto:
-            return {"success": False, "message": "Produto não encontrado"}
+        # Restaura estoque
+        produto = await Produto.get_or_none(id=product_id, usuario_id=empresa_id)
+        if produto:
+            produto.stock += int(cart_item.quantity)
+            await produto.save()
 
-        # ... (resto do método mantido, mas usando caixa_id)
+        await cart_item.delete()
 
-    async def limpar_carrinho(self, user_id: int):
-        caixa_id = await self._get_caixa_id(user_id)
+        return {"success": True, "aviso": "Produto removido com sucesso."}
 
-        # ✅ Corrigido: usa caixa_id em vez de user_id
-        itens = await CartItem.filter(caixa_id=caixa_id).all()
+    async def limpar_carrinho(self, empresa_id: int, employee_id: int) -> dict:
+        """
+        Limpa todos os itens do carrinho e restaura os estoques (usado para cancelamento de venda/sessão).
+        """
+        caixa = await self._get_caixa_ativo()
+        itens = await CartItem.filter(caixa_id=caixa.caixa_id).all()  # pega todos
 
-        # Restaura o estoque de todos os produtos
+        if not itens:
+            return {"success": False, "aviso": "Nenhum item encontrado no carrinho."}
+
         for item in itens:
-            produto = await Produto.get_or_none(id=item.product_id)
+            # Busca o produto correspondente ao item
+            produto = await Produto.filter(id=item.product_id, usuario_id=empresa_id).first()
+
             if produto:
-                produto.stock += item.quantity
+                # Restaura o estoque
+                produto.stock += int(item.quantity or 0)
                 await produto.save()
-            await item.delete()
 
-        return []
+        # Após restaurar os estoques, limpa o carrinho
+        await CartItem.filter(caixa_id=caixa.caixa_id).delete()
 
-    async def get_cart_total(self, user_id: int) -> float:
-        caixa_id = await self._get_caixa_id(user_id)
+        return {"success": True, "aviso": "Carrinho limpo e estoque restaurado."}
 
-        # ✅ Corrigido: usa caixa_id em vez de user_id
+    async def limpar_carrinho_pos_venda(self, caixa_id: int) -> bool:
+        """
+        Limpa o carrinho após finalizar uma venda. NÃO RESTAURA ESTOQUE (venda consumiu o estoque).
+        Este método é interno e usado pelo processo de finalização de venda.
+        """
         itens = await CartItem.filter(caixa_id=caixa_id).all()
-        total = sum(float(item.total_price) for item in itens)
 
-        return total
+        if itens:
+            await CartItem.filter(caixa_id=caixa_id).delete()
+            return True
 
-    async def get_cart_count(self, user_id: int) -> int:
-        caixa_id = await self._get_caixa_id(user_id)
-
-        # ✅ Corrigido: usa caixa_id em vez de user_id
-        itens = await CartItem.filter(caixa_id=caixa_id).all()
-        count = sum(item.quantity for item in itens)
-
-        return count
+        return False

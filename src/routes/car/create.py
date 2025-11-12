@@ -1,27 +1,26 @@
-from fastapi import APIRouter, Depends, Query
-from src.auth.deps import get_current_user, SystemUser
-
-# from src.model.user import Usuario
-from src.model.employee import Employees
-
+from fastapi import APIRouter, Depends, Body, HTTPException
 from src.controllers.car.cart_control import CartManagerDB
+from src.auth.deps_employes import SystemEmployees, get_current_employee
 
 router = APIRouter(tags=["Carrinho"])
 
 
-cart = CartManagerDB()
-
-
 @router.post("/adicionar")
 async def adicionar_produto(
-    product_id: int = Query(..., description="ID do produto a ser adicionado"),
-    quantity: int = Query(..., gt=0, description="Quantidade do produto"),
-    current_user: SystemUser = Depends(get_current_user),
+    product_id: int = Body(..., description="ID do produto"),
+    quantity: int = Body(..., gt=0, description="Quantidade"),
+    current_user: SystemEmployees = Depends(get_current_employee),
 ):
     """
-    Adiciona um produto ao carrinho do usuário ou funcionário.
+    Adiciona um produto ao carrinho. Dados recebidos via BODY.
     """
-    # sempre usar empresa_id para amarrar ao dono
-    user_id_carrinho = current_user.empresa_id
+    empresa_id = current_user.empresa_id
+    employee_id = current_user.id
 
-    return await cart.add_produto(product_id, quantity, user_id_carrinho)
+    cart = CartManagerDB(company_id=empresa_id, employee_id=employee_id)
+
+    if not empresa_id or not employee_id:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Sessão inválida")
+
+    # A função add_produto é responsável por lidar com o carrinho
+    return await cart.add_produto(product_id=product_id, quantity=quantity, empresa_id=empresa_id, employee_id=employee_id)

@@ -3,7 +3,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from typing import Optional
 from src.auth.deps import get_current_user, SystemUser
-from src.routes.products.inventario.stock_entry_controller import inventory_router 
+from src.routes.products.inventario.stock_entry_controller import inventory_router
 from src.controllers.products.inventario.generetor_label import LabelGenerator
 
 
@@ -11,7 +11,7 @@ from src.controllers.products.inventario.generetor_label import LabelGenerator
 @inventory_router.post('/gerar-etiquetas', status_code=status.HTTP_200_OK)
 async def create_label(
     product_code: str = Query(..., description='Codigo do produto que vai receber uma label | tag'),
-    current_user: SystemUser = Depends(get_current_user)
+    current_user: SystemUser = Depends(get_current_user),
 ):
     """
     Gera um código de barras/lote único e o registra no campo 'label' do produto
@@ -20,22 +20,22 @@ async def create_label(
     try:
         # Define o ID da empresa. Se for funcionário, usa empresa_id; se for dono, usa o próprio ID.
         company_id = current_user.empresa_id if current_user.empresa_id else current_user.id
-        
+
         # 1. Instancia o gerador de rótulos com os dados necessários
         label_gen = LabelGenerator(
             company_id=company_id,
             product_code=product_code,
             # product_id é deixado como None
         )
-        
+
         # 2. Executa a lógica de busca, geração de código e atualização do DB
         # A lógica de tratamento de erro (404) está contida dentro da classe.
         result = await label_gen.create_label_by_product()
-        
+
         return {
             "success": True,
             "message": f"Rótulo '{result['label']}' gerado e registrado com sucesso para o produto: {result['product_name']}",
-            "data": result
+            "data": result,
         }
 
     except HTTPException as e:
@@ -44,7 +44,4 @@ async def create_label(
     except Exception as e:
         # Trata erros inesperados como 500
         print(f"Erro inesperado ao gerar rótulo: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Erro interno ao processar a geração de rótulo: {str(e)}"
-        )
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Erro interno ao processar a geração de rótulo: {str(e)}")

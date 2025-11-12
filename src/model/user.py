@@ -1,3 +1,4 @@
+# Model de usario admin dono de todas as outras tabelas relacionada a ele
 from datetime import datetime
 from zoneinfo import ZoneInfo
 from tortoise import fields, models

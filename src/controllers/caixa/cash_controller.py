@@ -1,4 +1,4 @@
-# src/controllers/cash_controller.py
+from fastapi import Request
 from tortoise.transactions import in_transaction
 from tortoise.expressions import F
 from datetime import datetime
@@ -15,53 +15,53 @@ from src.controllers.sales.note import Note
 
 
 from src.controllers.sales.sales import Checkout
-
+from src.utils.user_or_functional import i_request
 
 class CashController:
 
     @staticmethod
-    async def abrir_caixa(funcionario_id: int, saldo_inicial: float, nome: str):
+    async def abrir_caixa(funcionario_id: int, saldo_inicial: float, nome: str, company_id: int):
         """
-        Abre um novo caixa para um funcionário, garantindo que só um fique aberto
+        Abre um caixa existente para um funcionário, garantindo que só um fique aberto
+        O caixa já foi criado automaticamente no cadastro do funcionário
         """
-        # Verifica se o usuário existe
-        # usuario_exists = await Employees.exists(id=usuario_id)
-        # if not usuario_exists:
-        #     raise Exception("Usuário não encontrado")
 
-        # Verifica se o funcionário existe
-        funcionario = await Employees.filter(id=funcionario_id).first()
-        if not funcionario:
-            raise Exception("Funcionário não encontrado")
+        # Verifica se o funcionário existe e pertence à empresa
+        employee = await Employees.get_or_none(usuario_id=company_id, id=funcionario_id)
+        if not employee:
+            raise Exception(f"Funcionário não encontrado ou não pertence à empresa")
 
-        # Busca todos os caixas abertos do funcionário
-        caixas_abertos = await Caixa.filter(funcionario_id=funcionario_id, aberto=True).all()
+        # Busca o caixa do funcionário (deve existir pois foi criado automaticamente)
+        caixa = await Caixa.filter(
+            funcionario_id=funcionario_id, 
+            usuario_id=company_id
+        ).first()
 
-        # if caixas_abertos:
-        #     # Fecha todos os caixas existentes (mantém só o primeiro)
-        #     for caixa in caixas_abertos[1:]:
-        #         caixa.aberto = False
-        #         await caixa.save()
+        if not caixa:
+            raise Exception(f"Caixa não encontrado para o funcionário {employee.nome}")
 
-        # # Usa o primeiro caixa aberto como o "oficial"
-        # return caixas_abertos
+        # Verifica se já existe caixa ABERTO para este funcionário
+        caixa_aberto_existente = await Caixa.filter(
+            funcionario_id=funcionario_id, 
+            aberto=True, 
+            usuario_id=company_id
+        ).first()
 
-        # Pegando o nome do fucionario
-        if not nome:
-            nome = funcionario.nome
+        if caixa_aberto_existente:
+            # Retorna o caixa já aberto
+            print(f"ℹ️  Caixa já está aberto para {employee.nome}")
+            return caixa_aberto_existente
 
-        # Buscar o usuario dono do fucionario: usuario_id
-        usuario_id = funcionario.usuario_id
-
-        # Se não tinha nenhum aberto, cria novo caixa
-        caixa = await Caixa.create(
-            nome=nome,
-            saldo_inicial=saldo_inicial,
-            saldo_atual=saldo_inicial,
-            aberto=True,
-            usuario_id=usuario_id,
-            funcionario_id=funcionario_id,
-        )
+        # Se o caixa existe mas está FECHADO, reabre ele
+        caixa.aberto = True
+        caixa.saldo_inicial = saldo_inicial
+        caixa.saldo_atual = saldo_inicial
+        caixa.valor_fechamento = None
+        caixa.valor_sistema = None
+        caixa.diferenca = None
+        caixa.atualizado_em = datetime.now(ZoneInfo("America/Sao_Paulo"))
+        
+        await caixa.save()
 
         # Registra movimentação de abertura
         await CashMovement.create(
@@ -69,11 +69,15 @@ class CashController:
             valor=saldo_inicial,
             descricao=f"Abertura do caixa {nome}",
             caixa_id=caixa.id,
-            usuario_id=usuario_id,
+            usuario_id=company_id,
             funcionario_id=funcionario_id,
         )
 
+        print(f"✅ Caixa aberto para {employee.nome}: ID {caixa.caixa_id}")
         return caixa
+
+
+
 
     @staticmethod
     async def registrar_venda_caixa(caixa_id: int, venda_obj: Sales, valor_venda: float, forma_pagamento: str):
@@ -85,45 +89,95 @@ class CashController:
         if not isinstance(venda_obj, Sales):
             raise Exception(f"Objeto de venda inválido: {type(venda_obj)}")
 
-        caixa.saldo_atual += valor_venda
+        # Atualiza saldo
+        caixa.saldo_atual += float(valor_venda)
 
+        # Converte valor_venda para float se necessário
         if isinstance(valor_venda, str):
-            valor_venda = float(valor_venda.replace('R$', '').replace('.', '').replace(',', '.').strip())
+            try:
+                valor_venda = float(valor_venda.replace('R$', '').replace('.', '').replace(',', '.').strip())
+            except ValueError:
+                raise Exception(f"Valor de venda inválido: {valor_venda}")
 
-
-        # Registra movimentação - CORRIGIDO: passar a instância completa de Sales
+        # Registra movimentação
         await CashMovement.create(
             tipo="ENTRADA",
             valor=valor_venda,
             descricao=f"Venda #{venda_obj.id} - {forma_pagamento}",
-            caixa=caixa,  # Passar instância do caixa
-            usuario=caixa.usuario,  # Passar instância do usuário
-            # Passar instância do funcionário (pode ser None)
+            caixa=caixa,
+            usuario=caixa.usuario,
             funcionario=caixa.funcionario,
-            venda=venda_obj,  # CORREÇÃO: passar a instância completa de Sales
+            venda=venda_obj,
         )
 
-        caixa.saldo_atual += float(valor_venda)
-
         await caixa.save()
+
         return caixa
 
     @staticmethod
-    async def fechar_caixa(usuario_id: int):
+    async def get_caixa_status(user_id: int, funcionario_id: int = None):
         """
-        Fecha o caixa aberto do usuário e calcula as diferenças
+        Método melhorado para verificar status do caixa
+        """
+        try:
+            # Primeiro tenta buscar por funcionário
+            if funcionario_id:
+                caixa_funcionario = await Caixa.filter(funcionario_id=funcionario_id, aberto=True).first()
+                if caixa_funcionario:
+                    return {"aberto": True, "caixa": caixa_funcionario, "tipo": "funcionario", "funcionario_id": funcionario_id}
+
+            # Se não encontrou por funcionário, busca por usuário/empresa
+            caixa_usuario = await Caixa.filter(usuario_id=user_id, aberto=True).first()
+
+            if caixa_usuario:
+                return {"aberto": True, "caixa": caixa_usuario, "tipo": "usuario", "funcionario_id": caixa_usuario.funcionario_id}
+
+            # Nenhum caixa aberto encontrado
+            return {"aberto": False, "caixa": None, "tipo": None, "funcionario_id": funcionario_id, "mensagem": "Nenhum caixa aberto encontrado"}
+
+        except Exception as e:
+            raise Exception(f"Erro ao verificar status do caixa: {str(e)}")
+
+    @staticmethod
+    async def debug_caixa_status(user_id: int, funcionario_id: int = None):
+        """
+        Método para debug - mostra status de todos os caixas
+        """
+        caixas_usuario = await Caixa.filter(usuario_id=user_id).all()
+        caixas_funcionario = await Caixa.filter(funcionario_id=funcionario_id).all() if funcionario_id else []
+
+        debug_info = {
+            "user_id": user_id,
+            "funcionario_id": funcionario_id,
+            "caixas_usuario": [
+                {"id": c.id, "nome": c.nome, "aberto": c.aberto, "funcionario_id": c.funcionario_id, "usuario_id": c.usuario_id}
+                for c in caixas_usuario
+            ],
+            "caixas_funcionario": [
+                {"id": c.id, "nome": c.nome, "aberto": c.aberto, "funcionario_id": c.funcionario_id, "usuario_id": c.usuario_id}
+                for c in caixas_funcionario
+            ],
+            "caixa_aberto_usuario": await Caixa.filter(usuario_id=user_id, aberto=True).first(),
+            "caixa_aberto_funcionario": await Caixa.filter(funcionario_id=funcionario_id, aberto=True).first() if funcionario_id else None,
+        }
+
+        return debug_info
+
+    @staticmethod
+    async def fechar_caixa(funcionario_id: int):  # 🎯 ARGUMENTO RENOMEADO para refletir o uso
+        """
+        Fecha o caixa aberto do funcionário e calcula as diferenças
         """
         date = []
 
-        # 🔹 Busca o caixa aberto do usuário
-        caixa = await Caixa.filter(funcionario_id=usuario_id, aberto=True).first()
+        # 🔹 Busca o caixa aberto do funcionário
+        caixa = await Caixa.filter(funcionario_id=funcionario_id, aberto=True).first()
 
         if not caixa:
             return None  # nenhum caixa aberto encontrado
 
         # Calcula entradas e saídas
         entradas = await CashMovement.filter(caixa_id=caixa.id, tipo__in=["ENTRADA", "ABERTURA"]).all()
-
         saidas = await CashMovement.filter(caixa_id=caixa.id, tipo="SAIDA").all()
 
         total_entradas = sum([mov.valor for mov in entradas])
@@ -215,11 +269,18 @@ class CashController:
         return infos
 
     @staticmethod
-    async def get_caixa_aberto_funcionario(funcionario_id: int):
+    async def get_caixa_aberto_funcionario(usuario_id: int, funcionario_id: int):
         """
         Retorna o caixa aberto de um funcionário, se existir
         """
-        return await Caixa.filter(funcionario_id=funcionario_id, aberto=True).first()
+        return await Caixa.filter(usuario_id=usuario_id, funcionario_id=funcionario_id, aberto=True).first()
+
+    @staticmethod
+    async def get_caixa_aberto_usuario(usuario_id: int):
+        """
+        Retorna o caixa aberto de um usuário, se existir
+        """
+        return await Caixa.filter(usuario_id=usuario_id, aberto=True).first()
 
     @staticmethod
     async def get_movimentacoes_caixa(caixa_id: int):
@@ -254,7 +315,7 @@ class FinalizationObjcts:
 
             # 🔴 CORREÇÃO: Garantir que valor_total seja sempre float
             valor_total = 0.0
-            
+
             if self.checkout.receipt_data and isinstance(self.checkout.receipt_data, list):
                 # Garantir conversão para float de cada item
                 for item in self.checkout.receipt_data:
@@ -289,7 +350,7 @@ class FinalizationObjcts:
                 "tipo": "ENTRADA",
                 "valor": float(valor_total),  # 🔴 GARANTIR FLOAT AQUI TAMBÉM
                 "descricao": f"Venda #{venda_obj.id} - {forma_pagamento}",
-                "caixa_id": caixa.id,
+                "caixa_id": caixa.caixa_id,
                 "venda_id": venda_obj.id,
                 "usuario_id": caixa.usuario.id if caixa.usuario else None,
                 "funcionario_id": caixa.funcionario.id if caixa.funcionario else None,
@@ -356,6 +417,7 @@ class FinalizationObjcts:
 
         except Exception as e:
             import traceback
+
             print(f"❌ Erro detalhado ao atualizar caixo/gerar nota: {str(e)}")
             print(f"📋 Traceback: {traceback.format_exc()}")
             raise Exception(f"Erro ao finalizar venda (Caixa/Nota): {str(e)}")

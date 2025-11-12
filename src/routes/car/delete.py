@@ -1,26 +1,33 @@
 from fastapi import APIRouter, Depends, Query
-from src.auth.deps import get_current_user
-from src.model.user import Usuario
+from src.auth.deps import get_current_user, SystemUser
 from src.controllers.car.cart_control import CartManagerDB
+from src.core.session_manager import get_session
+
 
 router = APIRouter(tags=["Carrinho"])
-cart = CartManagerDB()
 
 
 @router.delete("/remover/{product_id}")
-async def remover_produto(product_id: int, current_user: Usuario = Depends(get_current_user)):
+async def remover_produto(product_id: int, current_user: SystemUser = Depends(get_current_user), session: dict = Depends(get_session)):
     """
     Remove um produto específico do carrinho.
     """
-    return await cart.remove_produto(product_id, current_user.id)  # type: ignore
+
+    empresa_id = session.get('empresa_id')
+    employee_id = session.get('employee_id')
+    cart = CartManagerDB(company_id=empresa_id, employee_id=employee_id)
+    return await cart.remove_produto(product_id, empresa_id)  # type: ignore
 
 
 @router.delete("/limpar")
-async def limpar_carrinho(current_user: Usuario = Depends(get_current_user)):
+async def limpar_carrinho(current_user: SystemUser = Depends(get_current_user), session: dict = Depends(get_session)):
     """
     Limpa todos os produtos do carrinho do usuário.
     """
-    return await cart.limpar_carrinho(current_user.id)  # type: ignore
+    empresa_id = session.get('empresa_id')
+    employee_id = session.get('employee_id')
+    cart = CartManagerDB(company_id=empresa_id, employee_id=employee_id)
+    return await cart.limpar_carrinho(empresa_id, employee_id)  # type: ignore
 
 
 ###################

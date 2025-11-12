@@ -21,8 +21,6 @@ from src.routes.customer.registre_customer_partial import customers as registre_
 from src.routes.payments.partial import partial as payment_partial
 from src.routes.payments.pix import router as payment_pix
 
-from src.routes.caixa.operador_caixa import operador
-from src.routes.caixa.box_closing import operador
 
 from src.routes.car.pdv import router as result_sales
 
@@ -129,12 +127,6 @@ tickets = APIRouter(
 
 tickets.include_router(ticket_prods)
 
-# Caixa
-caixa = APIRouter(
-    tags=["Caixa"],
-    responses={404: {"description": "Não encontrado"}},
-)
-caixa.include_router(operador)
 
 # Visualização de dados em tempo real dashboard
 dashboard = APIRouter(

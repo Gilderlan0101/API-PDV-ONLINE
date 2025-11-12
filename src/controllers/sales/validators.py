@@ -68,7 +68,7 @@ async def verify_datas(
 
 
 async def validating_information(
-    current_user: Usuario,
+    current_user: Employees,
     payment_method: str,
     employee_operator_id: Optional[int] = None,
     customer_id: Optional[int] = None,
@@ -87,7 +87,6 @@ async def validating_information(
         4. Aplica validações de acordo com a forma de pagamento.
         5. Cria instâncias de Checkout para cada produto do carrinho.
         6. Processa cada venda individualmente.
-        7. Limpa o carrinho e gera relatório atualizado.
     """
 
     cart = CartManagerDB()
@@ -107,7 +106,7 @@ async def validating_information(
             return {"success": False, "message": "Usuário admin não encontrado"}
 
         # 🔹 3. Lista produtos no carrinho
-        products = await cart.listar_produtos(admin_user.id)
+        products = await cart.listar_produtos(employee_operator_id)
         if not products:
             return {"success": False, "error": "Carrinho vazio"}
 
@@ -180,9 +179,6 @@ async def validating_information(
                 last_checkout_instance = checkout
             else:
                 return {"success": False, "error": "Erro ao processar a venda"}
-
-        # 🔹 8. Limpa carrinho e gera relatório atualizado
-        await cart.limpar_carrinho(admin_user.id)
 
         from src.controllers.stoke.stoke_control import gerar_relatorio_completo
 

@@ -1,0 +1,28 @@
+
+📝 Processo de Login Centralizado e Abertura Automática de Caixa
+
+Fase 1: Implementação do Modelo de Autenticação Única (Endpoint: /login)
+
+O primeiro passo é criar um endpoint de login que sirva como a fonte única de autenticação para todos os funcionários ao acessarem o PDV (Ponto de Venda).
+Passo	Detalhe	Requisitos de Retorno (JSON Body)
+1.1	Autenticação Unificada	O endpoint deve receber credenciais (e.g., username e password ou matricula e senha) e validar o funcionário.
+1.2	Geração de Token	Em caso de sucesso, deve gerar e retornar um Access Token de curta duração para autorizar requisições futuras do PDV.
+1.3	Retorno de Identificadores	A resposta JSON do login deve obrigatoriamente retornar os seguintes identificadores:
+		* access_token (String)
+		* funcionario_id (Integer)
+		* caixa_id (Integer) - O ID do caixa que será aberto ou está vinculado ao funcionário.
+
+Fase 2: Abertura Automática do Caixa
+
+Após o login bem-sucedido (Fase 1), o sistema deve automaticamente abrir uma sessão de caixa para o funcionário, utilizando dados de configuração prévios.
+Passo	Fonte de Dados	Ação Necessária
+2.1	Endpoint/Modelo get_data_employees	Utilizar os dados de configuração salvos neste modelo para obter as informações necessárias para a abertura do caixa.
+2.2	Extração de Parâmetros	As seguintes informações devem ser extraídas e usadas no processo de abertura:
+		* funcionario_id (Do token/login)
+		* empresa_id (ID da empresa/filial do funcionário, de get_data_employees)
+		* valor_abertura (Valor inicial do caixa, de get_data_employees)
+2.3	Registro da Abertura	Criar um novo registro na tabela de sessoes_caixa (ou similar), marcando o caixa como "Aberto" na hora do login com o valor_abertura e vinculando-o ao funcionario_id e caixa_id.
+2.4	Confirmação	O PDV agora está pronto para operar, pois o funcionário está autenticado e o caixa está devidamente aberto.
+
+
+Fase 2. Lista todos os produtos da empresa do funcionario

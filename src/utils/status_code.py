@@ -1,48 +1,76 @@
-# status_codes.py
+# migration_caixa_final_simples.py
+import asyncio
+import random
+from tortoise import Tortoise, run_async
+from src.conf.database import TORTOISE_ORM
 
-# ✅ 2xx Success
-HTTP_200_OK = 200  # Requisição bem-sucedida
-HTTP_201_CREATED = 201  # Recurso criado com sucesso
-HTTP_202_ACCEPTED = 202  # Requisição aceita para processamento (assíncrono)
-HTTP_204_NO_CONTENT = 204  # Sucesso, mas sem conteúdo no corpo da resposta
+async def migrate_caixa_final():
+    """Migração simplificada - apenas popula caixa_id"""
+    await Tortoise.init(config=TORTOISE_ORM)
+    
+    try:
+        from src.model.caixa import Caixa
+        
+        print("🔄 Iniciando migração de caixa_id...")
+        
+        # Busca caixas sem caixa_id
+        caixas_sem_id = await Caixa.filter(caixa_id__isnull=True).prefetch_related('usuario', 'funcionario')
+        
+        print(f"📦 Caixas sem ID: {len(caixas_sem_id)}")
+        
+        if len(caixas_sem_id) == 0:
+            print("✅ Todos os caixas já têm ID!")
+            return
+        
+        # Processa por empresa
+        caixas_por_empresa = {}
+        for caixa in caixas_sem_id:
+            if caixa.usuario_id not in caixas_por_empresa:
+                caixas_por_empresa[caixa.usuario_id] = []
+            caixas_por_empresa[caixa.usuario_id].append(caixa)
+        
+        total_atualizados = 0
+        
+        for empresa_id, caixas in caixas_por_empresa.items():
+            print(f"\n🏢 Empresa {empresa_id}: {len(caixas)} caixas sem ID")
+            
+            # Pega IDs já em uso por esta empresa
+            caixas_existentes = await Caixa.filter(usuario_id=empresa_id, caixa_id__isnull=False)
+            ids_em_uso = set(c.caixa_id for c in caixas_existentes)
+            
+            for caixa in caixas:
+                # Gera ID único para esta empresa
+                novo_id = random.randint(100, 999)
+                tentativas = 0
+                
+                while novo_id in ids_em_uso and tentativas < 50:
+                    novo_id = random.randint(100, 999)
+                    tentativas += 1
+                
+                if tentativas >= 50:
+                    # Fallback: usa ID do caixa + offset
+                    novo_id = 1000 + caixa.id
+                
+                caixa.caixa_id = novo_id
+                ids_em_uso.add(novo_id)
+                await caixa.save()
+                total_atualizados += 1
+                
+                funcionario_nome = caixa.funcionario.nome if caixa.funcionario else "Sem funcionário"
+                print(f"  ✅ {funcionario_nome} -> ID: {caixa.caixa_id}")
+        
+        print(f"\n✅ Migração concluída! {total_atualizados} caixas atualizados.")
+        
+        # Verificação rápida
+        caixas_sem_id_final = await Caixa.filter(caixa_id__isnull=True).count()
+        print(f"📊 Caixas ainda sem ID: {caixas_sem_id_final}")
+        
+    except Exception as e:
+        print(f"❌ Erro: {e}")
+        import traceback
+        traceback.print_exc()
+    finally:
+        await Tortoise.close_connections()
 
-# 🔄 3xx Redirection
-HTTP_301_MOVED_PERMANENTLY = 301  # Recurso movido permanentemente para outra URL
-HTTP_302_FOUND = 302  # Redirecionamento temporário
-HTTP_304_NOT_MODIFIED = 304  # Conteúdo não foi modificado (cache)
-
-# ⚠️ 4xx Client Errors
-HTTP_400_BAD_REQUEST = 400  # Requisição inválida (erro de sintaxe ou parâmetros)
-HTTP_401_UNAUTHORIZED = 401  # Não autorizado (necessário autenticação)
-HTTP_403_FORBIDDEN = 403  # Acesso proibido (credenciais não têm permissão)
-HTTP_404_NOT_FOUND = 404  # Recurso não encontrado
-HTTP_405_METHOD_NOT_ALLOWED = 405  # Método HTTP não permitido para esse endpoint
-HTTP_409_CONFLICT = 409  # Conflito (ex: recurso já existe)
-HTTP_422_UNPROCESSABLE_ENTITY = 422  # Erro de validação (dados enviados são inválidos)
-
-# 💀 5xx Server Errors
-HTTP_500_INTERNAL_SERVER_ERROR = 500  # Erro interno do servidor
-HTTP_501_NOT_IMPLEMENTED = 501  # Funcionalidade não implementada no servidor
-HTTP_502_BAD_GATEWAY = 502  # Resposta inválida de outro servidor/proxy
-HTTP_503_SERVICE_UNAVAILABLE = 503  # Serviço indisponível (servidor fora do ar/overload)
-
-__all__ = [
-    "HTTP_200_OK",
-    "HTTP_201_CREATED",
-    "HTTP_202_ACCEPTED",
-    "HTTP_204_NO_CONTENT",
-    "HTTP_301_MOVED_PERMANENTLY",
-    "HTTP_302_FOUND",
-    "HTTP_304_NOT_MODIFIED",
-    "HTTP_400_BAD_REQUEST",
-    "HTTP_401_UNAUTHORIZED",
-    "HTTP_403_FORBIDDEN",
-    "HTTP_404_NOT_FOUND",
-    "HTTP_405_METHOD_NOT_ALLOWED",
-    "HTTP_409_CONFLICT",
-    "HTTP_422_UNPROCESSABLE_ENTITY",
-    "HTTP_500_INTERNAL_SERVER_ERROR",
-    "HTTP_501_NOT_IMPLEMENTED",
-    "HTTP_502_BAD_GATEWAY",
-    "HTTP_503_SERVICE_UNAVAILABLE",
-]
+if __name__ == "__main__":
+    run_async(migrate_caixa_final())

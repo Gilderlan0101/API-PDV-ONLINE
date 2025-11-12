@@ -4,6 +4,7 @@ from fastapi import HTTPException, status
 from src.model.product import Produto
 from src.model.user import Usuario
 from src.core.cache import client
+from src.logs.infos import LOGGER
 
 
 async def get_product_by_user(user_id: int, code: Optional[str] = None, name: Optional[str] = None, product_id: Optional[int] = None):
@@ -49,7 +50,7 @@ async def deep_search(user_id: int, product_name: str, target_company: Optional[
         cache = await client.get(cache_key)
 
         if cache:
-            print(f"Cache HIT na função: {cache_key}")
+            LOGGER.info('Retonando dados em cache.')
             return json.loads(cache)  # Agora 'cache' é uma string JSON
 
         print(f"Cache MISS na função: {cache_key}")

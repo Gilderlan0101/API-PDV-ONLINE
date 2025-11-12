@@ -69,17 +69,21 @@ class CashReportController:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Nenhum movimento de caixa encontrado com os filtros aplicados.')
 
         movement_data = []
-        result_valor = 0
+        result_valor = 0.0
         for moviment in cash_movements:
+            print(moviment.valor)
+            print(moviment.valor)
+            print(type(moviment.valor))
+            print(type(moviment.valor))
             tipo_movimento = moviment.tipo
-            result_valor += moviment.valor
+            result_valor += float(moviment.valor)
             movement_data.append(
                 {
                     "Abertura": moviment.criado_em.strftime('%d/%m/%Y %H:%M'),
                     "Tipo_movimento": tipo_movimento,
-                    "Valor_entrada": round(moviment.valor, 2),
+                    "Valor_entrada": float(moviment.valor),
                     "caixa": moviment.caixa_id,
-                    "Resultado": result_valor,
+                    "Resultado": f"{result_valor:,.2f}",
                 }
             )
 

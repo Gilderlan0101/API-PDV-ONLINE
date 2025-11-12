@@ -1,3 +1,4 @@
+# Model funcionarios
 from tortoise import models, fields
 from datetime import datetime
 from zoneinfo import ZoneInfo

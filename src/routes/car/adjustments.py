@@ -1,22 +1,26 @@
 # routes/cart_update.py
 from fastapi import APIRouter, Depends
-from src.auth.deps import get_current_user
-from src.model.user import Usuario
+from src.auth.deps import get_current_user, SystemUser
 from src.controllers.car.cart_control import CartManagerDB
 from src.schemas.carrinho import EditCartItem
+from src.core.session_manager import get_session
+
 
 router = APIRouter()
-cart = CartManagerDB()
 
 
 @router.post("/atualizar")
 async def atualizar_item(
     item: EditCartItem,
-    current_user: Usuario = Depends(get_current_user),
+    current_user: SystemUser = Depends(get_current_user),
 ):
+
+    empresa_id = session.get('empresa_id')
+    employee_id = session.get('employee_id')
+    cart = CartManagerDB(company_id=empresa_id, employee_id=employee_id)
     return await cart.update_produto(
         product_id=item.product_id,
-        user_id=current_user.id,  # type: ignore
+        user_id=employee_id,  # type: ignore
         quantity=item.quantity,
         discount=item.discount,
         addition=item.addition,

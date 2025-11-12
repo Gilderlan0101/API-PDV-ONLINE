@@ -19,7 +19,7 @@ async def delete_product(
         raise HTTPException(status_code=400, detail="Usuário inválido")
 
     # 🔹 Busca o produto único
-    product = await Produto.get_or_none(usuario_id=current_user.id, product_code=code)
+    product = await Produto.filter(usuario_id=current_user.id, product_code=code).first()
     if not product:
         raise HTTPException(
             status_code=404,
