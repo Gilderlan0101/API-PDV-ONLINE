@@ -37,8 +37,6 @@ def i_request(function):
         Wrapper que intercepta a chamada da função e aplica a lógica de controle de acesso
         """
 
- 
- 
         # Executa a função original se nenhuma lógica específica foi aplicada
         return await function(*args, **kwargs)
 
@@ -74,18 +72,10 @@ async def handle_current_user_logic(function, params, args, kwargs):
         LOGGER.info(f'User type: {user_type}, Function: {function_name}')
 
         # Define as rotas que são exclusivas para funcionários
-        EMPLOYEE_ONLY_ROUTES = {
-            'get_delivery_management',
-            'update_delivery_status', 
-            'manage_orders', 
-            'get_caixa_status'
-            'list_all_products'
-        }
+        EMPLOYEE_ONLY_ROUTES = {'get_delivery_management', 'update_delivery_status', 'manage_orders', 'get_caixa_status' 'list_all_products'}
 
         # Define as rotas que são exclusivas para empresas (SystemUser)
-        USER_ONLY_ROUTES = {
-            'list_all_products'
-        }
+        USER_ONLY_ROUTES = {'list_all_products'}
 
         # Bloqueia SystemUser tentando acessar rotas exclusivas de funcionários
         if user_type == 'SystemUser' and function_name in EMPLOYEE_ONLY_ROUTES:

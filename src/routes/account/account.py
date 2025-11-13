@@ -5,7 +5,7 @@ from src.model.employee import Employees
 from src.model.caixa import Caixa  # ← IMPORTE O MODELO DO CAIXA
 from src.routes.registre import get_hashed_password
 from src.schemas.funcs.registre_funcs import EmployeesCreate
-from src.utils.sales_code_generator import generator_code_to_checkout 
+from src.utils.sales_code_generator import generator_code_to_checkout
 
 employees_router = APIRouter(prefix='/auth', tags=['Autenticação'])
 
@@ -89,7 +89,7 @@ async def create_caixa_for_employee(funcionario: Employees, usuario_id: int):
     try:
         # Gera um caixa_id único para esta empresa
         caixa_id = await generator_code_to_checkout(usuario_id)
-        
+
         # Cria o caixa
         novo_caixa = await Caixa.create(
             nome=f"Caixa - {funcionario.nome}",
@@ -99,12 +99,12 @@ async def create_caixa_for_employee(funcionario: Employees, usuario_id: int):
             caixa_id=caixa_id,
             usuario_id=usuario_id,
             funcionario_id=funcionario.id,
-            valor_total=0.0
+            valor_total=0.0,
         )
-        
+
         print(f"✅ Caixa criado automaticamente para {funcionario.nome}: ID {caixa_id}")
         return novo_caixa
-        
+
     except Exception as e:
         print(f"❌ Erro ao criar caixa para {funcionario.nome}: {e}")
         # Não levanta exceção para não quebrar o cadastro do funcionário

@@ -24,7 +24,7 @@ async def lifespan(app: FastAPI):
     await Tortoise.init(config=TORTOISE_ORM)
     await Tortoise.generate_schemas()
     LOGGER.info("✅ Banco de dados iniciado e tabelas criadas!")
-    #await create_mock_data_and_sell_all_stock()
+    # await create_mock_data_and_sell_all_stock()
 
     await print_database_info()
 

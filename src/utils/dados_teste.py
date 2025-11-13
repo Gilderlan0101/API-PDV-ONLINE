@@ -36,6 +36,7 @@ IMG_PRODUCT_DEFAULT = os.getenv('PATH_IMG_DEFAULT_PRODUCTS', None)
 
 load_dotenv()
 
+
 async def create_mock_data_and_sell_all_stock():
     """Cria dados mockados completos para duas empresas com funcionários e caixas automáticos"""
     fake = Faker("pt_BR")
@@ -85,9 +86,7 @@ async def create_mock_data_and_sell_all_stock():
 
         # Conta PIX para empresa 1
         pix_service_1 = PixService(user_id=admin.id)
-        pix_data_1 = PixCreateRequest(
-            full_name='João Silva santos', city='São Paulo', key_pix='11999999999', value=1.0, type_exit='qr'
-        )
+        pix_data_1 = PixCreateRequest(full_name='João Silva santos', city='São Paulo', key_pix='11999999999', value=1.0, type_exit='qr')
 
         try:
             conta_pix_1 = await pix_service_1.create_pix_account(pix_data_1)
@@ -100,9 +99,7 @@ async def create_mock_data_and_sell_all_stock():
 
         # Conta PIX para empresa 2
         pix_service_2 = PixService(user_id=admin_2.id)
-        pix_data_2 = PixCreateRequest(
-            full_name='Maria Santos migel', city='Rio de Janeiro', key_pix='21988888888', value=1.0, type_exit='qr'
-        )
+        pix_data_2 = PixCreateRequest(full_name='Maria Santos migel', city='Rio de Janeiro', key_pix='21988888888', value=1.0, type_exit='qr')
 
         try:
             conta_pix_2 = await pix_service_2.create_pix_account(pix_data_2)
@@ -151,11 +148,11 @@ async def create_mock_data_and_sell_all_stock():
                     usuario_id=admin.id,
                 )
                 print(f"✅ Funcionário Empresa 1 criado: {funcionario.nome} - {funcionario.cargo}")
-                
+
                 # Se for Caixa, cria automaticamente o caixa
                 if func["cargo"].lower() == "caixa":
                     await create_caixa_for_employee(funcionario, admin.id)
-                
+
                 funcionarios_criados_emp1.append(funcionario)
 
         # Criar funcionários Empresa 2
@@ -172,11 +169,11 @@ async def create_mock_data_and_sell_all_stock():
                     usuario_id=admin_2.id,
                 )
                 print(f"✅ Funcionário Empresa 2 criado: {funcionario.nome} - {funcionario.cargo}")
-                
+
                 # Se for Caixa, cria automaticamente o caixa
                 if func["cargo"].lower() == "caixa":
                     await create_caixa_for_employee(funcionario, admin_2.id)
-                
+
                 funcionarios_criados_emp2.append(funcionario)
 
         # ========================
@@ -387,7 +384,7 @@ async def create_mock_data_and_sell_all_stock():
         print("\n" + "=" * 60)
         print("📊 RESUMO FINAL DOS DADOS CRIADOS")
         print("=" * 60)
-        
+
         print(f"\n🏢 EMPRESA 1: {admin.company_name}")
         print(f"   📧 Email: {admin.email}")
         print(f"   👥 Funcionários: {len(funcionarios_criados_emp1)}")
@@ -417,10 +414,10 @@ async def create_caixa_for_employee(funcionario: Employees, usuario_id: int):
     """
     try:
         from src.utils.sales_code_generator import generator_code_to_checkout
-        
+
         # Gera um caixa_id único para esta empresa
         caixa_id = await generator_code_to_checkout(usuario_id)
-        
+
         # Cria o caixa
         novo_caixa = await Caixa.create(
             nome=f"Caixa - {funcionario.nome}",
@@ -430,12 +427,12 @@ async def create_caixa_for_employee(funcionario: Employees, usuario_id: int):
             caixa_id=caixa_id,
             usuario_id=usuario_id,
             funcionario_id=funcionario.id,
-            valor_total=0.0
+            valor_total=0.0,
         )
-        
+
         print(f"   ✅ Caixa criado para {funcionario.nome}: ID {caixa_id}")
         return novo_caixa
-        
+
     except Exception as e:
         print(f"   ❌ Erro ao criar caixa para {funcionario.nome}: {e}")
         return None

@@ -87,7 +87,6 @@ class CartManagerDB:
             },
         }
 
-        
     async def update_produto(self, product_id: int, new_quantity: int, empresa_id: int) -> Dict[str, Any]:
         """
         Atualiza a quantidade de um item no carrinho e ajusta o estoque.

@@ -76,8 +76,7 @@ async def finalizar_venda(
 
         # 🔹 2. Atualiza valores do caixa (Pré-requisito para documentos fiscais)
 
-    
-        caixa_aberto = await CashController.get_caixa_aberto_funcionario(usuario_id=empresa_id, funcionario_id=employee_id )
+        caixa_aberto = await CashController.get_caixa_aberto_funcionario(usuario_id=empresa_id, funcionario_id=employee_id)
         if not caixa_aberto:
             raise HTTPException(status_code=404, detail=f"Atenção: Nenhum caixa aberto encontrado para o funcionário {employee_id}")
 

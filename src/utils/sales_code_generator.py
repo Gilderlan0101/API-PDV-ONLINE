@@ -32,26 +32,25 @@ async def generator_code_to_checkout(usuario_id: int):
     Versão otimizada para criação automática
     """
     from src.model.caixa import Caixa
-    
+
     max_attempts = 50
-    
+
     for attempt in range(max_attempts):
         # Gera código entre 100-999
         code = random.randint(100, 999)
-        
+
         # Verifica se já existe para ESTA empresa
         exists = await Caixa.filter(usuario_id=usuario_id, caixa_id=code).exists()
         if not exists:
             return code
-    
+
     # Se não encontrou em 50 tentativas, usa fallback sequencial
     ultimo_caixa = await Caixa.filter(usuario_id=usuario_id).order_by('-caixa_id').first()
     if ultimo_caixa and ultimo_caixa.caixa_id:
         return ultimo_caixa.caixa_id + 1
-    
+
     # Último fallback
     return random.randint(1000, 9999)
-
 
 
 def quicksort(arr, key=lambda x: x):
@@ -63,7 +62,6 @@ def quicksort(arr, key=lambda x: x):
     middle = [x for x in arr if key(x) == key(pivot)]
     right = [x for x in arr if key(x) > key(pivot)]
     return quicksort(left, key) + middle + quicksort(right, key)
-
 
 
 async def barcode_generator(user_id: int, size: int = 13):
@@ -83,7 +81,3 @@ async def barcode_generator(user_id: int, size: int = 13):
     ordered_products = quicksort(products, key=lambda p: p.lot_bar_code)
 
     return ordered_products
-
-
-
-

@@ -86,11 +86,7 @@ class LoginCheckout:
                 raise HTTPException(status_code=403, detail="Funcionário não vinculado a uma empresa.")
 
             # --- VERIFICAÇÃO DE CAIXA EXISTENTE ---
-            caixa_aberto = await Caixa.filter(
-                funcionario_id=employee.id, 
-                usuario_id=employee.usuario_id,
-                aberto=True
-            ).first()
+            caixa_aberto = await Caixa.filter(funcionario_id=employee.id, usuario_id=employee.usuario_id, aberto=True).first()
 
             caixa_status = "reaberto"
             caixa = None
@@ -113,10 +109,7 @@ class LoginCheckout:
                     LOGGER.info(f"✅ Novo caixa aberto para {employee.nome}: ID {caixa.caixa_id}")
                 except Exception as e:
                     LOGGER.error(f"❌ Erro ao abrir caixa para {employee.id}: {e}")
-                    raise HTTPException(
-                        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
-                        detail=f"Erro ao tentar abrir o caixa: {str(e)}"
-                    )
+                    raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Erro ao tentar abrir o caixa: {str(e)}")
 
             # Gera os tokens JWT
             access_token = create_access_token(str(employee.id))
@@ -165,7 +158,7 @@ class LoginCheckout:
                     if employee_id:
                         # 2. ✅ FECHA O CAIXA DO FUNCIONÁRIO
                         caixa_fechado = await CashController.fechar_caixa(funcionario_id=int(employee_id))
-                        
+
                         if caixa_fechado:
                             LOGGER.info(f"✅ Caixa fechado para Funcionário ID: {employee_id} - Caixa ID: {caixa_fechado.caixa_id}")
                         else:
@@ -183,10 +176,7 @@ class LoginCheckout:
             else:
                 LOGGER.warning("Tentativa de logout sem token Bearer no header.")
 
-            return {
-                "message": "Logout realizado com sucesso", 
-                "caixa_fechado": employee_id is not None
-            }
+            return {"message": "Logout realizado com sucesso", "caixa_fechado": employee_id is not None}
 
         @self.router.get("/validate", response_model=ValidateTokenResponse)
         async def validate_token(request: Request):
@@ -219,11 +209,7 @@ class LoginCheckout:
                     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Funcionário inativo")
 
                 # ✅ VERIFICA SE O CAIXA ESTÁ ABERTO (CORRIGIDO)
-                caixa_aberto = await Caixa.filter(
-                    funcionario_id=employee.id, 
-                    usuario_id=employee.usuario_id,
-                    aberto=True
-                ).order_by('-id').first()
+                caixa_aberto = await Caixa.filter(funcionario_id=employee.id, usuario_id=employee.usuario_id, aberto=True).order_by('-id').first()
 
                 if not caixa_aberto:
                     return {
@@ -264,11 +250,7 @@ class LoginCheckout:
             Retorna o status atual do caixa do funcionário
             """
             try:
-                caixa_aberto = await Caixa.filter(
-                    funcionario_id=current_user.id, 
-                    usuario_id=current_user.usuario_id,
-                    aberto=True
-                ).first()
+                caixa_aberto = await Caixa.filter(funcionario_id=current_user.id, usuario_id=current_user.usuario_id, aberto=True).first()
 
                 if caixa_aberto:
                     return {
@@ -277,13 +259,10 @@ class LoginCheckout:
                         "saldo_inicial": caixa_aberto.saldo_inicial,
                         "saldo_atual": caixa_aberto.saldo_atual,
                         "aberto_em": caixa_aberto.criado_em,
-                        "message": "Caixa está aberto"
+                        "message": "Caixa está aberto",
                     }
                 else:
-                    return {
-                        "caixa_aberto": False,
-                        "message": "Nenhum caixa aberto encontrado"
-                    }
+                    return {"caixa_aberto": False, "message": "Nenhum caixa aberto encontrado"}
 
             except Exception as e:
                 LOGGER.error(f"Erro ao verificar status do caixa: {e}")

@@ -17,6 +17,7 @@ from src.controllers.sales.note import Note
 from src.controllers.sales.sales import Checkout
 from src.utils.user_or_functional import i_request
 
+
 class CashController:
 
     @staticmethod
@@ -32,20 +33,13 @@ class CashController:
             raise Exception(f"Funcionário não encontrado ou não pertence à empresa")
 
         # Busca o caixa do funcionário (deve existir pois foi criado automaticamente)
-        caixa = await Caixa.filter(
-            funcionario_id=funcionario_id, 
-            usuario_id=company_id
-        ).first()
+        caixa = await Caixa.filter(funcionario_id=funcionario_id, usuario_id=company_id).first()
 
         if not caixa:
             raise Exception(f"Caixa não encontrado para o funcionário {employee.nome}")
 
         # Verifica se já existe caixa ABERTO para este funcionário
-        caixa_aberto_existente = await Caixa.filter(
-            funcionario_id=funcionario_id, 
-            aberto=True, 
-            usuario_id=company_id
-        ).first()
+        caixa_aberto_existente = await Caixa.filter(funcionario_id=funcionario_id, aberto=True, usuario_id=company_id).first()
 
         if caixa_aberto_existente:
             # Retorna o caixa já aberto
@@ -60,7 +54,7 @@ class CashController:
         caixa.valor_sistema = None
         caixa.diferenca = None
         caixa.atualizado_em = datetime.now(ZoneInfo("America/Sao_Paulo"))
-        
+
         await caixa.save()
 
         # Registra movimentação de abertura
@@ -75,9 +69,6 @@ class CashController:
 
         print(f"✅ Caixa aberto para {employee.nome}: ID {caixa.caixa_id}")
         return caixa
-
-
-
 
     @staticmethod
     async def registrar_venda_caixa(caixa_id: int, venda_obj: Sales, valor_venda: float, forma_pagamento: str):
