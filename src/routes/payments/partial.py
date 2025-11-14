@@ -4,6 +4,7 @@ from src.schemas.payments.payment_methods import InputData, ReceivePaymentPartia
 from src.model.partial import Partial
 from src.auth.deps import get_current_user, SystemUser
 from src.utils.get_produtos_user import get_product_by_user
+from src.auth.deps_employes import SystemEmployees, get_current_employee
 
 
 partial = APIRouter()
@@ -13,7 +14,9 @@ __PAYMENT_METHODS = ['PIX', 'CARTAO', 'DINHEIRO']
 
 
 @partial.post('/registra-venda')
-async def registre_sale_in_partial(data: InputData, current_user: SystemUser = Depends(get_current_user)):
+async def registre_sale_in_partial(
+    data: InputData, 
+    current_user: SystemEmployees = Depends(get_current_employee)):
     """
     Rota para registrar uma venda no modo PARCIAL (dívida em aberto) vinculada a um cliente.
 
@@ -37,7 +40,10 @@ async def registre_sale_in_partial(data: InputData, current_user: SystemUser = D
 
     try:
         # 🔹 1. Checar se o produto existe no estoque do usuário logado
-        get_product = await get_product_by_user(user_id=current_user.empresa_id, code=None, name=data.product_name)
+        get_product = await get_product_by_user(
+            user_id=current_user.empresa_id, 
+            code=None, name=data.product_name
+            )
 
         if not get_product:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Produto '{data.product_name}' não está cadastrado.")
@@ -77,7 +83,7 @@ async def registre_sale_in_partial(data: InputData, current_user: SystemUser = D
 
 
 @partial.get('/dividas-atual')
-async def get_all_active_debts(current_user: SystemUser = Depends(get_current_user)):
+async def get_all_active_debts(current_user: SystemEmployees = Depends(get_current_employee)):
     '''
     get_all_active_debts: Responsavel por buscar todas as dividas abertas
 
@@ -94,7 +100,7 @@ async def get_all_active_debts(current_user: SystemUser = Depends(get_current_us
 
     '''
 
-    return await PartialPayment.view(user_id=current_user.id)
+    return await PartialPayment.view(user_id=current_user.empresa_id)
 
 
 @partial.get('/dividas-pagas')
@@ -107,7 +113,9 @@ async def paids(current_user: SystemUser = Depends(get_current_user)):
 
 
 @partial.put('/atualiza-valor')
-async def update_pending_debt(data: ReceivePaymentPartial, current_user: SystemUser = Depends(get_current_user)):
+async def update_pending_debt(
+    data: ReceivePaymentPartial, 
+    SystemEmployees: SystemUser = Depends(get_current_employee)):
     '''Comportamento:
     - valida valor recebido;
     - subtrai o valor recebido do valor atual;
@@ -121,10 +129,12 @@ async def update_pending_debt(data: ReceivePaymentPartial, current_user: SystemU
 
             # Buscando cleinte e atualizand valor no banco de dados
             update_value = PartialPayment(
-                value_received=data.value_received, cpf=data.cpf, user_id=current_user.empresa_id, payment_method=data.type_meyhod_payment
+                value_received=data.value_received, 
+                cpf=data.cpf, 
+                user_id=current_user.empresa_id, 
+                payment_method=data.type_meyhod_payment
             )
 
-            update_value.checks_fields()
 
         else:
             raise HTTPException(

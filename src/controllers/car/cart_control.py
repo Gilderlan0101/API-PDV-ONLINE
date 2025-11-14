@@ -3,10 +3,19 @@ from fastapi import HTTPException, status
 from src.model.product import Produto
 from src.model.carItems import CartItem
 from src.model.caixa import Caixa
-import locale
 
 
-locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
+
+def formatar_moeda(valor):
+    """Formata moeda sem dependência de locale"""
+    if valor is None:
+        return "R$ 0,00"
+    
+    try:
+        valor_float = float(valor)
+        return f"R$ {valor_float:,.2f}".replace(',', 'temp').replace('.', ',').replace('temp', '.')
+    except (ValueError, TypeError):
+        return "R$ 0,00"
 
 
 class CartManagerDB:
@@ -224,7 +233,7 @@ class CartManagerDB:
                 "product_name": item['product_name'],
                 "quantity": item['quantity'],  # ✅ Agora é int
                 "price": item['price'],
-                "total_price": locale.currency(float(item['total_price']), grouping=True, symbol=False),
+                "total_price": formatar_moeda(item['total_price']),
                 "product_code": item['product_code'],
             }
             for idx, item in enumerate(lista_final)

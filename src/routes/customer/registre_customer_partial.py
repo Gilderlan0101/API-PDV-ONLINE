@@ -1,103 +1,140 @@
-from src.schemas.payments.payment_methods import RegisterUserForPartialMode, VendaParcialData, AtualizaDividaData
+from src.schemas.payments.payment_methods import RegisterUserForPartialMode, VendaParcialData
 from src.auth.deps import get_current_user, SystemUser
 from src.routes.customer.customer_registration import customers
+from src.controllers.payments.partial import PartialPayment, Person
+from src.model.partial import Partial, finished_debts
 from fastapi import Depends, HTTPException, status
 from datetime import datetime
 from zoneinfo import ZoneInfo
+from pydantic import BaseModel
+from typing import Optional
 import logging
 
-# Importe seus modelos
-from src.model.partial import Partial, finished_debts
+# Configuração de logging
+LOGGER = logging.getLogger(__name__)
 
-# Configurar logging
-logger = logging.getLogger(__name__)
-
+class DebtUpdateData(BaseModel):
+    """Schema para atualização de dívida"""
+    cpf: str
+    value_received: float
+    type_meyhod_payment: str
 
 @customers.post('/cadastra-cliente-partial')
-async def create_customers(data: RegisterUserForPartialMode, current_user: SystemUser = Depends(get_current_user)):
+async def create_partial_customer(
+    data: RegisterUserForPartialMode, 
+    current_user: SystemUser = Depends(get_current_user)
+):
     """
-    Endpoint para cadastrar um cliente para pagamentos parciais.
+    Endpoint para cadastrar cliente para pagamentos parciais
     """
     try:
-        # Validação do CPF
-        cpf_limpo = data.cpf.replace('.', '').replace('-', '')
-        if len(cpf_limpo) != 11:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="CPF deve conter 11 dígitos")
+        # Valida e limpa dados do cliente
+        clean_cpf = data.cpf.replace('.', '').replace('-', '')
+        if len(clean_cpf) != 11:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="CPF deve conter 11 dígitos"
+            )
 
-        # Validação do telefone
-        tel_limpo = data.tel.replace('(', '').replace(')', '').replace(' ', '').replace('-', '')
-
-        # Verifica se o cliente já existe
-        existing_customer = await Partial.filter(cpf=cpf_limpo, usuario_id=current_user.id).first()
-
+        clean_phone = data.tel.replace('(', '').replace(')', '').replace(' ', '').replace('-', '')
+        
+        # Verifica se cliente já existe
+        existing_customer = await Partial.filter(cpf=clean_cpf, usuario_id=current_user.id).first()
+        
         if existing_customer:
             # Atualiza cliente existente
-            await Partial.filter(cpf=cpf_limpo, usuario_id=current_user.id).update(customers_name=data.full_name, tel=tel_limpo, produto=data.produto)
-            mensagem = "Cliente atualizado com sucesso!"
+            await Partial.filter(cpf=clean_cpf, usuario_id=current_user.id).update(
+                customers_name=data.full_name,
+                tel=clean_phone,
+                produto=data.produto
+            )
+            message = "Cliente atualizado com sucesso"
+            LOGGER.info(f"Cliente {data.full_name} atualizado")
         else:
             # Cria novo cliente
             await Partial.create(
                 usuario_id=current_user.id,
                 customers_name=data.full_name,
-                cpf=cpf_limpo,
-                tel=tel_limpo,
+                cpf=clean_cpf,
+                tel=clean_phone,
                 produto=data.produto,
-                value=0.0,  # Valor inicial zero
+                value=0.0,
                 payment_method=None,
             )
-            mensagem = "Cliente cadastrado com sucesso!"
+            message = "Cliente cadastrado com sucesso"
+            LOGGER.info(f"Cliente {data.full_name} criado")
 
-        return {'status': 200, 'mensagem': mensagem, 'name': data.full_name, 'tel': data.tel, 'cpf': cpf_limpo, 'produto': data.produto}
+        return {
+            'status': 200,
+            'mensagem': message,
+            'name': data.full_name,
+            'tel': data.tel,
+            'cpf': clean_cpf,
+            'produto': data.produto
+        }
 
     except HTTPException:
         raise
-    except Exception as e:
-        logger.error(f"Erro ao cadastrar cliente: {str(e)}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Erro interno: {str(e)}")
-
+    except Exception as error:
+        LOGGER.error(f"Erro ao cadastrar cliente: {str(error)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Erro interno ao cadastrar cliente"
+        )
 
 @customers.post('/registra-venda')
-async def registra_venda_parcial(data: VendaParcialData, current_user: SystemUser = Depends(get_current_user)):
+async def register_partial_sale(
+    data: VendaParcialData, 
+    current_user: SystemUser = Depends(get_current_user)
+):
     """
-    Endpoint para registrar uma venda parcial.
+    Endpoint para registrar venda parcial
     """
     try:
         # Validação do CPF
-        cpf_limpo = data.cpf.replace('.', '').replace('-', '')
-        if len(cpf_limpo) != 11:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="CPF inválido")
+        clean_cpf = data.cpf.replace('.', '').replace('-', '')
+        if len(clean_cpf) != 11:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="CPF inválido"
+            )
 
+        # Valida valor recebido
         if data.valor_recebido > data.valor_total:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Valor recebido não pode ser maior que o valor total")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Valor recebido não pode ser maior que valor total"
+            )
 
-        # Calcular saldo devedor
-        saldo_devedor = data.valor_total - data.valor_recebido
+        # Calcula saldo devedor
+        remaining_debt = data.valor_total - data.valor_recebido
 
-        # Buscar cliente
-        cliente = await Partial.filter(cpf=cpf_limpo, usuario_id=current_user.id).first()
-        if not cliente:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Cliente não encontrado. Cadastre o cliente primeiro.")
+        # Busca cliente
+        customer = await Partial.filter(cpf=clean_cpf, usuario_id=current_user.id).first()
+        if not customer:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Cliente não encontrado. Cadastre o cliente primeiro."
+            )
 
-        # Atualizar dados do cliente com a venda
-        await Partial.filter(cpf=cpf_limpo, usuario_id=current_user.id).update(
-            value=saldo_devedor,  # Saldo devedor
+        # Atualiza dados do cliente com a venda
+        await Partial.filter(cpf=clean_cpf, usuario_id=current_user.id).update(
+            value=remaining_debt,
             payment_method=data.metodo_pagamento,
             produto=data.produto,
             date=datetime.now(ZoneInfo("America/Sao_Paulo")),
         )
 
-        # Se a dívida foi totalmente paga, mover para finished_debts
-        if saldo_devedor <= 0:
-            # Buscar dados atualizados do cliente
-            cliente_atualizado = await Partial.filter(cpf=cpf_limpo, usuario_id=current_user.id).first()
+        # Se dívida foi totalmente paga, move para histórico
+        if remaining_debt <= 0:
+            updated_customer = await Partial.filter(cpf=clean_cpf, usuario_id=current_user.id).first()
 
-            # Mover para finished_debts
             await finished_debts.create(
                 usuario_id=current_user.id,
-                name=cliente_atualizado.customers_name,
-                tel=cliente_atualizado.tel,
+                name=updated_customer.customers_name,
+                tel=updated_customer.tel,
                 product_name=data.produto,
-                value=data.valor_total,  # Valor total da venda
+                value=data.valor_total,
                 payments={
                     "payment_method": data.metodo_pagamento,
                     "paid_value": data.valor_recebido,
@@ -105,160 +142,123 @@ async def registra_venda_parcial(data: VendaParcialData, current_user: SystemUse
                 },
             )
 
-            # Remover da tabela Partial (dívida quitada)
-            await Partial.filter(cpf=cpf_limpo, usuario_id=current_user.id).delete()
+            # Remove da tabela de dívidas ativas
+            await Partial.filter(cpf=clean_cpf, usuario_id=current_user.id).delete()
+            LOGGER.info(f"Dívida quitada para CPF: {clean_cpf}")
+
+        LOGGER.info(f"Venda registrada para CPF: {clean_cpf}")
 
         return {
             'status': 200,
-            'mensagem': 'Venda parcial registrada com sucesso!',
-            'cpf': cpf_limpo,
+            'mensagem': 'Venda parcial registrada com sucesso',
+            'cpf': clean_cpf,
             'valor_recebido': data.valor_recebido,
-            'saldo_devedor': saldo_devedor,
+            'saldo_devedor': remaining_debt,
             'produto': data.produto,
-            'status_divida': 'quitada' if saldo_devedor <= 0 else 'pendente',
+            'status_divida': 'quitada' if remaining_debt <= 0 else 'pendente',
         }
 
     except HTTPException:
         raise
-    except Exception as e:
-        logger.error(f"Erro ao registrar venda parcial: {str(e)}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Erro interno: {str(e)}")
-
+    except Exception as error:
+        LOGGER.error(f"Erro ao registrar venda parcial: {str(error)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Erro interno ao registrar venda"
+        )
 
 @customers.get('/dividas-atual')
-async def get_dividas_atuais(current_user: SystemUser = Depends(get_current_user)):
+async def get_current_debts(current_user: SystemUser = Depends(get_current_user)):
     """
-    Endpoint para buscar dívidas atuais do usuário.
+    Endpoint para buscar dívidas atuais do usuário
     """
-    try:
-        # Buscar todas as dívidas pendentes na tabela Partial
-        dividas = await Partial.filter(usuario_id=current_user.id).all()
-
-        resultado = []
-        for divida in dividas:
-            resultado.append(
-                {
-                    'id': divida.id,
-                    'customers_name': divida.customers_name,
-                    'cpf': divida.cpf,
-                    'tel': divida.tel,
-                    'product_name': divida.produto,
-                    'value': divida.value if divida.value else 0.0,
-                    'payment_method': divida.payment_method,
-                    'date': divida.date.isoformat() if divida.date else None,
-                }
-            )
-
-        return {'status': 200, 'dividas': resultado, 'total': len(resultado)}
-
-    except Exception as e:
-        logger.error(f"Erro ao buscar dívidas atuais: {str(e)}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Erro interno: {str(e)}")
-
+    return await PartialPayment.get_current_debts(current_user.id)
 
 @customers.get('/dividas-pagas')
-async def get_dividas_pagas(current_user: SystemUser = Depends(get_current_user)):
+async def get_paid_debts(current_user: SystemUser = Depends(get_current_user)):
     """
-    Endpoint para buscar histórico de dívidas pagas.
+    Endpoint para buscar histórico de dívidas pagas
     """
-    try:
-        # Buscar todas as dívidas quitadas na tabela finished_debts
-        dividas_pagas = await finished_debts.filter(usuario_id=current_user.id).all()
-
-        resultado = []
-        for divida in dividas_pagas:
-            resultado.append(
-                {
-                    'id': divida.id,
-                    'name': divida.name,
-                    'tel': divida.tel,
-                    'product_name': divida.product_name,
-                    'paid_value': divida.value,  # Valor total pago
-                    'payments': divida.payments if divida.payments else {},
-                    'date': divida.date.isoformat() if divida.date else None,
-                    'status': 'Pago',
-                }
-            )
-
-        return {'status': 200, 'dividas_pagas': resultado, 'total': len(resultado)}
-
-    except Exception as e:
-        logger.error(f"Erro ao buscar dívidas pagas: {str(e)}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Erro interno: {str(e)}")
-
+    return await PartialPayment.get_paid_debts(current_user.id)
 
 @customers.put('/atualiza-valor')
-async def atualiza_valor_divida(data: AtualizaDividaData, current_user: SystemUser = Depends(get_current_user)):
+async def update_debt_value(
+    data: DebtUpdateData, 
+    current_user: SystemUser = Depends(get_current_user)
+):
     """
-    Endpoint para atualizar valor da dívida (registrar pagamento).
+    Endpoint para atualizar valor da dívida (registrar pagamento)
     """
     try:
-        # Validação do CPF
-        cpf_limpo = data.cpf.replace('.', '').replace('-', '')
-        if len(cpf_limpo) != 11:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="CPF inválido")
-
-        # Validação do valor
-        if data.value_received <= 0:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Valor recebido deve ser maior que zero")
-
-        # Buscar a dívida atual
-        divida = await Partial.filter(cpf=cpf_limpo, usuario_id=current_user.id).first()
-
-        if not divida:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhuma dívida encontrada para este CPF")
-
-        # Calcular novo saldo
-        valor_atual = divida.value if divida.value else 0.0
-        novo_saldo = valor_atual - data.value_received
-
-        if novo_saldo < 0:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Valor pago é maior que o saldo devedor")
-
-        if novo_saldo == 0:
-            # Dívida quitada - mover para finished_debts
-            valor_total_pago = (valor_atual or 0) + data.value_received
-
-            await finished_debts.create(
-                usuario_id=current_user.id,
-                name=divida.customers_name,
-                tel=divida.tel,
-                product_name=divida.produto,
-                value=valor_total_pago,
-                payments={
-                    "payment_method": data.type_meyhod_payment,
-                    "paid_value": data.value_received,
-                    "date": datetime.now(ZoneInfo("America/Sao_Paulo")).isoformat(),
-                    "last_payment": True,
-                },
+        valid_payment_methods = ['PIX', 'CARTÂO', 'CARTAO', 'PARCIAL', 'DINHEIRO']
+        
+        if data.type_meyhod_payment.upper() not in [method.upper() for method in valid_payment_methods]:
+            raise HTTPException(
+                status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
+                detail="Selecione uma forma de pagamento válida"
             )
 
-            # Remover da tabela Partial
-            await Partial.filter(cpf=cpf_limpo, usuario_id=current_user.id).delete()
+        LOGGER.info(f"Iniciando pagamento de dívida [PARCIAL]")
+        LOGGER.info(f"Metodo pagamento [{data.type_meyhod_payment}]")
 
-            mensagem = "Dívida quitada com sucesso!"
-            status_divida = "quitada"
-        else:
-            # Atualizar saldo devedor
-            await Partial.filter(cpf=cpf_limpo, usuario_id=current_user.id).update(
-                value=novo_saldo, payment_method=data.type_meyhod_payment, date=datetime.now(ZoneInfo("America/Sao_Paulo"))
-            )
+        # Processa pagamento
+        payment_processor = PartialPayment(
+            payment_method=data.type_meyhod_payment,
+            value_received=data.value_received,
+            cpf=data.cpf,
+            user_id=current_user.id  # Usa ID do usuário atual
+        )
 
-            mensagem = "Pagamento parcial registrado com sucesso!"
-            status_divida = "pendente"
-
-        return {
-            'status': 200,
-            'mensagem': mensagem,
-            'cpf': cpf_limpo,
-            'valor_pago': data.value_received,
-            'novo_valor': novo_saldo if status_divida == "pendente" else 0,
-            'ultimo_pagamento': data.value_received,
-            'status_divida': status_divida,
-        }
+        result = await payment_processor.update_value()
+        
+        LOGGER.info("Pagamento realizado com sucesso")
+        
+        return result
 
     except HTTPException:
         raise
-    except Exception as e:
-        logger.error(f"Erro ao atualizar dívida: {str(e)}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Erro interno: {str(e)}")
+    except Exception as error:
+        LOGGER.error(f"Erro ao atualizar dívida: {str(error)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Erro interno ao processar pagamento"
+        )
+
+
+
+@customers.delete('/deleta-todas-as-dividas')
+async def delete_all_debts(current_user: SystemUser = Depends(get_current_user)):
+    """
+    Endpoint para deletar TODAS as dívidas do usuário
+    ATENÇÃO: Esta operação é irreversível
+    """
+    try:
+        LOGGER.warning(f'Usuário {current_user.id} iniciando deleção de TODAS as dívidas')
+        
+        # Deleta dívidas pagas (histórico)
+        paid_debts_deleted = await finished_debts.filter(usuario_id=current_user.id).delete()
+        
+        # Deleta dívidas atuais
+        current_debts_deleted = await Partial.filter(usuario_id=current_user.id).delete()
+        
+        LOGGER.warning(
+            f'Deleção concluída: '
+            f'{paid_debts_deleted} dívidas pagas e '
+            f'{current_debts_deleted} dívidas atuais removidas'
+        )
+        
+        return {
+            'status': 200,
+            'mensagem': 'Todas as dívidas foram deletadas com sucesso',
+            'detalhes': {
+                'dividas_pagas_removidas': paid_debts_deleted,
+                'dividas_atuais_removidas': current_debts_deleted
+            }
+        }
+
+    except Exception as error:
+        LOGGER.error(f'Erro ao deletar dívidas: {str(error)}')
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail='Erro interno ao deletar dívidas'
+        )
