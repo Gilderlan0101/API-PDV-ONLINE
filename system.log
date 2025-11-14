@@ -1,0 +1,955 @@
+INÍCIO DA SESSÃO DE LOG
+2025-11-13 01:54:30,520 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 01:54:36,725 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 01:54:40,273 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 02:00:21,079 - error_module - INFO - 🔐 Tentativa de login: roberto.caixa@empresa2.com
+2025-11-13 02:00:23,352 - error_module - INFO - ℹ️  Caixa já aberto para Roberto Caixa - ID: 652
+2025-11-13 02:05:41,175 - error_module - ERROR - Falha na decodificação/validação do token: Not enough segments
+2025-11-13 02:05:49,103 - error_module - ERROR - Falha na decodificação/validação do token: Not enough segments
+2025-11-13 02:06:29,596 - error_module - ERROR - Falha na decodificação/validação do token: Not enough segments
+2025-11-13 02:06:38,265 - error_module - ERROR - Falha na decodificação/validação do token: Not enough segments
+2025-11-13 02:06:54,273 - error_module - ERROR - Falha na decodificação/validação do token: Not enough segments
+2025-11-13 02:08:42,625 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 02:08:46,283 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 02:08:49,449 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 02:08:52,914 - error_module - ERROR - Falha na decodificação/validação do token: Not enough segments
+2025-11-13 02:08:55,978 - error_module - ERROR - Falha na decodificação/validação do token: Not enough segments
+2025-11-13 02:09:31,726 - error_module - ERROR - Falha na decodificação/validação do token: Signature verification failed.
+2025-11-13 02:09:36,010 - error_module - ERROR - Falha na decodificação/validação do token: Not enough segments
+2025-11-13 02:10:01,041 - error_module - ERROR - Falha na decodificação/validação do token: Not enough segments
+2025-11-13 02:10:35,584 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 02:10:39,311 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 02:10:42,523 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 02:11:50,506 - error_module - ERROR - Falha na decodificação/validação do token: Not enough segments
+2025-11-13 02:12:25,000 - error_module - ERROR - Falha na decodificação/validação do token: Not enough segments
+2025-11-13 02:12:57,672 - error_module - ERROR - Falha na decodificação/validação do token: Signature verification failed.
+2025-11-13 02:13:35,638 - error_module - ERROR - Falha na decodificação/validação do token: Signature verification failed.
+2025-11-13 02:13:48,698 - error_module - INFO - 🔐 Tentativa de login: roberto.caixa@empresa2.com
+2025-11-13 02:13:50,866 - error_module - INFO - ℹ️  Caixa já aberto para Roberto Caixa - ID: 652
+2025-11-13 02:14:27,428 - error_module - INFO - Funcionario 30 da EMPRESA Pizzaria do Bobs logado via JWT.
+2025-11-13 02:14:27,842 - error_module - DEBUG - Caixa (ID: 199) encontrado/aberto com sucesso para o funcionário 30. [OK]
+2025-11-13 02:15:08,840 - error_module - INFO - Funcionario 30 da EMPRESA Pizzaria do Bobs logado via JWT.
+2025-11-13 02:15:09,261 - error_module - DEBUG - Caixa (ID: 199) encontrado/aberto com sucesso para o funcionário 30. [OK]
+2025-11-13 02:15:31,593 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 02:15:35,122 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 02:15:38,251 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 02:17:55,003 - error_module - INFO - Funcionario 30 da EMPRESA Pizzaria do Bobs logado via JWT.
+2025-11-13 02:17:55,426 - error_module - DEBUG - Caixa (ID: 199) encontrado/aberto com sucesso para o funcionário 30. [OK]
+2025-11-13 02:18:22,042 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 02:18:25,725 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 02:18:28,879 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 02:18:34,233 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 02:18:37,426 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 02:18:47,552 - error_module - INFO - Funcionario 30 da EMPRESA Pizzaria do Bobs logado via JWT.
+2025-11-13 02:18:47,968 - error_module - DEBUG - Caixa (ID: 199) encontrado/aberto com sucesso para o funcionário 30. [OK]
+2025-11-13 02:19:13,722 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 02:19:17,482 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 02:19:20,742 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 02:20:11,576 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 02:20:15,066 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 02:20:18,175 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 02:20:23,882 - error_module - INFO - Funcionario 30 da EMPRESA Pizzaria do Bobs logado via JWT.
+2025-11-13 02:20:24,302 - error_module - DEBUG - Caixa (ID: 199) encontrado/aberto com sucesso para o funcionário 30. [OK]
+2025-11-13 02:21:08,991 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 02:25:05,273 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 02:25:10,503 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 02:25:13,593 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 02:25:18,994 - error_module - INFO - 🔐 Tentativa de login: roberto.caixa@empresa2.com
+2025-11-13 02:25:21,168 - error_module - INFO - ℹ️  Caixa já aberto para Roberto Caixa - ID: 652
+2025-11-13 02:26:50,168 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 02:26:57,061 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 02:27:02,212 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 02:27:05,298 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 02:33:57,387 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 02:34:03,545 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 02:34:08,992 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 02:34:12,084 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 02:35:48,632 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 02:35:54,102 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 02:35:57,294 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 02:36:56,183 - error_module - INFO - 🔐 Tentativa de login: roberto.caixa@empresa2.com
+2025-11-13 02:36:57,719 - error_module - INFO - ℹ️  Caixa já aberto para Roberto Caixa - ID: 652
+2025-11-13 02:39:13,931 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 02:39:17,452 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 02:39:20,678 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 02:40:01,659 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 02:40:08,754 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 02:40:14,129 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 02:40:17,350 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 02:41:25,098 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 02:43:41,325 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 02:43:46,577 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 02:43:49,684 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 02:43:59,054 - error_module - INFO - 🔐 Tentativa de login: roberto.caixa@empresa2.com
+2025-11-13 02:44:01,269 - error_module - INFO - ℹ️  Caixa já aberto para Roberto Caixa - ID: 652
+2025-11-13 02:44:45,796 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 18:52:02,520 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 18:52:18,519 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 18:52:24,527 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 18:52:48,855 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 18:53:09,470 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 18:53:14,752 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 18:53:22,262 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 18:56:11,865 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 18:56:48,903 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 18:57:34,941 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 18:57:38,047 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 19:00:55,232 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 19:03:25,250 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 19:03:28,472 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 19:04:08,347 - error_module - INFO - 🔐 Tentativa de login: roberto.caixa@empresa2.com
+2025-11-13 19:04:10,682 - error_module - INFO - ℹ️  Caixa já aberto para Roberto Caixa - ID: 652
+2025-11-13 19:09:06,429 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 19:12:21,400 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 19:12:24,337 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 19:15:55,231 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 19:25:53,905 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 19:25:57,557 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 19:26:07,289 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 19:26:35,534 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 19:26:38,942 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 19:26:41,907 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 19:26:47,950 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 19:26:51,444 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 19:26:54,557 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 19:27:18,352 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 19:27:22,099 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 19:27:25,169 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 19:27:28,876 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 19:28:12,263 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 19:28:15,711 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 19:28:18,685 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 19:28:23,510 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 19:28:31,047 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 19:28:34,448 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 19:28:38,043 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 19:38:43,312 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 19:38:47,079 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 19:38:50,254 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 19:39:06,227 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 19:39:09,809 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 19:39:12,835 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 19:39:19,700 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 19:39:23,417 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 19:39:27,477 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 19:39:29,303 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 19:41:27,855 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 19:41:31,450 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 19:41:37,316 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 19:41:52,535 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 19:41:56,050 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 19:41:59,493 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 19:43:13,455 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 19:46:04,515 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 19:48:06,066 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 19:48:09,160 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 19:48:56,917 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 19:54:06,949 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 19:54:10,020 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 19:54:19,533 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 19:54:22,644 - error_module - INFO - Dados Salvos:
+2025-11-13 19:54:49,126 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 19:54:52,629 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 19:54:55,934 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 19:54:58,422 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 19:55:00,398 - error_module - INFO - Dados Salvos:
+2025-11-13 19:55:05,221 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 19:55:06,423 - error_module - INFO - Dados Salvos:
+2025-11-13 19:56:45,417 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 19:56:49,122 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 19:57:37,786 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 19:57:48,618 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 19:58:35,429 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 19:58:38,647 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 19:58:40,477 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 19:58:42,455 - error_module - INFO - Dados Salvos:
+2025-11-13 19:59:25,268 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 19:59:28,890 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 19:59:32,195 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 19:59:41,266 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 19:59:45,227 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 19:59:48,710 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 19:59:50,467 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 19:59:52,745 - error_module - INFO - Dados Salvos:
+2025-11-13 20:01:25,124 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 20:01:29,081 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 20:02:52,672 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 20:02:55,835 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 20:03:02,242 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 20:03:04,206 - error_module - INFO - Dados Salvos:
+2025-11-13 20:03:13,639 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 20:03:16,029 - error_module - INFO - Dados Salvos:
+2025-11-13 20:03:20,650 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 20:03:21,920 - error_module - INFO - Dados Salvos:
+2025-11-13 20:05:31,369 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 20:05:37,620 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 20:06:49,318 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 20:06:51,159 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 20:08:21,601 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 20:08:25,619 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 20:08:28,960 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 20:08:31,314 - error_module - INFO - Retonando dados em cache
+2025-11-13 20:08:35,997 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 20:08:38,316 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 20:09:20,321 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 20:10:00,623 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 20:11:11,922 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 20:11:15,805 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 20:11:19,331 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 20:14:44,077 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 20:16:18,514 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 20:16:47,023 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 20:16:52,607 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 20:16:57,728 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 20:16:59,543 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 20:18:08,979 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 20:18:13,405 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 20:18:16,877 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 20:18:18,647 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 20:18:20,626 - error_module - INFO - Retonando dados em cache
+2025-11-13 20:18:26,550 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 20:18:27,721 - error_module - INFO - Retonando dados em cache
+2025-11-13 20:22:02,101 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 20:22:05,824 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 20:22:09,856 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 20:23:15,956 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 20:46:51,568 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 20:47:19,159 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 20:47:33,558 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 20:47:40,157 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 20:47:45,749 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 20:47:47,769 - error_module - INFO - Token e Dados salvos no cache. Chave: token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQ4MDU2NjcsInN1YiI6IjEifQ.GczUIwe8TTPdjd20AhNtw9b3Run6WvdfAI1nGHFNwnE
+2025-11-13 20:49:26,552 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 20:49:30,519 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 20:50:22,928 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 20:50:28,138 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 20:50:35,005 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 20:50:38,056 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 20:50:40,280 - error_module - INFO - Token e Dados salvos no cache. Chave: token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQ4MDU4NDAsInN1YiI6IjEifQ.fFzDflfM8pH1mZAXNp_allsvNgp3znGBu-lveCZNgBg
+2025-11-13 20:52:00,740 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 20:52:13,702 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 20:52:15,089 - error_module - INFO - Token e Dados salvos no cache. Chave: token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQ4MDU5MzUsInN1YiI6IjEifQ.vRQQJIyck5KxydSXVSDNKLhHZYnjA__4j6-qk55VHeY
+2025-11-13 20:53:06,862 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 20:53:10,368 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 20:53:13,691 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 20:54:04,461 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 20:54:08,230 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 20:54:11,591 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 20:54:46,875 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 20:54:50,682 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 20:54:54,783 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 20:55:48,482 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 20:55:52,026 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 20:55:55,876 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 20:56:11,938 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 20:56:15,284 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 20:56:19,956 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 20:56:48,236 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 20:56:51,900 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 20:56:58,190 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 20:57:17,483 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 20:57:20,775 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 20:57:39,474 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 20:57:44,518 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 20:57:47,885 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 20:58:43,967 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 20:58:47,806 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 21:00:00,093 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 21:00:23,119 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 21:00:28,459 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 21:00:32,231 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 21:01:02,693 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 21:03:52,676 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 21:03:56,479 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 21:03:59,876 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 21:06:36,760 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 21:06:40,446 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 21:07:20,466 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 21:07:26,182 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 21:08:35,546 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 21:09:13,388 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 21:09:17,860 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 21:09:24,629 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 21:09:26,556 - error_module - INFO - Token salvo no cache. Chave: token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQ4MDY5NjYsInN1YiI6IjEifQ.y0CEYoc9FrxyJAeJf1pRTYDKGU4-z0D2m6wPHsM_uLk
+2025-11-13 21:10:07,796 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 21:10:10,626 - error_module - INFO - Token salvo no cache. Chave: token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQ4MDcwMTAsInN1YiI6IjEifQ.4a-iPjgKqSfKfHXBBOYqvr5ORV1M7v8-ysPkyJUciDY
+2025-11-13 21:10:30,732 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 21:10:37,920 - error_module - INFO - Token salvo no cache. Chave: token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQ4MDcwMzcsInN1YiI6IjEifQ._9vICouqAaJYTHDg6NRQbNXnNdLt9Do3pc5AsEsm04A
+2025-11-13 21:13:20,217 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 21:13:25,136 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 21:13:30,519 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 21:13:34,576 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 21:15:08,085 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 21:15:11,750 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 21:15:15,270 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 21:15:22,082 - error_module - INFO - Logout bem-sucedido. Chave de cache removida: token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQ4MDcwMzcsInN1YiI6IjEifQ._9vICouqAaJYTHDg6NRQbNXnNdLt9Do3pc5AsEsm04A
+2025-11-13 21:15:30,650 - error_module - INFO - Tentativa de logout: Token nao encontrado em cache (Chave: token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQ4MDcwMzcsInN1YiI6IjEifQ._9vICouqAaJYTHDg6NRQbNXnNdLt9Do3pc5AsEsm04A).
+2025-11-13 21:15:30,653 - error_module - INFO - Logout bem-sucedido. Chave de cache removida: token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQ4MDcwMzcsInN1YiI6IjEifQ._9vICouqAaJYTHDg6NRQbNXnNdLt9Do3pc5AsEsm04A
+2025-11-13 21:17:20,332 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 21:17:22,237 - error_module - INFO - Token salvo no cache. Chave: token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQ4MDc0NDIsInN1YiI6IjEifQ.9JYo5jFsRlce42ix8cea5mCY1QQXwomyf8m9cmdUmqw
+2025-11-13 21:17:41,148 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 21:17:42,297 - error_module - INFO - Token salvo no cache. Chave: token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQ4MDc0NjIsInN1YiI6IjEifQ.sKBMNFzNRVqMbpIWBa_ZfkagLUpDJKzXb4MybV-Xcxo
+2025-11-13 21:21:27,573 - error_module - INFO - Logout bem-sucedido. Chave de cache removida: token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQ4MDc0NjIsInN1YiI6IjEifQ.sKBMNFzNRVqMbpIWBa_ZfkagLUpDJKzXb4MybV-Xcxo
+2025-11-13 21:21:40,387 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-13 21:21:41,532 - error_module - INFO - Token salvo no cache. Chave: token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQ4MDc3MDEsInN1YiI6IjEifQ.SQrTN3BkaJOcXprg9St_ft5Q_4PnMWLYuIK_6-oSNAw
+2025-11-13 21:22:38,945 - error_module - INFO - 🔐 Tentativa de login: roberto.caixa@empresa2.com
+2025-11-13 21:22:40,425 - error_module - INFO - ℹ️  Caixa já aberto para Roberto Caixa - ID: 652
+2025-11-13 21:23:07,078 - error_module - INFO - 🔐 Tentativa de login: roberto.caixa@empresa2.com
+2025-11-13 21:23:59,955 - error_module - INFO - 🔐 Tentativa de login: roberto.caixa@empresa2.com
+2025-11-13 21:25:59,784 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 21:26:03,120 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 21:26:25,714 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 21:44:26,473 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 21:44:31,756 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 21:45:36,760 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 21:45:42,616 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 21:45:45,966 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 21:55:39,498 - error_module - INFO - 🔐 Tentativa de login: roberto.caixa@empresa2.com
+2025-11-13 21:55:41,654 - error_module - INFO - ℹ️  Caixa já aberto para Robert - ID: [ OK ]
+2025-11-13 21:56:12,168 - error_module - INFO - 🔐 Tentativa de login: roberto.caixa@empresa2.com
+2025-11-13 21:59:42,490 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 21:59:45,976 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 21:59:49,337 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 22:00:18,634 - error_module - INFO - 🔐 Tentativa de login: roberto.caixa@empresa2.com
+2025-11-13 22:00:20,853 - error_module - INFO - ℹ️  Caixa já aberto para Robert - ID: [ OK ]
+2025-11-13 22:04:57,334 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 22:05:00,838 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 22:05:04,173 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 22:07:54,461 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 22:07:58,538 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 22:08:02,018 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 22:08:42,186 - error_module - INFO - Tentativa de login: roberto.caixa@empresa2.com
+2025-11-13 22:08:44,669 - error_module - ERROR - Erro ao abrir caixa para 30: name 'datetime' is not defined
+2025-11-13 22:09:07,287 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 22:09:10,639 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 22:10:09,423 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 22:10:15,575 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 22:10:19,145 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 22:10:28,136 - error_module - INFO - Tentativa de login: roberto.caixa@empresa2.com
+2025-11-13 22:10:30,676 - error_module - ERROR - Erro ao abrir caixa para 30: type object 'datetime.datetime' has no attribute 'timedelta'
+2025-11-13 22:11:08,360 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 22:11:12,334 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 22:11:16,637 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 22:11:37,274 - error_module - INFO - Tentativa de login: roberto.caixa@empresa2.com
+2025-11-13 22:11:39,828 - error_module - ERROR - Erro ao abrir caixa para 30: type object 'datetime.datetime' has no attribute 'timedelta'
+2025-11-13 22:12:11,471 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 22:12:15,845 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 22:12:19,391 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 22:12:23,804 - error_module - INFO - Tentativa de login: roberto.caixa@empresa2.com
+2025-11-13 22:12:26,298 - error_module - ERROR - Erro ao abrir caixa para 30: type object 'datetime.datetime' has no attribute 'timedelta'
+2025-11-13 22:13:12,910 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 22:13:16,211 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 22:13:19,547 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 22:13:23,252 - error_module - INFO - Tentativa de login: roberto.caixa@empresa2.com
+2025-11-13 22:13:25,823 - error_module - ERROR - Erro ao abrir caixa para 30: can't compare offset-naive and offset-aware datetimes
+2025-11-13 22:14:37,671 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 22:14:41,437 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 22:14:45,034 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 22:14:51,841 - error_module - INFO - Tentativa de login: roberto.caixa@empresa2.com
+2025-11-13 22:14:54,286 - error_module - ERROR - Erro ao abrir caixa para 30: can't compare offset-naive and offset-aware datetimes
+2025-11-13 22:16:15,762 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 22:16:19,364 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 22:16:22,640 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 22:17:09,939 - error_module - INFO - Tentativa de login: carlos.caixa@empresa1.com
+2025-11-13 22:17:12,369 - error_module - ERROR - Erro ao abrir caixa para 26: can't compare offset-naive and offset-aware datetimes
+2025-11-13 22:18:19,407 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 22:18:24,752 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 22:18:30,415 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 22:19:11,497 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 22:19:18,529 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 22:19:21,847 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 22:19:27,722 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 22:19:35,382 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 22:19:40,601 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 22:19:43,899 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 22:19:50,491 - error_module - INFO - Tentativa de login: carlos.caixa@empresa1.com
+2025-11-13 22:19:52,321 - error_module - ERROR - Erro ao abrir caixa para 26: can't compare offset-naive and offset-aware datetimes
+2025-11-13 22:20:00,226 - error_module - INFO - Tentativa de login: carlos.caixa@empresa1.com
+2025-11-13 22:20:01,945 - error_module - ERROR - Erro ao abrir caixa para 26: can't compare offset-naive and offset-aware datetimes
+2025-11-13 22:22:02,257 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 22:22:06,106 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 22:22:10,022 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 22:22:41,176 - error_module - INFO - Tentativa de login: carlos.caixa@empresa1.com
+2025-11-13 22:23:17,622 - error_module - INFO - 🔐 Tentativa de login: carlos.caixa@empresa1.com
+2025-11-13 22:28:32,864 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 22:28:40,489 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 22:28:45,757 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 22:28:49,049 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 22:28:56,721 - error_module - INFO - 🔐 Tentativa de login: carlos.caixa@empresa1.com
+2025-11-13 22:28:58,138 - error_module - INFO - ✅ Credenciais válidas para Carlos Caixa - Empresa: Empresa Teste 1
+2025-11-13 22:28:58,537 - error_module - INFO - ℹ️  Caixa já estava aberto para Carlos Caixa: ID 177
+2025-11-13 22:28:58,559 - error_module - INFO - 🔑 Tokens gerados para Carlos Caixa - Access Token: eyJhbGciOiJIUzI1NiIs...
+2025-11-13 22:28:58,571 - error_module - DEBUG - 💾 Cache salvo no Redis para Carlos Caixa
+2025-11-13 22:28:58,574 - error_module - INFO - ✅ Login finalizado com sucesso para Carlos Caixa - Caixa Status: ja_aberto
+2025-11-13 22:29:24,769 - error_module - INFO - 🔐 Tentativa de login: carlos.caixa@empresa1.com
+2025-11-13 22:31:24,339 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 22:31:27,810 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 22:31:56,185 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 22:32:47,776 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 22:32:51,256 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 22:32:51,285 - error_module - INFO - 🔐 Tentativa de login: carlos.caixa@empresa1.com
+2025-11-13 22:32:51,288 - error_module - INFO - 🔐 Tentativa de login: carlos.caixa@empresa1.com
+2025-11-13 22:32:55,198 - error_module - INFO - 🔐 Tentativa de login: carlos.caixa@empresa1.com
+2025-11-13 22:35:46,304 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 22:35:50,192 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 22:35:53,806 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 22:36:02,722 - error_module - INFO - 🔐 Tentativa de login: carlos.caixa@empresa1.com
+2025-11-13 22:37:11,310 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-13 22:41:08,859 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 22:41:14,061 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-13 22:41:22,127 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-13 22:42:11,407 - error_module - INFO - 🔐 Tentativa de login: carlos.caixa@empresa1.com
+2025-11-13 22:42:11,728 - error_module - INFO - 🔍 DIAGNÓSTICO - Senha DB: $2b$12$bQ25LhoiKrB0.DULxa0WxOu3hOSemJRpmeATw7Gt5uraDYV.ygfse | Tipo: <class 'str'>
+2025-11-13 22:42:11,729 - error_module - INFO - 🔍 DIAGNÓSTICO - Senha input: 1234 | Tipo: <class 'str'>
+2025-11-13 22:42:12,870 - error_module - INFO - ✅ Credenciais válidas para Carlos Caixa - Empresa: Empresa Teste 1
+2025-11-13 22:42:13,271 - error_module - INFO - ℹ️  Caixa já estava aberto para Carlos Caixa: ID 177
+2025-11-13 22:42:13,291 - error_module - INFO - 🔑 Tokens gerados para Carlos Caixa - Access Token: eyJhbGciOiJIUzI1NiIs...
+2025-11-13 22:42:13,295 - error_module - DEBUG - 💾 Cache salvo no Redis para Carlos Caixa
+2025-11-13 22:42:13,296 - error_module - INFO - ✅ Login finalizado com sucesso para Carlos Caixa - Caixa Status: ja_aberto
+2025-11-13 22:42:39,802 - error_module - INFO - 🔐 Tentativa de login: carlos.caixa@empresa1.com
+2025-11-13 22:42:43,803 - error_module - INFO - 🔐 Tentativa de login: carlos.caixa@empresa1.com
+2025-11-13 22:43:29,733 - error_module - INFO - 🔍 INICIANDO DIAGNÓSTICO DE SENHA para: carlos.caixa@empresa1.com
+2025-11-13 22:45:38,482 - error_module - INFO - 🔐 Tentativa de login: carlos.caixa@empresa1.com
+2025-11-13 22:46:38,577 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 00:43:37,060 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 00:43:42,324 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 00:43:46,277 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 00:44:42,181 - error_module - INFO - 🔐 Tentativa de login: carlos.caixa@empresa1.com
+2025-11-14 00:47:46,578 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 00:47:51,537 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 00:47:55,885 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 00:49:27,704 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 00:49:31,765 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 00:49:35,416 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 00:50:17,123 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 00:50:20,892 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 00:50:24,396 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 00:53:55,417 - error_module - INFO - 🔐 Tentativa de login: carlos.caixa@empresa1.com
+2025-11-14 00:53:55,705 - error_module - INFO - 🔍 DIAGNÓSTICO - Senha DB: $2b$12$bQ25LhoiKrB0.DULxa0WxOu3hOSemJRpmeATw7Gt5uraDYV.ygfse | Tipo: <class 'str'>
+2025-11-14 00:53:55,707 - error_module - INFO - 🔍 DIAGNÓSTICO - Senha input: 1234 | Tipo: <class 'str'>
+2025-11-14 00:53:56,782 - error_module - INFO - ✅ Credenciais válidas para Carlos Caixa - Empresa: Empresa Teste 1
+2025-11-14 00:53:57,199 - error_module - INFO - ℹ️  Caixa já estava aberto para Carlos Caixa: ID 177
+2025-11-14 00:53:57,218 - error_module - INFO - 🔑 Tokens gerados para Carlos Caixa - Access Token: eyJhbGciOiJIUzI1NiIs...
+2025-11-14 00:53:57,222 - error_module - DEBUG - 💾 Cache salvo no Redis para Carlos Caixa
+2025-11-14 00:53:57,223 - error_module - INFO - ✅ Login finalizado com sucesso para Carlos Caixa - Caixa Status: ja_aberto
+2025-11-14 00:59:18,432 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 00:59:21,810 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 00:59:25,172 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 00:59:43,125 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:01:53,986 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 01:01:57,414 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 01:02:01,035 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 01:02:38,912 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 01:02:42,283 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 01:02:45,911 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 01:02:51,575 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:03:17,054 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 01:03:20,457 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 01:03:23,897 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 01:03:34,982 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:05:13,671 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:05:27,131 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:05:40,833 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:05:51,283 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:05:59,904 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:06:43,052 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 01:14:18,988 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 01:14:25,198 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 01:14:28,726 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 01:14:33,199 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:15:03,902 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 01:15:07,234 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 01:15:10,572 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 01:15:54,280 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 01:15:57,849 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 01:16:01,348 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 01:16:16,821 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:17:42,859 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 01:17:46,445 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 01:17:49,929 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 01:17:57,951 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:19:23,373 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:19:31,102 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:19:39,682 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:19:49,385 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:20:38,948 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 01:20:42,361 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 01:20:45,728 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 01:21:12,009 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:21:23,698 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:21:36,016 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:24:12,360 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 01:24:15,752 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 01:24:19,170 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 01:24:27,935 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:25:02,293 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 01:25:05,577 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 01:25:08,910 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 01:25:12,872 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:25:44,800 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 01:25:48,155 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 01:25:51,606 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 01:25:54,425 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:26:13,882 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 01:26:17,320 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 01:26:20,620 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 01:26:22,326 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:26:34,217 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 01:26:37,659 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 01:26:41,035 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 01:30:08,654 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 01:30:12,385 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 01:30:15,733 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 01:30:21,111 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:33:02,746 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 01:33:06,227 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 01:33:09,579 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 01:34:08,175 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 01:34:11,468 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 01:34:14,879 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 01:34:45,235 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 01:34:48,748 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 01:34:52,156 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 01:34:57,641 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:35:19,450 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:35:32,890 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:36:00,643 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 01:36:03,884 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 01:36:07,216 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 01:36:17,305 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:36:33,253 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:36:51,044 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:38:51,184 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 01:38:54,927 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 01:38:58,477 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 01:39:02,199 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:39:19,783 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:39:37,795 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 01:39:41,100 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 01:39:44,480 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 01:39:50,693 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:40:05,496 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:40:31,358 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:40:44,332 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:47:42,996 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 01:47:46,443 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 01:47:49,779 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 01:50:34,171 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 01:50:37,735 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 01:50:41,093 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 01:51:53,239 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 01:51:56,977 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 01:52:00,298 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 01:52:03,603 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:52:20,703 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 01:52:24,407 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 01:52:27,733 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 01:52:29,703 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:52:41,159 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:52:48,855 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:53:00,707 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:53:09,638 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:53:18,041 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:53:26,578 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:53:36,840 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:53:46,377 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:53:54,595 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:54:12,349 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 01:54:15,951 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 01:54:19,322 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 01:54:27,191 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:54:57,621 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:57:40,690 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 01:57:44,043 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 01:57:51,802 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 01:57:55,154 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 01:58:03,290 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:58:56,775 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 01:59:01,988 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 01:59:05,405 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 01:59:07,614 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 01:59:27,205 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 01:59:30,759 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 01:59:34,068 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 01:59:39,231 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:00:01,191 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:00:04,739 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:00:08,096 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:00:59,244 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:01:02,636 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:01:06,277 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:01:10,299 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:01:31,622 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:01:35,047 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:01:38,576 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:01:39,628 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:07:02,431 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:07:06,051 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:07:37,353 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:07:41,059 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:07:48,407 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:08:18,837 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:08:22,293 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:08:25,739 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:08:29,108 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:08:44,649 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:08:48,279 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:08:51,928 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:08:55,386 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:09:06,507 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:09:10,025 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:09:13,407 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:09:13,567 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:09:38,335 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:09:41,917 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:09:45,228 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:09:49,603 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:10:19,913 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:10:23,237 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:10:26,701 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:10:33,684 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:11:35,843 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:11:39,260 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:11:42,838 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:11:47,426 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:12:36,124 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:12:39,614 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:12:43,259 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:12:49,383 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:13:45,566 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:13:48,997 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:13:52,311 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:13:52,466 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:14:10,222 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:14:13,705 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:14:17,115 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:14:20,322 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:14:30,750 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:14:34,537 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:14:38,187 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:14:38,356 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:15:34,164 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:15:37,492 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:15:40,856 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:15:43,029 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:16:02,397 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:16:05,793 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:16:09,204 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:16:12,827 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:17:38,550 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:17:41,999 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:17:45,316 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:17:54,172 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:17:57,653 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:18:01,008 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:18:01,171 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:18:34,095 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:18:37,382 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:19:03,747 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:19:07,093 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:19:07,255 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:19:16,265 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:19:39,064 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:19:42,661 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:19:46,005 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:19:46,325 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:19:56,266 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:19:59,778 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:20:03,353 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:20:03,516 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:20:50,121 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:20:53,674 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:20:57,170 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:20:57,331 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:21:08,876 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:21:15,013 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:21:18,681 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:21:19,342 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:22:00,586 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:22:04,092 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:22:07,560 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:22:07,723 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:23:12,803 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:23:17,584 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:23:21,456 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:23:23,013 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:24:09,278 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:24:20,709 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:25:05,282 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:25:08,912 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:25:12,226 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:25:12,437 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:25:37,049 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:25:40,542 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:25:44,073 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:25:45,919 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:26:14,690 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:26:17,984 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:26:21,594 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:26:26,729 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:26:42,304 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:26:45,987 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:26:49,271 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:26:57,745 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:27:34,804 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:27:38,265 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:27:41,950 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:27:42,113 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:28:16,560 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:28:19,879 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:28:23,266 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:28:26,820 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:29:29,883 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:29:33,267 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:29:36,593 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:29:36,759 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:31:06,132 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:31:09,499 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:31:23,777 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:31:27,135 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:31:31,371 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:32:34,268 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:32:37,591 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:32:41,103 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:32:45,096 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:33:16,622 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:33:19,933 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:33:23,255 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:33:30,694 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:33:46,907 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:34:00,699 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:34:10,835 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:34:21,291 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:34:48,189 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:37:54,329 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:37:59,528 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:38:03,177 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:38:06,373 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:38:29,536 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:39:21,150 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:39:32,550 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:39:45,669 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:39:51,368 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:40:09,819 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:40:13,491 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:40:16,778 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:40:28,628 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:40:35,733 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:40:46,389 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:40:53,360 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:42:30,825 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:42:34,140 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:42:37,608 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:43:07,150 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:43:11,207 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:43:15,543 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:43:19,894 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:45:37,757 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:45:41,329 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:45:44,720 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:45:44,933 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:46:20,993 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:46:24,538 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:46:28,055 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:47:08,737 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:48:31,030 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:48:49,173 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:49:20,181 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:49:23,591 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:49:26,978 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:53:46,028 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:53:49,536 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:53:52,890 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:53:55,196 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:54:09,689 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:54:15,778 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:54:24,794 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:54:35,530 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:55:04,459 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 02:55:07,886 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 02:55:11,181 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 02:55:12,154 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:55:26,113 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 02:59:56,674 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 03:00:01,089 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 03:00:15,328 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 03:00:18,625 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 03:00:20,101 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:01:07,604 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 03:01:11,109 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 03:01:14,535 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 03:01:16,939 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:01:58,621 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:02:09,276 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:03:21,542 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 03:03:24,981 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 03:03:28,295 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 03:04:19,695 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:04:53,236 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 03:04:56,567 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 03:04:59,986 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 03:05:03,085 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:05:46,220 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 03:05:49,546 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 03:05:52,883 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 03:06:11,684 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 03:06:15,267 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 03:06:18,900 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 03:06:19,686 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:09:33,692 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:10:00,965 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:10:19,993 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 03:10:23,488 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 03:10:26,883 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 03:10:31,530 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:11:01,306 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:11:13,220 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:11:18,708 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:11:48,069 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:11:53,173 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:13:23,360 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 03:13:26,627 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 03:13:29,907 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 03:13:35,238 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 03:13:38,728 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 03:13:42,043 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 03:13:43,636 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:13:51,199 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:14:08,070 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:14:26,465 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 03:14:29,752 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 03:14:33,044 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 03:14:39,987 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:16:04,966 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 03:16:08,389 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 03:16:11,916 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 03:16:12,077 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:16:20,192 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:16:32,379 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:21:53,389 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 03:21:59,018 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 03:22:02,381 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 03:22:03,720 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:22:09,079 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:22:28,787 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:24:34,529 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 03:24:37,868 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 03:24:41,202 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 03:24:44,561 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 03:24:47,901 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 03:24:57,656 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 03:25:00,982 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 03:25:04,318 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 03:25:37,071 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 03:25:40,456 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 03:25:43,759 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 03:26:56,493 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:27:46,290 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:28:04,308 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:28:22,045 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:29:19,948 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 03:29:23,407 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 03:29:26,700 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 03:29:30,593 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:29:37,933 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:29:45,023 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:30:07,971 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:30:20,088 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:31:32,645 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 03:31:36,219 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 03:31:39,557 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 03:31:40,906 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:32:13,656 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:38:24,710 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 03:38:28,760 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 03:38:32,726 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 03:38:41,066 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:38:54,074 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:38:58,231 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:39:21,012 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:40:22,146 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 03:40:25,706 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 03:40:29,018 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 03:40:31,980 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:40:39,634 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:40:46,796 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:41:17,091 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:42:47,391 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:42:56,726 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:43:04,337 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:43:47,116 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 03:43:50,745 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 03:43:54,062 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 03:43:55,467 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:44:31,904 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:44:41,405 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:45:03,627 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:45:10,953 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:48:02,199 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 03:48:05,595 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 03:48:09,043 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 03:48:30,247 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:48:40,916 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:48:58,044 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:49:13,485 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:49:19,891 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:49:27,604 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:51:56,582 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 03:52:00,108 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 03:52:03,614 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 03:52:19,535 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:52:28,866 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:52:40,846 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:52:48,575 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:53:08,519 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:54:50,986 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 03:54:55,154 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 03:54:58,770 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 03:55:19,833 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:55:31,714 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 03:55:37,137 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 03:55:40,465 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 03:55:59,872 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:56:05,996 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 03:56:17,972 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 04:10:14,314 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 04:12:59,738 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 04:13:12,083 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 04:14:04,766 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 04:14:07,115 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 04:14:10,027 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 04:16:14,335 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 04:16:32,418 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 04:16:45,536 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 04:16:50,406 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 04:17:04,907 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 04:17:09,621 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 04:17:17,528 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 04:17:32,514 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 04:17:37,743 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 04:18:19,864 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 04:21:48,772 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 04:25:38,323 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 04:25:38,459 - error_module - INFO - 🚪 Iniciando logout para Func ID: 26
+2025-11-14 04:25:38,464 - error_module - DEBUG - ✅ Token removido do cache com sucesso.
+2025-11-14 04:25:38,598 - error_module - INFO - ✅ Caixa fechado com sucesso para Func ID: 26
+2025-11-14 04:25:55,619 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 04:25:55,752 - error_module - WARNING - ⚠️  Funcionário 26 autenticado mas sem caixa aberto
+2025-11-14 04:26:17,436 - error_module - INFO - ✅ Funcionario 26 da EMPRESA Empresa Teste 1 validado via JWT.
+2025-11-14 04:26:17,632 - error_module - WARNING - ⚠️  Funcionário 26 autenticado mas sem caixa aberto
+2025-11-14 04:28:29,512 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 04:28:35,023 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 04:28:38,491 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 04:32:48,918 - error_module - INFO - 🔐 Tentativa de login: admin@test.com
+2025-11-14 04:32:50,196 - error_module - INFO - Token salvo no cache. Chave: token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjQ4MzM1NzAsInN1YiI6IjEifQ.skHUgf2mZDmSrVU4sta863OUs0gxOha5Iq2aYlczNM8
+2025-11-14 04:41:31,626 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 04:41:37,068 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 04:41:40,708 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 04:47:43,471 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 04:47:48,712 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 04:47:52,298 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 04:48:02,454 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-14 04:48:05,893 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 04:48:10,236 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-14 04:48:13,697 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-14 04:48:50,777 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
