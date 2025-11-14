@@ -13,7 +13,6 @@ class CustomOAuth2PasswordRequestForm(OAuth2PasswordRequestForm):
         grant_type: str = Form(None),
         client_id: str = Form(None),
         client_secret: str = Form(None),
-        caixa_id: Optional[int] = None,
     ):
         super().__init__(username=username, password=password, scope=scope, grant_type=grant_type, client_id=client_id, client_secret=client_secret)
         self.valor_inicial = valor_inicial

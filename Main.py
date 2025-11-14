@@ -26,7 +26,7 @@ async def lifespan(app: FastAPI):
     LOGGER.info("✅ Banco de dados iniciado e tabelas criadas!")
     # await create_mock_data_and_sell_all_stock()
 
-    await print_database_info()
+    # await print_database_info()
 
     yield
 
@@ -36,12 +36,7 @@ async def lifespan(app: FastAPI):
 
 class Server:
     def __init__(self):
-        self.api = FastAPI(
-            title="PDV API",
-            version="1.0.0",
-            debug=True,
-            lifespan=lifespan,
-        )
+        self.api = FastAPI(title="PDV API", version="1.0.0", debug=True, lifespan=lifespan, swagger_ui_init_oauth=None, docs_url=None)
 
         self.setup_middlewares()
         self.start_routes()

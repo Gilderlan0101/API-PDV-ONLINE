@@ -63,7 +63,7 @@ async def list_products_for_employee(current_employee: SystemEmployees = Depends
         if not employee:
             raise HTTPException(status_code=404, detail="Funcionário não encontrado")
 
-        if not employee.empresa_id:
+        if not employee:
             return {
                 "success": False,
                 "data": None,
@@ -77,7 +77,7 @@ async def list_products_for_employee(current_employee: SystemEmployees = Depends
 
         # Se chegou aqui, é porque o decorador não encontrou cache
         # e não encontrou produtos no banco, então executa a lógica original
-        usuario_id = current_user.empresa_id
+        usuario_id = current_employee.empresa_id
 
         # Busca produtos no banco da empresa do funcionário
         products = await Produto.filter(usuario_id=usuario_id).all()

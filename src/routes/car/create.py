@@ -5,10 +5,11 @@ from src.auth.deps_employes import SystemEmployees, get_current_employee
 router = APIRouter(tags=["Carrinho"])
 
 
+
 @router.post("/adicionar")
 async def adicionar_produto(
-    product_id: int = Body(..., description="ID do produto"),
-    quantity: int = Body(..., gt=0, description="Quantidade"),
+    product_id: int = Body(..., gt=0),  # 🎯 gt=0 garante > 0
+    quantity: int = Body(..., gt=0),    # 🎯 gt=0 garante > 0
     current_user: SystemEmployees = Depends(get_current_employee),
 ):
     """
@@ -17,10 +18,27 @@ async def adicionar_produto(
     empresa_id = current_user.empresa_id
     employee_id = current_user.id
 
+    # 🎯 VALIDAÇÃO EXPLÍCITA
+    if quantity <= 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Quantidade deve ser maior que zero"
+        )
+
+    if product_id <= 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="ID do produto inválido"
+        )
+
+    print(f"🔍 DEBUG ROTA:")
+    print(f"  product_id: {product_id} (type: {type(product_id)})")
+    print(f"  quantity: {quantity} (type: {type(quantity)})")
+
     cart = CartManagerDB(company_id=empresa_id, employee_id=employee_id)
-
-    if not empresa_id or not employee_id:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Sessão inválida")
-
-    # A função add_produto é responsável por lidar com o carrinho
-    return await cart.add_produto(product_id=product_id, quantity=quantity, empresa_id=empresa_id, employee_id=employee_id)
+    return await cart.add_produto(
+        product_id=product_id, 
+        quantity=quantity, 
+        empresa_id=empresa_id, 
+        employee_id=employee_id
+    )

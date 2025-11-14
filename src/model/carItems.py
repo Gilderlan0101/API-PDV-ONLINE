@@ -4,7 +4,7 @@ from tortoise import fields
 
 
 class CartItem(Model):
-    id = fields.IntField(pk=True)
+    id = fields.IntField(pk=True, generated=True)
     caixa_id = fields.IntField(null=False)  # Mude user_id para caixa_id
     product_id = fields.IntField(null=False)
     product_name = fields.TextField(null=False)
