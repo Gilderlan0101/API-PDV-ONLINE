@@ -17,7 +17,7 @@ async def create_pix_account(pix_data: PixCreateRequest, current_user: SystemUse
     Cria nova conta PIX para usuário autenticado
     """
     try:
-        service = PixService(user_id=current_user.id)
+        service = PixService(user_id=current_user.empresa_id)
         pix_account = await service.create_pix_account(pix_data)
 
         return {"message": "Conta PIX criada com sucesso", "pix_id": pix_account.id, "key_pix": pix_account.key_pix}
@@ -34,7 +34,7 @@ async def generate_pix_qrcode(pix_data: GenerateQRCodeFor, current_user: SystemU
     Gera QR Code PIX dinâmico
     """
     try:
-        service = PixService(user_id=current_user.id)
+        service = PixService(user_id=current_user.empresa_id)
         return await service.generate_qr_code(pix_data)
 
     except HTTPException:
@@ -62,7 +62,7 @@ async def get_pix_accounts(current_user: SystemUser = Depends(get_current_user))
     Retorna todas as contas PIX do usuário
     """
     try:
-        service = PixService(user_id=current_user.id)
+        service = PixService(user_id=current_user.empresa_id)
         accounts = await service.get_user_pix_accounts()
 
         return {"count": len(accounts), "accounts": accounts}
@@ -82,7 +82,7 @@ async def account_default(
     """
     try:
         # CORREÇÃO: usar current_user.id em vez de current_user.empresa_id
-        service = PixService(user_id=current_user.id)
+        service = PixService(user_id=current_user.empresa_id)
 
         # Chama o método para selecionar a conta
         selected_key = await service.select_account_default(select_an_account_id=select)

@@ -1,9 +1,11 @@
-# src/routes/auth_routes.py - Versão Completa
+# src/routes/auth_routes.py - VERSÃO CORRIGIDA
 
 import json
 import uuid
 from fastapi import APIRouter, Depends, HTTPException, status, Request, Response
 from fastapi.security import OAuth2PasswordRequestForm
+from pydantic import BaseModel
+from typing import Optional
 
 from src.auth.auth_jwt import (
     create_access_token,
@@ -11,16 +13,27 @@ from src.auth.auth_jwt import (
     verify_password,
 )
 from src.model.user import Usuario
-from src.schemas.schema_user import TokenSchema
-
-# Importe as dependencias de fora, como o cliente Redis
 from src.core.cache import client
 from src.logs.infos import LOGGER
-from src.auth.deps import get_current_user, SystemUser, reuseable_oauth  # Adicionado para debug de logout
+from src.auth.deps import reuseable_oauth
+
+
+# Schema para a resposta de login compatível com o frontend
+class LoginResponse(BaseModel):
+    id: int
+    username: str
+    email: str
+    empresa: str
+    empresa_id: int
+    tipo: str
+    message: str
+    access_token: str
+    refresh_token: str
+    token_type: str
+    session_id: str
 
 
 class Login:
-
     def __init__(self):
         self.loginRT = APIRouter(
             prefix="/auth",
@@ -29,27 +42,31 @@ class Login:
         self._register_routes()
 
     def _register_routes(self):
-
-        # --- Rota /login ---
+        # --- Rota /login CORRIGIDA ---
         @self.loginRT.post(
             "/login",
+            response_model=LoginResponse,  # Usando nosso schema customizado
             status_code=status.HTTP_200_OK,
-            response_model=TokenSchema,
         )
         async def login(user: OAuth2PasswordRequestForm = Depends()):
             LOGGER.info(f"🔐 Tentativa de login: {user.username}")
 
             # 1. Autenticação
             db_user = await Usuario.get_or_none(email=user.username)
-            if not db_user or not verify_password(user.password, db_user.password):
-                raise HTTPException(status_code=401, detail="Credenciais inválidas")
+            if not db_user:
+                LOGGER.warning(f"Usuário não encontrado: {user.username}")
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Credenciais inválidas")
+
+            if not verify_password(user.password, db_user.password):
+                LOGGER.warning(f"Senha incorreta para: {user.username}")
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Credenciais inválidas")
 
             # 2. Gerar Tokens
-            access_token = create_access_token(str(db_user.id))
-            refresh_token = create_refresh_token(str(db_user.id))
+            user_id_str = str(db_user.id)
+            access_token = create_access_token(user_id_str)
+            refresh_token = create_refresh_token(user_id_str)
 
-            # 3. Preparar Dados para Cache (Usado para a dependência get_current_user)
-            # Estes sao os dados que serao salvos no Redis para validacao rapida
+            # 3. Preparar Dados para Cache
             session_data_for_cache = {
                 "id": db_user.id,
                 "username": db_user.username,
@@ -62,54 +79,70 @@ class Login:
                 "tipo": "admin",
             }
 
-            # 4. Salvar o Cache (Token como chave) - Cache persistente (sem expiração)
+            # 4. Salvar no Redis (com expiração opcional)
             cache_key = f'token:{access_token}'
-            await client.set(cache_key, json.dumps(session_data_for_cache, default=str))
+            await client.set(cache_key, json.dumps(session_data_for_cache, default=str), ex=86400)  # Expira em 24 horas (opcional)
             LOGGER.info(f"Token salvo no cache. Chave: {cache_key}")
 
-            # 5. Retorno Final
-            return {
-                "id": db_user.id,
-                "username": db_user.username,
-                "email": db_user.email,
-                "empresa": db_user.company_name,
-                "empresa_id": db_user.id,
-                "tipo": "admin",
-                "message": "Login realizado com sucesso",
-                "access_token": access_token,
-                "refresh_token": refresh_token,
-                "token_type": "bearer",
-                "session_id": str(uuid.uuid4()),  # Campo Dummy para satisfazer o TokenSchema
-            }
+            # 5. Retorno FINAL - COMPATÍVEL com o frontend
+            return LoginResponse(
+                id=db_user.id,
+                username=db_user.username,
+                email=db_user.email,
+                empresa=db_user.company_name,
+                empresa_id=db_user.id,
+                tipo="admin",
+                message="Login realizado com sucesso",
+                access_token=access_token,
+                refresh_token=refresh_token,
+                token_type="bearer",
+                session_id=str(uuid.uuid4()),
+            )
 
+        # --- Rota /logout CORRIGIDA ---
         @self.loginRT.post("/logout")
         async def logout(token: str = Depends(reuseable_oauth)):
-            """Encerra a sessão no Redis, invalidando o token imediatamente."""
-
+            """Encerra a sessão no Redis"""
             cache_key = f'token:{token}'
 
-            # Deleta a chave do cache
-            remove = await client.delete(cache_key)
+            # Verifica se o token existe antes de deletar
+            exists = await client.exists(cache_key)
+            if exists:
+                await client.delete(cache_key)
+                LOGGER.info(f"Logout bem-sucedido. Chave removida: {cache_key}")
+                return {"status": 200, "message": "Logout realizado com sucesso"}
+            else:
+                LOGGER.info(f"Token não encontrado no cache: {cache_key}")
+                return {"status": 200, "message": "Sessão já encerrada"}
 
-            if remove == 0:
-                # O token pode ter expirado ou ja foi deletado, mas reportamos sucesso
-                LOGGER.info(f"Tentativa de logout: Token nao encontrado em cache (Chave: {cache_key}).")
+        # --- Nova rota para verificar usuário atual ---
+        @self.loginRT.get("/me")
+        async def get_current_user_info(token: str = Depends(reuseable_oauth)):
+            """Retorna informações do usuário atual"""
+            cache_key = f'token:{token}'
+            user_data = await client.get(cache_key)
 
-            LOGGER.info(f"Logout bem-sucedido. Chave de cache removida: {cache_key}")
+            if not user_data:
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido ou expirado")
 
-            return {"status": 200}
+            user_info = json.loads(user_data)
+            return {
+                "id": user_info.get("id"),
+                "username": user_info.get("username"),
+                "email": user_info.get("email"),
+                "empresa": user_info.get("company_name"),
+                "tipo": user_info.get("tipo"),
+            }
 
-        # --- Rotas de Debug (Mantidas) ---
-
-        # Rotas de refresh e debug
+        # --- Rotas auxiliares ---
         @self.loginRT.post("/refresh-session")
-        async def refresh_session(request: Request, response: Response):
+        async def refresh_session(request: Request):
             """Renova o tempo da sessão"""
-            # Logica de renovacao...
+            # Implemente conforme necessário
             return {"message": "Sessão renovada com sucesso"}
 
         @self.loginRT.get("/debug-sessions")
         async def debug_sessions():
-            """Endpoint para debug - lista todas as sessões no Redis"""
-            # Logica de debug
+            """Endpoint para debug"""
+            # Implementação simplificada
             return {"total_sessions": 0, "sessions": {}}

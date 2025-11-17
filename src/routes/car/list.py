@@ -33,4 +33,4 @@ async def listar_carrinho(
     cart = CartManagerDB(company_id=empresa_id, employee_id=employee_id)
 
     # 3. Chamar a lógica de listagem (lista os itens NO CARRINHO)
-    return await cart.listar_produtos(empresa_id, employee_id)
+    return await cart.listar_produtos()

@@ -162,5 +162,43 @@ class SystemUser:
             print("Erro ao contar novos clientes:", e)
             return {"novos_clientes_mes": 0}
 
+    @property
     def view(self):
-        return self.data
+        # Dicionário para agrupar por CPF (chave única)
+        dividas_por_cliente = {}
+
+        depts_list = self.data  # Lista de todas as dívidas
+
+        print('TODAS AS DÍVIDAS RECEBIDAS:', depts_list)
+        print()
+
+        for divida in depts_list:
+            cpf = divida['cpf']
+
+            # Se é a primeira vez que vemos este CPF, adiciona ao dicionário
+            if cpf not in dividas_por_cliente:
+                dividas_por_cliente[cpf] = divida
+                print(f'✅ Nova dívida adicionada para CPF: {cpf}')
+            else:
+                print(f'🔄 CPF {cpf} já existe, atualizando dados...')
+
+                # Aqui você pode escolher como consolidar os dados:
+                # Opção 1: Manter a dívida mais recente (pela data)
+                data_existente = dividas_por_cliente[cpf]['date']
+                data_nova = divida['date']
+
+                if data_nova > data_existente:
+                    dividas_por_cliente[cpf] = divida
+                    print(f'   ↳ Atualizado para dívida mais recente')
+
+                # Opção 2: Somar os valores (se for o caso)
+                # valor_existente = float(dividas_por_cliente[cpf]['value'])
+                # valor_novo = float(divida['value'])
+                # dividas_por_cliente[cpf]['value'] = str(valor_existente + valor_novo)
+                # print(f'   ↳ Valor somado: {valor_existente} + {valor_novo}')
+
+        print()
+        print(f'📊 Total de clientes únicos: {len(dividas_por_cliente)}')
+
+        # Retorna apenas os valores (sem os CPFs como chaves)
+        return list(dividas_por_cliente.values())

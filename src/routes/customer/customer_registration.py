@@ -1,11 +1,13 @@
 from datetime import datetime
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from src.auth.deps import get_current_user
+from src.auth.deps import get_current_user, SystemUser
 from src.model.user import Usuario
 from src.model.employee import Employees
 from src.model.customers import Customer, ZoneInfo
+
 from src.schemas.customers.schema_customers import SchemasCustomer, SchemasCustomerCreditUpdate, GetCustomers
+
 
 customers = APIRouter(tags=["Customers"])
 
@@ -73,7 +75,7 @@ async def create_customer(
 
 
 @customers.get("/list-customer", response_model=List[GetCustomers])
-async def list_customer(current_user: Usuario = Depends(get_current_user)):
+async def list_customer(current_user: SystemUser = Depends(get_current_user)):
     """
     Lista clientes do usuário atual.
     CORREÇÃO: Cada usuário (admin ou funcionário) deve ver apenas SEUS PRÓPRIOS clientes
@@ -82,7 +84,7 @@ async def list_customer(current_user: Usuario = Depends(get_current_user)):
 
         # CORREÇÃO: Sempre busca clientes do usuário atual, independente de ser admin ou funcionário
 
-        clients = await Customer.filter(usuario_id=current_user.id).all()
+        clients = await Customer.filter(usuario_id=current_user.empresa_id).all()
 
         return clients
 

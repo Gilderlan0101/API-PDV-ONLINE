@@ -59,34 +59,28 @@ class CashReportController:
                 filter_date = filter_data.date()
             else:
                 filter_date = filter_data
-                
+
             # 🔹 CORREÇÃO: Filtro manual por data (Tortoise não suporta __date)
             cash_movements_all = await cash_movement_query.order_by("-criado_em")
-            cash_movements = [
-                mov for mov in cash_movements_all 
-                if mov.criado_em.date() == filter_date
-            ]
+            cash_movements = [mov for mov in cash_movements_all if mov.criado_em.date() == filter_date]
         else:
             cash_movements = await cash_movement_query.order_by("-criado_em")
 
         if not cash_movements:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, 
-                detail='Nenhum movimento de caixa encontrado com os filtros aplicados.'
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Nenhum movimento de caixa encontrado com os filtros aplicados.')
 
         movement_data = []
-        
+
         # 🔹 CORREÇÃO: Calcular saldo por CAIXA, não acumulado geral
         saldo_por_caixa = {}
-        
+
         for moviment in cash_movements:
             caixa_id = moviment.caixa_id
-            
+
             # Inicializa o saldo do caixa se não existir
             if caixa_id not in saldo_por_caixa:
                 saldo_por_caixa[caixa_id] = 0.0
-            
+
             # 🔹 CORREÇÃO: Lógica correta para calcular saldo
             valor = float(moviment.valor)
             if moviment.tipo == "ENTRADA":
@@ -94,7 +88,7 @@ class CashReportController:
             elif moviment.tipo == "SAIDA":
                 saldo_por_caixa[caixa_id] -= valor
             # ABERTURA geralmente é o saldo inicial, não soma
-            
+
             # 🔹 CORREÇÃO: Mostrar informações claras
             movement_data.append(
                 {
@@ -104,13 +98,13 @@ class CashReportController:
                     "caixa_id": caixa_id,
                     "funcionario_id": moviment.funcionario_id,
                     "saldo_caixa_atual": saldo_por_caixa[caixa_id],  # Saldo deste caixa específico
-                    "descricao": moviment.descricao if hasattr(moviment, 'descricao') else "Movimento de caixa"
+                    "descricao": moviment.descricao if hasattr(moviment, 'descricao') else "Movimento de caixa",
                 }
             )
 
         # 🔹 CORREÇÃO: Ordenar por data mais recente primeiro
         movement_data.sort(key=lambda x: x['data_hora'], reverse=True)
-        
+
         await client.setex(cache_key, 300, json.dumps(movement_data))  # 5 minutos de cache
         return movement_data
 
@@ -119,38 +113,34 @@ class CashReportController:
         Retorna um resumo consolidado dos caixas.
         """
         movements = await self.get_cash_reports(user_id, filter_data)
-        
+
         # 🔹 Calcular totais
         total_entradas = sum(m['valor'] for m in movements if m['tipo_movimento'] == 'ENTRADA')
         total_saidas = sum(m['valor'] for m in movements if m['tipo_movimento'] == 'SAIDA')
         saldo_total = total_entradas - total_saidas
-        
+
         # 🔹 Agrupar por caixa
         caixas = {}
         for mov in movements:
             caixa_id = mov['caixa_id']
             if caixa_id not in caixas:
-                caixas[caixa_id] = {
-                    'entradas': 0,
-                    'saidas': 0,
-                    'saldo': 0
-                }
-            
+                caixas[caixa_id] = {'entradas': 0, 'saidas': 0, 'saldo': 0}
+
             if mov['tipo_movimento'] == 'ENTRADA':
                 caixas[caixa_id]['entradas'] += mov['valor']
             elif mov['tipo_movimento'] == 'SAIDA':
                 caixas[caixa_id]['saidas'] += mov['valor']
-            
+
             caixas[caixa_id]['saldo'] = caixas[caixa_id]['entradas'] - caixas[caixa_id]['saidas']
-        
+
         return {
             "resumo": {
                 "total_entradas": total_entradas,
                 "total_saidas": total_saidas,
                 "saldo_total": saldo_total,
                 "quantidade_movimentos": len(movements),
-                "quantidade_caixas": len(caixas)
+                "quantidade_caixas": len(caixas),
             },
             "caixas": caixas,
-            "movimentos": movements
+            "movimentos": movements,
         }

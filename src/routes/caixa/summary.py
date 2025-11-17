@@ -1,5 +1,5 @@
 import logging
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from typing import Optional
 from src.model.user import Usuario
 from src.model.caixa import Caixa
@@ -23,21 +23,26 @@ async def resumo_caixa(
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuário não autenticado")
 
     try:
-        caixa = await Caixa.get_or_none(id=caixa_id, usuario_id=current_user.id)
+        # Verifica se o caixa existe e pertence ao usuário
+        caixa = await Caixa.filter(caixa_id=caixa_id, usuario_id=current_user.id).first()
         if not caixa:
             logger.warning("Caixa não encontrado", extra={"caixa_id": caixa_id})
             raise HTTPException(status_code=404, detail="Caixa não encontrado.")
 
-        if not caixa.aberto:
-            logger.warning("Tentativa de resumo em caixa fechado", extra={"caixa_id": caixa_id})
-            raise HTTPException(status_code=400, detail="Este caixa já está fechado.")
-
+        # Usa o método correto para obter os detalhes
         dados = await CashController.get_caixa_details(caixa_id)
 
-        logger.info("Resumo do caixa gerado com sucesso", extra={"caixa_id": caixa_id})
-        saldo_formatado = f'{caixa.saldo_atual:,.2f}'
-        return {"status": 200, "dados": dados, "valor_sugerido_fechamento": saldo_formatado}
+        # Verifica se houve erro na obtenção dos dados
+        if "error" in dados:
+            raise HTTPException(status_code=400, detail=dados["error"])
 
+        logger.info("Resumo do caixa gerado com sucesso", extra={"caixa_id": caixa_id})
+
+        return {"status": 200, "dados": dados, "valor_sugerido_fechamento": caixa.saldo_atual}
+
+    except HTTPException:
+        # Re-raise HTTP exceptions
+        raise
     except Exception as e:
         logger.error("Erro ao gerar resumo do caixa", extra={"caixa_id": caixa_id, "error": str(e)}, exc_info=True)
         raise HTTPException(status_code=400, detail=str(e))

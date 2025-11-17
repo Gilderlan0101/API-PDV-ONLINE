@@ -1,26 +1,27 @@
 from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 
+
+from typing import List, Optional
+
 # --- Esquema Pydantic (Exemplo) ---
 # Adicione este modelo em um arquivo de schemas ou no topo da sua rota/serviço
 
 
 class PixAccountResponse(BaseModel):
     id: int
-    usuario_id: int
     full_name: str
-    key_pix: str
     city: str
+    key_pix: str
+    usuario_id: int
     is_active: bool
-    created_at: datetime
-    updated_at: datetime
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
-    # Configuração para ler dados de um objeto de ORM
-    model_config = ConfigDict(from_attributes=True)  # Pydantic v2
-    # class Config:
-    #    orm_mode = True # Pydantic v1
+    class Config:
+        from_attributes = True  # Isso era orm_mode = True no Pydantic v1
 
 
 class PixAccountsList(BaseModel):
     count: int
-    accounts: list[PixAccountResponse]
+    accounts: List[PixAccountResponse]

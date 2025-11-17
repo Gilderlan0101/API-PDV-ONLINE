@@ -1,14 +1,15 @@
-from fastapi import Request
+from fastapi import Request, HTTPException, status
 from tortoise.transactions import in_transaction
-from tortoise.expressions import F
+from tortoise.expressions import *
 from datetime import datetime
 from zoneinfo import ZoneInfo
+
 from src.model.cashmovement import CashMovement
 from src.model.caixa import Caixa
 from src.model.user import Usuario
 from src.model.employee import Employees
 
-from typing import Dict, Any
+from typing import Optional, List, Dict, Any
 from src.model.caixa import Caixa
 from src.model.sale import Sales
 from src.controllers.sales.note import Note
@@ -16,6 +17,7 @@ from src.controllers.sales.note import Note
 
 from src.controllers.sales.sales import Checkout
 from src.utils.user_or_functional import i_request
+from src.logs.infos import LOGGER
 
 
 class CashController:
@@ -154,110 +156,166 @@ class CashController:
 
         return debug_info
 
-    @staticmethod
-    async def fechar_caixa(funcionario_id: int):  # 🎯 ARGUMENTO RENOMEADO para refletir o uso
+    async def close_checkout(employe_id: int, checkout_id: int, company_id: int) -> Optional[List[Dict[str, Any]]]:
         """
-        Fecha o caixa aberto do funcionário e calcula as diferenças
+        Localiza o caixa aberto do funcionário na empresa e realiza o fechamento.
+
+        Args:
+            employe_id: ID do funcionário
+            checkout_id: ID do caixa a ser fechado
+            company_id: ID do usuário/empresa.
+
+        Returns:
+            Uma lista de dicionários com os detalhes do fechamento, ou None se nenhum caixa aberto for encontrado.
         """
-        date = []
 
-        # 🔹 Busca o caixa aberto do funcionário
-        caixa = await Caixa.filter(funcionario_id=funcionario_id, aberto=True).first()
+        # Lista para retornar os dados
+        response_data = []
 
-        if not caixa:
-            return None  # nenhum caixa aberto encontrado
+        try:
+            # 1. Localiza o caixa aberto
+            checkout = await Caixa.filter(
+                caixa_id=checkout_id,
+                usuario_id=company_id,
+            ).first()
 
-        # Calcula entradas e saídas
-        entradas = await CashMovement.filter(caixa_id=caixa.id, tipo__in=["ENTRADA", "ABERTURA"]).all()
-        saidas = await CashMovement.filter(caixa_id=caixa.id, tipo="SAIDA").all()
+            if not checkout:
+                return None  # Nenhum caixa aberto encontrado
 
-        total_entradas = sum([mov.valor for mov in entradas])
-        total_saidas = sum([mov.valor for mov in saidas])
-        valor_sistema = total_entradas - total_saidas
-        valor_fechamento = caixa.saldo_atual
+        except tortoise.expressions.DoesNotExist as error:
+            LOGGER.info(f'Erro ao realizar busca. Provavelmente não existe [CashController]')
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'Erro ao realizar busca do caixa: {error}')
 
-        # Atualiza caixa
-        caixa.valor_fechamento = valor_fechamento
-        caixa.valor_sistema = valor_sistema
-        caixa.diferenca = valor_fechamento - valor_sistema
-        caixa.aberto = False
-        caixa.atualizado_em = datetime.now(ZoneInfo("America/Sao_Paulo"))
-        await caixa.save()
+        try:
+            # 2. Calcula entradas e saídas
+            entries = await CashMovement.filter(caixa_id=checkout.id, tipo__in="ENTRADA").all()
+            exits = await CashMovement.filter(caixa_id=checkout.id, tipo="SAIDA").all()
 
-        # Registra movimentação
-        await CashMovement.create(
-            tipo="FECHAMENTO",
-            valor=valor_fechamento,
-            descricao=(f"Fechamento do caixa - Sistema: {valor_sistema}, " f"Fechamento: {valor_fechamento}, Dif: {caixa.diferenca}"),
-            caixa_id=caixa.id,
-            usuario_id=caixa.usuario_id,
-            funcionario_id=caixa.funcionario_id,
-        )
+            total_entries = sum([int(movement.valor) for movement in entries])
+            total_exits = sum([int(movement.valor) for movement in exits])
 
-        date.append(
-            {
-                "tipo": "FECHAMENTO",
-                "valor": valor_fechamento,
-                "nome": caixa.nome,
-                "descricao": f"Fechamento do caixa - Sistema: {valor_sistema}, " f"Fechamento: {valor_fechamento}, Dif: {caixa.diferenca}",
-                "caixa_id": caixa.id,
-                "usuario_id": caixa.usuario_id,
-                "funcionario_id": caixa.funcionario_id,
-            }
-        )
+            LOGGER.info(f'TOTAL_ENTRADAS: {type(total_entries)} TOTAL_SAIDAS: {type(total_exits)}')
 
-        return date
+            # O valor que o sistema calcula que DEVE estar no caixa
+            if isinstance(total_entries, (int, float)) and isinstance(total_exits, (int, float)):
+                system_value = total_entries - total_exits
+            else:
+                LOGGER.warning('[VALOR SISTEMA] Valores não são numéricos')
+                # Convert to float if they are strings
+                try:
+                    total_entries = float(total_entries) if total_entries else 0.0
+                    total_exits = float(total_exits) if total_exits else 0.0
+                    system_value = total_entries - total_exits
+                except (ValueError, TypeError):
+                    system_value = 0.0
+                    LOGGER.error('Não foi possível converter valores para cálculo')
+
+            # O valor que o funcionário está declarando para o fechamento
+            closing_value = round(checkout.saldo_atual, 2)
+
+            # 3. Atualiza caixa
+            checkout.valor_fechamento = closing_value
+            checkout.valor_sistema = system_value
+
+            if isinstance(closing_value, (int, float)) and isinstance(system_value, (int, float)):
+                checkout.diferenca = closing_value - system_value
+            else:
+                LOGGER.warning('Valores de fechamento não são numéricos')
+
+            checkout.aberto = False
+            checkout.atualizado_em = datetime.now(ZoneInfo("America/Sao_Paulo"))
+
+            # Salva as alterações no banco de dados
+            await checkout.save()
+
+            # 4. Registra movimentação de fechamento
+            closing_description = (
+                f"Fechamento do caixa - Sistema: {system_value:.2f}, " f"Fechamento: {closing_value:.2f}, Dif: {checkout.diferenca:.2f}"
+            )
+
+            await CashMovement.create(
+                tipo="FECHAMENTO",
+                valor=closing_value,
+                descricao=closing_description,
+                caixa_id=checkout.id,
+                usuario_id=checkout.usuario_id,
+                funcionario_id=checkout.funcionario_id,
+            )
+
+            # 5. Prepara os dados de retorno
+            response_data.append(
+                {
+                    "type": "FECHAMENTO",
+                    "value": closing_value,
+                    "name": checkout.nome,
+                    "description": closing_description,
+                    "checkout_id": checkout.id,
+                    "user_id": checkout.usuario_id,
+                    "employe_id": checkout.funcionario_id,
+                }
+            )
+
+            return response_data
+
+        except Exception as error:
+            LOGGER.error(f'Erro ao processar fechamento do caixa [CashMovement] {error}')
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f'Erro interno ao processar fechamento: {error.__class__.__name__}'
+            )
 
     @staticmethod
-    async def get_caixa_details(user_id: int) -> Dict[str, Any]:
+    async def get_caixa_details(caixa_id: int) -> Dict[str, Any]:
         """
         Retorna o resumo do caixa para fechamento automático:
-        - Lista de vendas associadas a este caixa
-        - Total por tipo de pagamento
-        - Valor total das vendas (valor_sistema)
+        - Lista de movimentações do caixa
+        - Total de entradas e saídas
+        - Saldo atual
         """
-        # Busca todos os caixas do usuário
-        all_cash = await Caixa.filter(usuario_id=user_id).all()
+        try:
+            # Busca o caixa
+            caixa = await Caixa.get_or_none(caixa_id=caixa_id).first()
+            if not caixa:
+                return {"error": "Caixa não encontrado"}
 
-        infos = []
-        for caixa in all_cash:
-            if not caixa.aberto:  # só processa caixas fechados
+            # Busca todas as movimentações do caixa
+            movimentacoes = await CashMovement.filter(caixa_id=caixa_id).order_by('-criado_em')
 
-                # Busca as vendas ligadas a este caixa
-                sales = await Sales.filter(caixa_id=caixa.id).all()
+            # Calcula totais
+            entradas = [mov for mov in movimentacoes if mov.tipo in ["ENTRADA", "ABERTURA"]]
+            saidas = [mov for mov in movimentacoes if mov.tipo == "SAIDA"]
 
-                # Calcula total por forma de pagamento
-                total_por_pagamento = {}
-                total_sistema = 0
-                for sale in sales:
+            total_entradas = sum([int(float(mov.valor)) for mov in entradas])
+            total_saidas = sum([int(float(mov.valor)) for mov in saidas])
 
-                    total_sistema += sale.total_price
-                    metodo = sale.payment_method.value
-                    total_por_pagamento[metodo] = total_por_pagamento.get(metodo, 0) + sale.total_price
+            if isinstance(total_entradas, (int, float)) and isinstance(total_saidas, (int, float)):
 
-                if caixa.valor_fechamento is not None:
-                    # Diferença: Deve esta fora do for
-                    diferenca = (caixa.valor_fechamento or 0) - ((caixa.saldo_inicial or 0) + total_sistema)
+                saldo_sistema = total_entradas - total_saidas
 
-                else:
-                    diferenca = None
+            else:
 
-                infos.append(
-                    {
-                        "caixa_id": caixa.id,
-                        "nome": caixa.nome,
-                        "saldo_inicial": caixa.saldo_inicial,
-                        "valor_fechamento": caixa.valor_fechamento,
-                        "valor_sistema": total_sistema,
-                        "diferenca": diferenca,
-                        "aberto_em": caixa.criado_em.strftime('%d/%m/%y | %H:%M'),
-                        "fechamento": caixa.atualizado_em.strftime('%d/%m/%y | %H:%M'),
-                        "total_por_pagamento": total_por_pagamento,
-                        "total_vendas": len(sales),
-                    }
-                )
+                pass
 
-        return infos
+            # Prepara dados de retorno
+            dados = {
+                "caixa_id": caixa.id,
+                "nome": caixa.nome,
+                "saldo_atual": caixa.saldo_atual,
+                "saldo_inicial": caixa.saldo_inicial,
+                "aberto": caixa.aberto,
+                "total_entradas": total_entradas,
+                "total_saidas": total_saidas,
+                "saldo_sistema": saldo_sistema,
+                "movimentacoes": [
+                    {"id": mov.id, "tipo": mov.tipo, "valor": mov.valor, "descricao": mov.descricao, "data": mov.criado_em.strftime('%d/%m/%Y %H:%M')}
+                    for mov in movimentacoes
+                ],
+            }
+
+            return dados
+
+        except Exception as e:
+            LOGGER.error(f"Erro ao buscar detalhes do caixa {caixa_id}: {str(e)}")
+            return {"error": f"Erro ao buscar detalhes: {str(e)}"}
 
     @staticmethod
     async def get_caixa_aberto_funcionario(usuario_id: int, funcionario_id: int):

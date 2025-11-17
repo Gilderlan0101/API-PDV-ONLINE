@@ -5,6 +5,7 @@ from src.routes.caixa.checkout_report import router as report
 from src.routes.caixa.informations import router as info
 from src.routes.caixa.summary import router as summary
 from src.routes.caixa.status import router as status
+from src.routes.caixa.box_closing import router as close
 import logging
 
 logger = logging.getLogger(__name__)
@@ -21,3 +22,4 @@ checkout.include_router(report)
 checkout.include_router(info)
 checkout.include_router(summary)
 checkout.include_router(status)
+checkout.include_router(close)

@@ -14,6 +14,8 @@ from src.utils.dados_teste import create_mock_data_and_sell_all_stock
 # LOGS
 from src.logs.infos import LOGGER
 
+from src.controllers.payments.partial.views_depts import ViewsAllDepts
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

@@ -10,7 +10,8 @@ from src.controllers.sales.validators import validating_information
 from src.controllers.car.cart_control import CartManagerDB
 from src.controllers.sales.delete_sales import delete_or_update_sale
 from src.schemas.payments.payment_methods import InputData
-from src.controllers.payments.partial import PartialPayment
+from src.controllers.payments.partial.process_partial_payments import PartialPayment
+
 from src.controllers.sales.services import processar_venda_carrinho
 from src.controllers.sales.note import Note
 from src.core.session_manager import get_session
@@ -46,7 +47,7 @@ async def finalizar_venda(
         checkout_id = current_user.checkout_id
 
         cart = CartManagerDB(company_id=empresa_id, employee_id=employee_id)
-        cart_items = await cart.listar_produtos(empresa_id=empresa_id, employee_id=employee_id)
+        cart_items = await cart.listar_produtos()
 
         if not cart_items:
             raise HTTPException(status_code=400, detail="Carrinho vazio. Adicione produtos antes de finalizar a venda.")
@@ -113,7 +114,7 @@ async def finalizar_venda(
             await cart.limpar_carrinho_pos_venda(caixa_id=checkout_id)
 
             # Se tudo ocorreu, retorna sucesso
-            return {"success": True, "message": "Venda, caixa e nota fiscal finalizados com sucesso! 🚀", "data": resumo_venda}
+            return {"success": True, "data": resumo_venda}
 
         except HTTPException as http_exc:
             # Tratamento Crucial: Propaga o erro HTTP se ele veio da finalização (ex: 404/400)

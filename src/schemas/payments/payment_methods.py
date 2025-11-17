@@ -41,7 +41,7 @@ class PartialDataOutput(BaseModel):
 
 
 class ReceivePaymentPartial(BaseModel):
-    """Receber pagamento do usuario"""
+    """Receber pagamento do Cliente modo parcial"""
 
     cpf: str
     value_received: float

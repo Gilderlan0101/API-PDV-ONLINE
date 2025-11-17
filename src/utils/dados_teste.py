@@ -16,7 +16,7 @@ from src.model.caixa import Caixa
 from src.model.cashmovement import CashMovement
 from src.controllers.sales.sales import Checkout
 from src.controllers.car.cart_control import CartManagerDB
-from src.controllers.payments.partial import PartialPayment
+
 from src.utils.sales_code_generator import lot_bar_code_size
 from src.controllers.sales.services import processar_venda_carrinho
 from src.controllers.caixa.cash_controller import FinalizationObjcts
@@ -117,7 +117,12 @@ async def create_mock_data_and_sell_all_stock():
 
         # Funcionários Empresa 1 (Pizzaria do João)
         funcionarios_empresa1 = [
-            {"nome": "Carlos Caixa", "email": "carlos.caixa@empresa1.com", "cargo": "Caixa", "senha": "1234"},
+            {
+                "nome": "Carlos Caixa",
+                "email": "                                                                                                                                                                                                     ",
+                "cargo": "Caixa",
+                "senha": "1234",
+            },
             {"nome": "Ana Atendente", "email": "ana.atendente@empresa1.com", "cargo": "Atendente", "senha": "1234"},
             {"nome": "Pedro Entregador", "email": "pedro.entregador@empresa1.com", "cargo": "Entregador", "senha": "1234"},
             {"nome": "Mariana Gerente", "email": "mariana.gerente@empresa1.com", "cargo": "Gerente", "senha": "1234"},

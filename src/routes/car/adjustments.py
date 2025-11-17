@@ -14,13 +14,13 @@ async def atualizar_item(
     item: EditCartItem,
     current_user: SystemUser = Depends(get_current_user),
 ):
+    empresa_id = current_user.empresa_id
+    employee_id = current_user.id
 
-    empresa_id = session.get('empresa_id')
-    employee_id = session.get('employee_id')
     cart = CartManagerDB(company_id=empresa_id, employee_id=employee_id)
+
     return await cart.update_produto(
         product_id=item.product_id,
-        user_id=employee_id,  # type: ignore
         quantity=item.quantity,
         discount=item.discount,
         addition=item.addition,

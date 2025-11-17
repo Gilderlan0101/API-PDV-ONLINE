@@ -7,7 +7,7 @@ from pydantic import BaseModel, validator, constr
 from dotenv import load_dotenv
 from typing import Dict, Any, Optional, List
 from src.model.pix import Pix
-
+from src.schemas.payments.accounts_pix import PixAccountResponse
 
 # Configuração de logging
 logger = logging.getLogger(__name__)
@@ -160,32 +160,29 @@ class PixService:
 
     async def create_pix_account(self, pix_data: PixCreateRequest) -> Pix:
         """
-        Cria uma nova conta PIX para o usuário
+        Cria uma nova conta PIX para o usuário - VERSÃO CORRIGIDA
         """
         try:
-            # 1. Valida os dados (você já tinha isso)
+            # 1. Valida os dados
             await self._validate_pix_data(pix_data)
 
-            # 2. A MÁGICA ESTÁ AQUI:
-            # Use 'await Pix.create()'
-            # Este método SALVA no banco E retorna o objeto COMPLETO (com ID)
-            pix_account = await Pix.create(
-                full_name=pix_data.full_name, city=pix_data.city, key_pix=pix_data.key_pix, usuario_id=self.user_id, is_active=True
-            )
+            # 2. Cria o objeto Pix - FORMA CORRETA
+            pix_account = Pix(full_name=pix_data.full_name, city=pix_data.city, key_pix=pix_data.key_pix, usuario_id=self.user_id, is_active=True)
 
-            await pix_account.refresh_from_db()  # <--- ESSA É A LINHA CRÍTICA
+            # 3. Salva no banco
+            await pix_account.save()
 
-            # Agora 'pix_account.id' NÃO será None
+            # 4. Recarrega do banco para garantir que tem o ID
+            await pix_account.refresh_from_db()
+
             logger.info(f"Conta PIX criada com sucesso para usuário {self.user_id}, ID: {pix_account.id}")
-
-            # 3. Retorne o objeto que o 'Pix.create' te deu
             return pix_account
 
         except HTTPException:
             raise
         except Exception as e:
             logger.error(f"Erro ao criar conta PIX: {str(e)}")
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Erro interno ao criar conta PIX")
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Erro interno ao criar conta PIX: {str(e)}")
 
     async def generate_qr_code(self, pix_data: GenerateQRCodeFor) -> PixQRCodeResponse:
         """
@@ -193,6 +190,7 @@ class PixService:
         """
         try:
             # Obtém a conta selecionada
+            # await self._get_selected_account_key() <- Futuramente usaremos este metodo
             selected_key = await self._get_selected_account_key()
 
             if not selected_key:
@@ -274,18 +272,36 @@ class PixService:
             logger.error(f"Erro inesperado na geração QR Code: {str(e)}")
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Erro interno na geração do QR Code")
 
-    async def get_user_pix_accounts(self) -> List[Pix]:
+    async def get_user_pix_accounts(self) -> List[PixAccountResponse]:
         """
-        Retorna todas as contas PIX ativas do usuário
+        Retorna todas as contas PIX ativas do usuário - VERSÃO CORRIGIDA
         """
         try:
-            accounts = await Pix.filter(usuario_id=self.user_id, is_active=True, id__isnull=False).order_by('-created_at')
+            # Busca as contas no banco
+            accounts = await Pix.filter(usuario_id=self.user_id, is_active=True).order_by('-created_at')
 
-            # Log para debug - verificar se os IDs estão vindo corretamente
+            logger.info(f"Encontradas {len(accounts)} contas PIX para usuário {self.user_id}")
+
+            # Converte cada objeto Pix para PixAccountResponse
+            result = []
             for account in accounts:
-                logger.debug(f"Conta PIX - ID: {account.id}, Chave: {account.key_pix}")
+                # Log para debug
+                logger.debug(f"Conta PIX - ID: {account.id}, Chave: {account.key_pix}, Nome: {account.full_name}")
 
-            return list(accounts) if accounts else []
+                # Converte o objeto Tortoise para Pydantic
+                account_data = PixAccountResponse(
+                    id=account.id,
+                    full_name=account.full_name,
+                    city=account.city,
+                    key_pix=account.key_pix,
+                    usuario_id=account.usuario_id,
+                    is_active=account.is_active,
+                    created_at=account.created_at,
+                    updated_at=account.updated_at,
+                )
+                result.append(account_data)
+
+            return result
 
         except Exception as e:
             logger.error(f"Erro ao buscar contas PIX: {str(e)}")
@@ -351,20 +367,23 @@ class PixService:
 
     async def _get_selected_account_key(self) -> Optional[str]:
         """
-        Obtém a chave da conta selecionada
+        Obtém a chave da conta selecionada - VERSÃO CORRIGIDA
         """
         try:
             # Tenta obter do environment primeiro
             account_id_str = os.getenv('KEY_PIX_ID')
+
             if account_id_str:
                 account_id = int(account_id_str)
+                # Busca diretamente no modelo Pix, não no PixAccountResponse
                 account = await Pix.filter(usuario_id=self.user_id, id=account_id, is_active=True).first()
                 if account:
                     self.selected_account_key = account.key_pix
                     return self.selected_account_key
 
-            # Se não encontrou no environment, busca a primeira conta ativa
-            accounts = await self.get_user_pix_accounts()
+            # Se não encontrou no environment, busca a primeira conta ativa DIRETAMENTE no modelo Pix
+            accounts = await Pix.filter(usuario_id=self.user_id, is_active=True).order_by('-created_at')
+
             if accounts:
                 self.selected_account_key = accounts[0].key_pix
                 # Salva no environment para próxima vez

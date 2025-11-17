@@ -4,7 +4,7 @@ from zoneinfo import ZoneInfo
 from tortoise.functions import Sum  # Import necessário para agregar
 from src.model.sale import Sales
 from src.model.user import Usuario
-from src.auth.deps import get_current_user
+from src.auth.deps import get_current_user, SystemUser
 from src.utils.sales_of_the_day import sales_of_the_day, total_in_sales
 from typing import Dict, Any, List
 
@@ -12,11 +12,11 @@ allDatas = APIRouter()
 
 
 @allDatas.get('/profit')
-async def profit(current_user: Usuario = Depends(get_current_user)) -> Dict[str, Any]:
+async def profit(current_user: SystemUser = Depends(get_current_user)) -> Dict[str, Any]:
     """
     Rota que exibe métricas de vendas e lucro do dia (dashboard).
     """
-    if not current_user.id:
+    if not current_user.empresa_id:
         raise HTTPException(status_code=400, detail='Usuário inválido')
 
     try:
@@ -29,7 +29,7 @@ async def profit(current_user: Usuario = Depends(get_current_user)) -> Dict[str,
 
         # A. Busca todas as vendas do usuário no dia atual (para iteração e lista)
         sales_of_the_day_list = await Sales.filter(
-            usuario_id=current_user.id,
+            usuario_id=current_user.empresa_id,
             criado_em__gte=start_of_day,
             criado_em__lte=end_of_day,
         ).all()
@@ -37,7 +37,7 @@ async def profit(current_user: Usuario = Depends(get_current_user)) -> Dict[str,
         # B. Consulta de Agregação (para total de itens vendidos no dia)
         daily_aggregation = (
             await Sales.filter(
-                usuario_id=current_user.id,
+                usuario_id=current_user.empresa_id,
                 criado_em__gte=start_of_day,
                 criado_em__lte=end_of_day,
             )
@@ -46,14 +46,14 @@ async def profit(current_user: Usuario = Depends(get_current_user)) -> Dict[str,
         )
 
         # C. Contagem de Vendas Únicas (usando a função corrigida)
-        qtd_sales_day = await sales_of_the_day(current_user.id)
+        qtd_sales_day = await sales_of_the_day(current_user.empresa_id)
 
         # A única informação que é persistida no banco de dados,
         # não sendo recalculada ou zerada automaticamente pelo sistema ou rotinas diárias.
-        __valor__no__update__ = await total_in_sales(current_user.id)
+        __valor__no__update__ = await total_in_sales(current_user.empresa_id)
 
         # D. Contagem de Vendas (Histórico Total)
-        total_sales_count = await Sales.filter(usuario_id=current_user.id).count()
+        total_sales_count = await Sales.filter(usuario_id=current_user.empresa_id).count()
 
         # --- 3. PROCESSAMENTO DE DADOS ---
         total_user_profit = 0.0  # Receita bruta total do dia

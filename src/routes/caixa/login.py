@@ -3,8 +3,8 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo  # Necessário para comparação de datetime consciente de fuso horário
-import json  # Necessário para a lógica de cache
-import bcrypt  # ← ADICIONAR PARA DIAGNÓSTICO
+import json
+import bcrypt
 
 from src.schemas.login.form_login_checkout import CustomOAuth2PasswordRequestForm
 from src.controllers.caixa.cash_controller import CashController
