@@ -144,7 +144,7 @@ class SupplierBase(BaseModel):
 
     # Identificação
     tipo: SupplierType = SupplierType.PESSOA_JURIDICA
-    razao_social: str = Field(..., max_length=200, description="Nome empresarial (ou nome completo para PF)")
+    razao_social: str = Field(..., max_length=200)
     nome_fantasia: Optional[str] = Field(None, max_length=200, description="Apelido comercial")
 
     # Documentos
@@ -155,7 +155,7 @@ class SupplierBase(BaseModel):
     inscricao_municipal: Optional[str] = Field(None, max_length=20)
 
     # Fiscal
-    regime_tributario: TaxRegime = TaxRegime.SIMPLES_NACIONAL
+    regime_tributario: Optional[TaxRegime] = TaxRegime.SIMPLES_NACIONAL
 
     # Contatos
     email: Optional[EmailStr] = None
@@ -170,10 +170,10 @@ class SupplierBase(BaseModel):
     # Financeiro
     prazo_pagamento: PaymentTerm = PaymentTerm.DIAS_30
     prazo_personalizado_dias: Optional[int] = Field(None, ge=1, le=365, description="Obrigatório se PaymentTerm = PERSONALIZADO")
-    limite_credito: float = Field(0, ge=0)
+    limite_credito: Optional[float] = Field(0, ge=0)
     desconto_padrao_percent: float = Field(0, ge=0, le=100)
 
-    # Bancário
+    # Bancário - CORREÇÃO AQUI: mudado para List[BankAccount]
     contas_bancarias: List[BankAccount] = Field(default_factory=list)
 
     # Operacional

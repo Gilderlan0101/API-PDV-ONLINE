@@ -1,3 +1,4 @@
+# Model funcionarios
 from tortoise import models, fields
 from datetime import datetime
 from zoneinfo import ZoneInfo
@@ -17,6 +18,7 @@ class Employees(models.Model):
     cargo = fields.CharField(max_length=100, null=True)
     email = fields.CharField(max_length=150, null=True)
     senha = fields.CharField(max_length=90, null=True)
+    result_of_all_sales = fields.IntField(default=0, null=True)
     telefone = fields.CharField(max_length=20, null=True)
     ativo = fields.BooleanField(default=True)
     criado_em = fields.DatetimeField(default=datetime.now(ZoneInfo("America/Sao_Paulo")))
@@ -30,10 +32,12 @@ class Employees(models.Model):
     )
 
     # 🔹 Relacionamento com vendas feitas pelo funcionário
-    vendas: fields.ReverseRelation["Sales"]  # Relacionamento reverso (precisa do modelo Sales)
+    # Relacionamento reverso (precisa do modelo Sales)
+    vendas: fields.ReverseRelation["Sales"]
 
     # 🔹 Relacionamento com caixas abertos por esse funcionário
-    caixas: fields.ReverseRelation["Caixa"]  # Relacionamento reverso (precisa do modelo Caixa)
+    # Relacionamento reverso (precisa do modelo Caixa)
+    caixas: fields.ReverseRelation["Caixa"]
 
     class Meta:
         table = "employees"

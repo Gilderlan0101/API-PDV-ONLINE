@@ -1,10 +1,13 @@
 from datetime import datetime
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from src.auth.deps import get_current_user
+from src.auth.deps import get_current_user, SystemUser
 from src.model.user import Usuario
+from src.model.employee import Employees
 from src.model.customers import Customer, ZoneInfo
+
 from src.schemas.customers.schema_customers import SchemasCustomer, SchemasCustomerCreditUpdate, GetCustomers
+
 
 customers = APIRouter(tags=["Customers"])
 
@@ -71,12 +74,23 @@ async def create_customer(
     }
 
 
-# ===============================
-# Listar clientes
-# ===============================
 @customers.get("/list-customer", response_model=List[GetCustomers])
-async def list_customer(current_user: Usuario = Depends(get_current_user)):
-    return await Customer.filter(usuario_id=current_user.id).all()
+async def list_customer(current_user: SystemUser = Depends(get_current_user)):
+    """
+    Lista clientes do usuário atual.
+    CORREÇÃO: Cada usuário (admin ou funcionário) deve ver apenas SEUS PRÓPRIOS clientes
+    """
+    try:
+
+        # CORREÇÃO: Sempre busca clientes do usuário atual, independente de ser admin ou funcionário
+
+        clients = await Customer.filter(usuario_id=current_user.empresa_id).all()
+
+        return clients
+
+    except Exception as e:
+        print(f"❌ Erro ao listar clientes: {e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Erro interno ao buscar clientes")
 
 
 # ===============================
@@ -107,6 +121,7 @@ async def update_customer_credit(
     await customer.save()
 
     return GetCustomers(
+        id=customer.id,
         full_name=customer.full_name,
         cpf=customer.cpf,
         credit=customer.credit,

@@ -1,3 +1,4 @@
+# Model de usario admin dono de todas as outras tabelas relacionada a ele
 from datetime import datetime
 from zoneinfo import ZoneInfo
 from tortoise import fields, models
@@ -36,6 +37,8 @@ class Usuario(models.Model):
     district = fields.CharField(max_length=50, default="Valor não informado")
     city = fields.CharField(max_length=100, default="Valor não informado")
     state = fields.CharField(max_length=50, default="Valor não informado")
+    is_active = fields.BooleanField(default=True)
+    pending = fields.BooleanField(default=False)
 
     criado_em = fields.DatetimeField(default=datetime.now(ZoneInfo('America/Sao_Paulo')))
     atualizado_em = fields.DatetimeField(default=datetime.now(ZoneInfo('America/Sao_Paulo')))
@@ -48,3 +51,6 @@ class Usuario(models.Model):
     employees = fields.ReverseRelation["Employees"]
     fornecedores = fields.ReverseRelation["Fornecedor"]
     customers = fields.ReverseRelation["Customer"]
+    patials = fields.ReverseRelation["Partial"]
+    patials_finished_debts = fields.ReverseRelation["finished_debts"]
+    pix = fields.ReverseRelation["pix"]

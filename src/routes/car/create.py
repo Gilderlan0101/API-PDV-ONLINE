@@ -1,19 +1,32 @@
-from fastapi import APIRouter, Depends, Query
-from src.auth.deps import get_current_user
-from src.model.user import Usuario
+from fastapi import APIRouter, Depends, Body, HTTPException
 from src.controllers.car.cart_control import CartManagerDB
+from src.auth.deps_employes import SystemEmployees, get_current_employee
 
 router = APIRouter(tags=["Carrinho"])
-cart = CartManagerDB()
 
 
 @router.post("/adicionar")
 async def adicionar_produto(
-    product_id: int = Query(..., description="ID do produto a ser adicionado"),
-    quantity: int = Query(..., gt=0, description="Quantidade do produto"),
-    current_user: Usuario = Depends(get_current_user),
+    product_id: int = Body(..., gt=0),  # 🎯 gt=0 garante > 0
+    quantity: int = Body(..., gt=0),  # 🎯 gt=0 garante > 0
+    current_user: SystemEmployees = Depends(get_current_employee),
 ):
     """
-    Adiciona um produto ao carrinho do usuário.
+    Adiciona um produto ao carrinho. Dados recebidos via BODY.
     """
-    return await cart.add_produto(product_id, quantity, current_user.id)
+    empresa_id = current_user.empresa_id
+    employee_id = current_user.id
+
+    # 🎯 VALIDAÇÃO EXPLÍCITA
+    if quantity <= 0:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Quantidade deve ser maior que zero")
+
+    if product_id <= 0:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="ID do produto inválido")
+
+    print(f"🔍 DEBUG ROTA:")
+    print(f"  product_id: {product_id} (type: {type(product_id)})")
+    print(f"  quantity: {quantity} (type: {type(quantity)})")
+
+    cart = CartManagerDB(company_id=empresa_id, employee_id=employee_id)
+    return await cart.add_produto(product_id=product_id, quantity=quantity)

@@ -18,7 +18,7 @@ class TestProduct(unittest.IsolatedAsyncioTestCase):
             payment_method='PIX',
             total_price=100.0,
             lucro_total=40.0,
-            funcionario_id=1
+            funcionario_id=1,
         )
 
     async def test_constructor(self):
@@ -30,23 +30,13 @@ class TestProduct(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(self.checkout.payment_method, 'PIX')
 
     async def test_verify_datas_raises_when_user_id_missing(self):
-        checkout = Checkout(
-            user_id=0,
-            product_name='Produto X',
-            quantity=1,
-            payment_method='PIX'
-        )
+        checkout = Checkout(user_id=0, product_name='Produto X', quantity=1, payment_method='PIX')
         with self.assertRaises(HTTPException) as cm:
             await checkout.verify_datas()
         self.assertEqual(cm.exception.status_code, 401)
 
     async def test_verify_datas_raises_when_missing_fields(self):
-        checkout = Checkout(
-            user_id=1,
-            product_name="",
-            quantity=0,
-            payment_method="PIX"
-        )
+        checkout = Checkout(user_id=1, product_name="", quantity=0, payment_method="PIX")
         with self.assertRaises(HTTPException) as cm:
             await checkout.verify_datas()
         self.assertEqual(cm.exception.status_code, 400)

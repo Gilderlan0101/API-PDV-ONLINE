@@ -5,11 +5,13 @@ from datetime import datetime
 from pydantic_br import CPF, CEP
 import re
 
+
 # ------------------------------
 # Enum de status do cliente
 # ------------------------------
 class Status(Enum):
     """Status do cliente: ATIVO, PENDENTE, ATRASO. Relacionado a fatura"""
+
     ATIVO = 'ATIVO'
     PENDENTE = 'PENDENTE'
     ATRASO = 'ATRASO'
@@ -30,7 +32,8 @@ class SchemasCustomer(BaseModel):
     tel: str
     cep: CEP
     credit: confloat(ge=0)
-    current_balance: Optional[confloat(ge=0)] = None  # se não passar, backend preenche com credit
+    # se não passar, backend preenche com credit
+    current_balance: Optional[confloat(ge=0)] = None
     due_date: datetime
     status: Status
 
@@ -78,6 +81,7 @@ class GetCustomers(BaseModel):
     credit: float
     current_balance: float
     total_spent: float
+    tel: str
     due_date: datetime
     status: str
 
@@ -104,4 +108,3 @@ class SchemasCustomerCreditUpdate(BaseModel):
         if v < 0:
             raise ValueError('Saldo não pode ser negativo')
         return v
-

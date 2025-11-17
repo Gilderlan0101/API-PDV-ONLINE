@@ -1,25 +1,57 @@
+# deps.py - Versão Final com Cache
+
+from pydantic import BaseModel, EmailStr, ValidationError
 from datetime import datetime
-from typing import Any, Optional
+from typing import Optional
+import json
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
-from pydantic import BaseModel, EmailStr, ValidationError
+from redis.asyncio import Redis  # Adicionado para tipagem
 
+# Assumindo que você tem um cliente Redis Async global (client)
+from src.core.cache import client
 from src.auth.auth_jwt import ALGORITHM, JWT_SECRET_KEY
 from src.model.user import Usuario
-from src.model.employee import Employees
-from src.model.user import Membro
-from src.schemas.schema_user import TokenPayload
+from src.model.membros import Membro  # Manter Employees e Membro para o lookup de usuario
+from src.schemas.schema_user import TokenPayload  # Assumindo que TokenPayload existe
 
 reuseable_oauth = OAuth2PasswordBearer(tokenUrl="/auth/login", scheme_name="JWT")
 
 
-async def get_current_user(token: str = Depends(reuseable_oauth)) -> "SystemUser":
+class SystemUser(BaseModel):
+    id: int
+    username: str
+    email: EmailStr
+    company_name: Optional[str] = None
+    cnpj: Optional[str] = None
+    cpf: Optional[str] = None
+    gerente: Optional[str] = None
+    is_active: bool = True
+    empresa_id: Optional[int] = None
+
+    model_config = {'from_attributes': True}
+
+
+async def get_current_user(token: str = Depends(reuseable_oauth)) -> SystemUser:
+
+    # 🎯 PASSO 1: Tenta buscar os dados do usuario no CACHE (Fast Path)
+    cache_key = f'token:{token}'
+    user_data_json = await client.get(cache_key)
+
+    if user_data_json:
+        # Se encontrado, desserializa e retorna SystemUser rapidamente
+        user_data = json.loads(user_data_json)
+        # O cache armazena SystemUser, exceto o 'token'
+        return SystemUser(**user_data)
+
+    # 🎯 PASSO 2: Validacao JWT (Slow Path, se nao estiver em cache)
     try:
         payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[ALGORITHM])
         token_data = TokenPayload(**payload)
 
+        # Verificacao de expiracao (ja feito pela decodificacao, mas mantido para clareza)
         if token_data.exp is None or datetime.fromtimestamp(token_data.exp) < datetime.now():
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -34,88 +66,52 @@ async def get_current_user(token: str = Depends(reuseable_oauth)) -> "SystemUser
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    sub = token_data.sub
-    if not sub:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Token inválido: identificador ausente.",
-        )
+    user_id = int(token_data.sub)
 
-    user_id = int(sub)
+    # 🎯 PASSO 3: Busca no DB e Reconstrucao do Cache
 
-    # 🔹 1) Tenta buscar como Usuario (dono da empresa)
+    # Tenta buscar como Usuario (dono)
     user_db = await Usuario.get_or_none(id=user_id)
     if user_db:
-        return SystemUser.model_validate(user_db).model_copy(update={"empresa_id": user_db.id})
+        # Mapeia para o modelo SystemUser (incluindo empresa_id)
+        system_user_data = SystemUser(
+            id=user_db.id,
+            username=user_db.username,
+            email=user_db.email,
+            company_name=user_db.company_name,
+            cnpj=user_db.cnpj,
+            cpf=user_db.cpf,
+            is_active=user_db.is_active,
+            empresa_id=user_db.id,
+        ).model_dump()
 
-    # 🔹 2) Tenta buscar como Funcionário
-    employee_db = await Employees.get_or_none(id=user_id).select_related("usuario")
-    if employee_db:
-        if not employee_db.ativo:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Funcionário inativo.",
-            )
+        # Salva no cache antes de retornar
+        await client.set(cache_key, json.dumps(system_user_data, default=str))
+        return SystemUser(**system_user_data)
 
-        usuario = employee_db.usuario
-        return SystemUser(
-            id=employee_db.id,
-            username=usuario.username if usuario else employee_db.nome,
-            email=employee_db.email or (usuario.email if usuario else "sem_email@empresa.com"),
-            company_name=usuario.company_name if usuario else "Empresa não definida",
-            cnpj=usuario.cnpj if usuario else None,
-            cpf=None,
-            is_active=employee_db.ativo,
-            empresa_id=usuario.id if usuario else None,  # 🔹 aqui
-        )
-
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail="Usuário ou funcionário não encontrado.",
-    )
-
-    # Tentando com Membors
-    membro_db = Membro.get_or_none(id=user_id).select_related("usuario")
+    # Tenta buscar como Membro (logica de Membro omitida para brevidade, mas deve seguir aqui)
+    membro_db = await Membro.get_or_none(id=user_id).select_related("usuario")
     if membro_db:
-        if not membro_db.ativo:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Acesso negado..",
-                )
+        usuario_dono = membro_db.usuario
 
+        # Mapeia para o modelo SystemUser
+        system_user_data = SystemUser(
+            id=membro_db.id,
+            username=membro_db.nome,
+            email=membro_db.email or usuario_dono.email,
+            company_name=usuario_dono.company_name,
+            cnpj=usuario_dono.cnpj,
+            cpf=membro_db.cpf,
+            gerente=membro_db.gerente,
+            is_active=membro_db.ativo,
+            empresa_id=usuario_dono.id,
+        ).model_dump()
 
-        membro = membro_db.usuario
-
-        return SystemUser(
-            id=membro.id,
-            username=membro.nome if usuario else membro.nome,
-            email=membro.email or (usuario.email if usuario else None),
-            gerente=membro.gerente or None,
-            cnpj=membro.cnpj if usuario.cnpj else None,
-            cpf=membro.cpf,
-            is_active=membro.ativo,
-            empresa_id=usuario.id if usuario else None,  # 🔹 aqui
-        )
+        # Salva no cache antes de retornar
+        await client.set(cache_key, json.dumps(system_user_data, default=str))
+        return SystemUser(**system_user_data)
 
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
-        detail="Usuário ou funcionário não encontrado.",
+        detail="Usuário não encontrado após validação do token.",
     )
-
-
-
-from typing import Optional
-from pydantic import BaseModel, EmailStr
-
-class SystemUser(BaseModel):
-    id: int
-    username: str
-    email: EmailStr
-    company_name: Optional[str] = None
-    cnpj: Optional[str] = None
-    cpf: Optional[str] = None
-    gerente: Optional[str] = None  # ✅ Correto - use ":" em vez de "="
-    is_active: bool = True
-    empresa_id: Optional[int] = None
-
-    model_config = {'from_attributes': True}

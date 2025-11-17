@@ -1,6 +1,21 @@
 from typing import Optional, List
 from pydantic import BaseModel, EmailStr, HttpUrl, Field, ConfigDict, model_validator
-from src.schemas.fornecedor.schemas_fornecedor import SupplierBase, SupplierType, CNPJType, CPFType, IEStatus, IEType, TaxRegime, Phone, ContactPerson, Address, PaymentTerm, BankAccount, SupplierStatus
+from src.schemas.fornecedor.schemas_fornecedor import (
+    SupplierBase,
+    SupplierType,
+    CNPJType,
+    CPFType,
+    IEStatus,
+    IEType,
+    TaxRegime,
+    Phone,
+    ContactPerson,
+    Address,
+    PaymentTerm,
+    BankAccount,
+    SupplierStatus,
+)
+
 
 class SupplierUpdate(BaseModel):
     """Schema para atualização de fornecedor, todos os campos opcionais"""

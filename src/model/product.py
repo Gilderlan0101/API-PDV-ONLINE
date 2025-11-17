@@ -1,3 +1,4 @@
+# Model produtos
 from tortoise import fields, models
 from datetime import datetime
 from zoneinfo import ZoneInfo
@@ -30,10 +31,13 @@ class Produto(models.Model):
     active = fields.BooleanField(default=True)
     group = fields.CharField(max_length=100, null=True)
     sub_group = fields.CharField(max_length=100, null=True)
+    ticket = fields.TextField(null=True, default="Novo")
     sector = fields.CharField(max_length=100, null=True)
     unit = fields.CharField(max_length=20, null=True)
     controllstoke = fields.CharField(max_length=50, null=True)
     sales_config = fields.CharField(max_length=150, null=True)
+    detail = fields.TextField(null=True, default='')
+    label = fields.TextField(null=True)
 
     criado_em = fields.DatetimeField(default=datetime.now(ZoneInfo("America/Sao_Paulo")))
     atualizado_em = fields.DatetimeField(default=datetime.now(ZoneInfo("America/Sao_Paulo")))

@@ -53,19 +53,19 @@ class CompanyRegisterSchema(BaseModel):
 class TokenSchema(BaseModel):
     id: int
     username: str
-    ativo: bool = True
+    email: EmailStr
+    empresa: Optional[str] = None
+    empresa_id: Optional[int] = None  #  NOVO CAMPO
     tipo: str
-    email: str
-    empresa: str
     message: str
     access_token: str
     refresh_token: str
-    token_type: str = 'bearer'
+    token_type: str
 
 
 class TokenPayload(BaseModel):
-    sub: Optional[str] = None  # Identificação do usuário (id ou email)
-    exp: Optional[int] = None  # Timestamp de expiração do token
+    sub: Optional[str] = None
+    exp: Optional[int] = None
 
 
 class SystemUser(BaseModel):

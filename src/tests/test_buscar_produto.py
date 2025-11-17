@@ -9,7 +9,7 @@ class TestBuscarProduto(unittest.IsolatedAsyncioTestCase):
 
     async def test_busca_por_codigo(self):
         fake_produto = Produto(id=1, name="Coca-Cola 2L", product_code="BEB001", usuario_id=1)
-        
+
         # Mocka apenas first(), que é async
         mock_first = AsyncMock(return_value=fake_produto)
         with patch.object(Produto, "filter") as mock_filter:
@@ -23,7 +23,7 @@ class TestBuscarProduto(unittest.IsolatedAsyncioTestCase):
 
     async def test_busca_por_nome(self):
         fake_produto = Produto(id=2, name="Suco de Laranja 1L", product_code="BEB002", usuario_id=1)
-        
+
         mock_first = AsyncMock(return_value=fake_produto)
         with patch.object(Produto, "filter") as mock_filter:
             mock_filter.return_value.filter.return_value.first = mock_first

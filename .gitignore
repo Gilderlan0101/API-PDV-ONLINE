@@ -1,0 +1,110 @@
+# ==============================
+# Python
+# ==============================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# ==============================
+# Virtual environments
+# ==============================
+venv/
+env/
+ENV/
+.venv/
+.pipenv/
+poetry.lock
+
+# ==============================
+# Editor/IDE
+# ==============================
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.tmp
+
+# ==============================
+# OS Files
+# ==============================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ==============================
+# Logs
+# ==============================
+*.log
+logs/
+*.out
+*.err
+
+# ==============================
+# Database / SQLite
+# ==============================
+*.sqlite3
+*.db
+*.sqlite
+db.sqlite3
+
+# ==============================
+# Environment / secrets
+# ==============================
+.env
+.env.*
+*.key
+*.pem
+
+# ==============================
+# Tortoise / migrations
+# ==============================
+migrations/
+migrations_*/
+*.sql
+*.tar.gz
+
+# ==============================
+# FastAPI / Starlette temp files
+# ==============================
+*.cache
+*.pickle
+
+# ==============================
+# Misc
+# ==============================
+*.bak
+*.swp
+*.DS_Store
+*.orig
+*.rej
+
+# ==============================
+# Coverage
+# ==============================
+htmlcov/
+.coverage
+.tox/
+.nox/
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# ==============================
+# Jupyter Notebook
+# ==============================
+.ipynb_checkpoints
+
+# ==============================
+# Node / frontend (if any)
+# ==============================
+node_modules/
+dist/
+build/
+npm-debug.log
+yarn-error.log
