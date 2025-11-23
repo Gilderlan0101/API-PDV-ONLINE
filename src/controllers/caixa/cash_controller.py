@@ -15,217 +15,70 @@ from src.model.employee import Employees
 from src.model.sale import Sales
 from src.model.user import Usuario
 from src.utils.user_or_functional import i_request
-from src.utils.private_infos import mask_password, mask_email
+
 
 class CashController:
-
     @staticmethod
     async def open_checkout(
         employe_id: int, initial_balance: float, name: str, company_id: int
     ):
         """
-        Abre um caixa existente para um funcionario ou admin, garantindo que so um fique aberto
-        Se for admin e nao tiver caixa, cria um novo automaticamente
+        Abre um caixa existente para um funcionário, garantindo que só um fique aberto
+        O caixa já foi criado automaticamente no cadastro do funcionário
         """
-        try:
-            LOGGER.info(f'Iniciando abertura de caixa - Func ID: {employe_id}, Empresa ID: {company_id}')
 
-            # 1. PRIMEIRO TENTA ENCONTRAR COMO FUNCIONARIO
-            employee = await Employees.get_or_none(
-                usuario_id=company_id, id=employe_id
+        # Verifica se o funcionário existe e pertence à empresa
+        employee = await Employees.get_or_none(
+            usuario_id=company_id, id=employe_id
+        )
+        if not employee:
+            raise Exception(
+                f'Funcionário não encontrado ou não pertence à empresa'
             )
 
-            # 2. SE NAO ENCONTRAR FUNCIONARIO, TENTA COMO ADMIN
-            admin = None
-            if not employee:
-                try:
-                    admin = await Usuario.get(id=company_id)
-                    user_name = admin.company_name
-                    user_type = "admin"
-                    LOGGER.info(f'Admin encontrado - Email: {mask_email(admin.email)}')
+        # Busca o caixa do funcionário (deve existir pois foi criado automaticamente)
+        caixa = await Caixa.filter(
+            funcionario_id=employe_id, usuario_id=company_id
+        ).first()
 
-                except DoesNotExist:
-                    LOGGER.error(f'Usuario nao encontrado - Empresa ID: {company_id}')
-                    raise HTTPException(
-                        status_code=status.HTTP_404_NOT_FOUND,
-                        detail='Usuario nao encontrado'
-                    )
-            else:
-                user_name = employee.nome
-                user_type = "funcionario"
-                LOGGER.info(f'Funcionario encontrado: {employee.nome} - Email: {mask_email(employee.email)}')
-
-
-
-
-
-
-            # 3. BUSCA O CAIXA (para funcionario OU admin)
-            if user_type == "admin":
-                caixa = await Caixa.filter(
-                    funcionario_id=company_id,
-                    usuario_id=company_id
-                ).first()
-
-                # Se admin nao tem caixa, cria um novo
-                if not caixa:
-                    try:
-                        from src.utils.sales_code_generator import generator_code_to_checkout
-                        caixa_id = await generator_code_to_checkout(admin.id)
-
-                        caixa = await Caixa.create(
-                            nome=admin.company_name,
-                            saldo_inicial=0.0,
-                            saldo_atual=0.0,
-                            aberto=False,
-                            caixa_id=caixa_id,
-                            funcionario_id=admin.id,
-                            usuario_id=company_id
-                        )
-                        LOGGER.info(f'Novo caixa criado para admin - Caixa ID: {caixa_id}')
-
-                    except IntegrityError as e:
-                        LOGGER.error(f'Erro de integridade ao criar caixa para admin: {e}')
-                        raise HTTPException(
-                            status_code=status.HTTP_409_CONFLICT,
-                            detail='Conflito de dados ao criar caixa. Tente novamente.'
-                        )
-
-                    except OperationalError as e:
-                        LOGGER.error(f'Erro operacional do BD ao criar caixa: {e}')
-                        raise HTTPException(
-                            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-                            detail='Servico de banco de dados temporariamente indisponivel.'
-                        )
-
-                    except Exception as e:
-                        LOGGER.error(f'Erro inesperado ao criar caixa para admin: {e}')
-                        raise HTTPException(
-                            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                            detail='Erro interno ao criar caixa para empresa'
-                        )
-
-            else:
-                # Para funcionario, busca normalmente
-                caixa = await Caixa.filter(
-                    funcionario_id=employe_id,
-                    usuario_id=company_id
-                ).first()
-
-            if not caixa:
-                LOGGER.error(f'Caixa nao encontrado - User: {user_name}, Tipo: {user_type}')
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail=f'Caixa nao encontrado para {user_type} {user_name}'
-                )
-
-            # 4. VERIFICA SE JA EXISTE CAIXA ABERTO
-            if user_type == "admin":
-                caixa_aberto_existente = await Caixa.filter(
-                    funcionario_id=company_id,
-                    aberto=True,
-                    usuario_id=company_id
-                ).first()
-            else:
-                caixa_aberto_existente = await Caixa.filter(
-                    funcionario_id=employe_id,
-                    aberto=True,
-                    usuario_id=company_id
-                ).first()
-
-            if caixa_aberto_existente:
-                LOGGER.warning(f'Caixa ja esta aberto para {user_name} - Caixa ID: {caixa_aberto_existente.caixa_id}')
-                return caixa_aberto_existente
-
-            # 5. VALIDA O SALDO INICIAL
-            try:
-                saldo_inicial_float = float(initial_balance)
-                if saldo_inicial_float < 0:
-                    raise ValueError("Saldo inicial nao pode ser negativo")
-            except (ValueError, TypeError) as e:
-                LOGGER.error(f'Saldo inicial invalido: {initial_balance} - Erro: {e}')
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail='Saldo inicial deve ser um numero valido e positivo'
-                )
-
-            # 6. SE O CAIXA EXISTE MAS ESTA FECHADO, REABRE ELE
-            try:
-                caixa.aberto = True
-                caixa.saldo_inicial = saldo_inicial_float
-                caixa.saldo_atual = saldo_inicial_float
-                caixa.valor_fechamento = None
-                caixa.valor_sistema = None
-                caixa.diferenca = None
-                caixa.atualizado_em = datetime.now(ZoneInfo('America/Sao_Paulo'))
-
-                await caixa.save()
-
-            except OperationalError as e:
-                LOGGER.error(f'Erro operacional ao salvar caixa: {e}')
-                raise HTTPException(
-                    status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-                    detail='Erro de conexao com o banco de dados'
-                )
-
-            except Exception as e:
-                LOGGER.error(f'Erro ao atualizar caixa: {e}')
-                raise HTTPException(
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    detail='Erro interno ao atualizar caixa'
-                )
-
-            # 7. REGISTRA MOVIMENTACAO DE ABERTURA
-            try:
-                await CashMovement.create(
-                    tipo='ABERTURA',
-                    valor=saldo_inicial_float,
-                    descricao=f'Abertura do caixa {name} ({user_type})',
-                    caixa_id=caixa.id,
-                    usuario_id=company_id,
-                    funcionario_id=company_id if user_type == "admin" else employe_id,
-                )
-
-            except IntegrityError as e:
-                LOGGER.error(f'Erro de integridade ao registrar movimentacao: {e}')
-                # Tenta reverter a abertura do caixa
-                try:
-                    caixa.aberto = False
-                    await caixa.save()
-                except Exception:
-                    pass
-                raise HTTPException(
-                    status_code=status.HTTP_409_CONFLICT,
-                    detail='Erro ao registrar movimentacao de abertura'
-                )
-
-            except Exception as e:
-                LOGGER.error(f'Erro ao registrar movimentacao: {e}')
-                # Tenta reverter a abertura do caixa
-                try:
-                    caixa.aberto = False
-                    await caixa.save()
-                except Exception:
-                    pass
-                raise HTTPException(
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    detail='Erro interno ao registrar movimentacao'
-                )
-
-            LOGGER.info(f'Caixa aberto com sucesso para {user_name} ({user_type}) - Caixa ID: {caixa.caixa_id}, Saldo: R$ {saldo_inicial_float:.2f}')
-
-            return caixa
-
-        except HTTPException:
-            # Re-lanca excecoes HTTP ja tratadas
-            raise
-
-        except Exception as e:
-            LOGGER.error(f'Erro inesperado em open_checkout: {e}')
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail='Erro interno no servidor ao abrir caixa'
+        if not caixa:
+            raise Exception(
+                f'Caixa não encontrado para o funcionário {employee.nome}'
             )
+
+        # Verifica se já existe caixa ABERTO para este funcionário
+        caixa_aberto_existente = await Caixa.filter(
+            funcionario_id=employe_id, aberto=True, usuario_id=company_id
+        ).first()
+
+        if caixa_aberto_existente:
+            # Retorna o caixa já aberto
+            print(f'ℹ️  Caixa já está aberto para {employee.nome}')
+            return caixa_aberto_existente
+
+        # Se o caixa existe mas está FECHADO, reabre ele
+        caixa.aberto = True
+        caixa.saldo_inicial = initial_balance
+        caixa.saldo_atual = initial_balance
+        caixa.valor_fechamento = None
+        caixa.valor_sistema = None
+        caixa.diferenca = None
+        caixa.atualizado_em = datetime.now(ZoneInfo('America/Sao_Paulo'))
+
+        await caixa.save()
+
+        # Registra movimentação de abertura
+        await CashMovement.create(
+            tipo='ABERTURA',
+            valor=initial_balance,
+            descricao=f'Abertura do caixa {name}',
+            caixa_id=caixa.id,
+            usuario_id=company_id,
+            funcionario_id=employe_id,
+        )
+
+        print(f'✅ Caixa aberto para {employee.nome}: ID {caixa.caixa_id}')
+        return caixa
 
     @staticmethod
     async def registrar_venda_caixa(
@@ -234,9 +87,6 @@ class CashController:
         valor_venda: float,
         forma_pagamento: str,
     ):
-        # ✅ APLICANDO MÁSCARA NO LOG
-        LOGGER.info(f'💳 Registrando venda no caixa - Caixa ID: {caixa_id}, Valor: R$ {valor_venda:.2f}')
-
         caixa = await Caixa.get_or_none(id=caixa_id)
         if not caixa or not caixa.aberto:
             raise Exception('Caixa não encontrado ou fechado')
@@ -273,9 +123,6 @@ class CashController:
 
         await caixa.save()
 
-        # ✅ APLICANDO MÁSCARA NO LOG DE SUCESSO
-        LOGGER.info(f'✅ Venda registrada com sucesso - Venda ID: {venda_obj.id}, Caixa ID: {caixa_id}')
-
         return caixa
 
     @staticmethod
@@ -284,9 +131,6 @@ class CashController:
         Método melhorado para verificar status do caixa
         """
         try:
-            # ✅ APLICANDO MÁSCARA NO LOG
-            LOGGER.info(f'🔍 Verificando status do caixa - User ID: {user_id}, Func ID: {mask_password(str(funcionario_id)) if funcionario_id else "N/A"}')
-
             # Primeiro tenta buscar por funcionário
             if funcionario_id:
                 caixa_funcionario = await Caixa.filter(
@@ -323,7 +167,6 @@ class CashController:
             }
 
         except Exception as e:
-            LOGGER.error(f'❌ Erro ao verificar status do caixa: {str(e)}')
             raise Exception(f'Erro ao verificar status do caixa: {str(e)}')
 
     @staticmethod
@@ -331,9 +174,6 @@ class CashController:
         """
         Método para debug - mostra status de todos os caixas
         """
-        # ✅ APLICANDO MÁSCARA NO LOG
-        LOGGER.info(f'🐛 Debug caixa status - User ID: {user_id}, Func ID: {mask_password(str(funcionario_id)) if funcionario_id else "N/A"}')
-
         caixas_usuario = await Caixa.filter(usuario_id=user_id).all()
         caixas_funcionario = (
             await Caixa.filter(funcionario_id=funcionario_id).all()
@@ -376,15 +216,20 @@ class CashController:
 
         return debug_info
 
-    @staticmethod
     async def close_checkout(
         employe_id: int, checkout_id: int, company_id: int
     ) -> Optional[List[Dict[str, Any]]]:
         """
         Localiza o caixa aberto do funcionário na empresa e realiza o fechamento.
+
+        Args:
+            employe_id: ID do funcionário
+            checkout_id: ID do caixa a ser fechado
+            company_id: ID do usuário/empresa.
+
+        Returns:
+            Uma lista de dicionários com os detalhes do fechamento, ou None se nenhum caixa aberto for encontrado.
         """
-        # ✅ APLICANDO MÁSCARA NO LOG
-        LOGGER.info(f'🚪 Iniciando fechamento do caixa - Func ID: {employe_id}, Caixa ID: {checkout_id}, Empresa ID: {company_id}')
 
         # Lista para retornar os dados
         response_data = []
@@ -397,11 +242,12 @@ class CashController:
             ).first()
 
             if not checkout:
-                LOGGER.warning(f'⚠️  Caixa não encontrado para fechamento - Caixa ID: {checkout_id}')
-                return None
+                return None  # Nenhum caixa aberto encontrado
 
-        except Exception as error:
-            LOGGER.error(f'❌ Erro ao buscar caixa [CashController]: {error}')
+        except tortoise.expressions.DoesNotExist as error:
+            LOGGER.info(
+                f'Erro ao realizar busca. Provavelmente não existe [CashController]'
+            )
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f'Erro ao realizar busca do caixa: {error}',
@@ -410,38 +256,65 @@ class CashController:
         try:
             # 2. Calcula entradas e saídas
             entries = await CashMovement.filter(
-                caixa_id=checkout.id, tipo__in=['ENTRADA', 'ABERTURA']
+                caixa_id=checkout.id, tipo__in='ENTRADA'
             ).all()
             exits = await CashMovement.filter(
                 caixa_id=checkout.id, tipo='SAIDA'
             ).all()
 
-            total_entries = sum([float(movement.valor) for movement in entries])
-            total_exits = sum([float(movement.valor) for movement in exits])
+            total_entries = sum([int(movement.valor) for movement in entries])
+            total_exits = sum([int(movement.valor) for movement in exits])
 
-            # ✅ APLICANDO MÁSCARA NO LOG DE VALORES
-            LOGGER.info(f'📊 Totais calculados - Entradas: R$ {total_entries:.2f}, Saídas: R$ {total_exits:.2f}')
+            LOGGER.info(
+                f'TOTAL_ENTRADAS: {type(total_entries)} TOTAL_SAIDAS: {type(total_exits)}'
+            )
 
             # O valor que o sistema calcula que DEVE estar no caixa
-            system_value = total_entries - total_exits
+            if isinstance(total_entries, (int, float)) and isinstance(
+                total_exits, (int, float)
+            ):
+                system_value = total_entries - total_exits
+            else:
+                LOGGER.warning('[VALOR SISTEMA] Valores não são numéricos')
+                # Convert to float if they are strings
+                try:
+                    total_entries = (
+                        float(total_entries) if total_entries else 0.0
+                    )
+                    total_exits = float(total_exits) if total_exits else 0.0
+                    system_value = total_entries - total_exits
+                except (ValueError, TypeError):
+                    system_value = 0.0
+                    LOGGER.error(
+                        'Não foi possível converter valores para cálculo'
+                    )
 
             # O valor que o funcionário está declarando para o fechamento
-            closing_value = round(float(checkout.saldo_atual), 2)
+            closing_value = round(checkout.saldo_atual, 2)
 
             # 3. Atualiza caixa
             checkout.valor_fechamento = closing_value
             checkout.valor_sistema = system_value
-            checkout.diferenca = closing_value - system_value
+
+            if isinstance(closing_value, (int, float)) and isinstance(
+                system_value, (int, float)
+            ):
+                checkout.diferenca = closing_value - system_value
+            else:
+                LOGGER.warning('Valores de fechamento não são numéricos')
+
             checkout.aberto = False
-            checkout.atualizado_em = datetime.now(ZoneInfo('America/Sao_Paulo'))
+            checkout.atualizado_em = datetime.now(
+                ZoneInfo('America/Sao_Paulo')
+            )
 
             # Salva as alterações no banco de dados
             await checkout.save()
 
             # 4. Registra movimentação de fechamento
             closing_description = (
-                f'Fechamento do caixa - Sistema: R$ {system_value:.2f}, '
-                f'Fechamento: R$ {closing_value:.2f}, Dif: R$ {checkout.diferenca:.2f}'
+                f'Fechamento do caixa - Sistema: {system_value:.2f}, '
+                f'Fechamento: {closing_value:.2f}, Dif: {checkout.diferenca:.2f}'
             )
 
             await CashMovement.create(
@@ -466,13 +339,12 @@ class CashController:
                 }
             )
 
-            # ✅ APLICANDO MÁSCARA NO LOG DE SUCESSO
-            LOGGER.info(f'✅ Caixa fechado com sucesso - Caixa ID: {checkout_id}, Diferença: R$ {checkout.diferenca:.2f}')
-
             return response_data
 
         except Exception as error:
-            LOGGER.error(f'❌ Erro ao processar fechamento do caixa: {error}')
+            LOGGER.error(
+                f'Erro ao processar fechamento do caixa [CashMovement] {error}'
+            )
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f'Erro interno ao processar fechamento: {error.__class__.__name__}',
@@ -481,16 +353,15 @@ class CashController:
     @staticmethod
     async def get_caixa_details(caixa_id: int) -> Dict[str, Any]:
         """
-        Retorna o resumo do caixa para fechamento automático
+        Retorna o resumo do caixa para fechamento automático:
+        - Lista de movimentações do caixa
+        - Total de entradas e saídas
+        - Saldo atual
         """
-        # ✅ APLICANDO MÁSCARA NO LOG
-        LOGGER.info(f'📋 Buscando detalhes do caixa - Caixa ID: {caixa_id}')
-
         try:
             # Busca o caixa
-            caixa = await Caixa.filter(caixa_id=caixa_id).first()
+            caixa = await Caixa.get_or_none(caixa_id=caixa_id).first()
             if not caixa:
-                LOGGER.warning(f'⚠️  Caixa não encontrado para detalhes - Caixa ID: {caixa_id}')
                 return {'error': 'Caixa não encontrado'}
 
             # Busca todas as movimentações do caixa
@@ -506,14 +377,23 @@ class CashController:
             ]
             saidas = [mov for mov in movimentacoes if mov.tipo == 'SAIDA']
 
-            total_entradas = sum([float(mov.valor) for mov in entradas])
-            total_saidas = sum([float(mov.valor) for mov in saidas])
-            saldo_sistema = total_entradas - total_saidas
+            total_entradas = sum([int(float(mov.valor)) for mov in entradas])
+            total_saidas = sum([int(float(mov.valor)) for mov in saidas])
+
+            if isinstance(total_entradas, (int, float)) and isinstance(
+                total_saidas, (int, float)
+            ):
+
+                saldo_sistema = total_entradas - total_saidas
+
+            else:
+
+                pass
 
             # Prepara dados de retorno
             dados = {
                 'caixa_id': caixa.id,
-                'nome': caixa.nome,  # ✅ MÁSCARA NO NOME
+                'nome': caixa.nome,
                 'saldo_atual': caixa.saldo_atual,
                 'saldo_inicial': caixa.saldo_inicial,
                 'aberto': caixa.aberto,
@@ -525,20 +405,19 @@ class CashController:
                         'id': mov.id,
                         'tipo': mov.tipo,
                         'valor': mov.valor,
-                        'descricao': mov.descricao,  # ✅ MÁSCARA NA DESCRIÇÃO
+                        'descricao': mov.descricao,
                         'data': mov.criado_em.strftime('%d/%m/%Y %H:%M'),
                     }
                     for mov in movimentacoes
                 ],
             }
 
-            # ✅ APLICANDO MÁSCARA NO LOG DE SUCESSO
-            LOGGER.info(f'✅ Detalhes do caixa recuperados - Total movimentações: {len(movimentacoes)}')
-
             return dados
 
         except Exception as e:
-            LOGGER.error(f'❌ Erro ao buscar detalhes do caixa {caixa_id}: {str(e)}')
+            LOGGER.error(
+                f'Erro ao buscar detalhes do caixa {caixa_id}: {str(e)}'
+            )
             return {'error': f'Erro ao buscar detalhes: {str(e)}'}
 
     @staticmethod
@@ -548,9 +427,6 @@ class CashController:
         """
         Retorna o caixa aberto de um funcionário, se existir
         """
-        # ✅ APLICANDO MÁSCARA NO LOG
-        LOGGER.info(f'🔍 Buscando caixa aberto do funcionário - Func ID: {funcionario_id}, Empresa ID: {usuario_id}')
-
         return await Caixa.filter(
             usuario_id=usuario_id, funcionario_id=funcionario_id, aberto=True
         ).first()
@@ -560,9 +436,6 @@ class CashController:
         """
         Retorna o caixa aberto de um usuário, se existir
         """
-        # ✅ APLICANDO MÁSCARA NO LOG
-        LOGGER.info(f'🔍 Buscando caixa aberto do usuário - User ID: {usuario_id}')
-
         return await Caixa.filter(usuario_id=usuario_id, aberto=True).first()
 
     @staticmethod
@@ -570,12 +443,10 @@ class CashController:
         """
         Retorna todas as movimentações de um caixa
         """
-        # ✅ APLICANDO MÁSCARA NO LOG
-        LOGGER.info(f'📊 Buscando movimentações do caixa - Caixa ID: {caixa_id}')
-
         return await CashMovement.filter(caixa_id=caixa_id).order_by(
             '-criado_em'
         )
+
 
 class FinalizationObjcts:
     def __init__(self, checkout_instance: Checkout = None) -> None:
