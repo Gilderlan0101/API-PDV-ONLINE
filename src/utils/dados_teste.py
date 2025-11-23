@@ -51,15 +51,15 @@ async def create_mock_data_and_sell_all_stock():
         if not admin:
             print('🔹 Criando usuário admin...')
             admin = await Usuario.create(
-                username='admin',
-                email='admin@test.com',
-                password=get_hashed_password('123456'),
-                company_name='Pizzaria do João',
-                trade_name='Pizzaria João',
-                membros=1,
-                cnpj='12345638000199',
-                city='São Paulo',
-                state='SP',
+                username='Gilderlna',
+                email='admin@dev.com',
+                password=get_hashed_password('mobilador001'),
+                company_name='dev Orbit',
+                trade_name='dev Orbit',
+                membros=0,
+                cnpj='12345678912345',
+                city='Ibirataia',
+                state='BA',
                 pending=True,
             )
             print(f'✅ Usuário admin criado: {admin.email}')

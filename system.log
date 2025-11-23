@@ -680,3 +680,2084 @@ fastapi.exceptions.HTTPException: 404: Caixa nao encontrado para funcionario Jo�
 2025-11-21 02:30:54,570 - error_module - WARNING - Senha incorreta para admin: conta@test.com
 2025-11-21 02:31:49,576 - error_module - INFO - 🔐 Tentativa de login: conta@test.com
 2025-11-21 02:31:51,609 - error_module - WARNING - Senha incorreta para admin: conta@test.com
+2025-11-21 22:09:54,672 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 22:11:04,795 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 22:11:29,026 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 22:12:53,483 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 22:13:13,987 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 22:14:20,106 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 22:16:05,334 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 22:16:06,793 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-21 22:16:53,370 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 22:16:54,856 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-21 22:19:08,328 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 22:19:30,720 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 22:20:49,864 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 22:20:51,850 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-21 22:27:17,225 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 22:27:19,212 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-21 22:27:19,213 - error_module - ERROR - Erro ao iniciar servidor: run() got an unexpected keyword argument 'server'
+2025-11-21 22:27:46,656 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 22:27:48,652 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-21 22:43:32,179 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 22:45:09,372 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 22:45:12,203 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-21 22:48:50,145 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 22:48:53,221 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-21 22:48:53,222 - error_module - ERROR - Erro ao iniciar servidor: run() got an unexpected keyword argument 'server'
+2025-11-21 22:53:05,047 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 22:56:15,769 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 22:56:17,917 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-21 22:56:19,721 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 22:56:22,209 - error_module - ERROR - ❌ Falha ao inicializar banco de dados
+2025-11-21 22:56:55,152 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-21 22:59:55,275 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 22:59:57,939 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-21 23:00:00,424 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:00:02,908 - error_module - ERROR - ❌ Falha ao inicializar banco de dados
+2025-11-21 23:00:40,245 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-21 23:01:15,811 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:01:17,997 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-21 23:01:19,958 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:01:24,234 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-21 23:03:21,588 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-21 23:03:24,018 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:03:27,204 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-21 23:04:31,907 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-21 23:05:25,709 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:05:27,872 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-21 23:05:29,680 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:05:32,096 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-21 23:06:07,891 - error_module - INFO - Tentativa de login: admin@*********
+2025-11-21 23:06:07,901 - error_module - WARNING - Email nao encontrado: admin@*********
+2025-11-21 23:06:30,946 - error_module - INFO - Tentativa de login: conta@*********
+2025-11-21 23:06:30,951 - error_module - WARNING - Email nao encontrado: conta@*********
+2025-11-21 23:06:44,478 - error_module - INFO - Tentativa de login: conta@*********
+2025-11-21 23:06:44,504 - error_module - WARNING - Email nao encontrado: conta@*********
+2025-11-21 23:06:55,788 - error_module - INFO - Tentativa de login: admin@*********
+2025-11-21 23:06:55,799 - error_module - WARNING - Email nao encontrado: admin@*********
+2025-11-21 23:08:40,749 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-21 23:18:09,333 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:18:11,635 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-21 23:18:13,561 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:18:16,250 - error_module - ERROR - ❌ Falha ao inicializar banco de dados
+2025-11-21 23:20:51,572 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-21 23:20:53,669 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:20:53,675 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Conectando ao MySQL.
+2025-11-21 23:20:56,026 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-21 23:20:56,026 - error_module - INFO - 📋 Modelos carregados: 16
+2025-11-21 23:20:56,070 - error_module - ERROR - ❌ Erro de configuração do Tortoise: Module "aerich.models" not found
+2025-11-21 23:20:56,071 - error_module - ERROR - ❌ Falha ao inicializar banco de dados
+2025-11-21 23:21:37,576 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-21 23:21:37,584 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-21 23:21:39,768 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:21:39,776 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Conectando ao MySQL.
+2025-11-21 23:22:30,091 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:22:30,101 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Conectando ao MySQL.
+2025-11-21 23:22:39,123 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:22:39,129 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Conectando ao MySQL.
+2025-11-21 23:24:01,518 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:24:01,527 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Conectando ao MySQL.
+2025-11-21 23:24:03,884 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-21 23:24:05,722 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:24:05,728 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Conectando ao MySQL.
+2025-11-21 23:24:07,973 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-21 23:24:07,974 - error_module - INFO - 📋 Modelos carregados: 16
+2025-11-21 23:24:08,037 - error_module - ERROR - ❌ Erro de configuração do Tortoise: Module "aerich.models" not found
+2025-11-21 23:24:08,038 - error_module - ERROR - ❌ Falha ao inicializar banco de dados
+2025-11-21 23:24:56,057 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:24:56,073 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Conectando ao MySQL.
+2025-11-21 23:24:58,327 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-21 23:25:00,178 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:25:00,184 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Conectando ao MySQL.
+2025-11-21 23:25:02,505 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-21 23:25:02,506 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-21 23:25:02,691 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-21 23:25:03,496 - error_module - ERROR - ❌ Falha ao conectar ao banco de dados MySQL: Can't connect to MySQL server: {'host': '207.58.174.170', 'port': 3306, 'user': 'naht1344_usuairos', 'db': 'naht1344_usuairos', 'autocommit': True, 'charset': 'utf8mb4', 'minsize': 1, 'maxsize': 5, 'sql_mode': 'STRICT_TRANS_TABLES'}
+2025-11-21 23:25:03,498 - error_module - ERROR - ❌ Falha ao inicializar banco de dados
+2025-11-21 23:27:46,901 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:27:49,466 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-21 23:27:51,351 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:27:53,685 - error_module - ERROR - ❌ Erro crítico no banco: 'NoneType' object is not subscriptable
+2025-11-21 23:28:02,833 - error_module - WARNING - ⚠️ Aviso ao fechar conexões: DB configuration not initialised. Make sure to call Tortoise.init with a valid configuration before attempting to create connections.
+2025-11-21 23:28:02,833 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-21 23:29:25,404 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:29:25,417 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Conectando ao MySQL.
+2025-11-21 23:29:27,558 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-21 23:29:29,409 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:29:29,414 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Conectando ao MySQL.
+2025-11-21 23:29:31,689 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-21 23:29:31,689 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-21 23:29:31,836 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-21 23:29:32,526 - error_module - ERROR - ❌ Falha ao conectar ao banco de dados MySQL: Can't connect to MySQL server: {'host': '207.58.174.170', 'port': 3306, 'user': 'naht1344_usuairos', 'db': 'naht1344_usuairos', 'autocommit': True, 'charset': 'utf8mb4', 'minsize': 1, 'maxsize': 5, 'sql_mode': 'STRICT_TRANS_TABLES'}
+2025-11-21 23:29:32,527 - error_module - ERROR - ❌ Falha ao inicializar banco de dados
+2025-11-21 23:31:47,279 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-21 23:31:47,279 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-21 23:31:49,393 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:31:49,399 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-21 23:31:51,941 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-21 23:31:51,942 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-21 23:31:52,165 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-21 23:31:52,246 - error_module - ERROR - ❌ Falha ao conectar ao banco de dados MySQL: Can't connect to MySQL server: {'host': 'localhost', 'port': 3306, 'user': 'root', 'db': 'nahtec_pdv_dev', 'autocommit': True, 'charset': 'utf8mb4', 'minsize': 1, 'maxsize': 5, 'sql_mode': 'STRICT_TRANS_TABLES'}
+2025-11-21 23:31:52,248 - error_module - ERROR - ❌ Falha ao inicializar banco de dados
+2025-11-21 23:31:59,460 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:31:59,468 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-21 23:32:01,619 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-21 23:32:03,603 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:32:03,608 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-21 23:32:05,861 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-21 23:32:05,862 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-21 23:32:06,008 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-21 23:32:06,026 - error_module - ERROR - ❌ Falha ao conectar ao banco de dados MySQL: Can't connect to MySQL server: {'host': 'localhost', 'port': 3306, 'user': 'root', 'db': 'nahtec_pdv_dev', 'autocommit': True, 'charset': 'utf8mb4', 'minsize': 1, 'maxsize': 5, 'sql_mode': 'STRICT_TRANS_TABLES'}
+2025-11-21 23:32:06,027 - error_module - ERROR - ❌ Falha ao inicializar banco de dados
+2025-11-21 23:32:12,663 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-21 23:32:12,664 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-21 23:32:20,014 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:32:20,021 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-21 23:32:22,196 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-21 23:32:24,183 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:32:24,190 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-21 23:32:26,432 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-21 23:32:26,433 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-21 23:32:26,579 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-21 23:32:26,596 - error_module - ERROR - ❌ Falha ao conectar ao banco de dados MySQL: Can't connect to MySQL server: {'host': 'localhost', 'port': 3306, 'user': 'root', 'db': 'nahtec_pdv_dev', 'autocommit': True, 'charset': 'utf8mb4', 'minsize': 1, 'maxsize': 5, 'sql_mode': 'STRICT_TRANS_TABLES'}
+2025-11-21 23:32:26,597 - error_module - ERROR - ❌ Falha ao inicializar banco de dados
+2025-11-21 23:33:45,080 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:33:45,085 - error_module - INFO - 🛠️ Modo PRODUCTION: Usando credenciais de Deploy (remotas).
+2025-11-21 23:33:45,086 - error_module - ERROR - ❌ Variáveis de ambiente críticas do DB estão faltando. A conexão falhará.
+2025-11-21 23:33:47,224 - error_module - INFO - Modo: Produção ATIVO
+2025-11-21 23:33:51,079 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:33:51,100 - error_module - INFO - 🛠️ Modo PRODUCTION: Usando credenciais de Deploy (remotas).
+2025-11-21 23:33:51,100 - error_module - ERROR - ❌ Variáveis de ambiente críticas do DB estão faltando. A conexão falhará.
+2025-11-21 23:33:51,165 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:33:51,191 - error_module - INFO - 🛠️ Modo PRODUCTION: Usando credenciais de Deploy (remotas).
+2025-11-21 23:33:51,192 - error_module - ERROR - ❌ Variáveis de ambiente críticas do DB estão faltando. A conexão falhará.
+2025-11-21 23:33:51,307 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:33:51,343 - error_module - INFO - 🛠️ Modo PRODUCTION: Usando credenciais de Deploy (remotas).
+2025-11-21 23:33:51,343 - error_module - ERROR - ❌ Variáveis de ambiente críticas do DB estão faltando. A conexão falhará.
+2025-11-21 23:33:51,505 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:33:51,538 - error_module - INFO - 🛠️ Modo PRODUCTION: Usando credenciais de Deploy (remotas).
+2025-11-21 23:33:51,554 - error_module - ERROR - ❌ Variáveis de ambiente críticas do DB estão faltando. A conexão falhará.
+2025-11-21 23:33:56,673 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:33:56,704 - error_module - INFO - 🛠️ Modo PRODUCTION: Usando credenciais de Deploy (remotas).
+2025-11-21 23:33:56,706 - error_module - ERROR - ❌ Variáveis de ambiente críticas do DB estão faltando. A conexão falhará.
+2025-11-21 23:33:56,907 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-21 23:33:56,908 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-21 23:33:57,137 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-21 23:33:57,138 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-21 23:33:57,247 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-21 23:33:57,499 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-21 23:33:57,535 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-21 23:33:57,538 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-21 23:33:57,671 - error_module - ERROR - ❌ Falha ao conectar ao banco de dados MySQL: Can't connect to MySQL server: {'host': '207.58.174.170', 'port': 3306, 'user': 'naht1344_usuairos', 'db': 'naht1344_usuairos', 'autocommit': True, 'charset': 'utf8mb4', 'minsize': 1, 'maxsize': 5, 'sql_mode': 'STRICT_TRANS_TABLES'}
+2025-11-21 23:33:57,671 - error_module - ERROR - ❌ Falha ao inicializar banco de dados
+2025-11-21 23:33:57,840 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-21 23:33:57,906 - error_module - ERROR - ❌ Falha ao conectar ao banco de dados MySQL: Can't connect to MySQL server: {'host': '207.58.174.170', 'port': 3306, 'user': 'naht1344_usuairos', 'db': 'naht1344_usuairos', 'autocommit': True, 'charset': 'utf8mb4', 'minsize': 1, 'maxsize': 5, 'sql_mode': 'STRICT_TRANS_TABLES'}
+2025-11-21 23:33:57,912 - error_module - ERROR - ❌ Falha ao inicializar banco de dados
+2025-11-21 23:33:58,261 - error_module - ERROR - ❌ Falha ao conectar ao banco de dados MySQL: Can't connect to MySQL server: {'host': '207.58.174.170', 'port': 3306, 'user': 'naht1344_usuairos', 'db': 'naht1344_usuairos', 'autocommit': True, 'charset': 'utf8mb4', 'minsize': 1, 'maxsize': 5, 'sql_mode': 'STRICT_TRANS_TABLES'}
+2025-11-21 23:33:58,261 - error_module - ERROR - ❌ Falha ao inicializar banco de dados
+2025-11-21 23:33:59,639 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-21 23:33:59,640 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-21 23:33:59,787 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-21 23:34:00,186 - error_module - ERROR - ❌ Falha ao conectar ao banco de dados MySQL: Can't connect to MySQL server: {'host': '207.58.174.170', 'port': 3306, 'user': 'naht1344_usuairos', 'db': 'naht1344_usuairos', 'autocommit': True, 'charset': 'utf8mb4', 'minsize': 1, 'maxsize': 5, 'sql_mode': 'STRICT_TRANS_TABLES'}
+2025-11-21 23:34:00,186 - error_module - ERROR - ❌ Falha ao inicializar banco de dados
+2025-11-21 23:34:05,197 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-21 23:34:05,197 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-21 23:34:05,220 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-21 23:34:05,218 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-21 23:34:05,221 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-21 23:34:05,221 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-21 23:34:05,255 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-21 23:34:05,255 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-21 23:36:10,424 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:36:10,430 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-21 23:36:12,569 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-21 23:36:14,412 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:36:14,419 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-21 23:36:16,674 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-21 23:36:16,675 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-21 23:36:16,819 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-21 23:36:16,836 - error_module - ERROR - ❌ Falha ao conectar ao banco de dados MySQL: Can't connect to MySQL server: {'host': 'localhost', 'port': 3306, 'user': 'root', 'db': 'nahtec_pdv_dev', 'autocommit': True, 'charset': 'utf8mb4', 'minsize': 1, 'maxsize': 5, 'sql_mode': 'STRICT_TRANS_TABLES'}
+2025-11-21 23:36:16,836 - error_module - ERROR - ❌ Falha ao inicializar banco de dados
+2025-11-21 23:36:25,082 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-21 23:36:25,083 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-21 23:37:58,106 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:37:58,111 - error_module - INFO - 🛠️ Modo PRODUCTION: Usando credenciais de Deploy (remotas).
+2025-11-21 23:37:58,112 - error_module - ERROR - ❌ Variáveis de ambiente críticas do DB estão faltando. A conexão falhará.
+2025-11-21 23:38:00,256 - error_module - INFO - Modo: Produção ATIVO
+2025-11-21 23:38:04,207 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:38:04,219 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:38:04,227 - error_module - INFO - 🛠️ Modo PRODUCTION: Usando credenciais de Deploy (remotas).
+2025-11-21 23:38:04,230 - error_module - ERROR - ❌ Variáveis de ambiente críticas do DB estão faltando. A conexão falhará.
+2025-11-21 23:38:04,238 - error_module - INFO - 🛠️ Modo PRODUCTION: Usando credenciais de Deploy (remotas).
+2025-11-21 23:38:04,238 - error_module - ERROR - ❌ Variáveis de ambiente críticas do DB estão faltando. A conexão falhará.
+2025-11-21 23:38:04,352 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:38:04,378 - error_module - INFO - 🛠️ Modo PRODUCTION: Usando credenciais de Deploy (remotas).
+2025-11-21 23:38:04,381 - error_module - ERROR - ❌ Variáveis de ambiente críticas do DB estão faltando. A conexão falhará.
+2025-11-21 23:38:04,626 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:38:04,654 - error_module - INFO - 🛠️ Modo PRODUCTION: Usando credenciais de Deploy (remotas).
+2025-11-21 23:38:04,658 - error_module - ERROR - ❌ Variáveis de ambiente críticas do DB estão faltando. A conexão falhará.
+2025-11-21 23:38:09,472 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-21 23:38:09,475 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-21 23:38:09,592 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:38:09,598 - error_module - INFO - 🛠️ Modo PRODUCTION: Usando credenciais de Deploy (remotas).
+2025-11-21 23:38:09,598 - error_module - ERROR - ❌ Variáveis de ambiente críticas do DB estão faltando. A conexão falhará.
+2025-11-21 23:38:09,849 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-21 23:38:09,849 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-21 23:38:09,906 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-21 23:38:10,205 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-21 23:38:10,223 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-21 23:38:10,224 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-21 23:38:10,334 - error_module - ERROR - ❌ Falha ao conectar ao banco de dados MySQL: Can't connect to MySQL server: {'host': '207.58.174.170', 'port': 3306, 'user': 'naht1344_usuairos', 'db': 'naht1344_usuairos', 'autocommit': True, 'charset': 'utf8mb4', 'minsize': 1, 'maxsize': 5, 'sql_mode': 'STRICT_TRANS_TABLES'}
+2025-11-21 23:38:10,334 - error_module - ERROR - ❌ Falha ao inicializar banco de dados
+2025-11-21 23:38:10,423 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-21 23:38:10,603 - error_module - ERROR - ❌ Falha ao conectar ao banco de dados MySQL: Can't connect to MySQL server: {'host': '207.58.174.170', 'port': 3306, 'user': 'naht1344_usuairos', 'db': 'naht1344_usuairos', 'autocommit': True, 'charset': 'utf8mb4', 'minsize': 1, 'maxsize': 5, 'sql_mode': 'STRICT_TRANS_TABLES'}
+2025-11-21 23:38:10,604 - error_module - ERROR - ❌ Falha ao inicializar banco de dados
+2025-11-21 23:38:10,843 - error_module - ERROR - ❌ Falha ao conectar ao banco de dados MySQL: Can't connect to MySQL server: {'host': '207.58.174.170', 'port': 3306, 'user': 'naht1344_usuairos', 'db': 'naht1344_usuairos', 'autocommit': True, 'charset': 'utf8mb4', 'minsize': 1, 'maxsize': 5, 'sql_mode': 'STRICT_TRANS_TABLES'}
+2025-11-21 23:38:10,844 - error_module - ERROR - ❌ Falha ao inicializar banco de dados
+2025-11-21 23:38:12,767 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-21 23:38:12,768 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-21 23:38:12,914 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-21 23:38:13,318 - error_module - ERROR - ❌ Falha ao conectar ao banco de dados MySQL: Can't connect to MySQL server: {'host': '207.58.174.170', 'port': 3306, 'user': 'naht1344_usuairos', 'db': 'naht1344_usuairos', 'autocommit': True, 'charset': 'utf8mb4', 'minsize': 1, 'maxsize': 5, 'sql_mode': 'STRICT_TRANS_TABLES'}
+2025-11-21 23:38:13,321 - error_module - ERROR - ❌ Falha ao inicializar banco de dados
+2025-11-21 23:38:18,177 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-21 23:38:18,179 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-21 23:38:18,198 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-21 23:38:18,199 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-21 23:38:18,248 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-21 23:38:18,248 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-21 23:38:18,249 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-21 23:38:18,251 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-21 23:41:15,237 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:41:15,243 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-21 23:41:17,383 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-21 23:41:19,223 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:41:19,229 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-21 23:41:21,464 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-21 23:41:21,465 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-21 23:41:21,609 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-21 23:41:21,627 - error_module - ERROR - ❌ Falha ao conectar ao banco de dados MySQL: Can't connect to MySQL server: {'host': 'localhost', 'port': 3306, 'user': 'root', 'db': 'nahtec_pdv_dev', 'autocommit': True, 'charset': 'utf8mb4', 'minsize': 1, 'maxsize': 5, 'sql_mode': 'STRICT_TRANS_TABLES'}
+2025-11-21 23:41:21,629 - error_module - ERROR - ❌ Falha ao inicializar banco de dados
+2025-11-21 23:41:48,252 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:41:48,258 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-21 23:41:50,386 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-21 23:41:52,208 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:41:52,215 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-21 23:41:54,467 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-21 23:41:54,468 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-21 23:41:54,616 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-21 23:41:54,635 - error_module - ERROR - ❌ Falha ao conectar ao banco de dados MySQL: Can't connect to MySQL server: {'host': 'localhost', 'port': 3306, 'user': 'root', 'db': 'nahtec_pdv_dev', 'autocommit': True, 'charset': 'utf8mb4', 'minsize': 1, 'maxsize': 5, 'sql_mode': 'STRICT_TRANS_TABLES'}
+2025-11-21 23:41:54,636 - error_module - ERROR - ❌ Falha ao inicializar banco de dados
+2025-11-21 23:41:54,844 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-21 23:41:54,847 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-21 23:46:51,415 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:46:51,427 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-21 23:47:40,584 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:47:40,591 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-21 23:48:53,713 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:48:53,723 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-21 23:48:55,923 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-21 23:48:57,728 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:48:57,738 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-21 23:49:00,051 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-21 23:49:00,052 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-21 23:49:00,094 - error_module - ERROR - ❌ Erro inesperado ao inicializar banco: invalid literal for int() with base 10: 'DB_PORT_DEV_LOCAL'
+2025-11-21 23:49:00,095 - error_module - ERROR - ❌ Falha ao inicializar banco de dados
+2025-11-21 23:49:05,923 - error_module - WARNING - ⚠️ Aviso ao fechar conexões: invalid literal for int() with base 10: 'DB_PORT_DEV_LOCAL'
+2025-11-21 23:49:05,924 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-21 23:49:23,628 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:49:23,635 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-21 23:49:25,791 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-21 23:49:27,586 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:49:27,596 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-21 23:49:29,976 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-21 23:49:29,976 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-21 23:49:30,042 - error_module - ERROR - ❌ Erro inesperado ao inicializar banco: invalid literal for int() with base 10: 'DB_PORT_DEV_LOCAL'
+2025-11-21 23:49:30,042 - error_module - ERROR - ❌ Falha ao inicializar banco de dados
+2025-11-21 23:49:45,617 - error_module - WARNING - ⚠️ Aviso ao fechar conexões: invalid literal for int() with base 10: 'DB_PORT_DEV_LOCAL'
+2025-11-21 23:49:45,618 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-21 23:49:57,181 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:49:57,197 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-21 23:55:04,878 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:55:04,884 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-21 23:56:08,391 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:56:08,407 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-21 23:56:48,725 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:56:48,737 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-21 23:58:15,366 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:58:15,373 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-21 23:58:17,688 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-21 23:58:19,541 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:58:19,549 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-21 23:58:21,806 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-21 23:58:21,806 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-21 23:58:21,963 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-21 23:58:21,978 - error_module - ERROR - ❌ Falha ao conectar ao banco de dados MySQL: Can't connect to MySQL server: {'host': 'localhost', 'port': 3306, 'user': 'root', 'db': 'nahtec_pdv_dev', 'autocommit': True, 'charset': 'utf8mb4', 'minsize': 1, 'maxsize': 5, 'sql_mode': 'STRICT_TRANS_TABLES'}
+2025-11-21 23:58:21,978 - error_module - ERROR - ❌ Falha ao inicializar banco de dados
+2025-11-21 23:59:11,911 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-21 23:59:11,912 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-21 23:59:14,079 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-21 23:59:14,087 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-21 23:59:16,388 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-21 23:59:16,388 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-21 23:59:16,535 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-21 23:59:16,552 - error_module - ERROR - ❌ Falha ao conectar ao banco de dados MySQL: Can't connect to MySQL server: {'host': 'localhost', 'port': 3306, 'user': 'root', 'db': 'nahtec_pdv_dev', 'autocommit': True, 'charset': 'utf8mb4', 'minsize': 1, 'maxsize': 5, 'sql_mode': 'STRICT_TRANS_TABLES'}
+2025-11-21 23:59:16,553 - error_module - ERROR - ❌ Falha ao inicializar banco de dados
+2025-11-22 00:01:11,047 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 00:01:11,066 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 00:01:13,267 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 00:01:13,290 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 00:01:13,297 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 00:01:15,580 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 00:01:15,580 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 00:01:15,728 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 00:01:15,731 - error_module - ERROR - ❌ Falha ao testar conexão MySQL: Can't connect to MySQL server: {'host': 'localhost', 'port': 3306, 'user': 'root', 'db': 'nahtec_pdv_dev', 'autocommit': True, 'charset': 'utf8mb4', 'minsize': 1, 'maxsize': 5, 'sql_mode': 'STRICT_TRANS_TABLES', 'connect_timeout': 30}
+2025-11-22 00:01:15,731 - error_module - ERROR - ❌ Falha ao inicializar banco de dados
+2025-11-22 00:01:22,771 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 00:01:22,772 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 00:01:31,115 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 00:01:31,130 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 00:01:31,131 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 00:01:33,304 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-22 00:01:35,132 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 00:01:35,140 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 00:01:35,141 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 00:01:37,392 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 00:01:37,393 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 00:01:37,539 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 00:01:37,544 - error_module - ERROR - ❌ Falha ao testar conexão MySQL: Can't connect to MySQL server: {'host': 'localhost', 'port': 3306, 'user': 'root', 'db': 'nahtec_pdv_dev', 'autocommit': True, 'charset': 'utf8mb4', 'minsize': 1, 'maxsize': 5, 'sql_mode': 'STRICT_TRANS_TABLES', 'connect_timeout': 30}
+2025-11-22 00:01:37,544 - error_module - ERROR - ❌ Falha ao inicializar banco de dados
+2025-11-22 00:05:12,261 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 00:05:12,262 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 00:13:34,998 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 00:13:35,035 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 00:13:35,036 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 00:13:37,524 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-22 00:13:39,812 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 00:13:39,820 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 00:13:39,820 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 00:13:42,781 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 00:13:42,782 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 00:13:43,057 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 00:13:43,084 - error_module - ERROR - ❌ Falha ao testar conexão MySQL: Can't connect to MySQL server: {'host': 'localhost', 'port': 3306, 'user': 'root', 'db': 'nahtec_pdv_dev', 'autocommit': True, 'charset': 'utf8mb4', 'minsize': 1, 'maxsize': 5, 'sql_mode': 'STRICT_TRANS_TABLES', 'connect_timeout': 30}
+2025-11-22 00:13:43,085 - error_module - ERROR - ❌ Falha ao inicializar banco de dados
+2025-11-22 00:13:47,112 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 00:13:47,112 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 00:20:51,354 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 00:20:51,366 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 00:20:51,368 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 00:20:53,582 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-22 00:20:55,463 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 00:20:55,470 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 00:20:55,471 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 00:20:57,760 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 00:20:57,761 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 00:20:57,906 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 00:20:57,915 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 00:21:38,160 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 00:21:38,160 - error_module - INFO - -----------------------------------------
+2025-11-22 00:21:38,161 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 00:21:38,161 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 00:21:38,162 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 00:21:38,162 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 00:21:38,163 - error_module - INFO - -----------------------------------------
+2025-11-22 00:21:38,163 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 00:24:41,705 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 00:24:41,725 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 00:24:43,810 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 00:24:43,817 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 00:24:43,818 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 00:24:47,305 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 00:24:47,305 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 00:24:47,515 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 00:24:47,541 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 00:24:49,346 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 00:24:49,346 - error_module - INFO - -----------------------------------------
+2025-11-22 00:24:49,346 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 00:24:49,347 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 00:24:49,347 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 00:24:49,347 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 00:24:49,348 - error_module - INFO - -----------------------------------------
+2025-11-22 00:24:49,348 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 00:31:52,933 - error_module - INFO - Tentativa de login: admin@*********
+2025-11-22 00:31:53,094 - error_module - INFO - Diagnostico - Senha DB (employee): ************************************************************
+2025-11-22 00:31:53,095 - error_module - INFO - Diagnostico - Senha DB (admin): ************************************************************
+2025-11-22 00:31:53,097 - error_module - INFO - Diagnostico - Senha input: ****
+2025-11-22 00:31:54,275 - error_module - INFO - Credenciais validas para FUNCIONARIO Dev orbit - Empresa: Dev orbit
+2025-11-22 00:31:54,277 - error_module - INFO - Iniciando abertura de caixa - Func ID: 1, Empresa ID: 1
+2025-11-22 00:31:54,285 - error_module - INFO - Funcionario encontrado: Dev orbit - Email: admin@*********
+2025-11-22 00:31:54,602 - error_module - INFO - Caixa aberto com sucesso para Dev orbit (funcionario) - Caixa ID: 236, Saldo: R$ 0.00
+2025-11-22 00:31:54,603 - error_module - INFO - Caixa ja estava aberto para Dev orbit: ID 236
+2025-11-22 00:31:54,774 - error_module - INFO - Tokens gerados para Dev orbit - Access Token: ***********************************************************************************************************************
+2025-11-22 00:31:55,818 - error_module - DEBUG - Cache salvo no Redis para Dev orbit
+2025-11-22 00:31:55,819 - error_module - INFO - Login finalizado com sucesso para Dev orbit (funcionario) - Caixa Status: ja_aberto
+2025-11-22 00:32:50,021 - error_module - INFO - 🔐 Tentativa de login: admin@dev.com
+2025-11-22 00:32:51,379 - error_module - WARNING - Senha incorreta para admin: admin@dev.com
+2025-11-22 00:33:03,965 - error_module - INFO - 🔐 Tentativa de login: admin@dev.com
+2025-11-22 00:33:05,088 - error_module - WARNING - Senha incorreta para admin: admin@dev.com
+2025-11-22 00:33:17,194 - error_module - INFO - 🔐 Tentativa de login: admin@dev.com
+2025-11-22 00:33:18,355 - error_module - INFO - Token salvo no cache. Chave: token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjU1MTAzOTgsInN1YiI6IjEifQ.w78c5EiCeMg7-9Mj9n_NNBVZRJItZ7ajGVrkawTQxYo
+2025-11-22 00:38:48,564 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 00:38:48,581 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 00:38:48,583 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 00:38:51,320 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-22 00:38:53,299 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 00:38:53,306 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 00:38:53,307 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 00:38:56,002 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 00:38:56,003 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 00:38:56,100 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 00:38:56,119 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 00:38:57,012 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 00:38:57,013 - error_module - INFO - -----------------------------------------
+2025-11-22 00:38:57,013 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 00:38:57,014 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 00:38:57,014 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 00:38:57,014 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 00:38:57,015 - error_module - INFO - -----------------------------------------
+2025-11-22 00:38:57,015 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 00:38:59,259 - error_module - ERROR - ❌ Erro crítico no banco: (1062, "Duplicate entry '12345678912345' for key 'usuario.cnpj'")
+2025-11-22 00:43:14,583 - error_module - INFO - Funcionario 1 da EMPRESA Dev orbit validado via JWT.
+2025-11-22 00:45:25,968 - error_module - INFO - 🔐 Tentativa de login: admin@dev.com
+2025-11-22 00:45:27,003 - error_module - WARNING - Senha incorreta para admin: admin@dev.com
+2025-11-22 00:50:01,757 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 00:50:01,758 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 00:53:38,361 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 00:53:38,378 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 00:53:38,383 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 00:53:40,736 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-22 00:53:42,590 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 00:53:42,601 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 00:53:42,601 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 00:53:45,158 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 00:53:45,158 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 00:53:45,228 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 00:53:45,236 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 00:53:46,147 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 00:53:46,148 - error_module - INFO - -----------------------------------------
+2025-11-22 00:53:46,151 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 00:53:46,151 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 00:53:46,154 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 00:53:46,154 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 00:53:46,155 - error_module - INFO - -----------------------------------------
+2025-11-22 00:53:46,156 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 00:53:47,724 - error_module - ERROR - ❌ Erro crítico no banco: (1062, "Duplicate entry '12345678912345' for key 'usuario.cnpj'")
+2025-11-22 00:53:58,189 - error_module - INFO - 🔐 Tentativa de login: admin@dev.com
+2025-11-22 00:53:59,521 - error_module - WARNING - Senha incorreta para admin: admin@dev.com
+2025-11-22 00:54:27,963 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 00:54:27,963 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 00:54:29,993 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 00:54:30,000 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 00:54:30,001 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 00:54:32,726 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 00:54:32,727 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 00:54:32,799 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 00:54:32,807 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 00:54:33,677 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 00:54:33,678 - error_module - INFO - -----------------------------------------
+2025-11-22 00:54:33,680 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 00:54:33,681 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 00:54:33,681 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 00:54:33,682 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 00:54:33,682 - error_module - INFO - -----------------------------------------
+2025-11-22 00:54:33,683 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 00:54:34,949 - error_module - ERROR - ❌ Erro crítico no banco: (1062, "Duplicate entry '12345678912345' for key 'usuario.cnpj'")
+2025-11-22 00:55:35,888 - error_module - INFO - 🔐 Tentativa de login: admin@dev.com
+2025-11-22 00:55:37,084 - error_module - INFO - Token salvo no cache. Chave: token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjU1MTE3MzcsInN1YiI6IjEifQ.3_2rg1CYLwFCOv8_H2gYhQ6eCUfCRjAuHO5dWZHxgQY
+2025-11-22 00:59:53,171 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 00:59:53,193 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 00:59:56,150 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 00:59:56,158 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 00:59:56,159 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 00:59:59,404 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 00:59:59,405 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 00:59:59,475 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 00:59:59,512 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 01:00:00,358 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 01:00:00,359 - error_module - INFO - -----------------------------------------
+2025-11-22 01:00:00,359 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 01:00:00,360 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 01:00:00,360 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 01:00:00,361 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 01:00:00,361 - error_module - INFO - -----------------------------------------
+2025-11-22 01:00:00,362 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 01:00:01,736 - error_module - ERROR - ❌ Erro crítico no banco: (1062, "Duplicate entry '12345678912345' for key 'usuario.cnpj'")
+2025-11-22 01:00:14,707 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 01:00:14,707 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 01:00:16,798 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 01:00:16,806 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 01:00:16,806 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 01:00:19,473 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 01:00:19,473 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 01:00:19,561 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 01:00:19,571 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 01:00:20,524 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 01:00:20,524 - error_module - INFO - -----------------------------------------
+2025-11-22 01:00:20,525 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 01:00:20,525 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 01:00:20,525 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 01:00:20,526 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 01:00:20,526 - error_module - INFO - -----------------------------------------
+2025-11-22 01:00:20,526 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 01:01:06,071 - error_module - INFO - 🔐 Tentativa de login: admin@dev.com
+2025-11-22 01:01:07,243 - error_module - INFO - Token salvo no cache. Chave: *****************************************************************************************************************************
+2025-11-22 01:01:40,195 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 01:01:40,198 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 01:01:42,209 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 01:01:42,216 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 01:01:42,217 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 01:01:45,268 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 01:01:45,269 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 01:01:45,367 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 01:01:45,390 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 01:01:46,227 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 01:01:46,228 - error_module - INFO - -----------------------------------------
+2025-11-22 01:01:46,228 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 01:01:46,228 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 01:01:46,229 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 01:01:46,229 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 01:01:46,229 - error_module - INFO - -----------------------------------------
+2025-11-22 01:01:46,229 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 01:01:56,042 - error_module - INFO - 🔐 Tentativa de login:  admin@*********
+2025-11-22 01:01:57,508 - error_module - WARNING - Senha incorreta para admin: admin@*********
+2025-11-22 01:02:06,911 - error_module - INFO - 🔐 Tentativa de login:  admin@*********
+2025-11-22 01:02:07,951 - error_module - INFO - Token salvo no cache. Chave: *****************************************************************************************************************************
+2025-11-22 01:02:47,168 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 01:02:47,170 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 01:25:27,345 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 01:25:27,351 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 01:25:27,352 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 01:25:29,958 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-22 01:25:31,843 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 01:25:31,852 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 01:25:31,853 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 01:25:34,468 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 01:25:34,470 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 01:25:34,553 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 01:25:34,566 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 01:25:35,511 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 01:25:35,512 - error_module - INFO - -----------------------------------------
+2025-11-22 01:25:35,512 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 01:25:35,513 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 01:25:35,513 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 01:25:35,513 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 01:25:35,514 - error_module - INFO - -----------------------------------------
+2025-11-22 01:25:35,514 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 01:25:43,176 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 01:25:43,178 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 01:25:45,403 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 01:25:45,410 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 01:25:45,410 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 01:25:48,470 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 01:25:48,470 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 01:25:48,543 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 01:25:48,551 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 01:25:49,460 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 01:25:49,461 - error_module - INFO - -----------------------------------------
+2025-11-22 01:25:49,461 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 01:25:49,461 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 01:25:49,461 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 01:25:49,462 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 01:25:49,462 - error_module - INFO - -----------------------------------------
+2025-11-22 01:25:49,462 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 01:26:03,011 - error_module - INFO - 🔐 Tentativa de login:  a***n@***.com
+2025-11-22 01:26:04,333 - error_module - INFO - Token salvo no cache. Chave: *****************************************************************************************************************************
+2025-11-22 05:24:45,001 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 05:24:45,033 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 05:24:45,033 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 05:24:48,336 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-22 05:24:50,154 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 05:24:50,161 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 05:24:50,162 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 05:24:53,134 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 05:24:53,134 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 05:24:53,288 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 05:24:54,070 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 05:24:56,936 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 05:24:56,937 - error_module - INFO - -----------------------------------------
+2025-11-22 05:24:56,937 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 05:24:56,937 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 05:24:56,938 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 05:24:56,938 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 05:24:56,939 - error_module - INFO - -----------------------------------------
+2025-11-22 05:24:56,939 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 05:25:49,271 - error_module - INFO - Funcionario 1 da EMPRESA Dev orbit validado via JWT.
+2025-11-22 05:27:46,136 - error_module - INFO - Funcionario 1 da EMPRESA Dev orbit validado via JWT.
+2025-11-22 05:27:47,126 - error_module - INFO - 🔍 Buscando caixa aberto do funcionário - Func ID: 1, Empresa ID: 1
+2025-11-22 05:44:32,383 - error_module - INFO - Tentativa de login: d******t@*****.com
+2025-11-22 05:44:32,392 - error_module - INFO - Diagnostico - Senha DB (employee): ************************************************************
+2025-11-22 05:44:32,392 - error_module - INFO - Diagnostico - Senha input: ****
+2025-11-22 05:44:33,734 - error_module - INFO - Credenciais validas para FUNCIONARIO Dev obirt - Empresa: Dev orbit
+2025-11-22 05:44:33,734 - error_module - INFO - Iniciando abertura de caixa - Func ID: 2, Empresa ID: 1
+2025-11-22 05:44:33,738 - error_module - INFO - Funcionario encontrado: Dev obirt - Email: d******t@*****.com
+2025-11-22 05:44:34,262 - error_module - INFO - Caixa aberto com sucesso para Dev obirt (funcionario) - Caixa ID: 304, Saldo: R$ 0.00
+2025-11-22 05:44:34,263 - error_module - INFO - Caixa ja estava aberto para Dev obirt: ID 304
+2025-11-22 05:44:34,265 - error_module - INFO - Tokens gerados para Dev obirt - Access Token: ***********************************************************************************************************************
+2025-11-22 05:44:34,517 - error_module - DEBUG - Cache salvo no Redis para Dev obirt
+2025-11-22 05:44:34,518 - error_module - INFO - Login finalizado com sucesso para Dev obirt (funcionario) - Caixa Status: ja_aberto
+2025-11-22 05:45:21,143 - error_module - INFO - 🔐 Tentativa de login:  d******t@*****.com
+2025-11-22 05:45:22,196 - error_module - INFO - Token salvo no cache. Chave: *****************************************************************************************************************************
+2025-11-22 05:45:30,329 - error_module - INFO - Funcionario 2 da EMPRESA Dev orbit validado via JWT.
+2025-11-22 05:45:48,660 - error_module - INFO - Funcionario 2 da EMPRESA Dev orbit validado via JWT.
+2025-11-22 05:45:48,928 - error_module - INFO - 🔍 Buscando caixa aberto do funcionário - Func ID: 2, Empresa ID: 1
+2025-11-22 05:46:11,975 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 05:46:11,976 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 05:55:07,885 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 05:55:07,894 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 05:55:07,894 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 05:55:33,016 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 05:55:33,024 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 05:55:33,024 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 05:55:33,025 - error_module - INFO - 🚀 Iniciando migração para adicionar coluna caixa_id...
+2025-11-22 05:55:33,026 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 05:55:33,026 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 05:55:33,270 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 05:55:33,325 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 05:55:34,249 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 05:55:34,249 - error_module - INFO - -----------------------------------------
+2025-11-22 05:55:34,249 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 05:55:34,250 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 05:55:34,250 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 05:55:34,251 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 05:55:34,251 - error_module - INFO - -----------------------------------------
+2025-11-22 05:55:34,251 - error_module - ERROR - ❌ Erro durante a migração: name 'Tortoise' is not defined
+2025-11-22 05:55:34,253 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 05:55:34,254 - error_module - ERROR - ❌ Migração falhou!
+2025-11-22 06:00:03,496 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 06:00:03,503 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 06:00:03,503 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 06:00:36,987 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 06:00:36,994 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 06:00:36,995 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 06:01:45,081 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 06:01:45,092 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 06:01:45,093 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 06:01:47,278 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-22 06:01:49,200 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 06:01:49,208 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 06:01:49,209 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 06:01:51,592 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 06:01:51,592 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 06:01:51,780 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 06:01:51,851 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 06:01:52,724 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 06:01:52,725 - error_module - INFO - -----------------------------------------
+2025-11-22 06:01:52,725 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 06:01:52,725 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 06:01:52,726 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 06:01:52,726 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 06:01:52,726 - error_module - INFO - -----------------------------------------
+2025-11-22 06:01:52,727 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 06:01:52,727 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 06:01:52,727 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 06:01:52,750 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 06:01:52,788 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 06:01:53,686 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 06:01:53,686 - error_module - INFO - -----------------------------------------
+2025-11-22 06:01:53,687 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 06:01:53,687 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 06:01:53,688 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 06:01:53,688 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 06:01:53,689 - error_module - INFO - -----------------------------------------
+2025-11-22 06:01:53,689 - error_module - ERROR - ❌ Erro: name 'Tortoise' is not defined
+2025-11-22 06:01:53,690 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 06:02:21,827 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 06:02:21,829 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 06:02:24,080 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 06:02:24,087 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 06:02:24,087 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 06:02:26,918 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 06:02:26,920 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 06:02:27,150 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 06:02:27,240 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 06:02:28,326 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 06:02:28,326 - error_module - INFO - -----------------------------------------
+2025-11-22 06:02:28,327 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 06:02:28,327 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 06:02:28,328 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 06:02:28,328 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 06:02:28,328 - error_module - INFO - -----------------------------------------
+2025-11-22 06:02:28,329 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 06:04:07,478 - error_module - INFO - Funcionario 2 da EMPRESA Dev orbit validado via JWT.
+2025-11-22 06:04:07,987 - error_module - INFO - 🔍 Buscando caixa aberto do funcionário - Func ID: 2, Empresa ID: 1
+2025-11-22 06:04:54,834 - error_module - INFO - Funcionario 2 da EMPRESA Dev orbit validado via JWT.
+2025-11-22 06:05:04,515 - error_module - INFO - Funcionario 2 da EMPRESA Dev orbit validado via JWT.
+2025-11-22 06:05:04,928 - error_module - INFO - 🔍 Buscando caixa aberto do funcionário - Func ID: 2, Empresa ID: 1
+2025-11-22 06:08:46,051 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 06:08:46,052 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 06:15:30,562 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 06:15:30,569 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 06:15:30,570 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 06:15:32,764 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-22 06:15:34,630 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 06:15:34,639 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 06:15:34,640 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 06:15:36,904 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 06:15:36,905 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 06:15:37,052 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 06:15:37,124 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 06:15:38,390 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 06:15:38,391 - error_module - INFO - -----------------------------------------
+2025-11-22 06:15:38,391 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 06:15:38,392 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 06:15:38,392 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 06:15:38,393 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 06:15:38,393 - error_module - INFO - -----------------------------------------
+2025-11-22 06:15:38,395 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 06:15:46,021 - error_module - INFO - Funcionario 2 da EMPRESA Dev orbit validado via JWT.
+2025-11-22 06:15:46,520 - error_module - INFO - 🔍 Buscando caixa aberto do funcionário - Func ID: 2, Empresa ID: 1
+2025-11-22 06:17:15,153 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 06:17:15,154 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 06:17:17,354 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 06:17:17,366 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 06:17:17,366 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 06:17:20,343 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 06:17:20,346 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 06:17:20,602 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 06:17:20,673 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 06:17:21,806 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 06:17:21,808 - error_module - INFO - -----------------------------------------
+2025-11-22 06:17:21,809 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 06:17:21,809 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 06:17:21,812 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 06:17:21,812 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 06:17:21,812 - error_module - INFO - -----------------------------------------
+2025-11-22 06:17:21,815 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 06:17:22,227 - error_module - INFO - Funcionario 2 da EMPRESA Dev orbit validado via JWT.
+2025-11-22 06:17:22,508 - error_module - INFO - 🔍 Buscando caixa aberto do funcionário - Func ID: 2, Empresa ID: 1
+2025-11-22 06:17:58,012 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 06:17:58,016 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 06:18:00,034 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 06:18:00,045 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 06:18:00,046 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 06:18:02,830 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 06:18:02,831 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 06:18:02,992 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 06:18:03,194 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 06:18:04,130 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 06:18:04,131 - error_module - INFO - -----------------------------------------
+2025-11-22 06:18:04,131 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 06:18:04,134 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 06:18:04,137 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 06:18:04,138 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 06:18:04,138 - error_module - INFO - -----------------------------------------
+2025-11-22 06:18:04,140 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 06:18:05,603 - error_module - INFO - Funcionario 2 da EMPRESA Dev orbit validado via JWT.
+2025-11-22 06:18:05,893 - error_module - INFO - 🔍 Buscando caixa aberto do funcionário - Func ID: 2, Empresa ID: 1
+2025-11-22 06:18:31,075 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 06:18:31,076 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 06:18:33,059 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 06:18:33,066 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 06:18:33,066 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 06:18:35,852 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 06:18:35,852 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 06:18:35,999 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 06:18:36,393 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 06:18:39,792 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 06:18:39,793 - error_module - INFO - -----------------------------------------
+2025-11-22 06:18:39,793 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 06:18:39,794 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 06:18:39,794 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 06:18:39,794 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 06:18:39,795 - error_module - INFO - -----------------------------------------
+2025-11-22 06:18:39,795 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 06:21:40,298 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 06:21:40,301 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 06:21:42,356 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 06:21:42,369 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 06:21:42,370 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 06:21:45,138 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 06:21:45,139 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 06:21:45,297 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 06:21:45,465 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 06:21:46,568 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 06:21:46,570 - error_module - INFO - -----------------------------------------
+2025-11-22 06:21:46,571 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 06:21:46,571 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 06:21:46,571 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 06:21:46,573 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 06:21:46,573 - error_module - INFO - -----------------------------------------
+2025-11-22 06:21:46,574 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 06:21:48,277 - error_module - INFO - Funcionario 2 da EMPRESA Dev orbit validado via JWT.
+2025-11-22 06:22:34,907 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 06:22:34,907 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 06:22:36,854 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 06:22:36,862 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 06:22:36,862 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 06:22:39,310 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 06:22:39,310 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 06:22:39,457 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 06:22:39,535 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 06:22:40,382 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 06:22:40,382 - error_module - INFO - -----------------------------------------
+2025-11-22 06:22:40,383 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 06:22:40,384 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 06:22:40,385 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 06:22:40,386 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 06:22:40,386 - error_module - INFO - -----------------------------------------
+2025-11-22 06:22:40,386 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 06:22:46,746 - error_module - INFO - Funcionario 2 da EMPRESA Dev orbit validado via JWT.
+2025-11-22 06:22:47,029 - error_module - INFO - 🔍 Buscando caixa aberto do funcionário - Func ID: 2, Empresa ID: 1
+2025-11-22 06:25:21,322 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 06:25:21,326 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 06:25:23,342 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 06:25:23,353 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 06:25:23,353 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 06:25:26,394 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 06:25:26,396 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 06:25:26,709 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 06:25:26,833 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 06:25:27,747 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 06:25:27,748 - error_module - INFO - -----------------------------------------
+2025-11-22 06:25:27,749 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 06:25:27,749 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 06:25:27,750 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 06:25:27,750 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 06:25:27,751 - error_module - INFO - -----------------------------------------
+2025-11-22 06:25:27,753 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 06:26:04,609 - error_module - INFO - Tentativa de login: d******t@*****.com
+2025-11-22 06:26:04,778 - error_module - INFO - Diagnostico - Senha DB (employee): ************************************************************
+2025-11-22 06:26:04,781 - error_module - INFO - Diagnostico - Senha input: ****
+2025-11-22 06:26:06,170 - error_module - INFO - Credenciais validas para FUNCIONARIO Dev obirt - Empresa: Dev orbit
+2025-11-22 06:26:06,171 - error_module - INFO - Iniciando abertura de caixa - Func ID: 2, Empresa ID: 1
+2025-11-22 06:26:06,174 - error_module - INFO - Funcionario encontrado: Dev obirt - Email: d******t@*****.com
+2025-11-22 06:26:06,199 - error_module - WARNING - Caixa ja esta aberto para Dev obirt - Caixa ID: 304
+2025-11-22 06:26:06,200 - error_module - INFO - Caixa ja estava aberto para Dev obirt: ID 304
+2025-11-22 06:26:06,217 - error_module - INFO - Tokens gerados para Dev obirt - Access Token: ***********************************************************************************************************************
+2025-11-22 06:26:06,231 - error_module - DEBUG - Cache salvo no Redis para Dev obirt
+2025-11-22 06:26:06,231 - error_module - INFO - Login finalizado com sucesso para Dev obirt (funcionario) - Caixa Status: ja_aberto
+2025-11-22 06:26:56,661 - error_module - INFO - 🔐 Tentativa de login:  d******t@*****.com
+2025-11-22 06:26:57,778 - error_module - INFO - Token salvo no cache. Chave: *****************************************************************************************************************************
+2025-11-22 06:27:29,982 - error_module - INFO - Funcionario 2 da EMPRESA Dev orbit validado via JWT.
+2025-11-22 06:28:43,604 - error_module - INFO - Funcionario 2 da EMPRESA Dev orbit validado via JWT.
+2025-11-22 06:28:43,867 - error_module - INFO - 🔍 Buscando caixa aberto do funcionário - Func ID: 2, Empresa ID: 1
+2025-11-22 06:36:12,012 - error_module - INFO - Tentativa de login: d******t@*****.com
+2025-11-22 06:36:12,022 - error_module - INFO - Diagnostico - Senha DB (employee): ************************************************************
+2025-11-22 06:36:12,023 - error_module - INFO - Diagnostico - Senha input: ****
+2025-11-22 06:36:13,069 - error_module - INFO - Credenciais validas para FUNCIONARIO Dev obirt - Empresa: Dev orbit
+2025-11-22 06:36:13,070 - error_module - INFO - Iniciando abertura de caixa - Func ID: 2, Empresa ID: 1
+2025-11-22 06:36:13,098 - error_module - INFO - Funcionario encontrado: Dev obirt - Email: d******t@*****.com
+2025-11-22 06:36:13,107 - error_module - WARNING - Caixa ja esta aberto para Dev obirt - Caixa ID: 304
+2025-11-22 06:36:13,107 - error_module - INFO - Caixa ja estava aberto para Dev obirt: ID 304
+2025-11-22 06:36:13,108 - error_module - INFO - Tokens gerados para Dev obirt - Access Token: ***********************************************************************************************************************
+2025-11-22 06:36:13,110 - error_module - DEBUG - Cache salvo no Redis para Dev obirt
+2025-11-22 06:36:13,110 - error_module - INFO - Login finalizado com sucesso para Dev obirt (funcionario) - Caixa Status: ja_aberto
+2025-11-22 06:42:15,513 - error_module - INFO - Funcionario 2 da EMPRESA Dev orbit validado via JWT.
+2025-11-22 06:42:15,827 - error_module - INFO - 🔍 Buscando caixa aberto do funcionário - Func ID: 2, Empresa ID: 1
+2025-11-22 06:43:08,373 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 06:43:08,374 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 06:48:27,012 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 06:48:27,019 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 06:48:27,020 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 06:48:29,509 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-22 06:48:31,443 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 06:48:31,450 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 06:48:31,451 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 06:48:33,816 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 06:48:33,817 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 06:48:33,961 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 06:48:34,009 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 06:48:35,096 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 06:48:35,097 - error_module - INFO - -----------------------------------------
+2025-11-22 06:48:35,097 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 06:48:35,098 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 06:48:35,098 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 06:48:35,099 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 06:48:35,099 - error_module - INFO - -----------------------------------------
+2025-11-22 06:48:35,100 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 06:48:45,512 - error_module - INFO - Funcionario 2 da EMPRESA Dev orbit validado via JWT.
+2025-11-22 06:48:45,768 - error_module - INFO - 🔍 Buscando caixa aberto do funcionário - Func ID: 2, Empresa ID: 1
+2025-11-22 06:52:23,628 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 06:52:23,629 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 06:52:27,037 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 06:52:27,048 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 06:52:27,048 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 06:52:29,822 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 06:52:29,822 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 06:52:29,976 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 06:52:30,004 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 06:52:31,108 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 06:52:31,108 - error_module - INFO - -----------------------------------------
+2025-11-22 06:52:31,109 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 06:52:31,109 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 06:52:31,110 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 06:52:31,110 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 06:52:31,111 - error_module - INFO - -----------------------------------------
+2025-11-22 06:52:31,111 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 06:52:53,119 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 06:52:53,121 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 06:52:55,103 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 06:52:55,110 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 06:52:55,110 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 06:52:57,786 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 06:52:57,787 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 06:52:57,963 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 06:52:58,024 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 06:52:58,908 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 06:52:58,908 - error_module - INFO - -----------------------------------------
+2025-11-22 06:52:58,909 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 06:52:58,909 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 06:52:58,910 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 06:52:58,910 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 06:52:58,911 - error_module - INFO - -----------------------------------------
+2025-11-22 06:52:58,911 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 06:54:11,152 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 06:54:11,152 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 06:54:13,240 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 06:54:13,248 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 06:54:13,248 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 06:54:15,653 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 06:54:15,654 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 06:54:15,851 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 06:54:15,901 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 06:54:17,012 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 06:54:17,012 - error_module - INFO - -----------------------------------------
+2025-11-22 06:54:17,013 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 06:54:17,014 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 06:54:17,014 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 06:54:17,015 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 06:54:17,017 - error_module - INFO - -----------------------------------------
+2025-11-22 06:54:17,017 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 06:54:27,831 - error_module - INFO - Funcionario 2 da EMPRESA Dev orbit validado via JWT.
+2025-11-22 06:54:28,087 - error_module - INFO - 🔍 Buscando caixa aberto do funcionário - Func ID: 2, Empresa ID: 1
+2025-11-22 06:55:11,042 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 06:55:11,043 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 06:55:12,974 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 06:55:12,981 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 06:55:12,981 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 06:55:15,937 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 06:55:15,937 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 06:55:16,089 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 06:55:16,132 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 06:55:17,132 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 06:55:17,133 - error_module - INFO - -----------------------------------------
+2025-11-22 06:55:17,133 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 06:55:17,134 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 06:55:17,134 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 06:55:17,135 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 06:55:17,135 - error_module - INFO - -----------------------------------------
+2025-11-22 06:55:17,135 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 06:55:25,468 - error_module - INFO - Funcionario 2 da EMPRESA Dev orbit validado via JWT.
+2025-11-22 06:55:25,816 - error_module - INFO - 🔍 Buscando caixa aberto do funcionário - Func ID: 2, Empresa ID: 1
+2025-11-22 06:56:10,641 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 06:56:10,643 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 06:56:12,673 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 06:56:12,680 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 06:56:12,681 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 06:56:15,112 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 06:56:15,113 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 06:56:15,258 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 06:56:15,329 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 06:56:16,278 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 06:56:16,278 - error_module - INFO - -----------------------------------------
+2025-11-22 06:56:16,279 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 06:56:16,279 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 06:56:16,279 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 06:56:16,280 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 06:56:16,280 - error_module - INFO - -----------------------------------------
+2025-11-22 06:56:16,280 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 06:56:22,667 - error_module - INFO - Funcionario 2 da EMPRESA Dev orbit validado via JWT.
+2025-11-22 06:56:23,057 - error_module - INFO - 🔍 Buscando caixa aberto do funcionário - Func ID: 2, Empresa ID: 1
+2025-11-22 08:34:38,546 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 08:34:38,581 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 08:34:38,586 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 08:34:41,940 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-22 08:34:45,870 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 08:34:45,880 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 08:34:45,880 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 08:34:49,363 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 08:34:49,364 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 08:34:49,547 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 08:34:49,610 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 08:34:51,006 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 08:34:51,006 - error_module - INFO - -----------------------------------------
+2025-11-22 08:34:51,006 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 08:34:51,006 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 08:34:51,007 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 08:34:51,007 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 08:34:51,007 - error_module - INFO - -----------------------------------------
+2025-11-22 08:34:51,007 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 08:38:13,828 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 08:38:13,831 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 08:38:15,840 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 08:38:15,848 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 08:38:15,849 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 08:38:18,445 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 08:38:18,445 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 08:38:18,597 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 08:38:18,677 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 08:38:19,908 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 08:38:19,909 - error_module - INFO - -----------------------------------------
+2025-11-22 08:38:19,910 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 08:38:19,910 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 08:38:19,911 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 08:38:19,911 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 08:38:19,912 - error_module - INFO - -----------------------------------------
+2025-11-22 08:38:19,912 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 08:47:16,674 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 08:47:16,697 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 10:26:59,232 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 10:26:59,271 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 10:26:59,271 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 10:28:14,221 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 10:28:14,228 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 10:28:14,229 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 10:28:52,612 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 10:28:52,620 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 10:28:52,621 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 10:30:47,774 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 10:30:47,781 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 10:30:47,781 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 10:31:31,707 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 10:31:31,715 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 10:31:31,715 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 10:31:34,184 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-22 10:31:35,985 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 10:31:35,992 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 10:31:35,993 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 10:31:38,537 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 10:31:38,538 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 10:31:38,716 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 10:31:41,954 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 10:31:46,777 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 10:31:46,777 - error_module - INFO - -----------------------------------------
+2025-11-22 10:31:46,778 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 10:31:46,778 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 10:31:46,779 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 10:31:46,779 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 10:31:46,779 - error_module - INFO - -----------------------------------------
+2025-11-22 10:31:46,780 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 10:39:02,316 - error_module - INFO - Tentativa de login: d******t@*****.com
+2025-11-22 10:39:02,870 - error_module - INFO - Diagnostico - Senha DB (employee): ************************************************************
+2025-11-22 10:39:02,871 - error_module - INFO - Diagnostico - Senha input: ****
+2025-11-22 10:39:03,979 - error_module - INFO - Credenciais validas para FUNCIONARIO Dev obirt - Empresa: Dev orbit
+2025-11-22 10:39:03,979 - error_module - INFO - Iniciando abertura de caixa - Func ID: 2, Empresa ID: 1
+2025-11-22 10:39:04,020 - error_module - INFO - Funcionario encontrado: Dev obirt - Email: d******t@*****.com
+2025-11-22 10:39:04,180 - error_module - WARNING - Caixa ja esta aberto para Dev obirt - Caixa ID: 304
+2025-11-22 10:39:04,181 - error_module - INFO - Caixa ja estava aberto para Dev obirt: ID 304
+2025-11-22 10:39:04,239 - error_module - INFO - Tokens gerados para Dev obirt - Access Token: ***********************************************************************************************************************
+2025-11-22 10:39:04,364 - error_module - DEBUG - Cache salvo no Redis para Dev obirt
+2025-11-22 10:39:04,364 - error_module - INFO - Login finalizado com sucesso para Dev obirt (funcionario) - Caixa Status: ja_aberto
+2025-11-22 10:45:43,643 - error_module - ERROR - Falha na decodificacao/validacao do token: Not enough segments
+2025-11-22 10:46:24,276 - error_module - ERROR - Falha na decodificacao/validacao do token: Not enough segments
+2025-11-22 10:46:39,257 - error_module - INFO - Funcionario 2 da EMPRESA Dev orbit validado via JWT.
+2025-11-22 10:51:45,596 - error_module - INFO - Funcionario 2 da EMPRESA Dev orbit validado via JWT.
+2025-11-22 10:52:45,945 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 10:52:45,946 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 10:52:47,719 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 10:52:47,726 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 10:52:47,727 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 10:52:49,979 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 10:52:49,979 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 10:52:50,125 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 10:52:50,622 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 10:52:52,461 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 10:52:52,462 - error_module - INFO - -----------------------------------------
+2025-11-22 10:52:52,462 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 10:52:52,462 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 10:52:52,463 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 10:52:52,463 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 10:52:52,463 - error_module - INFO - -----------------------------------------
+2025-11-22 10:52:52,464 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 10:53:00,505 - error_module - INFO - Funcionario 2 da EMPRESA Dev orbit validado via JWT.
+2025-11-22 10:53:02,033 - error_module - INFO - 🔍 Buscando caixa aberto do funcionário - Func ID: 2, Empresa ID: 1
+2025-11-22 11:07:20,734 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 11:07:20,809 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 11:07:23,378 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 11:07:23,385 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 11:07:23,386 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 11:07:26,995 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 11:07:26,995 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 11:07:27,296 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 11:07:27,982 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 11:07:31,323 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 11:07:31,324 - error_module - INFO - -----------------------------------------
+2025-11-22 11:07:31,324 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 11:07:31,325 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 11:07:31,325 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 11:07:31,327 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 11:07:31,328 - error_module - INFO - -----------------------------------------
+2025-11-22 11:07:31,328 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 11:10:10,751 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 11:10:10,752 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 11:10:12,969 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 11:10:12,977 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 11:10:12,977 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 11:10:15,475 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 11:10:15,475 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 11:10:15,622 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 11:10:15,938 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 11:10:18,330 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 11:10:18,331 - error_module - INFO - -----------------------------------------
+2025-11-22 11:10:18,331 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 11:10:18,331 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 11:10:18,332 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 11:10:18,332 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 11:10:18,332 - error_module - INFO - -----------------------------------------
+2025-11-22 11:10:18,333 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 11:11:02,188 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 11:11:02,191 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 11:11:04,401 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 11:11:04,408 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 11:11:04,409 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 11:11:06,886 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 11:11:06,886 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 11:11:07,043 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 11:11:07,367 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 11:11:09,125 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 11:11:09,126 - error_module - INFO - -----------------------------------------
+2025-11-22 11:11:09,127 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 11:11:09,127 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 11:11:09,129 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 11:11:09,130 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 11:11:09,130 - error_module - INFO - -----------------------------------------
+2025-11-22 11:11:09,130 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 11:11:20,211 - error_module - INFO - Funcionario 2 da EMPRESA Dev orbit validado via JWT.
+2025-11-22 11:20:43,196 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 11:20:43,229 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 11:20:45,315 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 11:20:45,324 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 11:20:45,325 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 11:20:48,919 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 11:20:48,920 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 11:20:50,033 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 11:20:50,653 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 11:20:54,999 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 11:20:55,000 - error_module - INFO - -----------------------------------------
+2025-11-22 11:20:55,000 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 11:20:55,000 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 11:20:55,001 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 11:20:55,001 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 11:20:55,001 - error_module - INFO - -----------------------------------------
+2025-11-22 11:20:55,001 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 11:21:31,938 - error_module - INFO - Funcionario 2 da EMPRESA Dev orbit validado via JWT.
+2025-11-22 11:21:41,034 - error_module - INFO - Funcionario 2 da EMPRESA Dev orbit validado via JWT.
+2025-11-22 11:23:56,665 - error_module - INFO - Funcionario 2 da EMPRESA Dev orbit validado via JWT.
+2025-11-22 11:27:07,812 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 11:27:07,812 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 11:27:10,667 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 11:27:10,675 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 11:27:10,675 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 11:27:13,991 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 11:27:13,991 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 11:27:14,225 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 11:27:14,375 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 11:27:16,792 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 11:27:16,792 - error_module - INFO - -----------------------------------------
+2025-11-22 11:27:16,793 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 11:27:16,793 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 11:27:16,796 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 11:27:16,796 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 11:27:16,796 - error_module - INFO - -----------------------------------------
+2025-11-22 11:27:16,796 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 11:28:08,767 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 11:28:08,767 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 11:28:10,970 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 11:28:10,981 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 11:28:10,984 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 11:28:13,471 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 11:28:13,472 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 11:28:13,617 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 11:28:13,701 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 11:28:15,597 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 11:28:15,598 - error_module - INFO - -----------------------------------------
+2025-11-22 11:28:15,598 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 11:28:15,599 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 11:28:15,599 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 11:28:15,600 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 11:28:15,600 - error_module - INFO - -----------------------------------------
+2025-11-22 11:28:15,600 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 11:29:42,283 - error_module - INFO - 🔐 Tentativa de login:  d*v@*****.com
+2025-11-22 11:29:42,373 - error_module - WARNING - Usuário não encontrado: d*v@*****.com
+2025-11-22 11:29:58,340 - error_module - INFO - 🔐 Tentativa de login:  d******t@*****.com
+2025-11-22 11:29:59,905 - error_module - WARNING - Senha incorreta para funcionário: devorbit@gmail.com
+2025-11-22 11:30:29,558 - error_module - INFO - 🔐 Tentativa de login:  g*******n@*****.com
+2025-11-22 11:30:29,572 - error_module - WARNING - Usuário não encontrado: g*******n@*****.com
+2025-11-22 11:31:01,972 - error_module - INFO - 🔐 Tentativa de login:  a***n@*****.com
+2025-11-22 11:31:02,006 - error_module - WARNING - Usuário não encontrado: a***n@*****.com
+2025-11-22 11:33:17,163 - error_module - INFO - 🔐 Tentativa de login:  a***n@***.com
+2025-11-22 11:33:18,771 - error_module - INFO - Token salvo no cache. Chave: *****************************************************************************************************************************
+2025-11-22 11:33:46,493 - error_module - INFO - 🔐 Tentativa de login:  a***n@***.com
+2025-11-22 11:33:47,529 - error_module - WARNING - Senha incorreta para admin: a***n@***.com
+2025-11-22 11:33:56,963 - error_module - INFO - 🔐 Tentativa de login:  a***n@***.com
+2025-11-22 11:33:57,950 - error_module - INFO - Token salvo no cache. Chave: *****************************************************************************************************************************
+2025-11-22 11:35:09,298 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 11:35:09,299 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 11:35:11,564 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 11:35:11,574 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 11:35:11,575 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-22 11:35:14,661 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-22 11:35:14,663 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-22 11:35:14,894 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-22 11:35:14,958 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-22 11:35:16,228 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-22 11:35:16,231 - error_module - INFO - -----------------------------------------
+2025-11-22 11:35:16,232 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-22 11:35:16,232 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-22 11:35:16,232 - error_module - INFO -    - Host: localhost:3306
+2025-11-22 11:35:16,234 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-22 11:35:16,234 - error_module - INFO - -----------------------------------------
+2025-11-22 11:35:16,234 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-22 11:36:27,191 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-22 11:36:27,194 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-22 11:36:29,160 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-22 11:36:29,168 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-22 11:36:29,168 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 05:06:58,161 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 05:06:58,191 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 05:06:58,192 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 05:09:17,546 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 05:09:17,555 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 05:09:17,556 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 05:10:42,776 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 05:10:42,783 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 05:10:42,783 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 05:15:17,067 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 05:15:17,077 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 05:15:17,078 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 05:15:19,311 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-23 05:15:21,180 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 05:15:21,188 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 05:15:21,188 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 05:15:25,488 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 05:15:25,488 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 05:15:25,864 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 05:15:26,398 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 05:15:28,986 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 05:15:28,986 - error_module - INFO - -----------------------------------------
+2025-11-23 05:15:28,986 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 05:15:28,987 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 05:15:28,988 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 05:15:28,988 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 05:15:28,989 - error_module - INFO - -----------------------------------------
+2025-11-23 05:15:28,989 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 05:16:19,727 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 05:16:19,729 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 05:16:21,790 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 05:16:21,797 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 05:16:21,798 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 05:16:24,227 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 05:16:24,227 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 05:16:24,375 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 05:16:24,386 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 05:16:26,171 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 05:16:26,171 - error_module - INFO - -----------------------------------------
+2025-11-23 05:16:26,172 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 05:16:26,173 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 05:16:26,173 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 05:16:26,173 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 05:16:26,174 - error_module - INFO - -----------------------------------------
+2025-11-23 05:16:26,174 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 05:17:12,269 - error_module - INFO - 🔐 Tentativa de login:  a***n@***.com
+2025-11-23 05:17:13,779 - error_module - INFO - Token salvo no cache. Chave: *****************************************************************************************************************************
+2025-11-23 05:17:40,917 - error_module - INFO - 🔐 Tentativa de login:  a***n@***.com
+2025-11-23 05:17:41,968 - error_module - INFO - Token salvo no cache. Chave: *****************************************************************************************************************************
+2025-11-23 05:20:14,906 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 05:20:14,906 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 05:20:17,235 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 05:20:17,243 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 05:20:17,244 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 05:20:19,737 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 05:20:19,738 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 05:20:19,885 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 05:20:19,894 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 05:20:20,827 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 05:20:20,828 - error_module - INFO - -----------------------------------------
+2025-11-23 05:20:20,828 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 05:20:20,829 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 05:20:20,830 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 05:20:20,830 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 05:20:20,831 - error_module - INFO - -----------------------------------------
+2025-11-23 05:20:20,831 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 05:21:21,520 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 05:21:21,523 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 05:21:23,572 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 05:21:23,579 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 05:21:23,580 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 05:21:25,905 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 05:21:25,905 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 05:21:26,052 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 05:21:26,060 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 05:21:26,983 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 05:21:26,984 - error_module - INFO - -----------------------------------------
+2025-11-23 05:21:26,984 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 05:21:26,984 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 05:21:26,985 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 05:21:26,985 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 05:21:26,985 - error_module - INFO - -----------------------------------------
+2025-11-23 05:21:26,986 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 05:26:18,585 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 05:26:18,586 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 05:26:20,542 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 05:26:20,550 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 05:26:20,550 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 05:26:22,962 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 05:26:22,963 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 05:26:23,108 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 05:26:23,117 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 05:26:24,096 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 05:26:24,097 - error_module - INFO - -----------------------------------------
+2025-11-23 05:26:24,097 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 05:26:24,098 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 05:26:24,098 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 05:26:24,098 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 05:26:24,099 - error_module - INFO - -----------------------------------------
+2025-11-23 05:26:24,099 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 05:27:52,513 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 05:27:52,514 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 05:27:54,461 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 05:27:54,469 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 05:27:54,469 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 05:27:57,306 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 05:27:57,307 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 05:27:57,612 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 05:27:57,647 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 05:27:58,628 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 05:27:58,629 - error_module - INFO - -----------------------------------------
+2025-11-23 05:27:58,629 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 05:27:58,630 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 05:27:58,630 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 05:27:58,631 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 05:27:58,631 - error_module - INFO - -----------------------------------------
+2025-11-23 05:27:58,632 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 05:28:16,631 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 05:28:16,632 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 05:28:18,531 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 05:28:18,539 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 05:28:18,539 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 05:28:20,917 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 05:28:20,917 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 05:28:21,070 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 05:28:21,088 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 05:28:22,021 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 05:28:22,021 - error_module - INFO - -----------------------------------------
+2025-11-23 05:28:22,022 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 05:28:22,023 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 05:28:22,023 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 05:28:22,024 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 05:28:22,024 - error_module - INFO - -----------------------------------------
+2025-11-23 05:28:22,024 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 05:34:35,630 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 05:34:35,632 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 05:34:37,546 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 05:34:37,554 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 05:34:37,554 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 05:34:40,010 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 05:34:40,010 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 05:34:40,165 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 05:34:40,175 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 05:34:41,166 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 05:34:41,167 - error_module - INFO - -----------------------------------------
+2025-11-23 05:34:41,167 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 05:34:41,168 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 05:34:41,168 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 05:34:41,168 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 05:34:41,169 - error_module - INFO - -----------------------------------------
+2025-11-23 05:34:41,171 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 05:34:41,778 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 05:34:41,778 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 05:34:43,717 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 05:34:43,727 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 05:34:43,728 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 05:34:46,041 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 05:34:46,041 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 05:34:46,186 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 05:34:46,196 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 05:34:47,145 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 05:34:47,145 - error_module - INFO - -----------------------------------------
+2025-11-23 05:34:47,145 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 05:34:47,147 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 05:34:47,147 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 05:34:47,147 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 05:34:47,147 - error_module - INFO - -----------------------------------------
+2025-11-23 05:34:47,148 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 05:36:06,815 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 05:36:06,815 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 05:36:09,004 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 05:36:09,011 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 05:36:09,012 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 05:36:11,671 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 05:36:11,672 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 05:36:11,829 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 05:36:11,840 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 05:36:12,782 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 05:36:12,783 - error_module - INFO - -----------------------------------------
+2025-11-23 05:36:12,784 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 05:36:12,784 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 05:36:12,785 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 05:36:12,786 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 05:36:12,786 - error_module - INFO - -----------------------------------------
+2025-11-23 05:36:12,787 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 05:36:27,052 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 05:36:27,053 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 05:36:29,106 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 05:36:29,117 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 05:36:29,118 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 05:36:31,556 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 05:36:31,558 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 05:36:31,730 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 05:36:31,737 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 05:36:32,749 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 05:36:32,749 - error_module - INFO - -----------------------------------------
+2025-11-23 05:36:32,750 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 05:36:32,750 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 05:36:32,751 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 05:36:32,751 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 05:36:32,752 - error_module - INFO - -----------------------------------------
+2025-11-23 05:36:32,752 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 05:38:55,208 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 05:38:55,209 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 05:38:57,168 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 05:38:57,178 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 05:38:57,178 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 05:39:00,070 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 05:39:00,072 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 05:39:00,308 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 05:39:00,329 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 05:39:01,328 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 05:39:01,329 - error_module - INFO - -----------------------------------------
+2025-11-23 05:39:01,329 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 05:39:01,329 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 05:39:01,330 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 05:39:01,331 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 05:39:01,331 - error_module - INFO - -----------------------------------------
+2025-11-23 05:39:01,331 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 05:39:48,149 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 05:39:48,150 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 05:39:50,091 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 05:39:50,099 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 05:39:50,099 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 05:39:52,730 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 05:39:52,732 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 05:39:52,894 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 05:39:52,909 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 05:39:53,835 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 05:39:53,835 - error_module - INFO - -----------------------------------------
+2025-11-23 05:39:53,836 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 05:39:53,836 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 05:39:53,836 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 05:39:53,836 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 05:39:53,837 - error_module - INFO - -----------------------------------------
+2025-11-23 05:39:53,837 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 05:44:40,143 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 05:44:40,146 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 05:44:42,187 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 05:44:42,195 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 05:44:42,196 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 05:44:44,807 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 05:44:44,808 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 05:44:44,955 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 05:44:44,963 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 05:44:45,902 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 05:44:45,902 - error_module - INFO - -----------------------------------------
+2025-11-23 05:44:45,903 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 05:44:45,903 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 05:44:45,903 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 05:44:45,903 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 05:44:45,904 - error_module - INFO - -----------------------------------------
+2025-11-23 05:44:45,904 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 05:46:20,144 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 05:46:20,146 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 05:46:22,217 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 05:46:22,224 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 05:46:22,225 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 05:46:24,767 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 05:46:24,767 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 05:46:24,920 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 05:46:24,932 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 05:46:25,896 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 05:46:25,897 - error_module - INFO - -----------------------------------------
+2025-11-23 05:46:25,897 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 05:46:25,898 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 05:46:25,898 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 05:46:25,900 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 05:46:25,901 - error_module - INFO - -----------------------------------------
+2025-11-23 05:46:25,901 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 05:47:45,885 - error_module - INFO - Tentativa de login: a***n@***.com
+2025-11-23 05:47:45,929 - error_module - INFO - Diagnostico - Senha DB (employee): ************************************************************
+2025-11-23 05:47:45,930 - error_module - INFO - Diagnostico - Senha input: ************
+2025-11-23 05:47:47,379 - error_module - WARNING - Senha incorreta para funcionario: a***n@***.com
+2025-11-23 05:48:00,174 - error_module - INFO - Tentativa de login: a***n@***.com
+2025-11-23 05:48:00,186 - error_module - INFO - Diagnostico - Senha DB (employee): ************************************************************
+2025-11-23 05:48:00,187 - error_module - INFO - Diagnostico - Senha input: ****
+2025-11-23 05:48:01,279 - error_module - WARNING - Senha incorreta para funcionario: a***n@***.com
+2025-11-23 05:48:26,188 - error_module - INFO - Tentativa de login: d******t@*****.com
+2025-11-23 05:48:26,227 - error_module - WARNING - Email nao encontrado: d******t@*****.com
+2025-11-23 05:48:37,197 - error_module - INFO - Tentativa de login: d*v@*****.com
+2025-11-23 05:48:37,206 - error_module - WARNING - Email nao encontrado: d*v@*****.com
+2025-11-23 05:48:49,988 - error_module - INFO - Tentativa de login: o***t@*****.com
+2025-11-23 05:48:50,006 - error_module - WARNING - Email nao encontrado: o***t@*****.com
+2025-11-23 05:49:05,552 - error_module - INFO - Tentativa de login: g*******n@*****.com
+2025-11-23 05:49:05,559 - error_module - WARNING - Email nao encontrado: g*******n@*****.com
+2025-11-23 05:49:37,261 - error_module - INFO - Tentativa de login: d*v@*****.com
+2025-11-23 05:49:37,277 - error_module - WARNING - Email nao encontrado: d*v@*****.com
+2025-11-23 05:49:49,202 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 05:49:49,203 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 05:52:16,100 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 05:52:16,136 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 05:52:16,137 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 05:52:19,202 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-23 05:52:22,154 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 05:52:22,161 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 05:52:22,162 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 05:52:24,934 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 05:52:24,935 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 05:52:25,286 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 05:52:25,313 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 05:52:26,206 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 05:52:26,207 - error_module - INFO - -----------------------------------------
+2025-11-23 05:52:26,207 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 05:52:26,207 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 05:52:26,207 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 05:52:26,211 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 05:52:26,211 - error_module - INFO - -----------------------------------------
+2025-11-23 05:52:26,212 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 05:52:31,596 - error_module - INFO - Tentativa de login: a***n@***.com
+2025-11-23 05:52:31,770 - error_module - INFO - Diagnostico - Senha DB (employee): ************************************************************
+2025-11-23 05:52:31,782 - error_module - INFO - Diagnostico - Senha input: ****
+2025-11-23 05:52:33,125 - error_module - WARNING - Senha incorreta para funcionario: a***n@***.com
+2025-11-23 05:52:43,842 - error_module - INFO - Tentativa de login: a***n@***.com
+2025-11-23 05:52:43,852 - error_module - INFO - Diagnostico - Senha DB (employee): ************************************************************
+2025-11-23 05:52:43,852 - error_module - INFO - Diagnostico - Senha input: ************
+2025-11-23 05:52:44,966 - error_module - WARNING - Senha incorreta para funcionario: a***n@***.com
+2025-11-23 05:53:03,986 - error_module - INFO - Tentativa de login: a***n@***.com
+2025-11-23 05:53:04,004 - error_module - INFO - Diagnostico - Senha DB (employee): ************************************************************
+2025-11-23 05:53:04,005 - error_module - INFO - Diagnostico - Senha input: ****
+2025-11-23 05:53:05,369 - error_module - WARNING - Senha incorreta para funcionario: a***n@***.com
+2025-11-23 05:53:14,333 - error_module - INFO - Tentativa de login: a***n@***.com
+2025-11-23 05:53:14,349 - error_module - INFO - Diagnostico - Senha DB (employee): ************************************************************
+2025-11-23 05:53:14,349 - error_module - INFO - Diagnostico - Senha input: ******
+2025-11-23 05:53:15,822 - error_module - WARNING - Senha incorreta para funcionario: a***n@***.com
+2025-11-23 05:53:28,042 - error_module - INFO - Tentativa de login: a***n@***.com
+2025-11-23 05:53:28,054 - error_module - INFO - Diagnostico - Senha DB (employee): ************************************************************
+2025-11-23 05:53:28,055 - error_module - INFO - Diagnostico - Senha input: ****
+2025-11-23 05:53:29,449 - error_module - WARNING - Senha incorreta para funcionario: a***n@***.com
+2025-11-23 05:53:37,181 - error_module - INFO - Tentativa de login: a***n@***.com
+2025-11-23 05:53:37,205 - error_module - INFO - Diagnostico - Senha DB (employee): ************************************************************
+2025-11-23 05:53:37,205 - error_module - INFO - Diagnostico - Senha input: ****
+2025-11-23 05:53:38,349 - error_module - INFO - Credenciais validas para FUNCIONARIO Dev orbit - Empresa: Dev orbit
+2025-11-23 05:53:38,362 - error_module - INFO - Caixa ja estava aberto para Dev orbit: ID 236
+2025-11-23 05:53:38,442 - error_module - INFO - Tokens gerados para Dev orbit - Access Token: ***********************************************************************************************************************
+2025-11-23 05:53:38,445 - error_module - DEBUG - Cache salvo no Redis para Dev orbit
+2025-11-23 05:53:38,446 - error_module - INFO - Login finalizado com sucesso para Dev orbit (funcionario) - Caixa Status: ja_aberto
+2025-11-23 05:54:14,032 - error_module - INFO - 🔐 Tentativa de login:  a***n@***.com
+2025-11-23 05:54:15,184 - error_module - WARNING - Senha incorreta para admin: a***n@***.com
+2025-11-23 05:54:24,194 - error_module - INFO - 🔐 Tentativa de login:  a***n@***.com
+2025-11-23 05:54:25,292 - error_module - WARNING - Senha incorreta para admin: a***n@***.com
+2025-11-23 05:54:33,270 - error_module - INFO - 🔐 Tentativa de login:  a***n@***.com
+2025-11-23 05:54:34,247 - error_module - INFO - Token salvo no cache. Chave: *****************************************************************************************************************************
+2025-11-23 05:54:58,510 - error_module - INFO - Funcionario 1 da EMPRESA Dev orbit validado via JWT.
+2025-11-23 05:55:12,742 - error_module - INFO - Funcionario 1 da EMPRESA Dev orbit validado via JWT.
+2025-11-23 05:55:38,302 - error_module - INFO - Funcionario 1 da EMPRESA Dev orbit validado via JWT.
+2025-11-23 05:58:45,552 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 05:58:45,557 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 05:58:47,662 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 05:58:47,669 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 05:58:47,670 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 05:58:50,619 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 05:58:50,621 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 05:58:50,774 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 05:58:50,813 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 05:58:51,740 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 05:58:51,741 - error_module - INFO - -----------------------------------------
+2025-11-23 05:58:51,741 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 05:58:51,741 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 05:58:51,742 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 05:58:51,742 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 05:58:51,743 - error_module - INFO - -----------------------------------------
+2025-11-23 05:58:51,743 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 05:59:10,940 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 05:59:10,942 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 05:59:13,093 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 05:59:13,100 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 05:59:13,101 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 05:59:15,729 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 05:59:15,730 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 05:59:15,886 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 05:59:15,914 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 05:59:16,782 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 05:59:16,782 - error_module - INFO - -----------------------------------------
+2025-11-23 05:59:16,782 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 05:59:16,785 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 05:59:16,786 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 05:59:16,786 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 05:59:16,786 - error_module - INFO - -----------------------------------------
+2025-11-23 05:59:16,787 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 06:00:04,783 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 06:00:04,784 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 06:00:06,739 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 06:00:06,749 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 06:00:06,750 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 06:00:09,234 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 06:00:09,235 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 06:00:09,379 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 06:00:09,390 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 06:00:10,355 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 06:00:10,355 - error_module - INFO - -----------------------------------------
+2025-11-23 06:00:10,356 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 06:00:10,358 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 06:00:10,358 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 06:00:10,359 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 06:00:10,359 - error_module - INFO - -----------------------------------------
+2025-11-23 06:00:10,359 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 06:00:49,072 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 06:00:49,073 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 07:07:43,496 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 07:07:43,547 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 07:07:43,547 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 07:07:49,227 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-23 07:07:51,960 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 07:07:51,971 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 07:07:51,971 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 07:07:56,079 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 07:07:56,080 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 07:07:56,659 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 07:07:57,801 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 07:08:00,494 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 07:08:00,495 - error_module - INFO - -----------------------------------------
+2025-11-23 07:08:00,495 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 07:08:00,496 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 07:08:00,497 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 07:08:00,497 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 07:08:00,498 - error_module - INFO - -----------------------------------------
+2025-11-23 07:08:00,499 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 07:09:51,725 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 07:09:51,733 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 07:09:53,755 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 07:09:53,762 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 07:09:53,763 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 07:09:56,323 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 07:09:56,323 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 07:09:56,472 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 07:09:56,882 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 07:09:58,216 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 07:09:58,216 - error_module - INFO - -----------------------------------------
+2025-11-23 07:09:58,217 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 07:09:58,218 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 07:09:58,219 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 07:09:58,219 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 07:09:58,222 - error_module - INFO - -----------------------------------------
+2025-11-23 07:09:58,222 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 07:11:25,290 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 07:11:25,291 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 07:11:27,266 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 07:11:27,280 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 07:11:27,281 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 07:11:29,833 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 07:11:29,834 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 07:11:29,980 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 07:11:30,092 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 07:11:31,472 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 07:11:31,473 - error_module - INFO - -----------------------------------------
+2025-11-23 07:11:31,473 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 07:11:31,474 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 07:11:31,474 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 07:11:31,474 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 07:11:31,474 - error_module - INFO - -----------------------------------------
+2025-11-23 07:11:31,475 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 07:12:43,523 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 07:12:43,523 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 07:12:45,406 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 07:12:45,414 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 07:12:45,414 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 07:12:47,798 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 07:12:47,798 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 07:12:47,956 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 07:12:48,189 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 07:12:49,574 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 07:12:49,576 - error_module - INFO - -----------------------------------------
+2025-11-23 07:12:49,577 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 07:12:49,577 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 07:12:49,577 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 07:12:49,578 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 07:12:49,578 - error_module - INFO - -----------------------------------------
+2025-11-23 07:12:49,579 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 07:15:06,033 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 07:15:06,033 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 07:15:07,960 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 07:15:07,967 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 07:15:07,967 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 07:15:10,314 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 07:15:10,315 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 07:15:10,461 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 07:15:10,545 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 07:15:11,837 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 07:15:11,838 - error_module - INFO - -----------------------------------------
+2025-11-23 07:15:11,839 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 07:15:11,840 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 07:15:11,840 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 07:15:11,841 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 07:15:11,841 - error_module - INFO - -----------------------------------------
+2025-11-23 07:15:11,842 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 07:15:51,201 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 07:15:51,201 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 07:15:53,109 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 07:15:53,116 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 07:15:53,117 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 07:15:55,677 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 07:15:55,677 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 07:15:55,831 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 07:15:55,946 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 07:15:57,334 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 07:15:57,334 - error_module - INFO - -----------------------------------------
+2025-11-23 07:15:57,335 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 07:15:57,336 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 07:15:57,337 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 07:15:57,337 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 07:15:57,338 - error_module - INFO - -----------------------------------------
+2025-11-23 07:15:57,338 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 07:17:03,768 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 07:17:03,769 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 07:17:05,849 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 07:17:05,858 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 07:17:05,859 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 07:17:08,951 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 07:17:08,952 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 07:17:09,414 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 07:17:09,512 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 07:17:11,052 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 07:17:11,053 - error_module - INFO - -----------------------------------------
+2025-11-23 07:17:11,053 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 07:17:11,053 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 07:17:11,054 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 07:17:11,054 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 07:17:11,054 - error_module - INFO - -----------------------------------------
+2025-11-23 07:17:11,055 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 07:17:20,934 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 07:17:20,934 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 07:20:18,860 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 07:20:18,867 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 07:20:18,867 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 07:20:21,025 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-23 07:20:22,872 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 07:20:22,880 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 07:20:22,880 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 07:20:25,695 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 07:20:25,696 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 07:20:25,999 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 07:20:26,084 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 07:20:27,905 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 07:20:27,911 - error_module - INFO - -----------------------------------------
+2025-11-23 07:20:27,912 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 07:20:27,913 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 07:20:27,922 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 07:20:27,930 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 07:20:27,933 - error_module - INFO - -----------------------------------------
+2025-11-23 07:20:27,934 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 07:21:07,344 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 07:21:07,345 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 07:21:09,233 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 07:21:09,240 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 07:21:09,241 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 07:21:11,820 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 07:21:11,821 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 07:21:12,028 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 07:21:12,093 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 07:21:13,398 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 07:21:13,401 - error_module - INFO - -----------------------------------------
+2025-11-23 07:21:13,402 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 07:21:13,402 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 07:21:13,406 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 07:21:13,406 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 07:21:13,406 - error_module - INFO - -----------------------------------------
+2025-11-23 07:21:13,409 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 07:23:26,931 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 07:23:26,932 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 07:23:30,138 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 07:23:30,153 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 07:23:30,154 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 07:23:33,643 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 07:23:33,644 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 07:23:34,156 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 07:23:34,234 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 07:23:35,531 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 07:23:35,535 - error_module - INFO - -----------------------------------------
+2025-11-23 07:23:35,536 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 07:23:35,536 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 07:23:35,540 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 07:23:35,542 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 07:23:35,542 - error_module - INFO - -----------------------------------------
+2025-11-23 07:23:35,542 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 07:24:50,401 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 07:24:50,402 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 07:24:52,356 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 07:24:52,363 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 07:24:52,364 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 07:24:55,404 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 07:24:55,404 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 07:24:55,576 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 07:24:55,617 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 07:24:56,995 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 07:24:56,996 - error_module - INFO - -----------------------------------------
+2025-11-23 07:24:56,997 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 07:24:56,998 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 07:24:57,000 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 07:24:57,000 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 07:24:57,001 - error_module - INFO - -----------------------------------------
+2025-11-23 07:24:57,001 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 07:25:52,846 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 07:25:52,847 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 07:32:04,897 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 07:32:04,905 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 07:32:04,905 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 07:32:08,414 - error_module - INFO - Modo: Desenvolvimento ATIVO
+2025-11-23 07:32:11,957 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 07:32:11,966 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 07:32:11,966 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 07:32:15,344 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 07:32:15,345 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 07:32:15,522 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 07:32:15,617 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 07:32:16,859 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 07:32:16,859 - error_module - INFO - -----------------------------------------
+2025-11-23 07:32:16,860 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 07:32:16,860 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 07:32:16,861 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 07:32:16,861 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 07:32:16,862 - error_module - INFO - -----------------------------------------
+2025-11-23 07:32:16,862 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 07:32:37,597 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 07:32:37,599 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 07:32:39,546 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 07:32:39,553 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 07:32:39,554 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 07:32:41,974 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 07:32:41,974 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 07:32:42,120 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 07:32:42,196 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 07:32:43,334 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 07:32:43,335 - error_module - INFO - -----------------------------------------
+2025-11-23 07:32:43,336 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 07:32:43,336 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 07:32:43,337 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 07:32:43,337 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 07:32:43,338 - error_module - INFO - -----------------------------------------
+2025-11-23 07:32:43,339 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 07:32:44,554 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 07:32:44,557 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 07:32:46,524 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 07:32:46,541 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 07:32:46,541 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 07:32:49,295 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 07:32:49,295 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 07:32:49,480 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 07:32:49,606 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 07:32:50,748 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 07:32:50,749 - error_module - INFO - -----------------------------------------
+2025-11-23 07:32:50,750 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 07:32:50,750 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 07:32:50,751 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 07:32:50,751 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 07:32:50,751 - error_module - INFO - -----------------------------------------
+2025-11-23 07:32:50,752 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 07:33:03,778 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 07:33:03,784 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 07:33:05,747 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 07:33:05,754 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 07:33:05,755 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 07:33:08,256 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 07:33:08,257 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 07:33:08,405 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 07:33:08,468 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 07:33:09,624 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 07:33:09,624 - error_module - INFO - -----------------------------------------
+2025-11-23 07:33:09,625 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 07:33:09,625 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 07:33:09,626 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 07:33:09,626 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 07:33:09,627 - error_module - INFO - -----------------------------------------
+2025-11-23 07:33:09,627 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 07:33:12,944 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 07:33:12,945 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 07:33:14,989 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 07:33:15,017 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 07:33:15,019 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 07:33:18,062 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 07:33:18,063 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 07:33:18,255 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 07:33:18,345 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 07:33:19,480 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 07:33:19,482 - error_module - INFO - -----------------------------------------
+2025-11-23 07:33:19,482 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 07:33:19,482 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 07:33:19,483 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 07:33:19,483 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 07:33:19,483 - error_module - INFO - -----------------------------------------
+2025-11-23 07:33:19,483 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 07:33:36,982 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 07:33:36,983 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 07:33:38,827 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 07:33:38,834 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 07:33:38,835 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 07:33:41,518 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 07:33:41,518 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 07:33:41,665 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 07:33:41,733 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 07:33:42,675 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 07:33:42,676 - error_module - INFO - -----------------------------------------
+2025-11-23 07:33:42,676 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 07:33:42,677 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 07:33:42,677 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 07:33:42,678 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 07:33:42,678 - error_module - INFO - -----------------------------------------
+2025-11-23 07:33:42,679 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 07:34:18,950 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 07:34:18,950 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 07:34:20,922 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 07:34:20,929 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 07:34:20,929 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 07:34:23,369 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 07:34:23,370 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 07:34:23,516 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 07:34:23,582 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 07:34:24,474 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 07:34:24,474 - error_module - INFO - -----------------------------------------
+2025-11-23 07:34:24,475 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 07:34:24,475 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 07:34:24,475 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 07:34:24,476 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 07:34:24,476 - error_module - INFO - -----------------------------------------
+2025-11-23 07:34:24,476 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 07:35:07,961 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 07:35:07,961 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 07:35:09,840 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 07:35:09,848 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 07:35:09,848 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 07:35:12,211 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 07:35:12,212 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 07:35:12,359 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 07:35:12,429 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 07:35:13,311 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 07:35:13,312 - error_module - INFO - -----------------------------------------
+2025-11-23 07:35:13,312 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 07:35:13,313 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 07:35:13,314 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 07:35:13,314 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 07:35:13,315 - error_module - INFO - -----------------------------------------
+2025-11-23 07:35:13,315 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 07:35:54,019 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 07:35:54,020 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 07:35:56,175 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 07:35:56,183 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 07:35:56,185 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 07:35:59,288 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 07:35:59,289 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 07:35:59,453 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 07:35:59,496 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 07:36:00,420 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 07:36:00,420 - error_module - INFO - -----------------------------------------
+2025-11-23 07:36:00,421 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 07:36:00,422 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 07:36:00,422 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 07:36:00,423 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 07:36:00,423 - error_module - INFO - -----------------------------------------
+2025-11-23 07:36:00,423 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 07:37:33,193 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 07:37:33,198 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 07:37:35,197 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 07:37:35,204 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 07:37:35,205 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 07:37:37,612 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 07:37:37,613 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 07:37:37,759 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 07:37:37,802 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 07:37:38,739 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 07:37:38,740 - error_module - INFO - -----------------------------------------
+2025-11-23 07:37:38,740 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 07:37:38,741 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 07:37:38,741 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 07:37:38,742 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 07:37:38,742 - error_module - INFO - -----------------------------------------
+2025-11-23 07:37:38,743 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 07:38:03,583 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 07:38:03,589 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 07:38:05,685 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 07:38:05,692 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 07:38:05,693 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 07:38:28,027 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 07:38:28,035 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 07:38:28,035 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 07:38:31,428 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 07:38:31,429 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 07:38:31,585 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 07:38:31,652 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 07:38:32,615 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 07:38:32,615 - error_module - INFO - -----------------------------------------
+2025-11-23 07:38:32,616 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 07:38:32,617 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 07:38:32,618 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 07:38:32,618 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 07:38:32,619 - error_module - INFO - -----------------------------------------
+2025-11-23 07:38:32,619 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 07:40:12,571 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 07:40:12,575 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 07:40:14,460 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 07:40:14,467 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 07:40:14,468 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 07:40:17,563 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 07:40:17,563 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 07:40:17,737 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 07:40:17,798 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 07:40:18,714 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 07:40:18,714 - error_module - INFO - -----------------------------------------
+2025-11-23 07:40:18,715 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 07:40:18,715 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 07:40:18,715 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 07:40:18,716 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 07:40:18,716 - error_module - INFO - -----------------------------------------
+2025-11-23 07:40:18,716 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 07:40:45,907 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 07:40:45,909 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 07:40:48,318 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 07:40:48,325 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 07:40:48,328 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 07:40:51,299 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 07:40:51,300 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 07:40:51,530 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 07:40:51,610 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 07:40:52,476 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 07:40:52,476 - error_module - INFO - -----------------------------------------
+2025-11-23 07:40:52,477 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 07:40:52,477 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 07:40:52,477 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 07:40:52,477 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 07:40:52,477 - error_module - INFO - -----------------------------------------
+2025-11-23 07:40:52,478 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 07:42:32,762 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 07:42:32,762 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 07:42:34,684 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 07:42:34,691 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 07:42:34,692 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 07:42:36,995 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 07:42:36,996 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 07:42:37,154 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 07:42:37,206 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 07:42:38,174 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 07:42:38,174 - error_module - INFO - -----------------------------------------
+2025-11-23 07:42:38,175 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 07:42:38,177 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 07:42:38,177 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 07:42:38,177 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 07:42:38,178 - error_module - INFO - -----------------------------------------
+2025-11-23 07:42:38,178 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 07:42:48,229 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 07:42:48,230 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.
+2025-11-23 07:42:50,174 - error_module - INFO - Configuração de log concluída e pronta para uso.
+2025-11-23 07:42:50,181 - error_module - INFO - 🛠️ Modo DEVELOPMENT: Usando credenciais locais.
+2025-11-23 07:42:50,182 - error_module - INFO - 📊 Config DB - Host: localhost:3306, DB: nahtec_pdv_dev, User: root
+2025-11-23 07:42:52,597 - error_module - INFO - 🔧 Configurando banco: mysql
+2025-11-23 07:42:52,598 - error_module - INFO - 📋 Modelos carregados: 15
+2025-11-23 07:42:52,844 - error_module - INFO - ✅ Tortoise ORM inicializado!
+2025-11-23 07:42:52,909 - error_module - INFO - ✅ Conexão com MySQL verificada!
+2025-11-23 07:42:53,852 - error_module - INFO - ✅ Tabelas criadas/verificadas!
+2025-11-23 07:42:53,852 - error_module - INFO - -----------------------------------------
+2025-11-23 07:42:53,853 - error_module - INFO - 📦 Conectado a MySQL/MariaDB:
+2025-11-23 07:42:53,858 - error_module - INFO -    - Banco: nahtec_pdv_dev
+2025-11-23 07:42:53,861 - error_module - INFO -    - Host: localhost:3306
+2025-11-23 07:42:53,866 - error_module - INFO -    - Timezone: America/Sao_Paulo
+2025-11-23 07:42:53,868 - error_module - INFO - -----------------------------------------
+2025-11-23 07:42:53,868 - error_module - INFO - ✅ Banco de dados iniciado e tabelas criadas!
+2025-11-23 07:43:33,850 - error_module - INFO - Funcionario 1 da EMPRESA Dev orbit validado via JWT.
+2025-11-23 07:43:46,336 - error_module - INFO - Funcionario 1 da EMPRESA Dev orbit validado via JWT.
+2025-11-23 07:46:35,118 - error_module - INFO - ✅ Conexões do banco fechadas!
+2025-11-23 07:46:35,118 - error_module - INFO - 🧱 Banco de dados encerrado com sucesso.

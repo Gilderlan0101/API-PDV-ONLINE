@@ -1,186 +1,381 @@
-# __init__.py inicia as rotas
+# src/__init__/routes/__init__.py
+from typing import Any, Dict, List
+
 from fastapi import APIRouter
 
-# Funcionarios
-from src.routes.account.account import employees_router as account
-from src.routes.account.employee_edit import employees_router as edit_employees
-from src.routes.account.employee_list import employees_router
-from src.routes.car import cart_router
-from src.routes.car.pdv import router as result_sales
-from src.routes.cliente_cnpj import ConsultaRoute
 
-# Cadastro de clientes
-from src.routes.customer.customer_registration import customers
-from src.routes.customer.registre_customer_partial import (
-    customers as registre_user_partial,
-)
+class RouterManager:
+    """Gerenciador centralizado de rotas com configuração profissional"""
 
-# Delivery
-from src.routes.delivery.create_delivery import delivery_router
-from src.routes.fornecedor.registre_fornecedor import router as fornecedores_rt
-from src.routes.login import Login
+    def __init__(self):
+        self.routers: Dict[str, APIRouter] = {}
+        self._configure_routers()
 
-# marketplace
-from src.routes.marketplace.marketplace_between_customers import marketplace
+    def _configure_routers(self):
+        """Configura todas as rotas do sistema"""
 
-# Metodos de pagamentos
-from src.routes.payments.partial import partial as payment_partial
-from src.routes.payments.pix import router as payment_pix
+        # ===== AUTENTICAÇÃO =====
+        from .login import Login
+        from .registre import registerRT
 
-# Rotas relacionadas a produtos
-from src.routes.products.buscar_prod import buscar_produtos
-from src.routes.products.cancel_sale import router as cancel_sales
-from src.routes.products.create import router as create_products
-from src.routes.products.deep_infos import product_deep_infos
-from src.routes.products.delete import router as delete_products
-from src.routes.products.inventario.label_generator import (
-    inventory_router as label,
-)
+        login_handler = Login()
 
-# Inventario
-from src.routes.products.inventario.stock_entry_controller import (
-    inventory_router as stoke,
-)
-from src.routes.products.inventario.stock_exit_controller import (
-    inventory_router as exit,
-)
-from src.routes.products.list import list_products as list_router
-from src.routes.products.product_information import (
-    list_products as product_info,
-)
-from src.routes.products.sales import router as sales
-from src.routes.products.ticket import router as ticket_prods
-from src.routes.products.update import router as updates_products
-from src.routes.products.upload_img import router as upload_img
-from src.routes.registre import registerRT
-from src.routes.updates import allDatas
-from src.routes.user.clientes import router as system_user
+        self.routers['auth'] = APIRouter(
+            prefix='/api/v1/auth',
+            tags=['🔐 Autenticação'],
+            responses={
+                400: {'description': 'Requisição inválida'},
+                401: {'description': 'Não autorizado'},
+                404: {'description': 'Recurso não encontrado'},
+                500: {'description': 'Erro interno do servidor'},
+            },
+            dependencies=[],  # Pode adicionar dependências globais aqui
+        )
+        self.routers['auth'].include_router(login_handler.loginRT)
+        self.routers['auth'].include_router(registerRT)
 
-auth = APIRouter(
-    tags=['Autenticação'],
-    responses={404: {'description': 'Não encontrado'}},
-)
+        # ===== FUNCIONÁRIOS =====
+        from .account.account import employees_router as account
+        from .account.employee_edit import employees_router as edit_employees
+        from .account.employee_list import employees_router
+
+        self.routers['funcionarios'] = APIRouter(
+            prefix='/api/v1/funcionarios',
+            tags=['👥 Funcionários'],
+            responses={404: {'description': 'Funcionário não encontrado'}},
+        )
+        self.routers['funcionarios'].include_router(employees_router)
+        self.routers['funcionarios'].include_router(edit_employees)
+        self.routers['funcionarios'].include_router(account)
+
+        # ===== CLIENTES =====
+        from .cliente_cnpj import ConsultaRoute
+        from .customer.customer_registration import customers
+        from .customer.registre_customer_partial import (
+            customers as registre_user_partial,
+        )
+
+        consulta_handler = ConsultaRoute()
+
+        self.routers['clientes'] = APIRouter(
+            prefix='/api/v1/clientes',
+            tags=['👥 Clientes'],
+            responses={404: {'description': 'Cliente não encontrado'}},
+        )
+        self.routers['clientes'].include_router(consulta_handler.router)
+        self.routers['clientes'].include_router(customers)
+        self.routers['clientes'].include_router(registre_user_partial)
+
+        # ===== PRODUTOS =====
+        from .products.buscar_prod import buscar_produtos
+        from .products.cancel_sale import router as cancel_sales
+        from .products.create import router as create_products
+        from .products.deep_infos import product_deep_infos
+        from .products.delete import router as delete_products
+        from .products.list import list_products as list_router
+        from .products.product_information import list_products as product_info
+        from .products.sales import router as sales
+        from .products.ticket import router as ticket_prods
+        from .products.update import router as updates_products
+        from .products.upload_img import router as upload_img
+
+        self.routers['produtos'] = APIRouter(
+            prefix='/api/v1/produtos',
+            tags=['📦 Produtos'],
+            responses={404: {'description': 'Produto não encontrado'}},
+        )
+        self.routers['produtos'].include_router(upload_img)
+        self.routers['produtos'].include_router(buscar_produtos)
+        self.routers['produtos'].include_router(list_router)
+        self.routers['produtos'].include_router(product_info)
+        self.routers['produtos'].include_router(create_products)
+        self.routers['produtos'].include_router(updates_products)
+        self.routers['produtos'].include_router(delete_products)
+        self.routers['produtos'].include_router(product_deep_infos)
+        self.routers['produtos'].include_router(ticket_prods)
+
+        # ===== CARRINHO & VENDAS =====
+        from .car import cart_router
+        from .car.pdv import router as result_sales
+
+        self.routers['carrinho'] = APIRouter(
+            prefix='/api/v1/carrinho',
+            tags=['🛒 Carrinho & Vendas'],
+            responses={404: {'description': 'Carrinho não encontrado'}},
+        )
+        self.routers['carrinho'].include_router(cart_router)
+        self.routers['carrinho'].include_router(sales)
+        self.routers['carrinho'].include_router(cancel_sales)
+        self.routers['carrinho'].include_router(result_sales)
+
+        # ===== FORNECEDORES =====
+        from .fornecedor.registre_fornecedor import router as fornecedores_rt
+
+        self.routers['fornecedor'] = APIRouter(
+            prefix='/api/v1/fornecedores',
+            tags=['🏢 Fornecedores'],
+            responses={404: {'description': 'Fornecedor não encontrado'}},
+        )
+        self.routers['fornecedor'].include_router(fornecedores_rt)
+
+        # ===== DASHBOARD & RELATÓRIOS =====
+        from .updates import allDatas
+        from .user.clientes import router as system_user
+
+        self.routers['dashboard'] = APIRouter(
+            prefix='/api/v1/dashboard',
+            tags=['📊 Dashboard & Analytics'],
+            responses={404: {'description': 'Dados não encontrados'}},
+        )
+        self.routers['dashboard'].include_router(allDatas)
+        self.routers['dashboard'].include_router(system_user)
+
+        # ===== PAGAMENTOS =====
+        from .payments.partial import partial as payment_partial
+        from .payments.pix import router as payment_pix
+
+        self.routers['pagamentos'] = APIRouter(
+            prefix='/api/v1/pagamentos',
+            tags=['💳 Pagamentos'],
+            responses={
+                400: {'description': 'Pagamento inválido'},
+                402: {'description': 'Pagamento necessário'},
+                422: {'description': 'Dados de pagamento inválidos'},
+            },
+        )
+        self.routers['pagamentos'].include_router(payment_partial)
+        self.routers['pagamentos'].include_router(payment_pix)
+
+        # ===== DELIVERY =====
+        from .delivery.create_delivery import delivery_router
+
+        self.routers['delivery'] = APIRouter(
+            prefix='/api/v1/delivery',
+            tags=['🚚 Delivery'],
+            responses={404: {'description': 'Entrega não encontrada'}},
+        )
+        self.routers['delivery'].include_router(delivery_router)
+
+        # ===== MARKETPLACE =====
+        from .marketplace.marketplace_between_customers import marketplace
+
+        self.routers['marketplace'] = APIRouter(
+            prefix='/api/v1/marketplace',
+            tags=['🛍️ Marketplace'],
+            responses={404: {'description': 'Marketplace não encontrado'}},
+        )
+        self.routers['marketplace'].include_router(marketplace)
+
+        # ===== INVENTÁRIO =====
+        from .products.inventario.label_generator import inventory_router as label
+        from .products.inventario.stock_entry_controller import (
+            inventory_router as stoke,
+        )
+        from .products.inventario.stock_exit_controller import (
+            inventory_router as exit_router,
+        )
+
+        self.routers['inventario'] = APIRouter(
+            prefix='/api/v1/inventario',
+            tags=['📋 Inventário'],
+            responses={
+                404: {'description': 'Item não encontrado no inventário'}
+            },
+        )
+        self.routers['inventario'].include_router(stoke)
+        self.routers['inventario'].include_router(label)
+        self.routers['inventario'].include_router(exit_router)
+
+        # ===== CAIXA =====
+        from .caixa.start_router import checkout
+
+        self.routers['caixa'] = APIRouter(
+            prefix='/api/v1/caixa',
+            tags=['💰 Caixa'],
+            responses={404: {'description': 'Caixa não encontrado'}},
+        )
+        self.routers['caixa'].include_router(checkout)
+
+    def get_all_routers(self) -> List[APIRouter]:
+        """Retorna todos os routers configurados"""
+        return list(self.routers.values())
+
+    def get_router(self, name: str) -> APIRouter:
+        """Retorna um router específico pelo nome"""
+        return self.routers.get(name)
+
+    def get_routers_dict(self) -> Dict[str, APIRouter]:
+        """Retorna dicionário com todos os routers"""
+        return self.routers.copy()
 
 
-# Login
-login = Login()
+# Instância global do gerenciador de rotas
+router_manager = RouterManager()
 
-auth.include_router(login.loginRT)
-# Cadastro de usuário
-auth.include_router(registerRT, prefix='/auth', tags=['Autenticação'])
+# ===== EXPORTAÇÕES PARA BACKWARD COMPATIBILITY =====
+# Mantém a interface antiga para não quebrar o código existente
 
-Funcionários = APIRouter(
-    tags=['Funcionários'],
-    responses={404: {'description': 'Não encontrado'}},
-)
+# Routers principais (compatibilidade)
+auth = router_manager.get_router('auth')
+Funcionários = router_manager.get_router('funcionarios')
+clientes = router_manager.get_router('clientes')
+produtos = router_manager.get_router('produtos')
+carrinho = router_manager.get_router('carrinho')
+fornecedor = router_manager.get_router('fornecedor')
+tickets = router_manager.get_router('produtos')  # Tickets está em produtos
+dashboard = router_manager.get_router('dashboard')
+paymente = router_manager.get_router('pagamentos')
+delivery = router_manager.get_router('delivery')
+marketplace = router_manager.get_router('marketplace')
+my_inventario = router_manager.get_router('inventario')
 
-# Cadastro de funcionários
-Funcionários.include_router(
-    employees_router, prefix='/funcionarios', tags=['Funcionários']
-)
-Funcionários.include_router(
-    edit_employees, prefix='/funcionarios', tags=['Funcionários']
-)
-Funcionários.include_router(
-    account, prefix='/funcionarios', tags=['Funcionários']
-)
+# Export para import fácil
+__all__ = [
+    # Gerenciador
+    'router_manager',
+    # Routers principais
+    'auth',
+    'Funcionários',
+    'clientes',
+    'produtos',
+    'carrinho',
+    'fornecedor',
+    'tickets',
+    'dashboard',
+    'paymente',
+    'delivery',
+    'marketplace',
+    'my_inventario',
+    # Routers individuais para acesso direto
+    'auth',
+    'Funcionários',
+    'clientes',
+    'produtos',
+    'carrinho',
+    'fornecedor',
+    'dashboard',
+    'paymente',
+    'delivery',
+    'marketplace',
+    'my_inventario',
+]
+
+# ===== CONFIGURAÇÃO DE METADADOS =====
+API_METADATA = {
+    'title': 'Nahtec PDV API',
+    'version': '1.0.0',
+    'description': """
+    🚀 **Nahtec PDV - Sistema Completo de Ponto de Venda**
+
+    ## Recursos Principais
+
+    ### 🛒 Vendas & Carrinho
+    - Gestão completa de vendas
+    - Carrinho dinâmico
+    - Cancelamento de vendas
+
+    ### 📦 Produtos & Estoque
+    - Cadastro e gestão de produtos
+    - Controle de inventário
+    - Upload de imagens
+
+    ### 👥 Clientes & Funcionários
+    - CRM integrado
+    - Gestão de equipe
+    - Controle de acesso
+
+    ### 💳 Pagamentos
+    - Múltiplos métodos de pagamento
+    - Pix integrado
+    - Pagamentos parcelados
+
+    ### 🚚 Delivery
+    - Gestão de entregas
+    - Rastreamento
+    - Controle de status
+
+    ### 📊 Dashboard & Analytics
+    - Relatórios em tempo real
+    - Métricas de performance
+    - Analytics de vendas
+    """,
+    'contact': {
+        'name': 'Suporte Nahtec',
+        'email': 'contatodevorbit@gmail.com',
+        'url': 'https://github.com/Gilderlan0101/qodo-pdv',
+    },
+    'license_info': {
+        'name': 'MIT',
+        'url': 'https://opensource.org/licenses/MIT',
+    },
+    'terms_of_service': 'https://github.com/Gilderlan0101/qodo-pdv/blob/main/TERMS.md',
+    'docs_url': '/docs',
+    'redoc_url': '/redoc',
+    'openapi_url': '/api/v1/openapi.json',
+    'openapi_tags': [
+        {
+            'name': '🔐 Autenticação',
+            'description': 'Operações de autenticação e gestão de usuários',
+        },
+        {
+            'name': '👥 Funcionários',
+            'description': 'Gestão de funcionários e equipe',
+        },
+        {'name': '👥 Clientes', 'description': 'Gestão de clientes e CRM'},
+        {
+            'name': '📦 Produtos',
+            'description': 'Operações relacionadas a produtos e estoque',
+        },
+        {
+            'name': '🛒 Carrinho & Vendas',
+            'description': 'Gestão de carrinho e processo de vendas',
+        },
+        {
+            'name': '🏢 Fornecedores',
+            'description': 'Gestão de fornecedores e supply chain',
+        },
+        {
+            'name': '📊 Dashboard & Analytics',
+            'description': 'Relatórios e analytics em tempo real',
+        },
+        {
+            'name': '💳 Pagamentos',
+            'description': 'Processamento de pagamentos e financeiro',
+        },
+        {
+            'name': '🚚 Delivery',
+            'description': 'Gestão de entregas e logística',
+        },
+        {
+            'name': '🛍️ Marketplace',
+            'description': 'Operações de marketplace e e-commerce',
+        },
+        {
+            'name': '📋 Inventário',
+            'description': 'Controle de inventário e estoque',
+        },
+        {
+            'name': '💰 Caixa',
+            'description': 'Gestão de caixa e fluxo financeiro',
+        },
+    ],
+}
 
 
-clientes = APIRouter(
-    tags=['Consultas'],
-    responses={404: {'description': 'Não encontrado'}},
-)
-
-# Consulta de clientes
-consultaroute = ConsultaRoute()
-clientes.include_router(
-    consultaroute.router, prefix='/clientes', tags=['Consultas']
-)
-clientes.include_router(customers)
-clientes.include_router(registre_user_partial)
+def get_api_metadata() -> Dict[str, Any]:
+    """Retorna metadados configurados para o FastAPI"""
+    return API_METADATA.copy()
 
 
-# Produtos
-produtos = APIRouter(
-    tags=['Produtos'],
-    responses={404: {'description': 'Não encontrado'}},
-)
+def setup_routes(app):
+    """
+    Configura todas as rotas na aplicação FastAPI
 
-produtos.include_router(upload_img)
-produtos.include_router(buscar_produtos)
-produtos.include_router(list_router)
-produtos.include_router(product_info)
-produtos.include_router(create_products)
-produtos.include_router(updates_products)
-produtos.include_router(delete_products)
-produtos.include_router(product_deep_infos)
+    Usage:
+        from src..routes import setup_routes
+        setup_routes(app)
+    """
+    for router in router_manager.get_all_routers():
+        app.include_router(router)
 
-
-# Carrinho
-carrinho = APIRouter(
-    tags=['Carrinho'],
-    responses={404: {'description': 'Não encontrado'}},
-)
-carrinho.include_router(cart_router)
-carrinho.include_router(sales)
-carrinho.include_router(cancel_sales)
-
-
-# Fonecedor
-fornecedor = APIRouter(
-    tags=['Fonecedor'],
-    responses={404: {'description': 'Não encontrado'}},
-)
-fornecedor.include_router(fornecedores_rt)
-
-# Tickets
-tickets = APIRouter(
-    tags=['Tickets'],
-    responses={404: {'description': 'Não encontrado'}},
-)
-
-tickets.include_router(ticket_prods)
-
-
-# Visualização de dados em tempo real dashboard
-dashboard = APIRouter(
-    tags=['dashboard'],
-    responses={404: {'description': 'Não encontrado'}},
-)
-
-dashboard.include_router(allDatas, prefix='/dashboard', tags=['Dashboard'])
-dashboard.include_router(result_sales)
-
-# Visualização de dados em tempo real dashboard
-system_ = APIRouter(
-    tags=['system_user'],
-    responses={404: {'description': 'Não encontrado'}},
-)
-
-dashboard.include_router(system_user)
-
-
-# Metodos de pagamento
-paymente = APIRouter(
-    tags=['Pagamentos'],
-    responses={404: {'description': 'Não encontrado'}},
-)
-
-paymente.include_router(payment_partial)
-paymente.include_router(payment_pix)
-paymente.include_router(delivery_router)
-
-
-delivery = APIRouter(
-    tags=['Delivery'],
-)
-
-delivery.include_router(delivery_router)
-
-marketplace_prods = APIRouter(tags=['marketplace'])
-marketplace_prods.include_router(marketplace)
-
-my_inventario = APIRouter()
-my_inventario.include_router(stoke)
-my_inventario.include_router(label)
-my_inventario.include_router(exit)
+    return app

@@ -26,8 +26,8 @@ async def get_user_products(user: Usuario) -> List[Dict]:
         print('❌ Usuário não encontrado!')
         return []
 
-    cache_key = f"get_producst_user:{user}"
-    cache = await client.get(cache_key):
+    cache_key = f'get_producst_user:{user}'
+    cache = await client.get(cache_key)
 
     if cache:
         print('cache in get_user_products')
@@ -36,8 +36,7 @@ async def get_user_products(user: Usuario) -> List[Dict]:
     produtos = await Produto.filter(usuario_id=user.id).all()
 
     if produtos:
-        await client.setex(cache_key, 180, json.dumps(produtos, default=str)) 
-
+        await client.setex(cache_key, 180, json.dumps(produtos, default=str))
 
     return [
         {
@@ -58,11 +57,11 @@ def check_replacement(produtos: List[Dict]) -> List[Dict]:
     Verifica estoque e retorna status de reposição.
     """
 
-    cache_key = f"check_replacement:{produtos}"
+    cache_key = f'check_replacement:{produtos}'
     cache = await client.get(cache_key)
 
     if cache:
-        print("cahce in check_replacement", cache_key)
+        print('cahce in check_replacement', cache_key)
         return json.loads(cache)
 
     status_estoque = []
@@ -87,8 +86,7 @@ def check_replacement(produtos: List[Dict]) -> List[Dict]:
         status_estoque.append(status)
 
         if status_estoque:
-            await client.setex(cache_key, 180, json.dumps(data, default=str)) 
-            
+            await client.setex(cache_key, 180, json.dumps(data, default=str))
 
     return status_estoque
 
@@ -103,11 +101,11 @@ def expired_products(produtos: List[Dict]) -> Dict:
 
     try:
 
-        cache_key = f"expired_products:{produtos}"
+        cache_key = f'expired_products:{produtos}'
         cache = await client.get(cache_key)
 
         if cache:
-            print("cache in expired_products", cache_key)
+            print('cache in expired_products', cache_key)
             return json.loads(cache)
 
         data_atual = datetime.now(ZoneInfo('America/Sao_Paulo')).date()
@@ -117,7 +115,11 @@ def expired_products(produtos: List[Dict]) -> Dict:
         valor_total_potencial = 0
 
         for product in produtos:
-            data_validade = product['date_expired'].date() if product['date_expired'] else None
+            data_validade = (
+                product['date_expired'].date()
+                if product['date_expired']
+                else None
+            )
             if not data_validade:
                 continue
 
@@ -153,14 +155,14 @@ def expired_products(produtos: List[Dict]) -> Dict:
                 valor_total_potencial += valor_lote
 
         data = {
-                'produtos_vencendo': produtos_vencendo,
-                'produtos_vencidos': produtos_vencidos,
-                'valor_total_vencido': valor_total_vencido,
-                'valor_total_potencial': valor_total_potencial,
+            'produtos_vencendo': produtos_vencendo,
+            'produtos_vencidos': produtos_vencidos,
+            'valor_total_vencido': valor_total_vencido,
+            'valor_total_potencial': valor_total_potencial,
         }
 
         if data:
-            await client.setex(cache_key, 180, json.dumps(data, default=str)) 
+            await client.setex(cache_key, 180, json.dumps(data, default=str))
         return data
 
     except Exception as erro:

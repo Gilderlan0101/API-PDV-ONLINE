@@ -3,7 +3,7 @@ from typing import Optional
 from pydantic import EmailStr
 
 from src.logs.infos import LOGGER
-from src.model.user import Usuario, CNPJCache
+from src.model.user import CNPJCache, Usuario
 
 
 class CreateCompany:
@@ -64,6 +64,7 @@ class CreateCompany:
         try:
             # Antes de cadastra crie uma hash da senha
             from src.auth.auth_jwt import hashed_password
+
             hashed_password = get_hashed_password(self.password)
 
             # Cadastra uma empresa
@@ -101,6 +102,7 @@ class CreateCompany:
 
                 if self.cnpj:
                     from ..services.consulting_cnpj import consulting_CNPJ
+
                     searching_for_data = await consulting_CNPJ(str(self.cnpj))
 
                     full_data = CNPJCache(
@@ -114,6 +116,7 @@ class CreateCompany:
 
             # Tickets gerados automaticamente ao cria uma empresa
             from src.model.tickets import criar_tickets_padrao
+
             await criar_tickets_padrao(data_company)
 
             # Retorno seguro (sem senha)
