@@ -27,10 +27,10 @@ from src.logs.infos import LOGGER
 from src.model.caixa import Caixa
 from src.model.employee import Employees
 from src.model.user import Usuario
-from src.utils.private_infos import mask_password, mask_email
 from src.schemas.login.form_login_checkout import (
     CustomOAuth2PasswordRequestForm,
 )
+from src.utils.private_infos import mask_email, mask_password
 
 
 # -------------------------------------------------------------
@@ -96,14 +96,11 @@ class LoginCheckout:
                     email=user.username
                 ).select_related('usuario')
 
-                # Admin tambem pode abrir caixa
-                admin = await Usuario.filter(
-                    email=user.username
-                ).first()
-
                 # Diagnostico detalhado
-                if not employee and not admin:
-                    LOGGER.warning(f'Email nao encontrado: {mask_email(user.username)}')
+                if not employee:
+                    LOGGER.warning(
+                        f'Email nao encontrado: {mask_email(user.username)}'
+                    )
                     raise HTTPException(
                         status_code=status.HTTP_401_UNAUTHORIZED,
                         detail='Credenciais invalidas.',
@@ -113,9 +110,7 @@ class LoginCheckout:
                 LOGGER.info(
                     f'Diagnostico - Senha DB (employee): {mask_password(getattr(employee, "senha", "N/A")) if employee else "N/A"}'
                 )
-                LOGGER.info(
-                    f'Diagnostico - Senha DB (admin): {mask_password(getattr(admin, "password", "N/A")) if admin else "N/A"}'
-                )
+
                 LOGGER.info(
                     f'Diagnostico - Senha input: {mask_password(user.password)}'
                 )
@@ -150,17 +145,21 @@ class LoginCheckout:
 
                         # Validacao de status do funcionario
                         if not employee.ativo:
-                            LOGGER.warning(f'Funcionario inativo: {mask_email(user.username)}')
+                            LOGGER.warning(
+                                f'Funcionario inativo: {mask_email(user.username)}'
+                            )
                             raise HTTPException(
                                 status_code=status.HTTP_403_FORBIDDEN,
-                                detail='Funcionario inativo.'
+                                detail='Funcionario inativo.',
                             )
 
                         if not employee.usuario:
-                            LOGGER.warning(f'Funcionario nao vinculado a empresa: {mask_email(user.username)}')
+                            LOGGER.warning(
+                                f'Funcionario nao vinculado a empresa: {mask_email(user.username)}'
+                            )
                             raise HTTPException(
                                 status_code=status.HTTP_403_FORBIDDEN,
-                                detail='Funcionario nao vinculado a uma empresa.'
+                                detail='Funcionario nao vinculado a uma empresa.',
                             )
 
                         # Dados basicos para uso posterior
@@ -181,41 +180,7 @@ class LoginCheckout:
                         LOGGER.error(f'Erro na validacao do funcionario: {e}')
                         raise HTTPException(
                             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                            detail='Erro interno na validacao do funcionario'
-                        )
-
-                # Se nao for funcionario, verifica se e admin
-                elif admin:
-                    try:
-                        # Valida senha do admin
-                        if not verify_password(user.password, admin.password):
-                            LOGGER.warning(
-                                f'Senha incorreta para admin: {mask_email(user.username)}'
-                            )
-                            raise HTTPException(
-                                status_code=status.HTTP_401_UNAUTHORIZED,
-                                detail='Credenciais invalidas.',
-                            )
-
-                        # Dados basicos para admin
-                        company_id = admin.id
-                        employee_name = admin.username
-                        company_name = admin.company_name
-                        user_id = admin.id
-                        user_type = 'admin'
-                        user_email = admin.email
-
-                        LOGGER.info(
-                            f'Credenciais validas para ADMIN {employee_name} - Empresa: {company_name}'
-                        )
-
-                    except HTTPException:
-                        raise
-                    except Exception as e:
-                        LOGGER.error(f'Erro na validacao do admin: {e}')
-                        raise HTTPException(
-                            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                            detail='Erro interno na validacao do administrador'
+                            detail='Erro interno na validacao do funcionario',
                         )
 
                 # Verificacao e abertura de caixa
@@ -225,12 +190,16 @@ class LoginCheckout:
                     try:
                         valor_inicial = float(user.valor_inicial)
                         if valor_inicial < 0:
-                            raise ValueError("Valor inicial nao pode ser negativo")
+                            raise ValueError(
+                                'Valor inicial nao pode ser negativo'
+                            )
                     except (ValueError, TypeError) as e:
-                        LOGGER.error(f'Valor inicial invalido: {user.valor_inicial} - Erro: {e}')
+                        LOGGER.error(
+                            f'Valor inicial invalido: {user.valor_inicial} - Erro: {e}'
+                        )
                         raise HTTPException(
                             status_code=status.HTTP_400_BAD_REQUEST,
-                            detail='Valor inicial deve ser um numero valido e positivo'
+                            detail='Valor inicial deve ser um numero valido e positivo',
                         )
 
                     # CashController verifica se ja existe caixa aberto e retorna o objeto
@@ -268,6 +237,7 @@ class LoginCheckout:
                 except Exception as e:
                     LOGGER.error(f'Erro ao abrir caixa para {user_id}: {e}')
                     import traceback
+
                     LOGGER.error(f'Stack trace: {traceback.format_exc()}')
 
                     raise HTTPException(
@@ -338,10 +308,11 @@ class LoginCheckout:
             except Exception as e:
                 LOGGER.error(f'Erro inesperado em login_and_open: {e}')
                 import traceback
+
                 LOGGER.error(f'Stack trace: {traceback.format_exc()}')
                 raise HTTPException(
                     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    detail='Erro interno no servidor'
+                    detail='Erro interno no servidor',
                 )
 
         # --- ROTA: /logout ---
