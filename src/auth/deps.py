@@ -14,17 +14,17 @@ from src.auth.auth_jwt import ALGORITHM, JWT_SECRET_KEY
 
 # Assumindo que você tem um cliente Redis Async global (client)
 from src.core.cache import client
+from src.model.employee import Employees
 from src.model.membros import (  # Manter Employees e Membro para o lookup de usuario
     Membro,
 )
-from src.model.employee import Employees
 from src.model.user import Usuario
 from src.schemas.schema_user import (  # Assumindo que TokenPayload existe
     TokenPayload,
 )
 
 reuseable_oauth = OAuth2PasswordBearer(
-    tokenUrl='/auth/login', scheme_name='JWT'
+    tokenUrl='/api/v1/auth/login', scheme_name='JWT'
 )
 
 
@@ -102,10 +102,10 @@ async def get_current_user(
         await client.set(cache_key, json.dumps(system_user_data, default=str))
         return SystemUser(**system_user_data)
 
-
-
     # Tenta com funcionario
-    employee_db = await Employees.get_or_none(id=user_id).select_related('usuario')
+    employee_db = await Employees.get_or_none(id=user_id).select_related(
+        'usuario'
+    )
     if employee_id:
         target = employee_db.usuario
 
@@ -119,15 +119,12 @@ async def get_current_user(
             cpf=None,
             gerente=None,
             ativo=employee_db.ativo,
-            empresa_id=target.id
-
+            empresa_id=target.id,
         ).model_dump()
 
         # salva no cache de retorna
         await client.set(cache_key, json.dumps(system_user_data, default=str))
         return SystemUser(**system_user_data)
-
-
 
     # Tenta buscar como Membro (logica de Membro omitida para brevidade, mas deve seguir aqui)
     membro_db = await Membro.get_or_none(id=user_id).select_related('usuario')

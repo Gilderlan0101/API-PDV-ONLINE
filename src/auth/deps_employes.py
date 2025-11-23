@@ -23,6 +23,7 @@ from src.schemas.schema_user import TokenPayload
 # 1. Schemas de Retorno
 # -------------------------------------------------------------
 
+
 class SystemEmployees(BaseModel):
     id: int
     username: str
@@ -40,12 +41,13 @@ class SystemEmployees(BaseModel):
 # -------------------------------------------------------------
 
 reuseable_oauth: Final = OAuth2PasswordBearer(
-    tokenUrl='/checkout/open', scheme_name='JWT', auto_error=False
+    tokenUrl='/api/v1/caixa/checkout/open', scheme_name='JWT', auto_error=False
 )
 
 # -------------------------------------------------------------
 # 3. Funções de Autenticação (ADMIN E FUNCIONÁRIO)
 # -------------------------------------------------------------
+
 
 async def authenticate_user(email: str, password: str):
     """
@@ -82,7 +84,7 @@ async def authenticate_user(email: str, password: str):
             LOGGER.warning(f'Funcionario inativo: {email}')
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail='Funcionario inativo'
+                detail='Funcionario inativo',
             )
 
         # Verifica se tem empresa vinculada
@@ -113,7 +115,7 @@ async def authenticate_user(email: str, password: str):
             LOGGER.warning(f'Admin inativo: {email}')
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail='Administrador inativo'
+                detail='Administrador inativo',
             )
 
         LOGGER.info(f'Autenticacao bem-sucedida para admin: {email}')
@@ -130,6 +132,7 @@ async def authenticate_user(email: str, password: str):
 # -------------------------------------------------------------
 # 4. Função de Dependência Principal (CORRIGIDA PARA ADMIN E FUNCIONÁRIO)
 # -------------------------------------------------------------
+
 
 async def get_current_employee(
     token: str = Depends(reuseable_oauth),
@@ -185,7 +188,9 @@ async def get_current_employee(
 
     if employee:
         if not employee.ativo:
-            LOGGER.warning(f'Funcionario {employee.id} tentou acessar mas esta inativo.')
+            LOGGER.warning(
+                f'Funcionario {employee.id} tentou acessar mas esta inativo.'
+            )
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail='Funcionario inativo.',
@@ -206,7 +211,9 @@ async def get_current_employee(
         email = employee.email
         empresa_id = admin.id
 
-        LOGGER.info(f'Funcionario {employee.id} da EMPRESA {admin.company_name} validado via JWT.')
+        LOGGER.info(
+            f'Funcionario {employee.id} da EMPRESA {admin.company_name} validado via JWT.'
+        )
 
     # Se não encontrou funcionário, tenta como admin
     else:
@@ -214,7 +221,9 @@ async def get_current_employee(
 
         if admin:
             if not admin.is_active:
-                LOGGER.warning(f'Admin {admin.id} tentou acessar mas esta inativo.')
+                LOGGER.warning(
+                    f'Admin {admin.id} tentou acessar mas esta inativo.'
+                )
                 raise HTTPException(
                     status_code=status.HTTP_403_FORBIDDEN,
                     detail='Administrador inativo.',
@@ -227,11 +236,15 @@ async def get_current_employee(
             email = admin.email
             empresa_id = admin.id
 
-            LOGGER.info(f'Admin {admin.id} da EMPRESA {admin.company_name} validado via JWT.')
+            LOGGER.info(
+                f'Admin {admin.id} da EMPRESA {admin.company_name} validado via JWT.'
+            )
 
     # Se não encontrou nenhum dos dois
     if not user_object:
-        LOGGER.warning(f'Tentativa de acesso com ID {user_id} falhou: Usuario nao encontrado.')
+        LOGGER.warning(
+            f'Tentativa de acesso com ID {user_id} falhou: Usuario nao encontrado.'
+        )
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail='Usuario nao encontrado.',
@@ -245,7 +258,7 @@ async def get_current_employee(
             await Caixa.filter(
                 funcionario_id=user_object.id,
                 usuario_id=empresa_id,
-                aberto=True
+                aberto=True,
             )
             .order_by('-id')
             .first()
@@ -256,7 +269,7 @@ async def get_current_employee(
             await Caixa.filter(
                 funcionario_id=user_object.id,  # Admin usa próprio ID como funcionario_id
                 usuario_id=empresa_id,
-                aberto=True
+                aberto=True,
             )
             .order_by('-id')
             .first()
@@ -264,7 +277,9 @@ async def get_current_employee(
         checkout_id = caixa_aberto.id if caixa_aberto else None
 
     if not checkout_id:
-        LOGGER.warning(f'Usuario {user_object.id} autenticado mas sem caixa aberto')
+        LOGGER.warning(
+            f'Usuario {user_object.id} autenticado mas sem caixa aberto'
+        )
 
     # Retorno dos Dados
     return SystemEmployees(
@@ -274,7 +289,7 @@ async def get_current_employee(
         email=email,
         empresa_id=empresa_id,
         checkout_id=checkout_id,
-        tipo=user_type
+        tipo=user_type,
     )
 
 
@@ -286,7 +301,9 @@ async def get_current_admin(
     Dependência que garante que o usuário atual é um administrador.
     """
     if current_user.tipo != 'admin':
-        LOGGER.warning(f'Usuario {current_user.id} tentou acessar recurso de admin sem permissao')
+        LOGGER.warning(
+            f'Usuario {current_user.id} tentou acessar recurso de admin sem permissao'
+        )
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='Acesso restrito a administradores',
@@ -302,7 +319,9 @@ async def get_current_funcionario(
     Dependência que garante que o usuário atual é um funcionário.
     """
     if current_user.tipo != 'funcionario':
-        LOGGER.warning(f'Admin {current_user.id} tentou acessar recurso de funcionario')
+        LOGGER.warning(
+            f'Admin {current_user.id} tentou acessar recurso de funcionario'
+        )
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='Acesso restrito a funcionarios',
