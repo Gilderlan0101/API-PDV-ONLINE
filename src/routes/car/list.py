@@ -1,14 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+
 from src.auth.deps_employes import SystemEmployees, get_current_employee
 from src.controllers.car.cart_control import CartManagerDB
 
 # O uso de get_session não é necessário, pois a autenticação JWT já provê os dados
 # from src.core.session_manager import get_session
 
-router = APIRouter(tags=["Carrinho"])
+router = APIRouter(tags=['Carrinho'])
 
 
-@router.get("/")
+@router.get('/')
 async def listar_carrinho(
     # Obtém os dados da sessão (empresa_id, employee_id) via JWT
     current_user: SystemEmployees = Depends(get_current_employee),
@@ -26,7 +27,10 @@ async def listar_carrinho(
 
     if not empresa_id or not employee_id:
         # Failsafe para garantir que o JWT retornou os dados essenciais
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Sessão JWT inválida ou incompleta. Faça login novamente.")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail='Sessão JWT inválida ou incompleta. Faça login novamente.',
+        )
 
     # 2. Inicializar o CartManagerDB
     # O CartManagerDB usa estes IDs para buscar o caixa ativo.

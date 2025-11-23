@@ -1,8 +1,9 @@
-from typing import Optional
-from src.model.product import Produto
-from src.model.customers import Customer
-from src.model.user import Usuario
 import re
+from typing import Optional
+
+from src.model.customers import Customer
+from src.model.product import Produto
+from src.model.user import Usuario
 
 
 def to_dict(model) -> dict:
@@ -14,7 +15,7 @@ def to_dict(model) -> dict:
     for field in model._meta.fields_map:
         value = getattr(model, field)
         # Ignora relacionamentos e QuerySets
-        if hasattr(value, "all") or hasattr(value, "_meta"):
+        if hasattr(value, 'all') or hasattr(value, '_meta'):
             continue
         data[field] = value
     return data
@@ -36,7 +37,11 @@ async def get_product_by_user(
     return await query.first()
 
 
-async def get_customers(user_id: int, customer_name: Optional[str] = None, cpf: Optional[str] = None) -> Optional[Customer]:
+async def get_customers(
+    user_id: int,
+    customer_name: Optional[str] = None,
+    cpf: Optional[str] = None,
+) -> Optional[Customer]:
     """
     🔍 Busca clientes do usuário atual com filtros opcionais.
     """

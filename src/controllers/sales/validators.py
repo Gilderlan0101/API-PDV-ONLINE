@@ -1,11 +1,13 @@
 from datetime import datetime
 from typing import Optional
+
 from fastapi import HTTPException, status
-from src.utils.sales_code_generator import gerar_codigo_venda
+
 from src.controllers.car.cart_control import CartManagerDB
-from src.model.user import Usuario
-from src.model.employee import Employees
 from src.controllers.sales.sales import Checkout
+from src.model.employee import Employees
+from src.model.user import Usuario
+from src.utils.sales_code_generator import gerar_codigo_venda
 
 
 async def verify_datas(
@@ -39,16 +41,25 @@ async def verify_datas(
 
     # 🔹 Valida usuário
     if not user_id:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuário inválido (verify_datas)")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail='Usuário inválido (verify_datas)',
+        )
 
     # 🔹 Valida produto e quantidade
     if not product_name or not quantity:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Informe todos os dados (verify_datas)")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail='Informe todos os dados (verify_datas)',
+        )
 
     # 🔹 Validações por forma de pagamento
     if payment_method.upper() == 'DINHEIRO':
         if valor_recebido is None or valor_recebido <= 0:
-            raise HTTPException(status_code=400, detail="Valor recebido é obrigatório para pagamento em dinheiro (verify_datas)")
+            raise HTTPException(
+                status_code=400,
+                detail='Valor recebido é obrigatório para pagamento em dinheiro (verify_datas)',
+            )
         if troco is None:
             troco = 0.0
 
@@ -58,11 +69,20 @@ async def verify_datas(
 
     if payment_method.upper() == 'PARCIAL':
         if not cpf:
-            raise HTTPException(status_code=400, detail="CPF é obrigatório para pagamento Parcial (verify_datas)")
+            raise HTTPException(
+                status_code=400,
+                detail='CPF é obrigatório para pagamento Parcial (verify_datas)',
+            )
         if valor_recebido is None or valor_recebido <= 0:
-            raise HTTPException(status_code=400, detail="Valor recebido é obrigatório para pagamento parcial (verify_datas)")
+            raise HTTPException(
+                status_code=400,
+                detail='Valor recebido é obrigatório para pagamento parcial (verify_datas)',
+            )
         if total_price and valor_recebido > total_price:
-            raise HTTPException(status_code=400, detail="Valor recebido não pode ser maior que o total (verify_datas)")
+            raise HTTPException(
+                status_code=400,
+                detail='Valor recebido não pode ser maior que o total (verify_datas)',
+            )
 
     return True, troco, installments, valor_recebido
 
@@ -95,7 +115,10 @@ async def validating_information(
         # 🔹 1. Verifica se usuário é um funcionário
         employee = await Employees.filter(id=current_user.id).first()
         if not employee:
-            return {"success": False, "message": "Apenas funcionários podem realizar vendas"}
+            return {
+                'success': False,
+                'message': 'Apenas funcionários podem realizar vendas',
+            }
 
         employee_operator_id = employee.id
         employee_operator_name = employee.nome
@@ -103,17 +126,23 @@ async def validating_information(
         # 🔹 2. Busca o admin dono desse funcionário
         admin_user = await Usuario.get(id=employee.usuario_id)  # type: ignore
         if not admin_user:
-            return {"success": False, "message": "Usuário admin não encontrado"}
+            return {
+                'success': False,
+                'message': 'Usuário admin não encontrado',
+            }
 
         # 🔹 3. Lista produtos no carrinho
         products = await cart.listar_produtos(employee_operator_id)
         if not products:
-            return {"success": False, "error": "Carrinho vazio"}
+            return {'success': False, 'error': 'Carrinho vazio'}
 
         # 🔹 4. Validações específicas por método de pagamento
         if payment_method.upper() == 'DINHEIRO':
             if valor_recebido is None or valor_recebido <= 0:
-                return {"success": False, "error": "Valor recebido é obrigatório para pagamento em dinheiro"}
+                return {
+                    'success': False,
+                    'error': 'Valor recebido é obrigatório para pagamento em dinheiro',
+                }
             if troco is None:
                 troco = 0.0
 
@@ -121,7 +150,10 @@ async def validating_information(
             installments = 1  # Default: 1 parcela
 
         if payment_method.upper() == 'NOTA' and customer_id is None:
-            return {"success": False, "error": "Customer ID é obrigatório para venda em nota"}
+            return {
+                'success': False,
+                'error': 'Customer ID é obrigatório para venda em nota',
+            }
 
         # 🔹 5. Preparação de variáveis para venda
         sale_total = 0.0
@@ -130,10 +162,10 @@ async def validating_information(
             sale_total += prod.total_price
             sale_details.append(
                 {
-                    "product_id": prod.product_id,
-                    "product_name": prod.product_name,
-                    "quantity": prod.quantity,
-                    "unit_price": prod.price,
+                    'product_id': prod.product_id,
+                    'product_name': prod.product_name,
+                    'quantity': prod.quantity,
+                    'unit_price': prod.price,
                 }
             )
 
@@ -146,10 +178,10 @@ async def validating_information(
         for prod in sale_details:
             checkout = Checkout(
                 user_id=admin_user.id,
-                product_name=prod["product_name"],
-                produto_id=prod["product_id"],
-                quantity=prod["quantity"],
-                total_price=prod["quantity"] * prod["unit_price"],
+                product_name=prod['product_name'],
+                produto_id=prod['product_id'],
+                quantity=prod['quantity'],
+                total_price=prod['quantity'] * prod['unit_price'],
                 lucro_total=0.0,
                 payment_method=payment_method.upper(),
                 funcionario_id=employee_operator_id,
@@ -164,8 +196,8 @@ async def validating_information(
             # 🔹 Processa a venda (estoque + registro + recibo)
             coupon, status = await checkout.process_sale(
                 current_user=admin_user,
-                product_code=str(prod["product_id"]),
-                quantity=prod["quantity"],
+                product_code=str(prod['product_id']),
+                quantity=prod['quantity'],
                 payment_method=payment_method.upper(),
                 funcionario_id=employee_operator_id,
                 customer_id=customer_id,
@@ -178,29 +210,31 @@ async def validating_information(
                 invoice.append(coupon)
                 last_checkout_instance = checkout
             else:
-                return {"success": False, "error": "Erro ao processar a venda"}
+                return {'success': False, 'error': 'Erro ao processar a venda'}
 
-        from src.controllers.stoke.stoke_control import gerar_relatorio_completo
+        from src.controllers.stoke.stoke_control import (
+            gerar_relatorio_completo,
+        )
 
         report = await gerar_relatorio_completo(admin_user.id)
 
         # 🔹 9. Resposta final
         return {
-            "success": True,
-            "data": {
-                "notas_fiscais": invoice,
-                "relatorio": report,
-                "total_venda": sale_total,
-                "codigo_da_venda": sale_code,
-                "funcionario_operador_id": employee_operator_id,
-                "funcionario_operador_nome": employee_operator_name,
-                "admin_id": admin_user.id,
-                "checkout_instance": last_checkout_instance,
-                "customer_id": customer_id,
+            'success': True,
+            'data': {
+                'notas_fiscais': invoice,
+                'relatorio': report,
+                'total_venda': sale_total,
+                'codigo_da_venda': sale_code,
+                'funcionario_operador_id': employee_operator_id,
+                'funcionario_operador_nome': employee_operator_name,
+                'admin_id': admin_user.id,
+                'checkout_instance': last_checkout_instance,
+                'customer_id': customer_id,
             },
-            "error": None,
+            'error': None,
         }
 
     except Exception as e:
         # 🔹 Captura erros inesperados
-        return {"success": False, "error": str(e)}
+        return {'success': False, 'error': str(e)}

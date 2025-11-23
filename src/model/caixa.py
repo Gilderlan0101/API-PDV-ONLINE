@@ -1,8 +1,9 @@
 # Model caixa
-from tortoise import models, fields
 from datetime import datetime
-from zoneinfo import ZoneInfo
 from typing import Optional
+from zoneinfo import ZoneInfo
+
+from tortoise import fields, models
 
 
 class Caixa(models.Model):
@@ -20,29 +21,42 @@ class Caixa(models.Model):
     change = fields.FloatField(null=True)
     diferenca = fields.FloatField(null=True)
     aberto = fields.BooleanField(default=False)
-    criado_em = fields.DatetimeField(default=datetime.now(ZoneInfo("America/Sao_Paulo")))
+    criado_em = fields.DatetimeField(
+        default=datetime.now(ZoneInfo('America/Sao_Paulo'))
+    )
 
-    # ✅ CAIXA_ID: Único por empresa, pode repetir entre empresas diferentes
+    # CAIXA_ID: Único por empresa, pode repetir entre empresas diferentes
     caixa_id = fields.IntField(null=False)
 
-    atualizado_em = fields.DatetimeField(default=datetime.now(ZoneInfo("America/Sao_Paulo")))
+    atualizado_em = fields.DatetimeField(
+        default=datetime.now(ZoneInfo('America/Sao_Paulo'))
+    )
     valor_total = fields.FloatField(default=0.0)
 
     # 🔹 Relacionamentos
-    usuario = fields.ForeignKeyField("models.Usuario", related_name="caixas", on_delete=fields.CASCADE)
-    funcionario = fields.ForeignKeyField("models.Employees", related_name="caixas", null=True, on_delete=fields.SET_NULL)
+    usuario = fields.ForeignKeyField(
+        'models.Usuario', related_name='caixas', on_delete=fields.CASCADE
+    )
+    funcionario = fields.ForeignKeyField(
+        'models.Employees',
+        related_name='caixas',
+        null=True,
+        on_delete=fields.SET_NULL,
+    )
 
     class Meta:
-        table = "caixas"
+        table = 'caixas'
         # ✅ Índice composto único: garante que caixa_id seja único POR EMPRESA
-        unique_together = (("usuario_id", "caixa_id"),)
+        unique_together = (('usuario_id', 'caixa_id'),)
 
     async def save(self, *args, **kwargs):
         """
         Sobrescreve save para gerar caixa_id único para a empresa antes de salvar
         """
         if not self.caixa_id and self.usuario_id:
-            from src.utils.sales_code_generator import generator_code_to_checkout
+            from src.utils.sales_code_generator import (
+                generator_code_to_checkout,
+            )
 
             self.caixa_id = await generator_code_to_checkout(self.usuario_id)
 

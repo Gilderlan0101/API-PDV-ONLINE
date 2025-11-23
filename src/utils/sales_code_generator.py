@@ -1,8 +1,9 @@
 import random
 import string
-from src.model.product import Produto
+
 from tortoise.exceptions import IntegrityError
 
+from src.model.product import Produto
 
 """
 ATENÇÃO: 
@@ -18,7 +19,9 @@ ATENÇÃO:
 
 def gerar_codigo_venda(size: int = 6) -> str:
     """Gera um código aleatório para a venda."""
-    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=size))
+    return ''.join(
+        random.choices(string.ascii_uppercase + string.digits, k=size)
+    )
 
 
 def lot_bar_code_size(size: int = 13) -> str:
@@ -40,12 +43,16 @@ async def generator_code_to_checkout(usuario_id: int):
         code = random.randint(100, 999)
 
         # Verifica se já existe para ESTA empresa
-        exists = await Caixa.filter(usuario_id=usuario_id, caixa_id=code).exists()
+        exists = await Caixa.filter(
+            usuario_id=usuario_id, caixa_id=code
+        ).exists()
         if not exists:
             return code
 
     # Se não encontrou em 50 tentativas, usa fallback sequencial
-    ultimo_caixa = await Caixa.filter(usuario_id=usuario_id).order_by('-caixa_id').first()
+    ultimo_caixa = (
+        await Caixa.filter(usuario_id=usuario_id).order_by('-caixa_id').first()
+    )
     if ultimo_caixa and ultimo_caixa.caixa_id:
         return ultimo_caixa.caixa_id + 1
 

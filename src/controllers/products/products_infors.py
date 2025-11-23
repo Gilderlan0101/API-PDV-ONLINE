@@ -1,13 +1,14 @@
+import json
+from typing import Any, Dict
+
 from fastapi import HTTPException, status
 from fastapi.encoders import jsonable_encoder
-from typing import Dict, Any
-from tortoise.functions import Sum, Count
+from tortoise.functions import Count, Sum
 
-from src.utils.get_produtos_user import get_product_by_user
+from src.core.cache import client
 from src.model.product import Produto
 from src.model.sale import Sales
-from src.core.cache import client
-import json
+from src.utils.get_produtos_user import get_product_by_user
 
 
 class Products:
@@ -24,25 +25,30 @@ class Products:
         Buscar um produto pelo nome.
         """
         if not isinstance(product_name, str):
-            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Digite nome de um produto. Ex: Coca-Cola 2L.")
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail='Digite nome de um produto. Ex: Coca-Cola 2L.',
+            )
 
         try:
-            cache_key = f"product:{self.user_id}:{product_name.lower()}"
+            cache_key = f'product:{self.user_id}:{product_name.lower()}'
 
             # 🔹 Verifica se já tem cache
             cache = await client.get(cache_key)
             if cache:
-                print("[CACHE] Produto encontrado no cache")
-                return {"data": json.loads(cache)}
+                print('[CACHE] Produto encontrado no cache')
+                return {'data': json.loads(cache)}
 
             # 🔹 Busca no banco
-            product = await get_product_by_user(user_id=self.user_id, code=None, name=product_name)
+            product = await get_product_by_user(
+                user_id=self.user_id, code=None, name=product_name
+            )
 
             if product:
                 product_data = {
-                    "codigo": product.product_code,
-                    "nome": product.name,
-                    "preço": product.sale_price,
+                    'codigo': product.product_code,
+                    'nome': product.name,
+                    'preço': product.sale_price,
                 }
 
                 # 🔹 Salva no cache por 60 segundos
@@ -51,13 +57,18 @@ class Products:
                 return [product_data]
 
             else:
-                return [{"aviso": f"{product_name} não encontrado."}]
+                return [{'aviso': f'{product_name} não encontrado.'}]
 
         except Exception as e:
-            print(f"[ERRO search_product] {e}")
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Erro interno, tente novamente mais tarde.")
+            print(f'[ERRO search_product] {e}')
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail='Erro interno, tente novamente mais tarde.',
+            )
 
-    async def observe_products_by_tickets(self, type_ticket: str, extra_type: Dict[list, Any] = None) -> dict[list, Any]:
+    async def observe_products_by_tickets(
+        self, type_ticket: str, extra_type: Dict[list, Any] = None
+    ) -> dict[list, Any]:
         """
         Metodo responsavel por buscar produtos por tickets (Promoção, Novo...)
 
@@ -67,27 +78,32 @@ class Products:
         """
 
         if not isinstance(type_ticket, str):
-            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Digite nome de um ticket. Ex: Promoção.")
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail='Digite nome de um ticket. Ex: Promoção.',
+            )
 
         try:
 
-            cache_key = f"product:{self.user_id}:{type_ticket.lower()}"
+            cache_key = f'product:{self.user_id}:{type_ticket.lower()}'
             cache = await client.get(cache_key)
             if cache:
                 print('Produto encontrado em cache')
                 return json.loads(cache)
 
-            product = await Produto.filter(usuario_id=self.user_id, ticket=type_ticket).all()
+            product = await Produto.filter(
+                usuario_id=self.user_id, ticket=type_ticket
+            ).all()
 
             products_data = []
             if product:
                 for prod in product:
                     products_data.append(
                         {
-                            "codigo": prod.product_code,
-                            "nome": prod.name,
-                            "preço": prod.sale_price,
-                            "preço": prod.ticket,
+                            'codigo': prod.product_code,
+                            'nome': prod.name,
+                            'preço': prod.sale_price,
+                            'preço': prod.ticket,
                         }
                     )
 
@@ -95,7 +111,10 @@ class Products:
                 return products_data
 
             else:
-                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Sem resultado")
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail='Sem resultado',
+                )
 
         except Exception as e:
             raise e
@@ -121,7 +140,11 @@ class Products:
             )
 
             # 2. Verifica e calcula
-            if aggregation and aggregation.total_revenue is not None and aggregation.num_transactions > 0:
+            if (
+                aggregation
+                and aggregation.total_revenue is not None
+                and aggregation.num_transactions > 0
+            ):
 
                 total_revenue = aggregation.total_revenue
                 num_transactions = aggregation.num_transactions
@@ -134,5 +157,5 @@ class Products:
             return 0.0  # Retorna zero se não houver vendas ou transações
 
         except Exception as e:
-            print(f"Erro ao calcular o ticket médio: {e}")
+            print(f'Erro ao calcular o ticket médio: {e}')
             return 0.0

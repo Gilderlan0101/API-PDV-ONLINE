@@ -1,17 +1,22 @@
 from fastapi import APIRouter, Depends
-from src.model.user import Usuario
-from src.model.caixa import Caixa
-from src.auth.deps import get_current_user, SystemUser
+
+from src.auth.deps import SystemUser, get_current_user
 from src.logs.infos import LOGGER
+from src.model.caixa import Caixa
+from src.model.user import Usuario
 
 router = APIRouter()
 
 
 @router.get('/infos/caixas')
-async def information_from_all_cashiers(current_user: SystemUser = Depends(get_current_user)):
+async def information_from_all_cashiers(
+    current_user: SystemUser = Depends(get_current_user),
+):
     """Retorna informações de todos os caixas do usuário"""
 
-    LOGGER.debug("Listando caixas do usuário", extra={"user_id": current_user.id})
+    LOGGER.debug(
+        'Listando caixas do usuário', extra={'user_id': current_user.id}
+    )
 
     if not current_user.id:
         raise HTTPException(status_code=404, detail='Usuario não encontrado.')
@@ -31,12 +36,15 @@ async def information_from_all_cashiers(current_user: SystemUser = Depends(get_c
             'Saldo_atual': saldo_formatado,
         }
         # Debug: log each caixa info
-        LOGGER.debug(f"Caixa info: {caixa_info}")
+        LOGGER.debug(f'Caixa info: {caixa_info}')
         infos.append(caixa_info)
 
-    LOGGER.debug("Caixas listados", extra={"total_caixas": len(cashs), "caixas_abertos": len(infos)})
+    LOGGER.debug(
+        'Caixas listados',
+        extra={'total_caixas': len(cashs), 'caixas_abertos': len(infos)},
+    )
 
     # Debug: log the final response
-    LOGGER.debug(f"Final response: {infos}")
+    LOGGER.debug(f'Final response: {infos}')
 
     return infos

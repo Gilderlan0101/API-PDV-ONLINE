@@ -1,17 +1,18 @@
 from __future__ import annotations
-from typing import List, Optional
-from enum import Enum
-from datetime import date, datetime
+
 import re
+from datetime import date, datetime
+from enum import Enum
+from typing import List, Optional
 
 from pydantic import (
     BaseModel,
-    Field,
-    EmailStr,
-    HttpUrl,
-    field_validator,
     ConfigDict,
+    EmailStr,
+    Field,
+    HttpUrl,
     constr,
+    field_validator,
     model_validator,
 )
 
@@ -20,63 +21,63 @@ from pydantic import (
 # Enums
 # =========================
 class SupplierType(str, Enum):
-    PESSOA_JURIDICA = "PJ"
-    PESSOA_FISICA = "PF"
+    PESSOA_JURIDICA = 'PJ'
+    PESSOA_FISICA = 'PF'
 
 
 class TaxRegime(str, Enum):
-    SIMPLES_NACIONAL = "Simples Nacional"
-    LUCRO_PRESUMIDO = "Lucro Presumido"
-    LUCRO_REAL = "Lucro Real"
-    MEI = "MEI"
-    OUTRO = "Outro"
+    SIMPLES_NACIONAL = 'Simples Nacional'
+    LUCRO_PRESUMIDO = 'Lucro Presumido'
+    LUCRO_REAL = 'Lucro Real'
+    MEI = 'MEI'
+    OUTRO = 'Outro'
 
 
 class IEStatus(str, Enum):
-    CONTRIBUINTE = "Contribuinte"
-    ISENTO = "Isento"
-    NAO_CONTRIBUINTE = "Não Contribuinte"
+    CONTRIBUINTE = 'Contribuinte'
+    ISENTO = 'Isento'
+    NAO_CONTRIBUINTE = 'Não Contribuinte'
 
 
 class PaymentTerm(str, Enum):
-    AVISTA = "À vista"
-    DIAS_7 = "7 dias"
-    DIAS_14 = "14 dias"
-    DIAS_21 = "21 dias"
-    DIAS_28 = "28 dias"
-    DIAS_30 = "30 dias"
-    DIAS_45 = "45 dias"
-    DIAS_60 = "60 dias"
-    PERSONALIZADO = "Personalizado"
+    AVISTA = 'À vista'
+    DIAS_7 = '7 dias'
+    DIAS_14 = '14 dias'
+    DIAS_21 = '21 dias'
+    DIAS_28 = '28 dias'
+    DIAS_30 = '30 dias'
+    DIAS_45 = '45 dias'
+    DIAS_60 = '60 dias'
+    PERSONALIZADO = 'Personalizado'
 
 
 class SupplierStatus(str, Enum):
-    ATIVO = "Ativo"
-    INATIVO = "Inativo"
-    BLOQUEADO = "Bloqueado"
-    PENDENTE = "Pendente"
+    ATIVO = 'Ativo'
+    INATIVO = 'Inativo'
+    BLOQUEADO = 'Bloqueado'
+    PENDENTE = 'Pendente'
 
 
 class BankAccountType(str, Enum):
-    CORRENTE = "corrente"
-    POUPANCA = "poupança"
-    SALARIO = "salário"
+    CORRENTE = 'corrente'
+    POUPANCA = 'poupança'
+    SALARIO = 'salário'
 
 
 # =========================
 # Type Aliases para melhor legibilidade
 # =========================
-DDDType = constr(pattern=r"^\d{2}$")
-PhoneNumberType = constr(pattern=r"^\d{8,9}$")
-CepType = constr(pattern=r"^\d{5}-?\d{3}$")
-UFType = constr(pattern=r"^[A-Z]{2}$")
-BankCodeType = constr(pattern=r"^\d{3}$")
-AgencyType = constr(pattern=r"^\d{1,6}(-\d)?$")
-AccountType = constr(pattern=r"^\d{1,12}(-\d{1})?$")
-DigitType = constr(pattern=r"^\d{0,2}$")
+DDDType = constr(pattern=r'^\d{2}$')
+PhoneNumberType = constr(pattern=r'^\d{8,9}$')
+CepType = constr(pattern=r'^\d{5}-?\d{3}$')
+UFType = constr(pattern=r'^[A-Z]{2}$')
+BankCodeType = constr(pattern=r'^\d{3}$')
+AgencyType = constr(pattern=r'^\d{1,6}(-\d)?$')
+AccountType = constr(pattern=r'^\d{1,12}(-\d{1})?$')
+DigitType = constr(pattern=r'^\d{0,2}$')
 DocumentType = constr(min_length=11, max_length=18)
-CNPJType = constr(pattern=r"^\d{14}$")
-CPFType = constr(pattern=r"^\d{11}$")
+CNPJType = constr(pattern=r'^\d{14}$')
+CPFType = constr(pattern=r'^\d{11}$')
 IEType = constr(strip_whitespace=True, min_length=2, max_length=20)
 
 
@@ -84,8 +85,10 @@ IEType = constr(strip_whitespace=True, min_length=2, max_length=20)
 # Objetos de apoio
 # =========================
 class Phone(BaseModel):
-    ddd: DDDType = Field(..., description="DDD com 2 dígitos")
-    numero: PhoneNumberType = Field(..., description="Número sem DDD, 8 ou 9 dígitos")
+    ddd: DDDType = Field(..., description='DDD com 2 dígitos')
+    numero: PhoneNumberType = Field(
+        ..., description='Número sem DDD, 8 ou 9 dígitos'
+    )
     whatsapp: bool = False
     principal: bool = False
 
@@ -93,13 +96,13 @@ class Phone(BaseModel):
 
 
 class Address(BaseModel):
-    cep: CepType = Field(..., example="01311-000")
+    cep: CepType = Field(..., example='01311-000')
     logradouro: str = Field(..., max_length=200)
     numero: str = Field(..., max_length=20)
     complemento: Optional[str] = Field(None, max_length=100)
     bairro: str = Field(..., max_length=100)
     cidade: str = Field(..., max_length=100)
-    uf: UFType = Field(..., example="SP")
+    uf: UFType = Field(..., example='SP')
     referencia: Optional[str] = Field(None, max_length=200)
 
     model_config = ConfigDict(from_attributes=True)
@@ -117,16 +120,18 @@ class ContactPerson(BaseModel):
 
 
 class BankAccount(BaseModel):
-    banco: constr(min_length=3, max_length=50) = Field(..., example="Itaú")
-    codigo_banco: BankCodeType = Field(..., example="341")
-    agencia: AgencyType = Field(..., example="1234")
+    banco: constr(min_length=3, max_length=50) = Field(..., example='Itaú')
+    codigo_banco: BankCodeType = Field(..., example='341')
+    agencia: AgencyType = Field(..., example='1234')
     digito_agencia: Optional[DigitType] = None
-    conta: AccountType = Field(..., example="123456-7")
-    digito_conta: DigitType = Field(..., example="1")
+    conta: AccountType = Field(..., example='123456-7')
+    digito_conta: DigitType = Field(..., example='1')
     tipo: BankAccountType = BankAccountType.CORRENTE
     titular: str = Field(..., max_length=100)
-    documento_titular: DocumentType = Field(..., description="CPF/CNPJ do titular")
-    pix: Optional[str] = Field(None, max_length=140, description="Chave PIX")
+    documento_titular: DocumentType = Field(
+        ..., description='CPF/CNPJ do titular'
+    )
+    pix: Optional[str] = Field(None, max_length=140, description='Chave PIX')
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -145,11 +150,15 @@ class SupplierBase(BaseModel):
     # Identificação
     tipo: SupplierType = SupplierType.PESSOA_JURIDICA
     razao_social: str = Field(..., max_length=200)
-    nome_fantasia: Optional[str] = Field(None, max_length=200, description="Apelido comercial")
+    nome_fantasia: Optional[str] = Field(
+        None, max_length=200, description='Apelido comercial'
+    )
 
     # Documentos
-    cnpj: Optional[CNPJType] = Field(None, description="Apenas números; para PJ")
-    cpf: Optional[CPFType] = Field(None, description="Apenas números; para PF")
+    cnpj: Optional[CNPJType] = Field(
+        None, description='Apenas números; para PJ'
+    )
+    cpf: Optional[CPFType] = Field(None, description='Apenas números; para PF')
     ie_status: IEStatus = IEStatus.CONTRIBUINTE
     inscricao_estadual: Optional[IEType] = None
     inscricao_municipal: Optional[str] = Field(None, max_length=20)
@@ -169,7 +178,12 @@ class SupplierBase(BaseModel):
 
     # Financeiro
     prazo_pagamento: PaymentTerm = PaymentTerm.DIAS_30
-    prazo_personalizado_dias: Optional[int] = Field(None, ge=1, le=365, description="Obrigatório se PaymentTerm = PERSONALIZADO")
+    prazo_personalizado_dias: Optional[int] = Field(
+        None,
+        ge=1,
+        le=365,
+        description='Obrigatório se PaymentTerm = PERSONALIZADO',
+    )
     limite_credito: Optional[float] = Field(0, ge=0)
     desconto_padrao_percent: float = Field(0, ge=0, le=100)
 
@@ -177,7 +191,10 @@ class SupplierBase(BaseModel):
     contas_bancarias: List[BankAccount] = Field(default_factory=list)
 
     # Operacional
-    categorias_fornecimento: List[str] = Field(default_factory=list, description="Ex.: bebidas, laticínios, matérias-primas")
+    categorias_fornecimento: List[str] = Field(
+        default_factory=list,
+        description='Ex.: bebidas, laticínios, matérias-primas',
+    )
     observacoes: Optional[str] = Field(None, max_length=2000)
     status: SupplierStatus = SupplierStatus.ATIVO
 
@@ -202,9 +219,15 @@ class SupplierBase(BaseModel):
         """Validação do prazo personalizado"""
         if self.prazo_pagamento == PaymentTerm.PERSONALIZADO:
             if self.prazo_personalizado_dias is None:
-                raise ValueError('prazo_personalizado_dias é obrigatório quando ' 'prazo_pagamento é Personalizado')
+                raise ValueError(
+                    'prazo_personalizado_dias é obrigatório quando '
+                    'prazo_pagamento é Personalizado'
+                )
         elif self.prazo_personalizado_dias is not None:
-            raise ValueError('prazo_personalizado_dias só deve ser informado quando ' 'prazo_pagamento é Personalizado')
+            raise ValueError(
+                'prazo_personalizado_dias só deve ser informado quando '
+                'prazo_pagamento é Personalizado'
+            )
 
         return self
 
@@ -224,12 +247,16 @@ class SupplierUpdate(SupplierBase):
 class Supplier(SupplierBase):
     """Schema completo com campos de auditoria"""
 
-    id: int = Field(..., description="ID único gerado pelo sistema")
+    id: int = Field(..., description='ID único gerado pelo sistema')
     criado_em: datetime = Field(default_factory=datetime.now)
     atualizado_em: datetime = Field(default_factory=datetime.now)
     ativo_desde: Optional[date] = None
-    criado_por: Optional[str] = Field(None, description="Usuário que criou o registro")
-    atualizado_por: Optional[str] = Field(None, description="Usuário que atualizou o registro")
+    criado_por: Optional[str] = Field(
+        None, description='Usuário que criou o registro'
+    )
+    atualizado_por: Optional[str] = Field(
+        None, description='Usuário que atualizou o registro'
+    )
 
 
 class SupplierSummary(BaseModel):
@@ -281,14 +308,14 @@ def format_cnpj(cnpj: str) -> str:
     """Formata CNPJ para exibição: XX.XXX.XXX/XXXX-XX"""
     if len(cnpj) != 14:
         return cnpj
-    return f"{cnpj[:2]}.{cnpj[2:5]}.{cnpj[5:8]}/{cnpj[8:12]}-{cnpj[12:]}"
+    return f'{cnpj[:2]}.{cnpj[2:5]}.{cnpj[5:8]}/{cnpj[8:12]}-{cnpj[12:]}'
 
 
 def format_cpf(cpf: str) -> str:
     """Formata CPF para exibição: XXX.XXX.XXX-XX"""
     if len(cpf) != 11:
         return cpf
-    return f"{cpf[:3]}.{cpf[3:6]}.{cpf[6:9]}-{cpf[9:]}"
+    return f'{cpf[:3]}.{cpf[3:6]}.{cpf[6:9]}-{cpf[9:]}'
 
 
 def sanitize_document(document: str) -> str:

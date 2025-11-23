@@ -1,4 +1,5 @@
 from typing import List, Optional
+
 from pydantic import BaseModel
 
 # Modelos para o retorno, ajustados conforme seu gerador de relatórios

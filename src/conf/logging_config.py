@@ -1,23 +1,28 @@
 # src/core/logging_config.py
 import logging
+import os
 import sys
 from logging.handlers import RotatingFileHandler
-import os
 
 
 def setup_logging():
     """Configura o sistema de logging profissional"""
 
     # Criar diretório de logs se não existir
-    log_dir = "logs"
+    log_dir = 'logs'
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
 
     # Formatação
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+    formatter = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S',
+    )
 
     # Handler para arquivo
-    file_handler = RotatingFileHandler(f'{log_dir}/app.log', maxBytes=10485760, backupCount=5)  # 10MB
+    file_handler = RotatingFileHandler(
+        f'{log_dir}/app.log', maxBytes=10485760, backupCount=5
+    )  # 10MB
     file_handler.setFormatter(formatter)
     file_handler.setLevel(logging.INFO)
 
@@ -39,6 +44,6 @@ def setup_logging():
     root_logger.addHandler(console_handler)
 
     # Silenciar logs muito verbosos
-    logging.getLogger("uvicorn.access").setLevel(logging.WARNING)
-    logging.getLogger("uvicorn.error").setLevel(logging.WARNING)
-    logging.getLogger("tortoise").setLevel(logging.WARNING)
+    logging.getLogger('uvicorn.access').setLevel(logging.WARNING)
+    logging.getLogger('uvicorn.error').setLevel(logging.WARNING)
+    logging.getLogger('tortoise').setLevel(logging.WARNING)

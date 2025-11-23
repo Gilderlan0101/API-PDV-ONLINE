@@ -1,7 +1,8 @@
 # src/model/cash_movement.py
-from tortoise import models, fields
 from datetime import datetime
 from zoneinfo import ZoneInfo
+
+from tortoise import fields, models
 
 
 class CashMovement(models.Model):
@@ -14,13 +15,23 @@ class CashMovement(models.Model):
     tipo = fields.CharField(max_length=20)
     valor = fields.FloatField()
     descricao = fields.TextField()
-    criado_em = fields.DatetimeField(default=datetime.now(ZoneInfo("America/Sao_Paulo")))
+    criado_em = fields.DatetimeField(
+        default=datetime.now(ZoneInfo('America/Sao_Paulo'))
+    )
 
     # Relacionamentos
-    caixa = fields.ForeignKeyField("models.Caixa", related_name="movimentacoes")
-    usuario = fields.ForeignKeyField("models.Usuario", related_name="movimentacoes_caixa")
-    funcionario = fields.ForeignKeyField("models.Employees", related_name="movimentacoes", null=True)
-    venda = fields.ForeignKeyField("models.Sales", related_name="movimentacoes", null=True)
+    caixa = fields.ForeignKeyField(
+        'models.Caixa', related_name='movimentacoes'
+    )
+    usuario = fields.ForeignKeyField(
+        'models.Usuario', related_name='movimentacoes_caixa'
+    )
+    funcionario = fields.ForeignKeyField(
+        'models.Employees', related_name='movimentacoes', null=True
+    )
+    venda = fields.ForeignKeyField(
+        'models.Sales', related_name='movimentacoes', null=True
+    )
 
     class Meta:
-        table = "cash_movements"
+        table = 'cash_movements'

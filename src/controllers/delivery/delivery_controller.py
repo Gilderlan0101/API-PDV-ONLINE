@@ -1,13 +1,14 @@
 # controller/delivery_controller.py
-from fastapi import HTTPException, Depends, status
-from src.auth.deps import get_current_user, SystemUser
-from src.schemas.delivery.schemas_delivery import DeliveryCreate
-from typing import List, Optional, Dict, Any
 from datetime import datetime
+from typing import Any, Dict, List, Optional
 
-from src.model.delivery import Delivery, DeliveryItem
+from fastapi import Depends, HTTPException, status
+
+from src.auth.deps import SystemUser, get_current_user
 from src.model.customers import Customer
+from src.model.delivery import Delivery, DeliveryItem
 from src.model.employee import Employees
+from src.schemas.delivery.schemas_delivery import DeliveryCreate
 
 
 class CreateDelivery:
@@ -77,23 +78,36 @@ class CreateDelivery:
         """
         # Validação de itens
         if not self.items or len(self.items) == 0:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Adicione produtos ao pedido antes de iniciar a entrega.")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail='Adicione produtos ao pedido antes de iniciar a entrega.',
+            )
 
         # Validação de endereço
         if not self.address or not isinstance(self.address, dict):
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Endereço de entrega é obrigatório e deve ser um dicionário.")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail='Endereço de entrega é obrigatório e deve ser um dicionário.',
+            )
 
         # Verifica campos mínimos do endereço
         required_address_fields = ['street', 'neighborhood', 'city']
         for field in required_address_fields:
             if not self.address.get(field):
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Campo '{field}' do endereço é obrigatório.")
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Campo '{field}' do endereço é obrigatório.",
+                )
 
         # Validação do tipo de veículo
         valid_vehicle_types = ['moto', 'carro']
-        if not self.scheduled_type or self.scheduled_type not in valid_vehicle_types:
+        if (
+            not self.scheduled_type
+            or self.scheduled_type not in valid_vehicle_types
+        ):
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, detail=f"Tipo de veículo é obrigatório. Escolha entre: {', '.join(valid_vehicle_types)}"
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Tipo de veículo é obrigatório. Escolha entre: {', '.join(valid_vehicle_types)}",
             )
 
         return True
@@ -114,7 +128,9 @@ class CreateDelivery:
         ]
         return ', '.join([part for part in parts if part])
 
-    async def check_if_cliente_is_registered(self, customer: Optional[int] = None, company_id: Optional[int] = None) -> List[Dict[str, Any]]:
+    async def check_if_cliente_is_registered(
+        self, customer: Optional[int] = None, company_id: Optional[int] = None
+    ) -> List[Dict[str, Any]]:
         """
         Verifica se o cliente já existe no banco de dados da loja.
 
@@ -137,37 +153,76 @@ class CreateDelivery:
         try:
             # Consultar cliente pelo ID informado (se fornecido)
             if customer and company_id:
-                search_cliente = await Customer.filter(usuario_id=company_id, id=customer).first()
+                search_cliente = await Customer.filter(
+                    usuario_id=company_id, id=customer
+                ).first()
             else:
                 search_cliente = None
 
             if search_cliente:
                 # Cliente encontrado - preenche com dados do banco
-                fields = ['full_name', 'house_number', 'neighborhood', 'city', 'state', 'cep']
-                self.customer_information[0] = {field: getattr(search_cliente, field, '') or '' for field in fields}
+                fields = [
+                    'full_name',
+                    'house_number',
+                    'neighborhood',
+                    'city',
+                    'state',
+                    'cep',
+                ]
+                self.customer_information[0] = {
+                    field: getattr(search_cliente, field, '') or ''
+                    for field in fields
+                }
                 # Adiciona campos específicos da entrega
                 self.customer_information[0]['items'] = self.items
-                self.customer_information[0]['number_of_bags'] = self.number_of_bags
-                self.customer_information[0]['address_string'] = self._format_address_string()
+                self.customer_information[0][
+                    'number_of_bags'
+                ] = self.number_of_bags
+                self.customer_information[0][
+                    'address_string'
+                ] = self._format_address_string()
 
             else:
                 # Cliente não encontrado - usa informações do dicionário address
-                self.customer_information[0]['full_name'] = self.customer_name or ''
-                self.customer_information[0]['house_number'] = self.address.get('house_number', '')
-                self.customer_information[0]['neighborhood'] = self.address.get('neighborhood', '')
-                self.customer_information[0]['city'] = self.address.get('city', '')
-                self.customer_information[0]['state'] = self.address.get('state', 'BA')
-                self.customer_information[0]['cep'] = self.cep or self.address.get('cep', '')
-                self.customer_information[0]['address_string'] = self._format_address_string()
+                self.customer_information[0]['full_name'] = (
+                    self.customer_name or ''
+                )
+                self.customer_information[0][
+                    'house_number'
+                ] = self.address.get('house_number', '')
+                self.customer_information[0][
+                    'neighborhood'
+                ] = self.address.get('neighborhood', '')
+                self.customer_information[0]['city'] = self.address.get(
+                    'city', ''
+                )
+                self.customer_information[0]['state'] = self.address.get(
+                    'state', 'BA'
+                )
+                self.customer_information[0][
+                    'cep'
+                ] = self.cep or self.address.get('cep', '')
+                self.customer_information[0][
+                    'address_string'
+                ] = self._format_address_string()
                 self.customer_information[0]['items'] = self.items
-                self.customer_information[0]['number_of_bags'] = self.number_of_bags
+                self.customer_information[0][
+                    'number_of_bags'
+                ] = self.number_of_bags
 
             return self.customer_information
 
         except Exception as e:
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Erro ao buscar informações do cliente: {str(e)}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f'Erro ao buscar informações do cliente: {str(e)}',
+            )
 
-    async def add_delivery_man(self, company_id: Optional[int] = None, delivery_man_id: Optional[int] = None) -> None:
+    async def add_delivery_man(
+        self,
+        company_id: Optional[int] = None,
+        delivery_man_id: Optional[int] = None,
+    ) -> None:
         """
         Adiciona o entregador responsável pela entrega.
 
@@ -180,17 +235,29 @@ class CreateDelivery:
         """
         if company_id and delivery_man_id:
             try:
-                search_employee = await Employees.filter(usuario_id=company_id, id=delivery_man_id).first()
+                search_employee = await Employees.filter(
+                    usuario_id=company_id, id=delivery_man_id
+                ).first()
 
                 if search_employee:
-                    self.customer_information[0]['assigned_to'] = search_employee.nome
+                    self.customer_information[0][
+                        'assigned_to'
+                    ] = search_employee.nome
                 else:
-                    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Entregador não encontrado.")
+                    raise HTTPException(
+                        status_code=status.HTTP_404_NOT_FOUND,
+                        detail='Entregador não encontrado.',
+                    )
 
             except Exception as e:
-                raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Erro ao adicionar entregador: {str(e)}")
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail=f'Erro ao adicionar entregador: {str(e)}',
+                )
 
-    async def create_delivery_record(self, company_id: int, user_id: int) -> Dict[str, Any]:
+    async def create_delivery_record(
+        self, company_id: int, user_id: int
+    ) -> Dict[str, Any]:
         """
         Cria o registro completo de entrega no banco de dados.
 
@@ -204,7 +271,9 @@ class CreateDelivery:
         try:
             # Verifica se já temos as informações do cliente
             if not self.customer_information[0]['full_name']:
-                await self.check_if_cliente_is_registered(self.customer_id, company_id)
+                await self.check_if_cliente_is_registered(
+                    self.customer_id, company_id
+                )
 
             # Primeiro cria o registro principal da entrega
             delivery_data = {
@@ -216,8 +285,8 @@ class CreateDelivery:
                 'total_distance_km': 0.0,  # Pode ser calculado depois
                 'delivery_fee': 0.0,  # Pode ser calculado depois
                 'total_price': 0.0,  # Precisa ser calculado baseado nos items
-                'payment_status': "Pendente",
-                'delivery_status': "esperando",
+                'payment_status': 'Pendente',
+                'delivery_status': 'esperando',
                 'delivery_type': self.scheduled_type,
                 'assigned_to': self.customer_information[0].get('assigned_to'),
                 'scheduled_time': self.scheduled_time,
@@ -250,12 +319,17 @@ class CreateDelivery:
                 },
                 'status': 'created',
                 'created_at': (
-                    delivery_record.created_at.isoformat() if hasattr(delivery_record.created_at, 'isoformat') else str(delivery_record.created_at)
+                    delivery_record.created_at.isoformat()
+                    if hasattr(delivery_record.created_at, 'isoformat')
+                    else str(delivery_record.created_at)
                 ),
             }
 
         except Exception as e:
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Erro ao criar registro de entrega: {str(e)}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f'Erro ao criar registro de entrega: {str(e)}',
+            )
 
     def _calculate_total_price(self) -> float:
         """
@@ -267,7 +341,11 @@ class CreateDelivery:
         total = 0.0
         for item in self.items:
             # Assumindo que cada item é um dict com 'price' e 'quantity'
-            if isinstance(item, dict) and 'price' in item and 'quantity' in item:
+            if (
+                isinstance(item, dict)
+                and 'price' in item
+                and 'quantity' in item
+            ):
                 total += item['price'] * item['quantity']
             elif hasattr(item, 'price') and hasattr(item, 'quantity'):
                 total += item.price * item.quantity
@@ -295,4 +373,7 @@ class CreateDelivery:
                 await DeliveryItem.create(**item_data)
 
         except Exception as e:
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Erro ao criar itens da entrega: {str(e)}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f'Erro ao criar itens da entrega: {str(e)}',
+            )

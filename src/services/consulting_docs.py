@@ -1,4 +1,4 @@
-from validate_docbr import CPF, CNPJ
+from validate_docbr import CNPJ, CPF
 
 
 def checking_documents_CPF(doc: str) -> bool:

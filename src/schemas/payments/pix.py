@@ -1,5 +1,6 @@
-from pydantic import BaseModel, validator, constr
 from typing import Optional
+
+from pydantic import BaseModel, constr, validator
 
 MIN_NAME_SIZE = 10
 MIN_CITY_SIZE = 5

@@ -1,13 +1,15 @@
 import inspect
 import json
 from functools import wraps
+
 from fastapi import HTTPException
 from fastapi.encoders import jsonable_encoder
-from src.model.user import Usuario
+
+from src.core.cache import client
+from src.logs.infos import LOGGER
 from src.model.employee import Employees
 from src.model.product import Produto
-from src.logs.infos import LOGGER
-from src.core.cache import client
+from src.model.user import Usuario
 
 """
 user_or_functional: Este arquivo é responsável por identificar quem está tentando acessar o sistema.
@@ -58,7 +60,9 @@ async def handle_current_user_logic(function, params, args, kwargs):
         index = params.index('current_user')
 
         # Recupera o objeto current_user dos argumentos posicionais ou nomeados
-        current_user = args[index] if index < len(args) else kwargs.get('current_user')
+        current_user = (
+            args[index] if index < len(args) else kwargs.get('current_user')
+        )
 
         # Retorna early se não houver usuário autenticado
         if not current_user:
@@ -72,7 +76,12 @@ async def handle_current_user_logic(function, params, args, kwargs):
         LOGGER.info(f'User type: {user_type}, Function: {function_name}')
 
         # Define as rotas que são exclusivas para funcionários
-        EMPLOYEE_ONLY_ROUTES = {'get_delivery_management', 'update_delivery_status', 'manage_orders', 'get_caixa_status' 'list_all_products'}
+        EMPLOYEE_ONLY_ROUTES = {
+            'get_delivery_management',
+            'update_delivery_status',
+            'manage_orders',
+            'get_caixa_status' 'list_all_products',
+        }
 
         # Define as rotas que são exclusivas para empresas (SystemUser)
         USER_ONLY_ROUTES = {'list_all_products'}
@@ -80,12 +89,21 @@ async def handle_current_user_logic(function, params, args, kwargs):
         # Bloqueia SystemUser tentando acessar rotas exclusivas de funcionários
         if user_type == 'SystemUser' and function_name in EMPLOYEE_ONLY_ROUTES:
             LOGGER.warning(f'SystemUser bloqueado na rota: {function_name}')
-            raise HTTPException(status_code=403, detail='Acesso restrito para funcionários')
+            raise HTTPException(
+                status_code=403, detail='Acesso restrito para funcionários'
+            )
 
         # Bloqueia SystemEmployees tentando acessar rotas exclusivas de empresas
-        elif user_type == 'SystemEmployees' and function_name in USER_ONLY_ROUTES:
-            LOGGER.warning(f'SystemEmployees bloqueado na rota: {function_name}')
-            raise HTTPException(status_code=403, detail='Acesso restrito para empresas')
+        elif (
+            user_type == 'SystemEmployees'
+            and function_name in USER_ONLY_ROUTES
+        ):
+            LOGGER.warning(
+                f'SystemEmployees bloqueado na rota: {function_name}'
+            )
+            raise HTTPException(
+                status_code=403, detail='Acesso restrito para empresas'
+            )
 
         # Executa lógica específica baseada no tipo de usuário
         if user_type == 'SystemUser':

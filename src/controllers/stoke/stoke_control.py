@@ -1,14 +1,14 @@
+import json
 from datetime import datetime
+from typing import Dict, List
 from zoneinfo import ZoneInfo
-from typing import List, Dict
 
 from tortoise.exceptions import DoesNotExist
 
-from src.model.user import Usuario
-from src.model.product import Produto
 from src.core.cache import client
+from src.model.product import Produto
+from src.model.user import Usuario
 
-import json
 
 async def get_user(user_id: int) -> Usuario | None:
     """Retorna o objeto Usuario ou None."""

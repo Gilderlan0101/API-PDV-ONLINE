@@ -1,15 +1,20 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Query
-from src.auth.deps import get_current_user, SystemUser
-from typing import List, Optional, Dict, Any
-from src.controllers.marketplace.product_search_service import CustomerMarketplace
+from typing import Any, Dict, List, Optional
 
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+
+from src.auth.deps import SystemUser, get_current_user
+from src.controllers.marketplace.product_search_service import (
+    CustomerMarketplace,
+)
 
 marketplace = APIRouter()
 
 
 @marketplace.get('/deep_search')
 async def deep_search_of_products(
-    product_name: str = Query(...), target_company: Optional[str] = None, current_user: SystemUser = Depends(get_current_user)
+    product_name: str = Query(...),
+    target_company: Optional[str] = None,
+    current_user: SystemUser = Depends(get_current_user),
 ):
     """
     Realiza uma busca aprofundada por informações de um produto específico em outras empresas cadastradas no sistema.
@@ -19,7 +24,14 @@ async def deep_search_of_products(
     """
 
     if not current_user.id:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Autenticação necessária para acessar esta funcionalidade')
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='Autenticação necessária para acessar esta funcionalidade',
+        )
 
-    deep_search = CustomerMarketplace(user_id=current_user.id, product_name=product_name, target_company=target_company)
+    deep_search = CustomerMarketplace(
+        user_id=current_user.id,
+        product_name=product_name,
+        target_company=target_company,
+    )
     return await deep_search.result()

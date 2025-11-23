@@ -1,8 +1,7 @@
-from pydantic import BaseModel, ConfigDict
 from datetime import datetime
-
-
 from typing import List, Optional
+
+from pydantic import BaseModel, ConfigDict
 
 # --- Esquema Pydantic (Exemplo) ---
 # Adicione este modelo em um arquivo de schemas ou no topo da sua rota/serviço

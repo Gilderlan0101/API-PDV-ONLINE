@@ -1,6 +1,8 @@
-from src.auth.deps import SystemUser
-from pydantic import BaseModel
 from typing import Optional
+
+from pydantic import BaseModel
+
+from src.auth.deps import SystemUser
 
 # ID_USER =  SystemUser.id
 
@@ -37,7 +39,9 @@ class PartialDataOutput(BaseModel):
 
     full_name: str
     value: int
-    mensagem: Optional[dict]  # ex: {'mensagem': 'O cliente X pagou 30.00 de 100.00 restante 70.00'}
+    mensagem: Optional[
+        dict
+    ]  # ex: {'mensagem': 'O cliente X pagou 30.00 de 100.00 restante 70.00'}
 
 
 class ReceivePaymentPartial(BaseModel):

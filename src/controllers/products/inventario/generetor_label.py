@@ -1,19 +1,19 @@
+import random
 from dataclasses import dataclass, field
-from typing import Optional, Dict, Any, List
+from datetime import datetime
+from typing import Any, Dict, List, Optional
+from zoneinfo import ZoneInfo
+
 from fastapi import HTTPException, status
 from tortoise import fields, models
-from datetime import datetime
-from zoneinfo import ZoneInfo
 from tortoise.transactions import in_transaction
-
-# Dependências locais (mantidas em português nos comentários)
-from src.utils.get_produtos_user import get_product_by_user
 
 # REMOVIDA A IMPORTAÇÃO: from src.utils.sales_code_generator import lot_bar_code_size
 from src.model.product import Produto
 from src.model.sale import Sales
 
-import random
+# Dependências locais (mantidas em português nos comentários)
+from src.utils.get_produtos_user import get_product_by_user
 
 
 @dataclass
@@ -56,7 +56,11 @@ class LabelGenerator:
             return False  # Não há dados suficientes para a busca
 
         # Lógica de busca. Assumindo que get_product_by_user retorna um dict.
-        product_selected = await get_product_by_user(user_id=self.company_id, product_id=self.product_id, code=self.product_code)
+        product_selected = await get_product_by_user(
+            user_id=self.company_id,
+            product_id=self.product_id,
+            code=self.product_code,
+        )
 
         if product_selected:
             self._product_data = product_selected
@@ -79,7 +83,10 @@ class LabelGenerator:
         if not self._product_data:
             if not await self.fetch_product_data():
                 # Lançar exceção se o produto não for encontrado
-                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado para gerar o rótulo.")
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail='Produto não encontrado para gerar o rótulo.',
+                )
 
         product_data = self._product_data
 
@@ -91,24 +98,29 @@ class LabelGenerator:
 
         if product_db_id:
             # 🟢 Atualiza o campo 'label' no modelo Produto
-            result = await Produto.filter(usuario_id=self.company_id, id=product_db_id).update(label=label_code)
+            result = await Produto.filter(
+                usuario_id=self.company_id, id=product_db_id
+            ).update(label=label_code)
 
             if result == 0:
                 # Lançar exceção se a atualização falhar (ex: produto não pertence à empresa)
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
-                    detail="Falha ao atualizar o rótulo: Produto não encontrado ou não pertence a esta empresa.",
+                    detail='Falha ao atualizar o rótulo: Produto não encontrado ou não pertence a esta empresa.',
                 )
         else:
             # Lançar exceção se o ID do produto não estiver disponível no _product_data
             raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="ID do produto indisponível para atualização no banco de dados."
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail='ID do produto indisponível para atualização no banco de dados.',
             )
 
         # 4. Monta o rótulo final para retorno
 
         # ATENÇÃO: Assumindo que product_data é um dicionário e contém os campos necessários
-        product_name = product_data.get('name', 'Nome Desconhecido')  # Usando 'name' (campo do DB)
+        product_name = product_data.get(
+            'name', 'Nome Desconhecido'
+        )  # Usando 'name' (campo do DB)
         unit = product_data.get('unit', 'UNI')  # Usando 'unit' (campo do DB)
         price = product_data.get('sale_price', 0.0)
 

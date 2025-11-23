@@ -47,76 +47,76 @@ class ProductGroup(str, Enum):
 
 # 🔹 Subgroups
 class BeveragesSubGroup(str, Enum):
-    REFRIGERANTES = "Refrigerantes"
-    SUCOS = "Sucos"
-    AGUA = "Água"
-    ENERGETICOS = "Energéticos"
-    CERVEJAS = "Cervejas"
-    VINHOS = "Vinhos"
-    CAFE_CHA = "Café e Chá"
+    REFRIGERANTES = 'Refrigerantes'
+    SUCOS = 'Sucos'
+    AGUA = 'Água'
+    ENERGETICOS = 'Energéticos'
+    CERVEJAS = 'Cervejas'
+    VINHOS = 'Vinhos'
+    CAFE_CHA = 'Café e Chá'
 
 
 class FoodsSubGroup(str, Enum):
-    MASSAS = "Massas"
-    ARROZ_FEIJAO = "Arroz e Feijão"
-    ENLATADOS = "Enlatados"
-    TEMPEROS = "Temperos e Condimentos"
-    CONGELADOS = "Congelados"
+    MASSAS = 'Massas'
+    ARROZ_FEIJAO = 'Arroz e Feijão'
+    ENLATADOS = 'Enlatados'
+    TEMPEROS = 'Temperos e Condimentos'
+    CONGELADOS = 'Congelados'
 
 
 class FruitsSubGroup(str, Enum):
-    TROPICAIS = "Tropicais"
-    CITRICAS = "Cítricas"
-    VERMELHAS = "Frutas Vermelhas"
-    SECAS = "Frutas Secas"
+    TROPICAIS = 'Tropicais'
+    CITRICAS = 'Cítricas'
+    VERMELHAS = 'Frutas Vermelhas'
+    SECAS = 'Frutas Secas'
 
 
 class VegetablesSubGroup(str, Enum):
-    FOLHOSAS = "Folhosas"
-    RAIZES = "Raízes"
-    LEGUMES = "Legumes"
-    BROTOS = "Brotos e Germinados"
+    FOLHOSAS = 'Folhosas'
+    RAIZES = 'Raízes'
+    LEGUMES = 'Legumes'
+    BROTOS = 'Brotos e Germinados'
 
 
 class MeatsSubGroup(str, Enum):
-    BOVINAS = "Bovinas"
-    SUINAS = "Suínas"
-    AVES = "Aves"
-    EMBUTIDOS = "Embutidos"
+    BOVINAS = 'Bovinas'
+    SUINAS = 'Suínas'
+    AVES = 'Aves'
+    EMBUTIDOS = 'Embutidos'
 
 
 class FishSubGroup(str, Enum):
-    FRESCOS = "Peixes Frescos"
-    CONGELADOS = "Peixes Congelados"
-    FRUTOS_DO_MAR = "Frutos do Mar"
+    FRESCOS = 'Peixes Frescos'
+    CONGELADOS = 'Peixes Congelados'
+    FRUTOS_DO_MAR = 'Frutos do Mar'
 
 
 class DairySubGroup(str, Enum):
-    LEITES = "Leites e Bebidas Lácteas"
-    QUEIJOS = "Queijos"
-    IOGURTES = "Iogurtes"
-    MANTEIGAS = "Manteigas e Cremes"
+    LEITES = 'Leites e Bebidas Lácteas'
+    QUEIJOS = 'Queijos'
+    IOGURTES = 'Iogurtes'
+    MANTEIGAS = 'Manteigas e Cremes'
 
 
 class BakerySubGroup(str, Enum):
-    PAES = "Pães"
-    BOLOS = "Bolos"
-    TORTAS = "Tortas"
-    SALGADOS_ASSADOS = "Salgados Assados"
+    PAES = 'Pães'
+    BOLOS = 'Bolos'
+    TORTAS = 'Tortas'
+    SALGADOS_ASSADOS = 'Salgados Assados'
 
 
 class SweetsSubGroup(str, Enum):
-    CHOCOLATES = "Chocolates"
-    BALAS = "Balas e Confeitos"
-    SORVETES = "Sorvetes"
-    BOLACHAS = "Bolachas"
+    CHOCOLATES = 'Chocolates'
+    BALAS = 'Balas e Confeitos'
+    SORVETES = 'Sorvetes'
+    BOLACHAS = 'Bolachas'
 
 
 class SnacksSubGroup(str, Enum):
-    CHIPS = "Chips"
-    PIPOCAS = "Pipocas"
-    SNACKS_SAUDAVEIS = "Snacks Saudáveis"
-    PETISCOS = "Petiscos"
+    CHIPS = 'Chips'
+    PIPOCAS = 'Pipocas'
+    SNACKS_SAUDAVEIS = 'Snacks Saudáveis'
+    PETISCOS = 'Petiscos'
 
 
 # Adicione os subgrupos restantes da mesma forma, se necessário...
@@ -172,19 +172,19 @@ class ProductType(str, Enum):
     ADDITIONAL = 'Adicional'
     EDITABLE_VALUE = 'Valor editável'
     RAW_MATERIAL = 'Matéria prima'
-    ELECTRONICS = "Eletrônico"
+    ELECTRONICS = 'Eletrônico'
 
 
 class TicketType(str, Enum):
     """Types of sales tickets"""
 
-    NEW = "Novo"
-    PROMOTION = "Promoção"
-    COMBO = "Combo"
-    BEST_SELLER = "Mais Vendido"
-    SPECIAL_OFFER = "Oferta Especial"
-    SEASONAL = "Sazonal"
-    LIMITED = "Edição Limitada"
+    NEW = 'Novo'
+    PROMOTION = 'Promoção'
+    COMBO = 'Combo'
+    BEST_SELLER = 'Mais Vendido'
+    SPECIAL_OFFER = 'Oferta Especial'
+    SEASONAL = 'Sazonal'
+    LIMITED = 'Edição Limitada'
 
 
 class ApplyingSalesType(BaseModel):

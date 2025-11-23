@@ -1,23 +1,31 @@
 # deps.py - Versão Final com Cache
 
-from pydantic import BaseModel, EmailStr, ValidationError
+import json
 from datetime import datetime
 from typing import Optional
-import json
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
+from pydantic import BaseModel, EmailStr, ValidationError
 from redis.asyncio import Redis  # Adicionado para tipagem
+
+from src.auth.auth_jwt import ALGORITHM, JWT_SECRET_KEY
 
 # Assumindo que você tem um cliente Redis Async global (client)
 from src.core.cache import client
-from src.auth.auth_jwt import ALGORITHM, JWT_SECRET_KEY
+from src.model.membros import (  # Manter Employees e Membro para o lookup de usuario
+    Membro,
+)
+from src.model.employee import Employees
 from src.model.user import Usuario
-from src.model.membros import Membro  # Manter Employees e Membro para o lookup de usuario
-from src.schemas.schema_user import TokenPayload  # Assumindo que TokenPayload existe
+from src.schemas.schema_user import (  # Assumindo que TokenPayload existe
+    TokenPayload,
+)
 
-reuseable_oauth = OAuth2PasswordBearer(tokenUrl="/auth/login", scheme_name="JWT")
+reuseable_oauth = OAuth2PasswordBearer(
+    tokenUrl='/auth/login', scheme_name='JWT'
+)
 
 
 class SystemUser(BaseModel):
@@ -34,7 +42,9 @@ class SystemUser(BaseModel):
     model_config = {'from_attributes': True}
 
 
-async def get_current_user(token: str = Depends(reuseable_oauth)) -> SystemUser:
+async def get_current_user(
+    token: str = Depends(reuseable_oauth),
+) -> SystemUser:
 
     # 🎯 PASSO 1: Tenta buscar os dados do usuario no CACHE (Fast Path)
     cache_key = f'token:{token}'
@@ -52,18 +62,21 @@ async def get_current_user(token: str = Depends(reuseable_oauth)) -> SystemUser:
         token_data = TokenPayload(**payload)
 
         # Verificacao de expiracao (ja feito pela decodificacao, mas mantido para clareza)
-        if token_data.exp is None or datetime.fromtimestamp(token_data.exp) < datetime.now():
+        if (
+            token_data.exp is None
+            or datetime.fromtimestamp(token_data.exp) < datetime.now()
+        ):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Token expirado. Faça login novamente.",
-                headers={"WWW-Authenticate": "Bearer"},
+                detail='Token expirado. Faça login novamente.',
+                headers={'WWW-Authenticate': 'Bearer'},
             )
 
     except (JWTError, ValidationError):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Não foi possível validar suas credenciais.",
-            headers={"WWW-Authenticate": "Bearer"},
+            detail='Não foi possível validar suas credenciais.',
+            headers={'WWW-Authenticate': 'Bearer'},
         )
 
     user_id = int(token_data.sub)
@@ -89,8 +102,35 @@ async def get_current_user(token: str = Depends(reuseable_oauth)) -> SystemUser:
         await client.set(cache_key, json.dumps(system_user_data, default=str))
         return SystemUser(**system_user_data)
 
+
+
+    # Tenta com funcionario
+    employee_db = await Employees.get_or_none(id=user_id).select_related('usuario')
+    if employee_id:
+        target = employee_db.usuario
+
+        # Mapeia para modelo SystemUser
+        system_user_data = SystemUser(
+            id=employee_db.id,
+            username=employee_db.nome,
+            email=employee_db.email,
+            company_name=target.company_name,
+            cnpj=None,
+            cpf=None,
+            gerente=None,
+            ativo=employee_db.ativo,
+            empresa_id=target.id
+
+        ).model_dump()
+
+        # salva no cache de retorna
+        await client.set(cache_key, json.dumps(system_user_data, default=str))
+        return SystemUser(**system_user_data)
+
+
+
     # Tenta buscar como Membro (logica de Membro omitida para brevidade, mas deve seguir aqui)
-    membro_db = await Membro.get_or_none(id=user_id).select_related("usuario")
+    membro_db = await Membro.get_or_none(id=user_id).select_related('usuario')
     if membro_db:
         usuario_dono = membro_db.usuario
 
@@ -113,5 +153,5 @@ async def get_current_user(token: str = Depends(reuseable_oauth)) -> SystemUser:
 
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
-        detail="Usuário não encontrado após validação do token.",
+        detail='Usuário não encontrado após validação do token.',
     )

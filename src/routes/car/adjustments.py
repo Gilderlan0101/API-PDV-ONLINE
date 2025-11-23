@@ -1,15 +1,15 @@
 # routes/cart_update.py
 from fastapi import APIRouter, Depends
-from src.auth.deps import get_current_user, SystemUser
-from src.controllers.car.cart_control import CartManagerDB
-from src.schemas.carrinho import EditCartItem
-from src.core.session_manager import get_session
 
+from src.auth.deps import SystemUser, get_current_user
+from src.controllers.car.cart_control import CartManagerDB
+from src.core.session_manager import get_session
+from src.schemas.carrinho import EditCartItem
 
 router = APIRouter()
 
 
-@router.post("/atualizar")
+@router.post('/atualizar')
 async def atualizar_item(
     item: EditCartItem,
     current_user: SystemUser = Depends(get_current_user),

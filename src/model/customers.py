@@ -1,7 +1,8 @@
-from tortoise import models, fields
 from datetime import datetime
+from typing import List, Optional
 from zoneinfo import ZoneInfo
-from typing import Optional, List
+
+from tortoise import fields, models
 
 from src.model.sale import Sales
 
@@ -32,14 +33,20 @@ class Customer(models.Model):
     current_balance = fields.FloatField(default=0)
     total_spent = fields.FloatField(default=0)
     due_date = fields.DatetimeField()
-    status = fields.CharField(max_length=20, default="ativo")
+    status = fields.CharField(max_length=20, default='ativo')
 
     # Auditoria
-    created_at = fields.DatetimeField(default=datetime.now(ZoneInfo("America/Sao_Paulo")))
-    updated_at = fields.DatetimeField(default=datetime.now(ZoneInfo("America/Sao_Paulo")))
+    created_at = fields.DatetimeField(
+        default=datetime.now(ZoneInfo('America/Sao_Paulo'))
+    )
+    updated_at = fields.DatetimeField(
+        default=datetime.now(ZoneInfo('America/Sao_Paulo'))
+    )
 
     # 🔹 Relacionamento com usuário
-    usuario = fields.ForeignKeyField("models.Usuario", related_name="customers", on_delete=fields.CASCADE)
+    usuario = fields.ForeignKeyField(
+        'models.Usuario', related_name='customers', on_delete=fields.CASCADE
+    )
 
     # 🔹 Relacionamento com vendas
-    vendas: fields.ReverseRelation["Sales"]
+    vendas: fields.ReverseRelation['Sales']

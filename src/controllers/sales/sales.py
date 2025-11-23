@@ -1,19 +1,19 @@
-from datetime import datetime
-from typing import Optional, Tuple, Any, List, Dict
-from fastapi import HTTPException, status
-from tortoise.transactions import in_transaction
 from dataclasses import dataclass, field
+from datetime import datetime
+from typing import Any, Dict, List, Optional, Tuple
 
-from src.model.user import Usuario
+from fastapi import HTTPException, status
+from tortoise.expressions import Q
+from tortoise.transactions import in_transaction
+
+from src.controllers.sales.receipt_build import build_receipt
+from src.model.customers import Customer
 from src.model.employee import Employees
 from src.model.product import Produto
 from src.model.sale import Sales
-from src.model.customers import Customer
-from src.utils.payments_config import VALID_PAYMENT_METHODS
+from src.model.user import Usuario
 from src.utils.get_produtos_user import get_product_by_user
-from src.controllers.sales.receipt_build import build_receipt
-
-from tortoise.expressions import Q
+from src.utils.payments_config import VALID_PAYMENT_METHODS
 
 
 @dataclass
@@ -23,10 +23,10 @@ class Checkout:
     """
 
     user_id: int = field(default=0)
-    product_name: str = field(default="")
+    product_name: str = field(default='')
     produto_id: int = field(default=0)
     quantity: int = field(default=0)
-    payment_method: str = field(default="")
+    payment_method: str = field(default='')
     total_price: float = field(default=0.0)
     lucro_total: float = field(default=0.0)
     cpf: Optional[str] = field(default=None)
@@ -43,8 +43,11 @@ class Checkout:
     def __post_init__(self):
         # 🔹 CORREÇÃO: Usar a variável valid_methods que foi definida
         valid_methods = VALID_PAYMENT_METHODS + ['PARCIAL']
-        if self.payment_method and self.payment_method.upper() not in valid_methods:
-            raise ValueError("Forma de pagamento inválida")
+        if (
+            self.payment_method
+            and self.payment_method.upper() not in valid_methods
+        ):
+            raise ValueError('Forma de pagamento inválida')
         self.status = False
         self._receipt_data = None
 
@@ -58,7 +61,12 @@ class Checkout:
         return self._receipt_data
 
     # 🔹 CORREÇÃO: Adicionar self como primeiro parâmetro do método
-    async def get_product_by_user(self, user_id: int, code: Optional[str] = None, name: Optional[str] = None) -> Optional[Produto]:
+    async def get_product_by_user(
+        self,
+        user_id: int,
+        code: Optional[str] = None,
+        name: Optional[str] = None,
+    ) -> Optional[Produto]:
         """Busca produto pelo usuário, código ou nome - versão mais flexível e eficiente"""
 
         try:
@@ -75,7 +83,7 @@ class Checkout:
 
             if code:
                 code_clean = str(code).strip().upper()
-                code_no_spaces = code_clean.replace(" ", "")
+                code_no_spaces = code_clean.replace(' ', '')
 
                 search_terms |= Q(product_code=code_clean)
                 search_terms |= Q(product_code__icontains=code_clean)
@@ -93,12 +101,14 @@ class Checkout:
             product = await Produto.filter(query, search_terms).first()
 
             if not product:
-                print(f"❌ Nenhum produto encontrado para o usuário {user_id} com os termos fornecidos.")
+                print(
+                    f'❌ Nenhum produto encontrado para o usuário {user_id} com os termos fornecidos.'
+                )
 
             return product
 
         except Exception as e:
-            print(f"❌ Erro na busca do produto: {e}")
+            print(f'❌ Erro na busca do produto: {e}')
             return None
 
     async def process_sale(
@@ -118,17 +128,26 @@ class Checkout:
         try:
             # 🔹 CORREÇÃO: Validar parâmetros obrigatórios
             if not product_code or not quantity or not payment_method:
-                raise HTTPException(status_code=400, detail="Código do produto, quantidade e forma de pagamento são obrigatórios")
+                raise HTTPException(
+                    status_code=400,
+                    detail='Código do produto, quantidade e forma de pagamento são obrigatórios',
+                )
 
             # Define admin_user e operador
             admin_user = current_user
             operador_id = funcionario_id
-            operador_nome = getattr(current_user, "username", str(current_user))
+            operador_nome = getattr(
+                current_user, 'username', str(current_user)
+            )
 
             # Se current_user for funcionário, pega o admin dono
-            funcionario_logado = await Employees.filter(id=current_user.id).first()
+            funcionario_logado = await Employees.filter(
+                id=current_user.id
+            ).first()
             if funcionario_logado and funcionario_logado.usuario_id:
-                admin_user = await Usuario.get(id=funcionario_logado.usuario_id)
+                admin_user = await Usuario.get(
+                    id=funcionario_logado.usuario_id
+                )
                 operador_id = funcionario_logado.id
                 operador_nome = funcionario_logado.nome
 
@@ -153,7 +172,10 @@ class Checkout:
             self.sale_code = sale_code
 
             if not product_code or not quantity or not payment_method:
-                raise HTTPException(status_code=400, detail="Código do produto, quantidade e forma de pagamento são obrigatórios")
+                raise HTTPException(
+                    status_code=400,
+                    detail='Código do produto, quantidade e forma de pagamento são obrigatórios',
+                )
 
             from tortoise import transactions
 
@@ -162,10 +184,14 @@ class Checkout:
                 nonlocal product
 
             # Buscar produto dentro da transação
-            product = await self.get_product_by_user(user_id=self.user_id, code=product_code.strip())
+            product = await self.get_product_by_user(
+                user_id=self.user_id, code=product_code.strip()
+            )
 
             if not product:
-                raise HTTPException(status_code=404, detail="Produto não encontrado")
+                raise HTTPException(
+                    status_code=404, detail='Produto não encontrado'
+                )
 
                 # 🔹 CORREÇÃO: Converter para int para comparação segura
                 stock_int = int(product.stock) if product.stock else 0
@@ -173,7 +199,10 @@ class Checkout:
 
                 if stock_int < quantity_int:
                     self.status = False
-                    raise HTTPException(status_code=400, detail=f"Estoque insuficiente. Disponível: {stock_int}, Solicitado: {quantity_int}")
+                    raise HTTPException(
+                        status_code=400,
+                        detail=f'Estoque insuficiente. Disponível: {stock_int}, Solicitado: {quantity_int}',
+                    )
 
                 # Atualiza estoque
                 product.stock = stock_int - quantity_int
@@ -181,8 +210,12 @@ class Checkout:
                 await product.save(using_db=connection)
 
                 # 🔹 CORREÇÃO: Converter preços para float de forma segura
-                sale_price = float(product.sale_price) if product.sale_price else 0.0
-                cost_price = float(product.cost_price) if product.cost_price else 0.0
+                sale_price = (
+                    float(product.sale_price) if product.sale_price else 0.0
+                )
+                cost_price = (
+                    float(product.cost_price) if product.cost_price else 0.0
+                )
 
                 # Calcula totais
                 total_price = quantity_int * sale_price
@@ -190,45 +223,47 @@ class Checkout:
 
                 # 🔹 CORREÇÃO: Preparar dados da venda sem 'using_db' no dicionário
                 sale_data = {
-                    "product_name": product.name,
-                    "quantity": quantity_int,
-                    "payment_method": payment_method.upper(),
-                    "total_price": total_price,
-                    "lucro_total": lucro_total,
-                    "cost_price": cost_price,
-                    "sale_code": self.sale_code,
-                    "usuario_id": admin_user.id,
-                    "produto_id": product.id,
+                    'product_name': product.name,
+                    'quantity': quantity_int,
+                    'payment_method': payment_method.upper(),
+                    'total_price': total_price,
+                    'lucro_total': lucro_total,
+                    'cost_price': cost_price,
+                    'sale_code': self.sale_code,
+                    'usuario_id': admin_user.id,
+                    'produto_id': product.id,
                 }
 
                 # 🔹 CORREÇÃO: Adicionar campos opcionais apenas se existirem
                 if self.funcionario_id:
-                    sale_data["funcionario_id"] = self.funcionario_id
+                    sale_data['funcionario_id'] = self.funcionario_id
 
                 if self.customer_id:
-                    sale_data["customer_id"] = self.customer_id
+                    sale_data['customer_id'] = self.customer_id
 
                 if self.installments:
-                    sale_data["installments"] = self.installments
+                    sale_data['installments'] = self.installments
 
                 if self.valor_recebido is not None:
-                    sale_data["valor_recebido"] = float(self.valor_recebido)
+                    sale_data['valor_recebido'] = float(self.valor_recebido)
 
                 if self.troco is not None:
-                    sale_data["troco"] = float(self.troco)
+                    sale_data['troco'] = float(self.troco)
 
                 # 🔹 CORREÇÃO: Criar venda passando connection separadamente
-                self.venda = await Sales.create(**sale_data, using_db=connection)
+                self.venda = await Sales.create(
+                    **sale_data, using_db=connection
+                )
                 self.usuario = admin_user
 
                 # Prepara item para o recibo
                 item_venda = {
-                    "product_name": product.name,
-                    "quantity": quantity_int,
-                    "unit_price": sale_price,
-                    "total_price": total_price,
-                    "lucro_total": lucro_total,
-                    "cost_price": cost_price,
+                    'product_name': product.name,
+                    'quantity': quantity_int,
+                    'unit_price': sale_price,
+                    'total_price': total_price,
+                    'lucro_total': lucro_total,
+                    'cost_price': cost_price,
                 }
 
                 self.status = True
@@ -236,7 +271,7 @@ class Checkout:
 
                 # 🔹 CORREÇÃO: Gerar sale_code se não existir
                 if not self.sale_code and self.venda:
-                    self.sale_code = f"V{self.venda.id:06d}"
+                    self.sale_code = f'V{self.venda.id:06d}'
 
                 # Retorna o recibo e status
                 receipt = await build_receipt(
@@ -259,8 +294,10 @@ class Checkout:
         except Exception as e:
             self.status = False
             # 🔹 CORREÇÃO: Log mais detalhado do erro
-            print(f"Erro detalhado no process_sale: {str(e)}")
+            print(f'Erro detalhado no process_sale: {str(e)}')
             import traceback
 
-            print(f"Traceback: {traceback.format_exc()}")
-            raise HTTPException(status_code=400, detail=f"Erro ao processar venda: {str(e)}")
+            print(f'Traceback: {traceback.format_exc()}')
+            raise HTTPException(
+                status_code=400, detail=f'Erro ao processar venda: {str(e)}'
+            )

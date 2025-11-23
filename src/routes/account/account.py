@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Body, Depends, HTTPException, status
+
 from src.auth.deps import get_current_user
-from src.model.user import Usuario
-from src.model.employee import Employees
 from src.model.caixa import Caixa  # ← IMPORTE O MODELO DO CAIXA
+from src.model.employee import Employees
+from src.model.user import Usuario
 from src.routes.registre import get_hashed_password
 from src.schemas.funcs.registre_funcs import EmployeesCreate
 from src.utils.sales_code_generator import generator_code_to_checkout
@@ -36,19 +37,25 @@ async def create_employees(
     if not current_user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Usuário não autenticado",
-            headers={"WWW-Authenticate": "Bearer"},
+            detail='Usuário não autenticado',
+            headers={'WWW-Authenticate': 'Bearer'},
         )
 
     # Verificando se esse email já existe
     existing = await Employees.filter(email=func_data.email).first()
 
     if existing:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Email já cadastrado.')
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail='Email já cadastrado.',
+        )
 
     # Valida senha de 4 dígitos
     if len(str(func_data.senha)) != PASSWORD_LENGTH:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Senha deve ter {PASSWORD_LENGTH} dígitos.")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f'Senha deve ter {PASSWORD_LENGTH} dígitos.',
+        )
 
     # Criando Hash da senha
     hashed_password = get_hashed_password(func_data.senha)
@@ -65,19 +72,19 @@ async def create_employees(
     )
 
     # ✅ SE O CARGO FOR "CAIXA", CRIA AUTOMATICAMENTE UM CAIXA
-    if func_data.cargo.lower() == "caixa":
+    if func_data.cargo.lower() == 'caixa':
         await create_caixa_for_employee(new_func, current_user.id)
 
     return {
-        "msg": "Funcionário cadastrado com sucesso",
-        "funcionario": {
-            "id": new_func.id,
-            "nome": new_func.nome,
-            "cargo": new_func.cargo,
-            "email": new_func.email,
-            "telefone": new_func.telefone,
-            "ativo": new_func.ativo,
-            "usuario_id": new_func.usuario_id,
+        'msg': 'Funcionário cadastrado com sucesso',
+        'funcionario': {
+            'id': new_func.id,
+            'nome': new_func.nome,
+            'cargo': new_func.cargo,
+            'email': new_func.email,
+            'telefone': new_func.telefone,
+            'ativo': new_func.ativo,
+            'usuario_id': new_func.usuario_id,
         },
     }
 
@@ -92,7 +99,7 @@ async def create_caixa_for_employee(funcionario: Employees, usuario_id: int):
 
         # Cria o caixa
         novo_caixa = await Caixa.create(
-            nome=f"Caixa - {funcionario.nome}",
+            nome=f'Caixa - {funcionario.nome}',
             saldo_inicial=0.0,
             saldo_atual=0.0,
             aberto=False,
@@ -102,10 +109,12 @@ async def create_caixa_for_employee(funcionario: Employees, usuario_id: int):
             valor_total=0.0,
         )
 
-        print(f"✅ Caixa criado automaticamente para {funcionario.nome}: ID {caixa_id}")
+        print(
+            f'✅ Caixa criado automaticamente para {funcionario.nome}: ID {caixa_id}'
+        )
         return novo_caixa
 
     except Exception as e:
-        print(f"❌ Erro ao criar caixa para {funcionario.nome}: {e}")
+        print(f'❌ Erro ao criar caixa para {funcionario.nome}: {e}')
         # Não levanta exceção para não quebrar o cadastro do funcionário
         return None

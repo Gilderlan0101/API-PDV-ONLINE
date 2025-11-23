@@ -1,0 +1,25 @@
+
+                """
+                Nota: Provavelmente esse arquivo esta empedindo de abri caixas para admin
+                Ao tenta abrir um caixa para o admin o codigo em si esta buscando o caixa
+                do funcionario.
+                Podemos cria um nova conta admin ja posuindo um caixa e testa.
+                Provavelmente ira funciona por se o unico usuario desta conta.
+                mas se criamos 1 ou mais funcionario ele não vai
+                encontra mais o caixa do admin.
+                a solução que tenho é cria um caixa apenas para admin
+                da mesma forma que criamos para funcionario
+                porem esse todo  admin tera.   -- Não funciona, vamos usar a solução abaixo
+                """
+
+                # Passos:
+
+                1º Ao cria uma conta de empresa devemos cria um caixa como admin
+                    -- O caixa deve leva o nome da empresa com EmpresaExemplo
+                    -- O caixa deve inicia com valorea zerados e fechado.
+
+                    com isso podemos depois simplismente abri o caixa no checkout/open
+
+                2º remove todo codigo feito antes em cash_controller e login
+
+                ja volto.........

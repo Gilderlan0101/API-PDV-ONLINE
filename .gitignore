@@ -5,6 +5,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.so
+__pycache__
+docs/
 
 # ==============================
 # Virtual environments
@@ -32,6 +34,11 @@ poetry.lock
 .DS_Store
 Thumbs.db
 desktop.ini
+lista_debug.py
+,lock
+.toml
+.png
+.jpg
 
 # ==============================
 # Logs

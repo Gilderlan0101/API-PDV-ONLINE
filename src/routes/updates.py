@@ -1,18 +1,22 @@
-from fastapi import APIRouter, Depends, HTTPException
 from datetime import datetime, time
+from typing import Any, Dict, List
 from zoneinfo import ZoneInfo
+
+from fastapi import APIRouter, Depends, HTTPException
 from tortoise.functions import Sum  # Import necessário para agregar
+
+from src.auth.deps import SystemUser, get_current_user
 from src.model.sale import Sales
 from src.model.user import Usuario
-from src.auth.deps import get_current_user, SystemUser
 from src.utils.sales_of_the_day import sales_of_the_day, total_in_sales
-from typing import Dict, Any, List
 
 allDatas = APIRouter()
 
 
 @allDatas.get('/profit')
-async def profit(current_user: SystemUser = Depends(get_current_user)) -> Dict[str, Any]:
+async def profit(
+    current_user: SystemUser = Depends(get_current_user),
+) -> Dict[str, Any]:
     """
     Rota que exibe métricas de vendas e lucro do dia (dashboard).
     """
@@ -21,9 +25,13 @@ async def profit(current_user: SystemUser = Depends(get_current_user)) -> Dict[s
 
     try:
         # --- 1. DEFINIÇÃO DE DATAS ---
-        today = datetime.now(ZoneInfo("America/Sao_Paulo")).date()
-        start_of_day = datetime.combine(today, time.min, tzinfo=ZoneInfo("America/Sao_Paulo"))
-        end_of_day = datetime.combine(today, time.max, tzinfo=ZoneInfo("America/Sao_Paulo"))
+        today = datetime.now(ZoneInfo('America/Sao_Paulo')).date()
+        start_of_day = datetime.combine(
+            today, time.min, tzinfo=ZoneInfo('America/Sao_Paulo')
+        )
+        end_of_day = datetime.combine(
+            today, time.max, tzinfo=ZoneInfo('America/Sao_Paulo')
+        )
 
         # --- 2. CONSULTAS ---
 
@@ -53,7 +61,9 @@ async def profit(current_user: SystemUser = Depends(get_current_user)) -> Dict[s
         __valor__no__update__ = await total_in_sales(current_user.empresa_id)
 
         # D. Contagem de Vendas (Histórico Total)
-        total_sales_count = await Sales.filter(usuario_id=current_user.empresa_id).count()
+        total_sales_count = await Sales.filter(
+            usuario_id=current_user.empresa_id
+        ).count()
 
         # --- 3. PROCESSAMENTO DE DADOS ---
         total_user_profit = 0.0  # Receita bruta total do dia
@@ -73,12 +83,21 @@ async def profit(current_user: SystemUser = Depends(get_current_user)) -> Dict[s
                     'lucro_total': sale.lucro_total,
                     'cost_price': sale.cost_price,
                     'codigo_da_venda': sale.sale_code,
-                    'created_at': (sale.criado_em.strftime('%d/%m/%Y %H:%M:%S') if sale.criado_em else None),
+                    'created_at': (
+                        sale.criado_em.strftime('%d/%m/%Y %H:%M:%S')
+                        if sale.criado_em
+                        else None
+                    ),
                 }
             )
 
         # Total de itens vendidos hoje
-        total_items_sold_today = daily_aggregation.total_items_sold if daily_aggregation and daily_aggregation.total_items_sold is not None else 0
+        total_items_sold_today = (
+            daily_aggregation.total_items_sold
+            if daily_aggregation
+            and daily_aggregation.total_items_sold is not None
+            else 0
+        )
 
         # --- 4. RETORNO OTIMIZADO ---
         return {
@@ -95,4 +114,4 @@ async def profit(current_user: SystemUser = Depends(get_current_user)) -> Dict[s
         }
 
     except Exception as error:
-        raise HTTPException(status_code=500, detail=f"Erro interno ao processar dados de lucro: {str(error)}")
+        return {}

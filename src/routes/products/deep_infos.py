@@ -1,16 +1,24 @@
-from fastapi import APIRouter, Depends, Query, HTTPException, status
-from src.schemas.schema_user import SystemUser
-from src.auth.deps import get_current_user
-from src.controllers.products.products_infors import Products
 import re
 
-product_deep_infos = APIRouter(prefix="/produtos", tags=["Produtos"])
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+
+from src.auth.deps import get_current_user
+from src.controllers.products.products_infors import Products
+from src.schemas.schema_user import SystemUser
+
+product_deep_infos = APIRouter(prefix='/produtos', tags=['Produtos'])
 
 
 @product_deep_infos.get('/buscar-dados')
-async def search_products(current_user: SystemUser = Depends(get_current_user), product_name: str = Query(..., description="Nome do produto")):
+async def search_products(
+    current_user: SystemUser = Depends(get_current_user),
+    product_name: str = Query(..., description='Nome do produto'),
+):
     if not current_user.empresa_id:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Usuário sem empresa vinculada.")
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='Usuário sem empresa vinculada.',
+        )
 
     # Instancia a classe Products passando o ID da empresa
     product_service = Products(current_user.empresa_id)
@@ -23,7 +31,10 @@ async def search_products(current_user: SystemUser = Depends(get_current_user), 
 
 @product_deep_infos.get('/buscar-por-ticket')
 async def search_products_by_tickets(
-    current_user: SystemUser = Depends(get_current_user), type_ticket: str = Query(..., description="Promoção, Novo, entre outros cadastrado.")
+    current_user: SystemUser = Depends(get_current_user),
+    type_ticket: str = Query(
+        ..., description='Promoção, Novo, entre outros cadastrado.'
+    ),
 ):
 
     product_service = Products(current_user.empresa_id)

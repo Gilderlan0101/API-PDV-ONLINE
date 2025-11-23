@@ -1,21 +1,23 @@
 import json
 from datetime import datetime
 from typing import Optional
-
-from fastapi import APIRouter, HTTPException, Query, status
 from zoneinfo import ZoneInfo
 
-from src.model.user import Usuario, CNPJCache
+from fastapi import APIRouter, HTTPException, Query, status
+
+from src.model.user import CNPJCache, Usuario
 from src.services.consulting_cnpj import consulting_CNPJ
 
 
 class ConsultaRoute:
     def __init__(self):
-        self.router = APIRouter(prefix="/consulta", tags=["Consulta CNPJ / Usuário"])
+        self.router = APIRouter(
+            prefix='/consulta', tags=['Consulta CNPJ / Usuário']
+        )
         self.startup_route()
 
     def startup_route(self):
-        @self.router.get("/", status_code=status.HTTP_200_OK)
+        @self.router.get('/', status_code=status.HTTP_200_OK)
         async def consulta_dados(
             email: Optional[str] = Query(default=None),
             cnpj: Optional[str] = Query(default=None),
@@ -23,7 +25,7 @@ class ConsultaRoute:
             if not email and not cnpj:
                 raise HTTPException(
                     status_code=400,
-                    detail="Você deve fornecer email ou cnpj para consulta.",
+                    detail='Você deve fornecer email ou cnpj para consulta.',
                 )
 
             # 🔹 Busca usuário pelo email ou cnpj
@@ -35,24 +37,24 @@ class ConsultaRoute:
 
             if user:
                 return {
-                    "id": user.id,
-                    "username": user.username,
-                    "email": user.email,
-                    "company_name": user.company_name,
-                    "trade_name": user.trade_name,
-                    "cpf": user.cpf,
-                    "cnpj": user.cnpj,
-                    "state_registration": user.state_registration,
-                    "municipal_registration": user.municipal_registration,
-                    "cnae_principal": user.cnae_principal,
-                    "crt": user.crt,
-                    "cep": user.cep,
-                    "street": user.street,
-                    "number": user.home_number,  # cuidado: no seu model tá "home_number"
-                    "complement": user.complement,
-                    "district": user.district,
-                    "city": user.city,
-                    "state": user.state,
+                    'id': user.id,
+                    'username': user.username,
+                    'email': user.email,
+                    'company_name': user.company_name,
+                    'trade_name': user.trade_name,
+                    'cpf': user.cpf,
+                    'cnpj': user.cnpj,
+                    'state_registration': user.state_registration,
+                    'municipal_registration': user.municipal_registration,
+                    'cnae_principal': user.cnae_principal,
+                    'crt': user.crt,
+                    'cep': user.cep,
+                    'street': user.street,
+                    'number': user.home_number,  # cuidado: no seu model tá "home_number"
+                    'complement': user.complement,
+                    'district': user.district,
+                    'city': user.city,
+                    'state': user.state,
                 }
 
             # 🔹 Se não encontrou, tenta API do CNPJ
@@ -65,7 +67,9 @@ class ConsultaRoute:
                     data = await consulting_CNPJ(cnpj)
                     if cache:
                         cache.data_json = json.dumps(data, ensure_ascii=False)
-                        cache.updated_at = datetime.now(ZoneInfo("America/Sao_Paulo"))
+                        cache.updated_at = datetime.now(
+                            ZoneInfo('America/Sao_Paulo')
+                        )
                         await cache.save()
                     else:
                         await CNPJCache.create(
@@ -78,5 +82,5 @@ class ConsultaRoute:
 
             raise HTTPException(
                 status_code=404,
-                detail="Nenhum dado encontrado para os parâmetros fornecidos.",
+                detail='Nenhum dado encontrado para os parâmetros fornecidos.',
             )

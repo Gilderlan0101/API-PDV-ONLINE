@@ -32,21 +32,39 @@ def private_data_output(function):
 
 
 # Cria uma mascara para emails
-def mask_email(value: str) -> str:
+def mask_email(value: str)  -> str:
     """Mascara o email preservando apenas o nome antes do @."""
-    index = value.index("@")
+    index = value.index('@')
+
+    if not index:
+        return
+
     before = value[:index]
-    return before + "@" + "*" * 9
+    return before + '@' + '*' * 9
 
 
-def mask_cpf(value: str) -> str:
+def mask_cpf(value: str)  -> str:
     """Retorna o CPF mascarado, mantendo os 3 primeiros e 2 últimos dígitos."""
 
     # Remove caracteres não numéricos
     digits = ''.join(filter(str.isdigit, value))
 
     if len(digits) != 11:
-        raise ValueError("CPF inválido: deve conter 11 dígitos.")
+        raise ValueError('CPF inválido: deve conter 11 dígitos.')
 
     # Mantém XXX.XXX.XXX-XX -> mascara para XXX.***.***-Xreturn f"{digits[:3]}.***.***-{digits[-2:]}"
-    return digits[:3] + "***" + "***" + digits[-2:]
+    return digits[:3] + '***' + '***' + digits[-2:]
+
+
+def mask_password(value: str)  -> str:
+    """Mascara senha no teminal ou log de sevidores"""
+
+    width_password = len(value)
+    password = ''
+    for  i in range(width_password + 1):
+
+        password = '*'*i
+
+    return password
+
+

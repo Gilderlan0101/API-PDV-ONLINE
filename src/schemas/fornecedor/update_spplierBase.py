@@ -1,19 +1,28 @@
-from typing import Optional, List
-from pydantic import BaseModel, EmailStr, HttpUrl, Field, ConfigDict, model_validator
+from typing import List, Optional
+
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    EmailStr,
+    Field,
+    HttpUrl,
+    model_validator,
+)
+
 from src.schemas.fornecedor.schemas_fornecedor import (
-    SupplierBase,
-    SupplierType,
+    Address,
+    BankAccount,
     CNPJType,
+    ContactPerson,
     CPFType,
     IEStatus,
     IEType,
-    TaxRegime,
-    Phone,
-    ContactPerson,
-    Address,
     PaymentTerm,
-    BankAccount,
+    Phone,
+    SupplierBase,
     SupplierStatus,
+    SupplierType,
+    TaxRegime,
 )
 
 
@@ -82,7 +91,11 @@ class SupplierUpdate(BaseModel):
         """Validação do prazo personalizado"""
         if self.prazo_pagamento == PaymentTerm.PERSONALIZADO:
             if self.prazo_personalizado_dias is None:
-                raise ValueError('prazo_personalizado_dias é obrigatório quando prazo_pagamento é Personalizado')
+                raise ValueError(
+                    'prazo_personalizado_dias é obrigatório quando prazo_pagamento é Personalizado'
+                )
         elif self.prazo_personalizado_dias is not None:
-            raise ValueError('prazo_personalizado_dias só deve ser informado quando prazo_pagamento é Personalizado')
+            raise ValueError(
+                'prazo_personalizado_dias só deve ser informado quando prazo_pagamento é Personalizado'
+            )
         return self

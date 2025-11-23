@@ -1,7 +1,8 @@
 # controller/delivery_reports.py
 
 from datetime import datetime, timedelta, timezone
-from typing import Dict, List, Any
+from typing import Any, Dict, List
+
 from src.model.delivery import Delivery, DeliveryItem
 from src.model.employee import Employees
 
@@ -32,16 +33,22 @@ async def gerenciagelivery(company_id: int) -> Dict[str, Any]:
 
     try:
         # Buscando todas as corridas com status esperando
-        search_for_pending_deliveries = await Delivery.filter(usuario_id=company_id, delivery_status='esperando').all()
+        search_for_pending_deliveries = await Delivery.filter(
+            usuario_id=company_id, delivery_status='esperando'
+        ).all()
 
         # Buscar todos os entregadores da empresa
-        all_delivery_men = await Employees.filter(usuario_id=company_id, cargo='Entregador').all()
+        all_delivery_men = await Employees.filter(
+            usuario_id=company_id, cargo='Entregador'
+        ).all()
 
         # Classificar entregadores por status
         for delivery_man in all_delivery_men:
             # Verificar quantas entregas ativas o entregador tem
             active_deliveries = await Delivery.filter(
-                usuario_id=company_id, assigned_to=delivery_man.nome, delivery_status__in=['em_andamento', 'a_caminho']
+                usuario_id=company_id,
+                assigned_to=delivery_man.nome,
+                delivery_status__in=['em_andamento', 'a_caminho'],
             ).count()
 
             delivery_man_info = {
@@ -58,13 +65,19 @@ async def gerenciagelivery(company_id: int) -> Dict[str, Any]:
                 delivery_drivers_available.append(delivery_man_info)
             else:
                 # Entregador ocupado
-                delivery_man_info['status'] = status_delivery_man[3]  # Com entregas
+                delivery_man_info['status'] = status_delivery_man[
+                    3
+                ]  # Com entregas
                 delivery_drivers_busy.append(delivery_man_info)
 
         # Processar entregas pendentes
         if search_for_pending_deliveries:
             for delivery in search_for_pending_deliveries:
-                created_at = delivery.created_at.replace(tzinfo=timezone.utc) if delivery.created_at.tzinfo is None else delivery.created_at
+                created_at = (
+                    delivery.created_at.replace(tzinfo=timezone.utc)
+                    if delivery.created_at.tzinfo is None
+                    else delivery.created_at
+                )
                 atraso = (now - created_at) > timeout
 
                 delivery_info = {
@@ -78,7 +91,9 @@ async def gerenciagelivery(company_id: int) -> Dict[str, Any]:
                     'total_price': delivery.total_price,
                     'created_at': created_at.isoformat(),
                     'atrasado': atraso,
-                    'tempo_espera_minutos': int((now - created_at).total_seconds() / 60),
+                    'tempo_espera_minutos': int(
+                        (now - created_at).total_seconds() / 60
+                    ),
                 }
 
                 pending.append(delivery_info)
@@ -107,7 +122,9 @@ async def gerenciagelivery(company_id: int) -> Dict[str, Any]:
                     delivery_info['assigned_driver_id'] = assigned_driver['id']
 
                     # Mover entregador para lista de ocupados
-                    assigned_driver['status'] = status_delivery_man[3]  # Com entregas
+                    assigned_driver['status'] = status_delivery_man[
+                        3
+                    ]  # Com entregas
                     delivery_drivers_busy.append(assigned_driver)
                     delivery_drivers_available = delivery_drivers_available[1:]
 
@@ -121,7 +138,10 @@ async def gerenciagelivery(company_id: int) -> Dict[str, Any]:
                     )
 
         # Buscar entregas em andamento para monitoramento
-        active_deliveries = await Delivery.filter(usuario_id=company_id, delivery_status__in=['em_andamento', 'a_caminho']).all()
+        active_deliveries = await Delivery.filter(
+            usuario_id=company_id,
+            delivery_status__in=['em_andamento', 'a_caminho'],
+        ).all()
 
         active_deliveries_info = []
         for delivery in active_deliveries:
@@ -131,7 +151,9 @@ async def gerenciagelivery(company_id: int) -> Dict[str, Any]:
                     'address': delivery.address,
                     'assigned_to': delivery.assigned_to,
                     'delivery_status': delivery.delivery_status,
-                    'scheduled_time': delivery.scheduled_time.isoformat() if delivery.scheduled_time else None,
+                    'scheduled_time': delivery.scheduled_time.isoformat()
+                    if delivery.scheduled_time
+                    else None,
                     'total_price': delivery.total_price,
                 }
             )
@@ -160,7 +182,7 @@ async def gerenciagelivery(company_id: int) -> Dict[str, Any]:
     except Exception as e:
         return {
             'success': False,
-            'error': f"Erro ao gerenciar entregas: {str(e)}",
+            'error': f'Erro ao gerenciar entregas: {str(e)}',
             'pending_deliveries': [],
             'active_deliveries': [],
             'available_drivers': [],
@@ -171,7 +193,9 @@ async def gerenciagelivery(company_id: int) -> Dict[str, Any]:
 
 
 # Funções auxiliares para gerenciamento específico
-async def assign_delivery_to_driver(delivery_id: int, driver_id: int, company_id: int) -> Dict[str, Any]:
+async def assign_delivery_to_driver(
+    delivery_id: int, driver_id: int, company_id: int
+) -> Dict[str, Any]:
     """
     Atribui uma entrega específica a um entregador.
 
@@ -185,13 +209,17 @@ async def assign_delivery_to_driver(delivery_id: int, driver_id: int, company_id
     """
     try:
         # Buscar entrega
-        delivery = await Delivery.filter(id=delivery_id, usuario_id=company_id).first()
+        delivery = await Delivery.filter(
+            id=delivery_id, usuario_id=company_id
+        ).first()
 
         if not delivery:
             return {'success': False, 'error': 'Entrega não encontrada'}
 
         # Buscar entregador
-        driver = await Employees.filter(id=driver_id, usuario_id=company_id, cargo='Entregador').first()
+        driver = await Employees.filter(
+            id=driver_id, usuario_id=company_id, cargo='Entregador'
+        ).first()
 
         if not driver:
             return {'success': False, 'error': 'Entregador não encontrado'}
@@ -209,10 +237,15 @@ async def assign_delivery_to_driver(delivery_id: int, driver_id: int, company_id
         }
 
     except Exception as e:
-        return {'success': False, 'error': f'Erro ao atribuir entregador: {str(e)}'}
+        return {
+            'success': False,
+            'error': f'Erro ao atribuir entregador: {str(e)}',
+        }
 
 
-async def update_delivery_status(delivery_id: int, new_status: str, company_id: int) -> Dict[str, Any]:
+async def update_delivery_status(
+    delivery_id: int, new_status: str, company_id: int
+) -> Dict[str, Any]:
     """
     Atualiza o status de uma entrega.
 
@@ -225,12 +258,23 @@ async def update_delivery_status(delivery_id: int, new_status: str, company_id: 
         Dict[str, Any]: Resultado da operação
     """
     try:
-        valid_statuses = ['esperando', 'em_andamento', 'a_caminho', 'entregue', 'cancelado']
+        valid_statuses = [
+            'esperando',
+            'em_andamento',
+            'a_caminho',
+            'entregue',
+            'cancelado',
+        ]
 
         if new_status not in valid_statuses:
-            return {'success': False, 'error': f'Status inválido. Use: {", ".join(valid_statuses)}'}
+            return {
+                'success': False,
+                'error': f'Status inválido. Use: {", ".join(valid_statuses)}',
+            }
 
-        delivery = await Delivery.filter(id=delivery_id, usuario_id=company_id).first()
+        delivery = await Delivery.filter(
+            id=delivery_id, usuario_id=company_id
+        ).first()
 
         if not delivery:
             return {'success': False, 'error': 'Entrega não encontrada'}
@@ -246,10 +290,15 @@ async def update_delivery_status(delivery_id: int, new_status: str, company_id: 
         }
 
     except Exception as e:
-        return {'success': False, 'error': f'Erro ao atualizar status: {str(e)}'}
+        return {
+            'success': False,
+            'error': f'Erro ao atualizar status: {str(e)}',
+        }
 
 
-async def get_driver_deliveries(driver_name: str, company_id: int) -> Dict[str, Any]:
+async def get_driver_deliveries(
+    driver_name: str, company_id: int
+) -> Dict[str, Any]:
     """
     Obtém todas as entregas de um entregador específico.
 
@@ -261,7 +310,9 @@ async def get_driver_deliveries(driver_name: str, company_id: int) -> Dict[str, 
         Dict[str, Any]: Lista de entregas do entregador
     """
     try:
-        deliveries = await Delivery.filter(usuario_id=company_id, assigned_to=driver_name).all()
+        deliveries = await Delivery.filter(
+            usuario_id=company_id, assigned_to=driver_name
+        ).all()
 
         deliveries_info = []
         for delivery in deliveries:
@@ -273,14 +324,24 @@ async def get_driver_deliveries(driver_name: str, company_id: int) -> Dict[str, 
                     'payment_status': delivery.payment_status,
                     'total_price': delivery.total_price,
                     'created_at': delivery.created_at.isoformat(),
-                    'scheduled_time': delivery.scheduled_time.isoformat() if delivery.scheduled_time else None,
+                    'scheduled_time': delivery.scheduled_time.isoformat()
+                    if delivery.scheduled_time
+                    else None,
                 }
             )
 
-        return {'success': True, 'driver_name': driver_name, 'total_deliveries': len(deliveries_info), 'deliveries': deliveries_info}
+        return {
+            'success': True,
+            'driver_name': driver_name,
+            'total_deliveries': len(deliveries_info),
+            'deliveries': deliveries_info,
+        }
 
     except Exception as e:
-        return {'success': False, 'error': f'Erro ao buscar entregas do entregador: {str(e)}'}
+        return {
+            'success': False,
+            'error': f'Erro ao buscar entregas do entregador: {str(e)}',
+        }
     return {'pending': pending, 'notice': notice}
 
 

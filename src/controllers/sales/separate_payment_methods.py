@@ -1,12 +1,16 @@
 import json
 from datetime import datetime
+from typing import Any, Dict, List
+
 from fastapi import HTTPException, status
-from src.model.sale import Sales
+
 from src.core.cache import client
-from typing import Dict, List, Any
+from src.model.sale import Sales
 
 
-async def separating_sales_by_payments(user_id: int) -> Dict[str, Dict[str, Any]]:
+async def separating_sales_by_payments(
+    user_id: int,
+) -> Dict[str, Dict[str, Any]]:
     """
     Separa todas as vendas por métodos de pagamentos, calculando o valor total
     (em Reais) e a quantidade total de itens para cada método.
@@ -19,13 +23,17 @@ async def separating_sales_by_payments(user_id: int) -> Dict[str, Dict[str, Any]
     methods: Dict[str, Dict[str, Any]] = {
         'PIX': {'total_value': 0.0, 'total_quantity': 0, 'sales_list': []},
         'CARTAO': {'total_value': 0.0, 'total_quantity': 0, 'sales_list': []},
-        'DINHEIRO': {'total_value': 0.0, 'total_quantity': 0, 'sales_list': []},
+        'DINHEIRO': {
+            'total_value': 0.0,
+            'total_quantity': 0,
+            'sales_list': [],
+        },
         'NOTA': {'total_value': 0.0, 'total_quantity': 0, 'sales_list': []},
         'FIADO': {'total_value': 0.0, 'total_quantity': 0, 'sales_list': []},
     }
 
     try:
-        cache_key = f"payments:{user_id}"
+        cache_key = f'payments:{user_id}'
         cache = await client.get(cache_key)
 
         if cache:
@@ -48,7 +56,7 @@ async def separating_sales_by_payments(user_id: int) -> Dict[str, Dict[str, Any]
                 'amount': prod.quantity,
                 'price': prod.total_price,
                 # Ajuste no formato da data para incluir a hora correta da venda
-                'date': prod.criado_em.strftime("%d/%m/%Y %H:%M:%S"),
+                'date': prod.criado_em.strftime('%d/%m/%Y %H:%M:%S'),
             }
 
             # ATUALIZAÇÃO DOS TOTAIS E ADIÇÃO DA VENDA DETALHADA
@@ -76,9 +84,14 @@ async def separating_sales_by_payments(user_id: int) -> Dict[str, Dict[str, Any]
                 'sales_list': value['sales_list'],
             }
 
-        await client.setex(cache_key, 60, json.dumps(final_result, default=str))
+        await client.setex(
+            cache_key, 60, json.dumps(final_result, default=str)
+        )
         return final_result
 
     except Exception as e:
         # É importante registrar o erro (e) em um log de produção
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f'Erro desconhecido: {e}')
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f'Erro desconhecido: {e}',
+        )

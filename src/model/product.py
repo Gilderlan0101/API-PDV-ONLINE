@@ -1,8 +1,9 @@
 # Model produtos
-from tortoise import fields, models
 from datetime import datetime
+from typing import List, Optional
 from zoneinfo import ZoneInfo
-from typing import Optional, List
+
+from tortoise import fields, models
 
 from src.model.sale import Sales
 
@@ -31,7 +32,7 @@ class Produto(models.Model):
     active = fields.BooleanField(default=True)
     group = fields.CharField(max_length=100, null=True)
     sub_group = fields.CharField(max_length=100, null=True)
-    ticket = fields.TextField(null=True, default="Novo")
+    ticket = fields.TextField(null=True, default='Novo')
     sector = fields.CharField(max_length=100, null=True)
     unit = fields.CharField(max_length=20, null=True)
     controllstoke = fields.CharField(max_length=50, null=True)
@@ -39,19 +40,25 @@ class Produto(models.Model):
     detail = fields.TextField(null=True, default='')
     label = fields.TextField(null=True)
 
-    criado_em = fields.DatetimeField(default=datetime.now(ZoneInfo("America/Sao_Paulo")))
-    atualizado_em = fields.DatetimeField(default=datetime.now(ZoneInfo("America/Sao_Paulo")))
+    criado_em = fields.DatetimeField(
+        default=datetime.now(ZoneInfo('America/Sao_Paulo'))
+    )
+    atualizado_em = fields.DatetimeField(
+        default=datetime.now(ZoneInfo('America/Sao_Paulo'))
+    )
 
     # 🔹 Relacionamentos
-    usuario = fields.ForeignKeyField("models.Usuario", related_name="produtos", on_delete=fields.CASCADE)
+    usuario = fields.ForeignKeyField(
+        'models.Usuario', related_name='produtos', on_delete=fields.CASCADE
+    )
     fornecedor = fields.ForeignKeyField(
-        "models.Fornecedor",
-        related_name="produtos",
+        'models.Fornecedor',
+        related_name='produtos',
         null=True,
         on_delete=fields.SET_NULL,
     )
 
-    vendas: fields.ReverseRelation["Sales"]
+    vendas: fields.ReverseRelation['Sales']
 
 
 # ========================
@@ -74,14 +81,22 @@ class ProdutoArquivado(models.Model):
     # Motivo do arquivamento
     description = fields.TextField()
 
-    criado_em = fields.DatetimeField(default=datetime.now(ZoneInfo("America/Sao_Paulo")))
-    atualizado_em = fields.DatetimeField(default=datetime.now(ZoneInfo("America/Sao_Paulo")))
+    criado_em = fields.DatetimeField(
+        default=datetime.now(ZoneInfo('America/Sao_Paulo'))
+    )
+    atualizado_em = fields.DatetimeField(
+        default=datetime.now(ZoneInfo('America/Sao_Paulo'))
+    )
 
     # 🔹 Relacionamentos
-    usuario = fields.ForeignKeyField("models.Usuario", related_name="produtos_arquivados", on_delete=fields.CASCADE)
+    usuario = fields.ForeignKeyField(
+        'models.Usuario',
+        related_name='produtos_arquivados',
+        on_delete=fields.CASCADE,
+    )
     produto = fields.ForeignKeyField(
-        "models.Produto",
-        related_name="arquivados",
+        'models.Produto',
+        related_name='arquivados',
         null=True,
         on_delete=fields.SET_NULL,
     )

@@ -1,11 +1,15 @@
 # src/core/session_config.py
-from fastapi_sessions.backends.implementations import InMemoryBackend
-from fastapi_sessions.session_verifier import SessionVerifier
-from fastapi_sessions.frontends.implementations import SessionCookie, CookieParameters
+from typing import Any, Dict, Optional
 from uuid import UUID, uuid4
+
 from fastapi import HTTPException
+from fastapi_sessions.backends.implementations import InMemoryBackend
+from fastapi_sessions.frontends.implementations import (
+    CookieParameters,
+    SessionCookie,
+)
+from fastapi_sessions.session_verifier import SessionVerifier
 from pydantic import BaseModel
-from typing import Dict, Any, Optional
 
 
 class SessionData(BaseModel):
@@ -24,14 +28,19 @@ backend = InMemoryBackend[UUID, SessionData]()
 
 # Configuração do cookie
 cookie_params = CookieParameters(
-    max_age=28800, path="/", domain=None, secure=False, httponly=True, samesite="lax"  # 8 horas  # True em produção com HTTPS
+    max_age=28800,
+    path='/',
+    domain=None,
+    secure=False,
+    httponly=True,
+    samesite='lax',  # 8 horas  # True em produção com HTTPS
 )
 
 cookie = SessionCookie(
-    cookie_name="pdv_session",
-    identifier="general_verifier",
+    cookie_name='pdv_session',
+    identifier='general_verifier',
     auto_error=True,
-    secret_key="sua_chave_secreta_super_segura_aqui_2024_pdv",
+    secret_key='sua_chave_secreta_super_segura_aqui_2024_pdv',
     cookie_params=cookie_params,
 )
 
@@ -72,8 +81,10 @@ class BasicVerifier(SessionVerifier[UUID, SessionData]):
 
 
 verifier = BasicVerifier(
-    identifier="general_verifier",
+    identifier='general_verifier',
     auto_error=True,
     backend=backend,
-    auth_http_exception=HTTPException(status_code=403, detail="Sessão inválida"),
+    auth_http_exception=HTTPException(
+        status_code=403, detail='Sessão inválida'
+    ),
 )

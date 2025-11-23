@@ -1,22 +1,28 @@
-from fastapi import HTTPException
 import json
 from dataclasses import dataclass, field
-from src.model.user import Usuario
 from datetime import datetime
 from zoneinfo import ZoneInfo
+
+from fastapi import HTTPException
 from tortoise.functions import Count
+
+from src.model.user import Usuario
 
 
 class LoginInSystem:
-
     def __init__(self, username: str, password: str):
         self.username = username
         self.password = password
 
     def _adminSystem(self):
-        __data_login = {'username': 'nathec@gmail.com', 'password': '_py3go5BZ}61FhC99kwi'}
+        __data_login = {
+            'username': 'nathec@gmail.com',
+            'password': '_py3go5BZ}61FhC99kwi',
+        }
 
-        if self.username == __data_login.get('username') and self.password == __data_login.get('password'):
+        if self.username == __data_login.get(
+            'username'
+        ) and self.password == __data_login.get('password'):
             return True
         else:
             return False
@@ -25,7 +31,9 @@ class LoginInSystem:
 @dataclass
 class SystemUser:
     # Iniciando variáveis vazias
-    data: list = field(default_factory=list)  # Lista de objetos com informações
+    data: list = field(
+        default_factory=list
+    )  # Lista de objetos com informações
     users_active: int = 0  # Quantidade de usuários ativos
     pending: int = 0  # Quantidade de usuários pendentes
 
@@ -40,18 +48,20 @@ class SystemUser:
             return False
 
     async def FeedingSystem(self):
-        users = await Usuario.all().values("company_name", "cnpj", "cpf", "email", "is_active")
+        users = await Usuario.all().values(
+            'company_name', 'cnpj', 'cpf', 'email', 'is_active'
+        )
 
         for customer in users:
-            if customer["is_active"]:
+            if customer['is_active']:
                 self.users_active += 1
                 self.data.append(
                     {
-                        "company_name": customer["company_name"],
-                        "cnpj": customer["cnpj"],
-                        "email": customer["email"],
-                        "status": customer["is_active"],
-                        "amount": self.users_active,
+                        'company_name': customer['company_name'],
+                        'cnpj': customer['cnpj'],
+                        'email': customer['email'],
+                        'status': customer['is_active'],
+                        'amount': self.users_active,
                     }
                 )
 
@@ -63,16 +73,25 @@ class SystemUser:
             if customer:
                 if customer.is_active:
                     # Desativando a conta
-                    await Usuario.filter(id=customer_id).update(is_active=False)
-                    return {"aviso": f"Cliente {customer_id} desativado com sucesso!"}
+                    await Usuario.filter(id=customer_id).update(
+                        is_active=False
+                    )
+                    return {
+                        'aviso': f'Cliente {customer_id} desativado com sucesso!'
+                    }
                 else:
                     return False
             else:
-                raise HTTPException(status_code=404, detail=f"Cliente {customer_id} não encontrado.")
+                raise HTTPException(
+                    status_code=404,
+                    detail=f'Cliente {customer_id} não encontrado.',
+                )
 
         except Exception as e:
-            print("Erro ao atualizar cliente:", e)
-            raise HTTPException(status_code=500, detail="Entre em contato com o desenvolvedor.")
+            print('Erro ao atualizar cliente:', e)
+            raise HTTPException(
+                status_code=500, detail='Entre em contato com o desenvolvedor.'
+            )
 
     async def UpdateIs_pending(self, customer_id: int):
         """Atualiza dados de um cliente"""
@@ -83,15 +102,22 @@ class SystemUser:
                 if customer.pending:
                     # Desativando a conta
                     await Usuario.filter(id=customer_id).update(pending=False)
-                    return {"aviso": f"Cliente {customer.username} agora esta ativo."}
+                    return {
+                        'aviso': f'Cliente {customer.username} agora esta ativo.'
+                    }
                 else:
                     return False
             else:
-                raise HTTPException(status_code=404, detail=f"Cliente {customer.username} não encontrado.")
+                raise HTTPException(
+                    status_code=404,
+                    detail=f'Cliente {customer.username} não encontrado.',
+                )
 
         except Exception as e:
-            print("Erro ao atualizar cliente:", e)
-            raise HTTPException(status_code=500, detail="Entre em contato com o desenvolvedor.")
+            print('Erro ao atualizar cliente:', e)
+            raise HTTPException(
+                status_code=500, detail='Entre em contato com o desenvolvedor.'
+            )
 
     async def ViewInfoCustomes(self):
         """Visualiza todos os dados do cliente"""
@@ -102,36 +128,38 @@ class SystemUser:
                 for user in customer:
                     self.data.append(
                         {
-                            "user_data": {
-                                "email": user.email,
-                                "company_name": user.company_name,
-                                "trade_name": user.trade_name,
-                                "cpf": user.cpf,
-                                "cnpj": user.cnpj,
-                                "state_registration": user.state_registration,
-                                "municipal_registration": user.municipal_registration,
-                                "cnae_principal": user.cnae_principal,
-                                "crt": user.crt,
-                                "cep": user.cep,
-                                "street": user.street,
-                                "home_number": user.home_number,
-                                "complement": user.complement,
-                                "district": user.district,
-                                "city": user.city,
-                                "state": user.state,
-                                "is_active": user.is_active,
-                                "criado_em": user.criado_em,
-                                "pending": user.pending,
+                            'user_data': {
+                                'email': user.email,
+                                'company_name': user.company_name,
+                                'trade_name': user.trade_name,
+                                'cpf': user.cpf,
+                                'cnpj': user.cnpj,
+                                'state_registration': user.state_registration,
+                                'municipal_registration': user.municipal_registration,
+                                'cnae_principal': user.cnae_principal,
+                                'crt': user.crt,
+                                'cep': user.cep,
+                                'street': user.street,
+                                'home_number': user.home_number,
+                                'complement': user.complement,
+                                'district': user.district,
+                                'city': user.city,
+                                'state': user.state,
+                                'is_active': user.is_active,
+                                'criado_em': user.criado_em,
+                                'pending': user.pending,
                             }
                         }
                     )
 
                 print(self.data)
             else:
-                raise HTTPException(status_code=404, detail="Cliente não encontrado")
+                raise HTTPException(
+                    status_code=404, detail='Cliente não encontrado'
+                )
 
         except Exception as e:
-            print("Erro ao visualizar cliente:", e)
+            print('Erro ao visualizar cliente:', e)
             raise HTTPException(status_code=500, detail=str(e))
 
     async def UsersPending(self):
@@ -141,26 +169,28 @@ class SystemUser:
             users_pending = await Usuario.filter(pending=False).all()
 
             if users_pending:
-                self.data.append({"pending": len(users_pending)})
+                self.data.append({'pending': len(users_pending)})
 
             return len(users_pending)
 
         except Exception as e:
-            print("Erro em UsersPending:", e)
+            print('Erro em UsersPending:', e)
 
     async def NewUsersThisMonth(self):
         """Retorna a quantidade de usuários cadastrados no mês atual"""
         try:
-            now = datetime.now(ZoneInfo("America/Sao_Paulo"))
-            start_of_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+            now = datetime.now(ZoneInfo('America/Sao_Paulo'))
+            start_of_month = now.replace(
+                day=1, hour=0, minute=0, second=0, microsecond=0
+            )
 
             # Busca todos os clientes criados a partir do 1º dia do mês
             total = await Usuario.filter(criado_em__gte=start_of_month).count()
             self.data.append({'total_customer': total})
 
         except Exception as e:
-            print("Erro ao contar novos clientes:", e)
-            return {"novos_clientes_mes": 0}
+            print('Erro ao contar novos clientes:', e)
+            return {'novos_clientes_mes': 0}
 
     @property
     def view(self):

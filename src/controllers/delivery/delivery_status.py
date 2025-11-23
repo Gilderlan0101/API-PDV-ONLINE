@@ -1,11 +1,13 @@
 # controller/delivery_status.py
 
-from src.model.delivery import Delivery, DeliveryItem
-from src.model.employee import Employees
+from datetime import datetime, timedelta, timezone
+from typing import Any, Dict, List
+
 from fastapi import HTTPException, status
 from fastapi.responses import JSONResponse
-from datetime import datetime, timedelta, timezone
-from typing import Dict, Any, List
+
+from src.model.delivery import Delivery, DeliveryItem
+from src.model.employee import Employees
 
 
 async def update_race_status(company_id: int) -> Dict[str, Any]:
@@ -25,10 +27,14 @@ async def update_race_status(company_id: int) -> Dict[str, Any]:
         Dict[str, Any]: Relatório com atribuições realizadas e estatísticas
     """
     try:
-        print(f"\n🔄 Iniciando atualização de status para empresa {company_id}")
+        print(f'\n🔄 Iniciando atualização de status para empresa {company_id}')
 
         # Buscar corridas pendentes sem entregador
-        corridas_pendentes = await Delivery.filter(usuario_id=company_id, delivery_status='esperando', assigned_to__isnull=True).all()
+        corridas_pendentes = await Delivery.filter(
+            usuario_id=company_id,
+            delivery_status='esperando',
+            assigned_to__isnull=True,
+        ).all()
 
         if not corridas_pendentes:
             return {
@@ -39,10 +45,12 @@ async def update_race_status(company_id: int) -> Dict[str, Any]:
                 'entregadores_disponiveis': 0,
             }
 
-        print(f"📦 Encontradas {len(corridas_pendentes)} corridas pendentes")
+        print(f'📦 Encontradas {len(corridas_pendentes)} corridas pendentes')
 
         # Buscar entregadores ativos
-        entregadores = await Employees.filter(usuario_id=company_id, cargo='Entregador', ativo=True).all()
+        entregadores = await Employees.filter(
+            usuario_id=company_id, cargo='Entregador', ativo=True
+        ).all()
 
         if not entregadores:
             return {
@@ -52,21 +60,25 @@ async def update_race_status(company_id: int) -> Dict[str, Any]:
                 'entregadores_disponiveis': 0,
             }
 
-        print(f"🚗 Encontrados {len(entregadores)} entregadores ativos")
+        print(f'🚗 Encontrados {len(entregadores)} entregadores ativos')
 
         # Verificar quais entregadores estão livres
         entregadores_livres = []
         for entregador in entregadores:
             # Contar entregas ativas do entregador
             entregas_ativas = await Delivery.filter(
-                usuario_id=company_id, assigned_to=entregador.nome, delivery_status__in=['esperando', 'em_andamento', 'a_caminho']
+                usuario_id=company_id,
+                assigned_to=entregador.nome,
+                delivery_status__in=['esperando', 'em_andamento', 'a_caminho'],
             ).count()
 
             if entregas_ativas == 0:
                 entregadores_livres.append(entregador)
-                print(f"   ✅ {entregador.nome} - LIVRE")
+                print(f'   ✅ {entregador.nome} - LIVRE')
             else:
-                print(f"   ⏳ {entregador.nome} - {entregas_ativas} entregas ativas")
+                print(
+                    f'   ⏳ {entregador.nome} - {entregas_ativas} entregas ativas'
+                )
 
         if not entregadores_livres:
             return {
@@ -77,10 +89,12 @@ async def update_race_status(company_id: int) -> Dict[str, Any]:
                 'entregadores_ocupados': len(entregadores),
             }
 
-        print(f"🎯 {len(entregadores_livres)} entregadores livres disponíveis")
+        print(f'🎯 {len(entregadores_livres)} entregadores livres disponíveis')
 
         # Ordenar corridas por prioridade (mais antigas primeiro)
-        corridas_ordenadas = sorted(corridas_pendentes, key=lambda x: x.created_at)
+        corridas_ordenadas = sorted(
+            corridas_pendentes, key=lambda x: x.created_at
+        )
 
         # Realizar atribuições
         atribuicoes_realizadas = []
@@ -109,7 +123,7 @@ async def update_race_status(company_id: int) -> Dict[str, Any]:
 
             entregadores_atribuidos.add(entregador.id)
 
-            print(f"   📍 Atribuído: {entregador.nome} → Corrida #{corrida.id}")
+            print(f'   📍 Atribuído: {entregador.nome} → Corrida #{corrida.id}')
 
         # Estatísticas finais
         estatisticas = {
@@ -117,8 +131,10 @@ async def update_race_status(company_id: int) -> Dict[str, Any]:
             'total_entregadores_ativos': len(entregadores),
             'total_entregadores_livres': len(entregadores_livres),
             'atribuicoes_realizadas': len(atribuicoes_realizadas),
-            'corridas_sem_entregador': len(corridas_pendentes) - len(atribuicoes_realizadas),
-            'entregadores_nao_utilizados': len(entregadores_livres) - len(atribuicoes_realizadas),
+            'corridas_sem_entregador': len(corridas_pendentes)
+            - len(atribuicoes_realizadas),
+            'entregadores_nao_utilizados': len(entregadores_livres)
+            - len(atribuicoes_realizadas),
         }
 
         return {
@@ -130,12 +146,18 @@ async def update_race_status(company_id: int) -> Dict[str, Any]:
         }
 
     except Exception as e:
-        error_msg = f"Erro ao atualizar status das corridas: {str(e)}"
-        print(f"❌ {error_msg}")
-        return {'success': False, 'error': error_msg, 'timestamp': datetime.now(timezone.utc).isoformat()}
+        error_msg = f'Erro ao atualizar status das corridas: {str(e)}'
+        print(f'❌ {error_msg}')
+        return {
+            'success': False,
+            'error': error_msg,
+            'timestamp': datetime.now(timezone.utc).isoformat(),
+        }
 
 
-async def assign_specific_delivery(delivery_id: int, driver_id: int, company_id: int) -> Dict[str, Any]:
+async def assign_specific_delivery(
+    delivery_id: int, driver_id: int, company_id: int
+) -> Dict[str, Any]:
     """
     Atribui uma corrida específica a um entregador específico
 
@@ -149,28 +171,46 @@ async def assign_specific_delivery(delivery_id: int, driver_id: int, company_id:
     """
     try:
         # Verificar se a corrida existe e pertence à empresa
-        corrida = await Delivery.filter(id=delivery_id, usuario_id=company_id).first()
+        corrida = await Delivery.filter(
+            id=delivery_id, usuario_id=company_id
+        ).first()
 
         if not corrida:
-            return {'success': False, 'error': f'Corrida #{delivery_id} não encontrada'}
+            return {
+                'success': False,
+                'error': f'Corrida #{delivery_id} não encontrada',
+            }
 
         # Verificar se a corrida já tem entregador
         if corrida.assigned_to:
-            return {'success': False, 'error': f'Corrida #{delivery_id} já está atribuída a {corrida.assigned_to}'}
+            return {
+                'success': False,
+                'error': f'Corrida #{delivery_id} já está atribuída a {corrida.assigned_to}',
+            }
 
         # Verificar se o entregador existe e é da empresa
-        entregador = await Employees.filter(id=driver_id, usuario_id=company_id, cargo='Entregador', ativo=True).first()
+        entregador = await Employees.filter(
+            id=driver_id, usuario_id=company_id, cargo='Entregador', ativo=True
+        ).first()
 
         if not entregador:
-            return {'success': False, 'error': f'Entregador #{driver_id} não encontrado ou inativo'}
+            return {
+                'success': False,
+                'error': f'Entregador #{driver_id} não encontrado ou inativo',
+            }
 
         # Verificar se o entregador está livre
         entregas_ativas = await Delivery.filter(
-            usuario_id=company_id, assigned_to=entregador.nome, delivery_status__in=['esperando', 'em_andamento', 'a_caminho']
+            usuario_id=company_id,
+            assigned_to=entregador.nome,
+            delivery_status__in=['esperando', 'em_andamento', 'a_caminho'],
         ).count()
 
         if entregas_ativas > 0:
-            return {'success': False, 'error': f'Entregador {entregador.nome} já tem {entregas_ativas} entregas ativas'}
+            return {
+                'success': False,
+                'error': f'Entregador {entregador.nome} já tem {entregas_ativas} entregas ativas',
+            }
 
         # Realizar atribuição
         corrida.assigned_to = entregador.nome
@@ -186,7 +226,10 @@ async def assign_specific_delivery(delivery_id: int, driver_id: int, company_id:
         }
 
     except Exception as e:
-        return {'success': False, 'error': f'Erro ao atribuir corrida: {str(e)}'}
+        return {
+            'success': False,
+            'error': f'Erro ao atribuir corrida: {str(e)}',
+        }
 
 
 async def get_delivery_status_report(company_id: int) -> Dict[str, Any]:
@@ -210,15 +253,32 @@ async def get_delivery_status_report(company_id: int) -> Dict[str, Any]:
             status_counts[status] = status_counts.get(status, 0) + 1
 
         # Entregas sem entregador
-        entregas_sem_entregador = await Delivery.filter(usuario_id=company_id, assigned_to__isnull=True, delivery_status='esperando').count()
+        entregas_sem_entregador = await Delivery.filter(
+            usuario_id=company_id,
+            assigned_to__isnull=True,
+            delivery_status='esperando',
+        ).count()
 
         # Entregadores ativos
-        entregadores_ativos = await Employees.filter(usuario_id=company_id, cargo='Entregador', ativo=True).count()
+        entregadores_ativos = await Employees.filter(
+            usuario_id=company_id, cargo='Entregador', ativo=True
+        ).count()
 
         # Entregadores ocupados
         entregadores_ocupados = (
             await Employees.filter(usuario_id=company_id)
-            .annotate(entregas_ativas=Count(Delivery.filter(assigned_to=F('nome'), delivery_status__in=['esperando', 'em_andamento', 'a_caminho'])))
+            .annotate(
+                entregas_ativas=Count(
+                    Delivery.filter(
+                        assigned_to=F('nome'),
+                        delivery_status__in=[
+                            'esperando',
+                            'em_andamento',
+                            'a_caminho',
+                        ],
+                    )
+                )
+            )
             .filter(entregas_ativas__gt=0)
             .count()
         )
@@ -231,16 +291,22 @@ async def get_delivery_status_report(company_id: int) -> Dict[str, Any]:
                 'entregas_sem_entregador': entregas_sem_entregador,
                 'entregadores_ativos': entregadores_ativos,
                 'entregadores_ocupados': entregadores_ocupados,
-                'entregadores_livres': entregadores_ativos - entregadores_ocupados,
+                'entregadores_livres': entregadores_ativos
+                - entregadores_ocupados,
                 'timestamp': datetime.now(timezone.utc).isoformat(),
             },
         }
 
     except Exception as e:
-        return {'success': False, 'error': f'Erro ao gerar relatório: {str(e)}'}
+        return {
+            'success': False,
+            'error': f'Erro ao gerar relatório: {str(e)}',
+        }
 
 
-async def update_payments_status(company_id: int, sales_id: int, new_status: str):
+async def update_payments_status(
+    company_id: int, sales_id: int, new_status: str
+):
     """
     update_payments_status: Responsável por atualizar o status de pagamento de uma venda específica.
 
@@ -253,22 +319,36 @@ async def update_payments_status(company_id: int, sales_id: int, new_status: str
     valid_statuses = ['Pago', 'Receber na entrega', 'Pendente']
 
     if new_status not in valid_statuses:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Status inválido. Os valores permitidos são: {valid_statuses}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f'Status inválido. Os valores permitidos são: {valid_statuses}',
+        )
 
     # Busca o item de entrega específico
-    delivery_item = await DeliveryItem.get_or_none(usuario_id=company_id, id=sales_id)
+    delivery_item = await DeliveryItem.get_or_none(
+        usuario_id=company_id, id=sales_id
+    )
 
     if not delivery_item:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Venda não encontrada para este usuário.")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='Venda não encontrada para este usuário.',
+        )
 
     if delivery_item.payment_status == new_status:
-        return JSONResponse(status_code=status.HTTP_200_OK, content={"message": "O status de pagamento já está atualizado."})
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content={'message': 'O status de pagamento já está atualizado.'},
+        )
 
     # Atualiza o status de pagamento
     delivery_item.payment_status = new_status
     await delivery_item.save()
 
-    return JSONResponse(status_code=status.HTTP_200_OK, content={"message": "Status de pagamento atualizado com sucesso."})
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={'message': 'Status de pagamento atualizado com sucesso.'},
+    )
 
 
 async def total_sales(company_id: int):
@@ -284,7 +364,7 @@ async def total_sales(company_id: int):
     for item in delivery_items:
         total += item.quantity * item.price
 
-    return {"total_em_reais": round(total, 2)}
+    return {'total_em_reais': round(total, 2)}
 
 
 async def sales_quantity(company_id: int):
@@ -298,6 +378,10 @@ async def sales_quantity(company_id: int):
     end_of_day = start_of_day + timedelta(days=1)
 
     # Filtra as entregas criadas hoje para o company_id
-    vendas_do_dia = await Delivery.filter(usuario_id=company_id, created_at__gte=start_of_day, created_at__lt=end_of_day).count()
+    vendas_do_dia = await Delivery.filter(
+        usuario_id=company_id,
+        created_at__gte=start_of_day,
+        created_at__lt=end_of_day,
+    ).count()
 
-    return {"quantidade_vendas_hoje": vendas_do_dia}
+    return {'quantidade_vendas_hoje': vendas_do_dia}

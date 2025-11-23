@@ -1,11 +1,12 @@
-from src.model.partial import Partial, finished_debts
-from tortoise.exceptions import DoesNotExist
-from decimal import Decimal, InvalidOperation
-from fastapi import HTTPException, status
 from datetime import datetime
+from decimal import Decimal, InvalidOperation
 from zoneinfo import ZoneInfo
-from src.logs.infos import LOGGER
 
+from fastapi import HTTPException, status
+from tortoise.exceptions import DoesNotExist
+
+from src.logs.infos import LOGGER
+from src.model.partial import Partial, finished_debts
 
 
 class UpdateDepts:

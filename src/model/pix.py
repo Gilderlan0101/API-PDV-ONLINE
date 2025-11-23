@@ -1,8 +1,9 @@
-from tortoise import models, fields
-from datetime import datetime
-from zoneinfo import ZoneInfo
-from typing import Optional
 import re
+from datetime import datetime
+from typing import Optional
+from zoneinfo import ZoneInfo
+
+from tortoise import fields, models
 
 
 class Pix(models.Model):
@@ -20,13 +21,13 @@ class Pix(models.Model):
     updated_at = fields.DatetimeField(auto_now=True)
 
     class Meta:
-        table = "pix"
-        indexes = [("usuario_id", "is_active"), ("key_pix",)]
+        table = 'pix'
+        indexes = [('usuario_id', 'is_active'), ('key_pix',)]
 
     def __str__(self):
-        return f"PIX {self.key_pix} - {self.full_name}"
+        return f'PIX {self.key_pix} - {self.full_name}'
 
     @property
     def created_at_brasil(self):
         """Retorna a data de criação no fuso horário do Brasil"""
-        return self.created_at.astimezone(ZoneInfo("America/Sao_Paulo"))
+        return self.created_at.astimezone(ZoneInfo('America/Sao_Paulo'))
