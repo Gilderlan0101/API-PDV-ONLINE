@@ -32,18 +32,39 @@ def private_data_output(function):
 
 
 # Cria uma mascara para emails
-def mask_email(value: str)  -> str:
-    """Mascara o email preservando apenas o nome antes do @."""
-    index = value.index('@')
+def mask_email(value: str) -> str:
+    """Mascara o email de forma inteligente preservando parte do nome e domínio."""
+    if not value or '@' not in value:
+        return value
 
-    if not index:
-        return
+    try:
+        local_part, domain = value.split('@')
 
-    before = value[:index]
-    return before + '@' + '*' * 9
+        # Caso email muito curto
+        if len(local_part) <= 2:
+            return f"{local_part}@{'*' * len(domain)}"
+
+        # Preserva primeiro e último caractere do local part
+        masked_local = (
+            f"{local_part[0]}{'*' * (len(local_part) - 2)}{local_part[-1]}"
+        )
+
+        # Mascara o domínio parcialmente
+        domain_parts = domain.split('.')
+        if len(domain_parts) >= 2:
+            masked_domain = (
+                f"{'*' * len(domain_parts[0])}.{'.'.join(domain_parts[1:])}"
+            )
+        else:
+            masked_domain = '*' * len(domain)
+
+        return f'{masked_local}@{masked_domain}'
+
+    except (ValueError, IndexError):
+        return '*' * len(value) if value else value
 
 
-def mask_cpf(value: str)  -> str:
+def mask_cpf(value: str) -> str:
     """Retorna o CPF mascarado, mantendo os 3 primeiros e 2 últimos dígitos."""
 
     # Remove caracteres não numéricos
@@ -56,15 +77,13 @@ def mask_cpf(value: str)  -> str:
     return digits[:3] + '***' + '***' + digits[-2:]
 
 
-def mask_password(value: str)  -> str:
+def mask_password(value: str) -> str:
     """Mascara senha no teminal ou log de sevidores"""
 
     width_password = len(value)
     password = ''
-    for  i in range(width_password + 1):
+    for i in range(width_password + 1):
 
-        password = '*'*i
+        password = '*' * i
 
     return password
-
-
