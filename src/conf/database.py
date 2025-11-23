@@ -1,215 +1,192 @@
-# src/conf/database.py
-import asyncio
 import os
+from typing import Any, Dict
 
 from dotenv import load_dotenv
 from tortoise import Tortoise
+from tortoise.exceptions import ConfigurationError, DBConnectionError
+
+# LOGS
+from src.logs.infos import LOGGER
 
 # Carregar variáveis de ambiente
 load_dotenv()
 
-# Dados de conexão — você pode mover para o .env se quiser
-DB_USER = os.getenv('DB_USER')
-DB_PASS = os.getenv('DB_PASS')
-DB_HOST = os.getenv('DB_HOST')  # ou o IP do servidor
-DB_PORT = os.getenv('DB_PORT')
-DB_NAME = os.getenv('DB_NAME')
 
-# Montar URL de conexão MySQL
-mysql_url = f'mysql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
+def get_mysql_config() -> Dict[str, Any]:
+    """
+    Retorna a configuração completa para MySQL/MariaDB.
 
-# Configuração do Tortoise ORM
-TORTOISE_ORM = {
-    'connections': {'default': mysql_url},
-    'apps': {
-        'models': {
-            'models': [
-                'src.model.user',
-                'src.model.employee',
-                'src.model.customers',
-                'src.model.caixa',
-                'src.model.cashmovement',
-                'src.model.sale',
-                'src.model.partial',
-                'src.model.carItems',
-                'src.model.product',
-                'src.model.fornecedor',
-                'src.model.membros',
-                'src.model.cnpjCache',
-                'src.model.tickets',
-                'src.model.delivery',
-                'src.model.pix',
-            ],
-            'default_connection': 'default',
-        }
-    },
-}
+    Busca credenciais específicas para "production" ou "development"
+    baseadas na variável ENVIRONMENT.
+    """
 
+    ENVIRONMENT = os.getenv('ENVIRONMENT', 'development').upper()
 
-async def print_database_info():
-    """Função para imprimir informações do banco de dados"""
-    try:
-        print('\n' + '=' * 80)
-        print('📊 DEBUG - DADOS DO BANCO DE DADOS')
-        print('=' * 80)
-
-        # Conectar ao banco
-        await Tortoise.init(config=TORTOISE_ORM)
-
-        # PRIMEIRO: Descobrir quais tabelas existem
-        print('\n🔍 TABELAS EXISTENTES NO BANCO:')
-        print('-' * 50)
-        tabelas = await Tortoise.get_connection('default').execute_query(
-            'SHOW TABLES'
+    if ENVIRONMENT == 'PRODUCTION':
+        # Para ambiente de Produção: espera as variáveis padrão sem sufixo
+        LOGGER.info(
+            '🛠️ Modo PRODUCTION: Usando credenciais de Deploy (remotas).'
         )
-        for tabela in tabelas[1]:
-            table_name = list(tabela.values())[0]
-            print(f'📋 {table_name}')
+        DB_USER = os.getenv('DB_USER')
+        DB_PASS = os.getenv('DB_PASSWORD')
+        DB_HOST = os.getenv('DB_HOST')
+        DB_PORT = os.getenv('DB_PORT', '3306')
+        DB_NAME = os.getenv('DB_NAME')
+    else:
+        # Para Desenvolvimento: usa credenciais de desenvolvimento
+        LOGGER.info('🛠️ Modo DEVELOPMENT: Usando credenciais locais.')
+        DB_USER = os.getenv('DB_USER_DEV_LOCAL', 'root')  # Valor padrão
+        DB_PASS = os.getenv('DB_PASSWORD_DEV_LOCAL', '')  # Valor padrão
+        DB_HOST = os.getenv('DB_HOST_DEV_LOCAL', 'localhost')  # Valor padrão
+        DB_PORT = os.getenv('DB_PORT_DEV_LOCAL', '3306')  # Valor padrão
+        DB_NAME = os.getenv(
+            'DB_NAME_DEV_LOCAL', 'nahtec_pdv_dev'
+        )  # Valor padrão
 
-        # 1. USUÁRIOS/EMPRESAS - Tentar diferentes nomes de tabela
-        print('\n👥 TABELA: USUARIOS/EMPRESAS')
-        print('-' * 50)
+    # Log das credenciais (sem senha por segurança)
+    LOGGER.info(
+        f'📊 Config DB - Host: {DB_HOST}:{DB_PORT}, DB: {DB_NAME}, User: {DB_USER}'
+    )
 
-        # Tentar diferentes nomes possíveis para a tabela de usuários
-        tabelas_usuarios = [
-            'usuarios',
-            'user',
-            'users',
-            'usuario',
-            'empresas',
-            'companies',
-        ]
-        usuarios_encontrados = None
+    # Verifica se as credenciais críticas foram encontradas
+    missing_vars = []
+    if not DB_USER:
+        missing_vars.append('DB_USER')
+    if not DB_HOST:
+        missing_vars.append('DB_HOST')
+    if not DB_NAME:
+        missing_vars.append('DB_NAME')
 
-        for tabela in tabelas_usuarios:
-            try:
-                usuarios = await Tortoise.get_connection(
-                    'default'
-                ).execute_query(f'SELECT * FROM {tabela} ORDER BY id')
-                if usuarios[1]:
-                    print(f'✅ Tabela encontrada: {tabela}')
-                    usuarios_encontrados = usuarios[1]
-                    break
-            except:
-                continue
+    if missing_vars:
+        LOGGER.error(
+            f'❌ Variáveis de ambiente críticas faltando: {", ".join(missing_vars)}'
+        )
+        # Não quebra, apenas loga o erro
 
-        if usuarios_encontrados:
-            for user in usuarios_encontrados:
-                print(
-                    f"ID: {user.get('id')} | Nome: {user.get('username', user.get('name', 'N/A'))} | Email: {user.get('email', 'N/A')} | Empresa: {user.get('company_name', user.get('name', 'N/A'))}"
-                )
-        else:
-            print('❌ Nenhuma tabela de usuários encontrada')
+    return {
+        'connections': {
+            'default': {
+                'engine': 'tortoise.backends.mysql',
+                'credentials': {
+                    'host': DB_HOST or 'localhost',
+                    'port': int(DB_PORT) if DB_PORT else 3306,
+                    'user': DB_USER or 'root',
+                    'password': DB_PASS or '',
+                    'database': DB_NAME or 'nahtec_pdv_dev',
+                    'charset': 'utf8mb4',
+                    'autocommit': True,
+                    'minsize': 1,
+                    'maxsize': 5,
+                    'sql_mode': 'STRICT_TRANS_TABLES',
+                    'connect_timeout': 30,  # Timeout de conexão
+                },
+            }
+        },
+        'apps': {
+            'models': {
+                'models': [
+                    'src.model.user',
+                    'src.model.employee',
+                    'src.model.customers',
+                    'src.model.caixa',
+                    'src.model.cashmovement',
+                    'src.model.sale',
+                    'src.model.partial',
+                    'src.model.carItems',
+                    'src.model.product',
+                    'src.model.fornecedor',
+                    'src.model.membros',
+                    'src.model.cnpjCache',
+                    'src.model.tickets',
+                    'src.model.delivery',
+                    'src.model.pix',
+                ],
+                'default_connection': 'default',
+            }
+        },
+        'use_tz': True,
+        'timezone': 'America/Sao_Paulo',
+    }
 
-        # 2. FUNCIONÁRIOS - Tentar diferentes nomes
-        print('\n👨‍💼 TABELA: FUNCIONÁRIOS')
-        print('-' * 50)
 
-        tabelas_funcionarios = [
-            'employees',
-            'employee',
-            'funcionarios',
-            'funcionario',
-        ]
-        funcionarios_encontrados = None
+# A variável global TORTOISE_ORM é a configuração que o Main.py irá importar.
+TORTOISE_ORM = get_mysql_config()
 
-        for tabela in tabelas_funcionarios:
-            try:
-                funcionarios = await Tortoise.get_connection(
-                    'default'
-                ).execute_query(f'SELECT * FROM {tabela} ORDER BY id')
-                if funcionarios[1]:
-                    print(f'✅ Tabela encontrada: {tabela}')
-                    funcionarios_encontrados = funcionarios[1]
-                    break
-            except:
-                continue
+# =========================================================================
+# FUNÇÕES DE CICLO DE VIDA (COM MELHORIAS)
+# =========================================================================
 
-        if funcionarios_encontrados:
-            for func in funcionarios_encontrados:
-                print(
-                    f"ID: {func.get('id')} | Nome: {func.get('name', func.get('nome', 'N/A'))} | Email: {func.get('email', 'N/A')} | User ID: {func.get('usuario_id', func.get('user_id', 'N/A'))}"
-                )
-        else:
-            print('❌ Nenhuma tabela de funcionários encontrada')
 
-        # 3. CAIXAS - Tentar diferentes nomes
-        print('\n💰 TABELA: CAIXA')
-        print('-' * 50)
+async def init_database() -> bool:
+    """Inicializa o Tortoise ORM com a configuração MySQL/MariaDB."""
 
-        tabelas_caixa = ['caixa', 'caixas', 'cash', 'cash_register']
-        caixas_encontrados = None
+    engine_name = TORTOISE_ORM['connections']['default']['engine'].split('.')[
+        -1
+    ]
 
-        for tabela in tabelas_caixa:
-            try:
-                caixas = await Tortoise.get_connection(
-                    'default'
-                ).execute_query(
-                    f'SELECT * FROM {tabela} ORDER BY id DESC LIMIT 10'
-                )
-                if caixas[1]:
-                    print(f'✅ Tabela encontrada: {tabela}')
-                    caixas_encontrados = caixas[1]
-                    break
-            except:
-                continue
+    try:
+        LOGGER.info(f'🔧 Configurando banco: {engine_name}')
+        LOGGER.info(
+            f"📋 Modelos carregados: {len(TORTOISE_ORM['apps']['models']['models'])}"
+        )
 
-        if caixas_encontrados:
-            for caixa in caixas_encontrados:
-                status = '✅ ABERTO' if caixa.get('aberto') else '❌ FECHADO'
-                print(
-                    f"ID: {caixa.get('id')} | Nome: {caixa.get('nome', 'N/A')} | User ID: {caixa.get('usuario_id')} | Func ID: {caixa.get('funcionario_id')} | {status} | Saldo: R$ {caixa.get('saldo_atual', 0)}"
-                )
-        else:
-            print('❌ Nenhuma tabela de caixa encontrada')
+        await Tortoise.init(config=TORTOISE_ORM)
+        LOGGER.info('✅ Tortoise ORM inicializado!')
 
-        # 4. VERIFICAÇÃO ESPECÍFICA DO PROBLEMA
-        print('\n🔍 VERIFICAÇÃO ESPECÍFICA DO PROBLEMA')
-        print('-' * 50)
+        # Testa a conexão antes de criar schemas
+        try:
+            await Tortoise.get_connection('default').execute_query('SELECT 1')
+            LOGGER.info('✅ Conexão com MySQL verificada!')
+        except Exception as e:
+            LOGGER.error(f'❌ Falha ao testar conexão MySQL: {e}')
+            return False
 
-        if funcionarios_encontrados and usuarios_encontrados:
-            # Encontrar funcionário ID 2
-            func_2 = None
-            for func in funcionarios_encontrados:
-                if func.get('id') == 2:
-                    func_2 = func
-                    break
+        # Cria as tabelas se não existirem
+        await Tortoise.generate_schemas()
+        LOGGER.info('✅ Tabelas criadas/verificadas!')
 
-            if func_2:
-                user_id_func = func_2.get('usuario_id', func_2.get('user_id'))
-                print(f'🔎 Funcionário ID 2:')
-                print(f"   • Nome: {func_2.get('name', 'N/A')}")
-                print(f'   • Pertence ao User ID: {user_id_func}')
+        print_database_info()
+        return True
 
-                # Verificar se esse user_id existe na tabela de usuários
-                user_existe = False
-                for user in usuarios_encontrados:
-                    if user.get('id') == user_id_func:
-                        user_existe = True
-                        print(
-                            f"   • ✅ User ID {user_id_func} existe: {user.get('username', 'N/A')} - {user.get('company_name', 'N/A')}"
-                        )
-                        break
+    except DBConnectionError as e:
+        # Erro de conexão real (servidor MySQL não está rodando, credenciais erradas)
+        LOGGER.error(f'❌ Falha ao conectar ao banco de dados MySQL: {e}')
 
-                if not user_existe:
-                    print(
-                        f'   • ❌ User ID {user_id_func} NÃO ENCONTRADO na tabela de usuários!'
-                    )
-            else:
-                print('❌ Funcionário ID 2 não encontrado')
-        else:
-            print(
-                '❌ Não foi possível fazer a verificação - tabelas necessárias não encontradas'
-            )
+        # Log mais detalhado para debugging
+        creds = TORTOISE_ORM['connections']['default']['credentials']
+        LOGGER.error(
+            f'🔍 Tentando conectar em: {creds["host"]}:{creds["port"]}, DB: {creds["database"]}, User: {creds["user"]}'
+        )
 
-        print('\n' + '=' * 80)
-        print('✅ DEBUG COMPLETO')
-        print('=' * 80)
-
+        return False
+    except ConfigurationError as e:
+        LOGGER.error(f'❌ Erro de configuração do Tortoise: {e}')
+        return False
     except Exception as e:
-        print(f'❌ Erro ao acessar banco de dados: {e}')
-        import traceback
+        LOGGER.error(f'❌ Erro inesperado ao inicializar banco: {e}')
+        return False
 
-        print(f'📋 Traceback: {traceback.format_exc()}')
-    finally:
+
+async def close_database():
+    """Fecha as conexões do banco"""
+    try:
         await Tortoise.close_connections()
+        LOGGER.info('✅ Conexões do banco fechadas!')
+    except Exception as e:
+        LOGGER.warning(f'⚠️ Aviso ao fechar conexões: {e}')
+
+
+def print_database_info():
+    """Exibe informações de conexão do DB para o log (apenas MySQL/MariaDB)."""
+    conn_config = TORTOISE_ORM['connections']['default']
+    creds = conn_config['credentials']
+    db_name = creds.get('database')
+    db_host = creds.get('host')
+    db_port = creds.get('port')
+
+    LOGGER.info('-----------------------------------------')
+    LOGGER.info(f'📦 Conectado a MySQL/MariaDB:')
+    LOGGER.info(f'   - Banco: {db_name}')
+    LOGGER.info(f'   - Host: {db_host}:{db_port}')
+    LOGGER.info(f'   - Timezone: {TORTOISE_ORM.get("timezone", "N/A")}')
+    LOGGER.info('-----------------------------------------')
